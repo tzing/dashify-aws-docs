@@ -11,7 +11,6 @@ import dashify.core
 
 METADATA = {
     "CFBundleIdentifier": "aws-redshift-dg",
-    "CFBundleName": "Amazon Redshift Database Developer Guide",
     "DocSetPlatformFamily": "Amazon Redshift",
     "dashIndexFilePath": "welcome.html",
 }
@@ -38,6 +37,13 @@ logger = logging.getLogger(__name__)
     help="Root directory that contains the downloaded docs",
 )
 @click.option(
+    "-t",
+    "--title",
+    default="Amazon Redshift Database Developer Guide",
+    show_default=True,
+    help="Docset title",
+)
+@click.option(
     "-d",
     "--docset-path",
     metavar="DOCSET",
@@ -45,7 +51,7 @@ logger = logging.getLogger(__name__)
     required=True,
     help="Path to output docset",
 )
-def redshift(site_url: str, root_dir: Path, docset_path: Path):
+def redshift(site_url: str, root_dir: Path, title: str, docset_path: Path):
     """Convert RedShift documents to docsets."""
     docset_path = dashify.core.prepare_docset(docset_path)
     logger.info(f"Convert RedShift docs from '{root_dir}' to '{docset_path}'")
@@ -85,6 +91,7 @@ def redshift(site_url: str, root_dir: Path, docset_path: Path):
     dashify.core.create_docset_index(docset_path, indexes)
 
     # finalise
+    METADATA["CFBundleName"] = title
     METADATA["DashDocSetFallbackURL"] = site_url
     dashify.core.create_info_plist(docset_path, METADATA)
     dashify.core.copy_icons("redshift-icons", docset_path)
