@@ -71,16 +71,18 @@ The script will generate a docset at the specified output path.
 
 ## Site Maps
 
-| Documentation                     | Language  | URL                                                                |
-| --------------------------------- | --------- | ------------------------------------------------------------------ |
-| Redshift Database Developer Guide | de_DE     | `https://docs.aws.amazon.com/de_de/redshift/latest/dg/sitemap.xml` |
-| Redshift Database Developer Guide | **en_US** | `https://docs.aws.amazon.com/redshift/latest/dg/sitemap.xml`       |
-| Redshift Database Developer Guide | es_ES     | `https://docs.aws.amazon.com/es_es/redshift/latest/dg/sitemap.xml` |
-| Redshift Database Developer Guide | fr_FR     | `https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/sitemap.xml` |
-| Redshift Database Developer Guide | id_ID     | `https://docs.aws.amazon.com/id_id/redshift/latest/dg/sitemap.xml` |
-| Redshift Database Developer Guide | it_IT     | `https://docs.aws.amazon.com/it_it/redshift/latest/dg/sitemap.xml` |
-| Redshift Database Developer Guide | ja_JP     | `https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/sitemap.xml` |
-| Redshift Database Developer Guide | ko_KR     | `https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/sitemap.xml` |
-| Redshift Database Developer Guide | pt_BR     | `https://docs.aws.amazon.com/pt_br/redshift/latest/dg/sitemap.xml` |
-| Redshift Database Developer Guide | zh_CN     | `https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/sitemap.xml` |
-| Redshift Database Developer Guide | zh_TW     | `https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/sitemap.xml` |
+### Redshift Database Developer Guide
+
+| Language | URL                                                                |
+| -------- | ------------------------------------------------------------------ |
+| `de_DE`  | `https://docs.aws.amazon.com/de_de/redshift/latest/dg/sitemap.xml` |
+| `en_US`  | `https://docs.aws.amazon.com/redshift/latest/dg/sitemap.xml`       |
+| `es_ES`  | `https://docs.aws.amazon.com/es_es/redshift/latest/dg/sitemap.xml` |
+| `fr_FR`  | `https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/sitemap.xml` |
+| `id_ID`  | `https://docs.aws.amazon.com/id_id/redshift/latest/dg/sitemap.xml` |
+| `it_IT`  | `https://docs.aws.amazon.com/it_it/redshift/latest/dg/sitemap.xml` |
+| `ja_JP`  | `https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/sitemap.xml` |
+| `ko_KR`  | `https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/sitemap.xml` |
+| `pt_BR`  | `https://docs.aws.amazon.com/pt_br/redshift/latest/dg/sitemap.xml` |
+| `zh_CN`  | `https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/sitemap.xml` |
+| `zh_TW`  | `https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/sitemap.xml` |
