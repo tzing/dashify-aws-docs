@@ -20,7 +20,7 @@ Currently only the following docsets are available. If you want to request a new
 
 Latest version: `2024.1.0`
 
-| language          | link                 |
+| Language          | Link                 |
 | ----------------- | -------------------- |
 | Deutsch           | [redshift-de_DE.tgz] |
 | English           | [redshift-en_US.tgz] |
