@@ -5,6 +5,11 @@ Generate [Kapeli Dash] (or [Zeal]) docset from AWS documentation.
 [Kapeli Dash]: https://kapeli.com/dash
 [Zeal]: https://zealdocs.org/
 
+> [!TIP]
+>
+> The document below is for generating the docset using this script.
+> If you're looking for the generated docset, please visit https://page.tzing.dev/dashify-aws-docs/
+
 
 ## Prerequisites
 
@@ -53,7 +58,7 @@ We're using `wget` to download the documentation. See [Usage](#usage) for more d
    dashify <SERVICE> -u <SITE_URL> -r <ROOT_DIR> -d <DOCSET_PATH>
    ```
 
-   - `SERVICE`: The AWS service name. Currently only `redshift` is supported.
+   - `SERVICE`: The AWS service name.
    - `SITE_URL`: The URL of the documentation site. For example, `https://docs.aws.amazon.com/redshift/latest/dg/`.
    - `ROOT_DIR`: Root directory that contains the downloaded docs. It's default to `./docs.aws.amazon.com` and you do not need to specify it if you're using the `wget` command above.
    - `DOCSET_PATH`: The output path of the generated docset. For example, `./redshift-developer-guide.docset`.
