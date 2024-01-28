@@ -29,7 +29,6 @@ logger = logging.getLogger(__name__)
 @click.option(
     "-u",
     "--site-url",
-    metavar="URL",
     type=dashify.core.URL(),
     default="https://docs.aws.amazon.com/redshift/latest/dg/",
     show_default=True,
