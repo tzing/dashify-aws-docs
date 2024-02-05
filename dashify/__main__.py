@@ -1,5 +1,6 @@
 import tqdm.contrib.logging
 
+import dashify.cloudformation
 import dashify.plain
 import dashify.redshift
 import dashify.sitemap

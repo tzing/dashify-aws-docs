@@ -22,6 +22,7 @@ We're using `wget` to download the documentation. See [Usage](#usage) for more d
 
 ## Currently Supported Documentation
 
+- [CloudFormation User Guide](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html)
 - [Redshift Database Developer Guide](https://docs.aws.amazon.com/redshift/latest/dg/index.html)
 
 
@@ -75,6 +76,22 @@ The script will generate a docset at the specified output path.
 
 
 ## Site Maps
+
+### CloudFormation User Guide
+
+| Language | URL                                                                                |
+| -------- | ---------------------------------------------------------------------------------- |
+| `de_DE`  | `https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/sitemap.xml` |
+| `en_US`  | `https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/sitemap.xml`       |
+| `es_ES`  | `https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/sitemap.xml` |
+| `fr_FR`  | `https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/sitemap.xml` |
+| `id_ID`  | `https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/sitemap.xml` |
+| `it_IT`  | `https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/sitemap.xml` |
+| `ja_JP`  | `https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/sitemap.xml` |
+| `ko_KR`  | `https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/sitemap.xml` |
+| `pt_BR`  | `https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/sitemap.xml` |
+| `zh_CN`  | `https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/sitemap.xml` |
+| `zh_TW`  | `https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/sitemap.xml` |
 
 ### Redshift Database Developer Guide
 
