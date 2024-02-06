@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import copy
 import dataclasses
 import enum
+import functools
 import json
 import logging
 import re
@@ -164,6 +166,13 @@ def convert(
             shutil.copy(target, img_dir)
             logger.debug("Copy %s to %s", target, img_dir / target.name)
 
+    # fix icons
+    for node in soup.find_all("awsui-icon"):
+        if node["name"] == "status-info":
+            node.append(get_icon("info"))
+        if node["name"] == "status-warning":
+            node.append(get_icon("alert"))
+
     # write to file
     doc_path = docset_path / "Contents" / "Resources" / "Documents" / file_path.name
     doc_path.write_text(str(soup))
@@ -180,6 +189,22 @@ def get_alt_target(path: str, site_url: str, root_dir: Path):
         return alt
     else:
         return fallback
+
+
+def get_icon(name: str) -> bs4.Tag:
+    return copy.copy(_get_icon(name))
+
+
+@functools.cache
+def _get_icon(name: str) -> bs4.Tag:
+    current_dir = Path(__file__).resolve().parent
+    icon_dir = current_dir / "statics" / "icons"
+
+    with open(icon_dir / f"{name}.svg") as fd:
+        code = fd.read()
+
+    svg_tag = bs4.BeautifulSoup(code, "lxml").svg
+    return svg_tag
 
 
 def create_docset_index(docset_path: Path, indexes: list[dict[str, str]]):
