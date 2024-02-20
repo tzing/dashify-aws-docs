@@ -16,6 +16,18 @@ Currently only the following docsets are available. If you want to request a new
 
 ## Latest docsets
 
+### [CloudFormation User Guide](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html)
+
+Latest version: `2024.2.0`
+
+| language | link                       |
+| -------- | -------------------------- |
+| English  | [cloudformation-en_US.tgz] |
+| 繁體中文 | [cloudformation-zh_TW.tgz] |
+
+[cloudformation-en_US.tgz]: https://github.com/tzing/aws-docs-archive/releases/download/cloudformation%2F2024.2.0/cloudformation-en_US.tgz
+[cloudformation-zh_TW.tgz]: https://github.com/tzing/aws-docs-archive/releases/download/cloudformation%2F2024.2.0/cloudformation-zh_TW.tgz
+
 ### [Redshift Database Developer Guide](https://docs.aws.amazon.com/redshift/latest/dg/index.html)
 
 Latest version: `2024.2.0`
