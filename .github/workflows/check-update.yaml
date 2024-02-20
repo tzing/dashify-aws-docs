@@ -1,0 +1,29 @@
+name: Check for updates
+
+on:
+  pull_request: #XXX
+  schedule:
+    - cron: "23 11 * * *"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: Redshift developer guide
+            url: https://docs.aws.amazon.com/redshift/latest/dg/Dochistory.rss
+
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: pip install -r ./scripts/check-update/requirements.txt
+
+      - name: Run script
+        run: python ./scripts/check-update/check_update.py ${{ matrix.url }} | tee -a "$GITHUB_OUTPUT"
