@@ -8,7 +8,7 @@ Generate [Kapeli Dash] (or [Zeal]) docset from AWS documentation.
 > [!TIP]
 >
 > The document below is for generating the docset using this script.
-> If you're looking for the generated docset, please visit https://page.tzing.dev/dashify-aws-docs/
+> If you're looking for the generated docset, please visit https://docset.tzing.dev/
 
 
 ## Prerequisites
@@ -23,7 +23,7 @@ We're using `wget` to download the documentation. See [Usage](#usage) for more d
 ## Currently Supported Documentation
 
 - [CloudFormation User Guide](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html)
-- [Redshift Database Developer Guide](https://docs.aws.amazon.com/redshift/latest/dg/index.html)
+- [Redshift Database Developer Guide](https://docs.aws.amazon.com/redshift/latest/dg/welcome.html)
 
 
 ## Usage
