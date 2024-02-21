@@ -12,11 +12,11 @@ Currently only the following docsets are available. If you want to request a new
 [Dash User Contributed Docsets]: https://github.com/Kapeli/Dash-User-Contributions
 [open an issue]: https://github.com/tzing/dashify-aws-docs/issues/new
 
-> The maintainer is not affiliated with AWS.
+*Disclaimer: The maintainer is not affiliated with AWS.*
 
 ## Latest docsets
 
-### [CloudFormation User Guide](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html)
+### ![cloudformation](/assets/CloudFormation.png) [CloudFormation User Guide](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html)
 
 Latest version: `2024.2.0`
 
@@ -28,7 +28,7 @@ Latest version: `2024.2.0`
 [cloudformation-en_US.tgz]: https://github.com/tzing/aws-docs-archive/releases/download/cloudformation%2F2024.2.0/cloudformation-en_US.tgz
 [cloudformation-zh_TW.tgz]: https://github.com/tzing/aws-docs-archive/releases/download/cloudformation%2F2024.2.0/cloudformation-zh_TW.tgz
 
-### [Redshift Database Developer Guide](https://docs.aws.amazon.com/redshift/latest/dg/index.html)
+### ![redshift](/assets/RedShift.png) [Redshift Database Developer Guide](https://docs.aws.amazon.com/redshift/latest/dg/welcome.html)
 
 Latest version: `2024.2.0`
 
