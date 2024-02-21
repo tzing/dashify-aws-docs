@@ -20,7 +20,7 @@ Currently only the following docsets are available. If you want to request a new
 
 | Language | Version | Link |
 | -------- | ------- | ---- |
-{%- for docset_hash in site.data.cloudformation %}
+{%- for docset_hash in site.data.cloudformation.docsets %}
 {%- assign docset = docset_hash[1] %}
 | {{ docset.lang }} | {{ docset.version }} |       [{{ docset.link | basename }}]({{ docset.link }}) |
 {%- endfor %}
@@ -29,7 +29,7 @@ Currently only the following docsets are available. If you want to request a new
 
 | Language | Version | Link |
 | -------- | ------- | ---- |
-{%- for docset_hash in site.data.redshift %}
+{%- for docset_hash in site.data.redshift.docsets %}
 {%- assign docset = docset_hash[1] %}
 | {{ docset.lang }} | {{ docset.version }} |       [{{ docset.link | basename }}]({{ docset.link }}) |
 {%- endfor %}
