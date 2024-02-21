@@ -25,7 +25,7 @@ Currently only the following docsets are available. If you want to request a new
 | {{ docset.lang }} | {{ docset.version }} |       [{{ docset.link | basename }}]({{ docset.link }}) |
 {%- endfor %}
 
-### ![redshift](/assets/RedShift.png) [Redshift Database Developer Guide](https://docs.aws.amazon.com/redshift/latest/dg/welcome.html)
+### ![redshift](/assets/Redshift.png) [Redshift Database Developer Guide](https://docs.aws.amazon.com/redshift/latest/dg/welcome.html)
 
 | Language | Version | Link |
 | -------- | ------- | ---- |
