@@ -18,18 +18,18 @@ Currently only the following docsets are available. If you want to request a new
 
 ### ![cloudformation](/assets/CloudFormation.png) [CloudFormation User Guide](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html)
 
-| Language | Version | Feed | Link |
-| -------- | ------- | ---- | ---- |
+| Language | Version | Link |
+| -------- | ------- | ---- |
 {%- for docset_hash in site.data.cloudformation %}
 {%- assign docset = docset_hash[1] %}
-| {{ docset.lang }} | {{ docset.version }} |      | [{{ docset.link | basename }}]({{ docset.link }}) |
+| {{ docset.lang }} | {{ docset.version }} |       [{{ docset.link | basename }}]({{ docset.link }}) |
 {%- endfor %}
 
 ### ![redshift](/assets/RedShift.png) [Redshift Database Developer Guide](https://docs.aws.amazon.com/redshift/latest/dg/welcome.html)
 
-| Language | Version | Feed | Link |
-| -------- | ------- | ---- | ---- |
+| Language | Version | Link |
+| -------- | ------- | ---- |
 {%- for docset_hash in site.data.redshift %}
 {%- assign docset = docset_hash[1] %}
-| {{ docset.lang }} | {{ docset.version }} |      | [{{ docset.link | basename }}]({{ docset.link }}) |
+| {{ docset.lang }} | {{ docset.version }} |       [{{ docset.link | basename }}]({{ docset.link }}) |
 {%- endfor %}
