@@ -1,0 +1,86 @@
+name: Download documents
+
+on:
+  workflow_call:
+    inputs:
+      storage-branch:
+        description: "Branch to store the documents"
+        type: string
+        required: true
+      sitemap-url:
+        description: "URL of the sitemap"
+        type: string
+        required: true
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      # -----------------------------------------------------------------------
+      # Setup environment
+      # -----------------------------------------------------------------------
+      - name: Get wget
+        run: |
+          sudo apt update
+          sudo apt install -y wget
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: pip install .
+
+      # -----------------------------------------------------------------------
+      # Setup storage
+      # -----------------------------------------------------------------------
+      - name: Check target branch exists
+        id: check-branch
+        run: |
+          if git ls-remote --exit-code --heads origin refs/heads/${{ inputs.storage-branch }} > /dev/null; then
+            echo "Branch '${{ inputs.storage-branch }}' exists"
+            echo 'exists=true' >> $GITHUB_OUTPUT
+          else
+            echo "Branch '${{ inputs.storage-branch }}' does not exist"
+            echo 'exists=false' >> $GITHUB_OUTPUT
+          fi
+
+      - name: Prepare storage [1]
+        if: steps.check-branch.outputs.exists == 'false'
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: ./docs.aws.amazon.com
+
+      - name: Prepare storage [2]
+        if: steps.check-branch.outputs.exists == 'false'
+        working-directory: ./docs.aws.amazon.com
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          git checkout --orphan ${{ inputs.storage-branch }}
+          git reset --hard
+          git clean -fdx
+          git commit --allow-empty -m 'init'
+
+      - name: Checkout storage
+        if: steps.check-branch.outputs.exists == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.storage-branch }}
+          path: ./docs.aws.amazon.com
+
+      - name: Clean up storage
+        if: steps.check-branch.outputs.exists == 'true'
+        run: rm -rf docs.aws.amazon.com/*
+
+      # -----------------------------------------------------------------------
+      # Download
+      # -----------------------------------------------------------------------
+      - name: Parse sitemap
+        run: |
+          wget ${{ inputs.sitemap-url }} --no-verbose -O- | dashify extract-sitemap-urls >> '${{ runner.temp }}/site-urls.txt'
+          echo "Found $(wc -l < '${{ runner.temp }}/site-urls.txt') URLs" >> "$GITHUB_STEP_SUMMARY"
