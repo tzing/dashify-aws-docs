@@ -4,17 +4,31 @@ on:
   workflow_call:
     inputs:
       storage-branch:
-        description: "Branch to store the documents"
+        description: Branch to store the documents
         type: string
         required: true
       sitemap-url:
-        description: "URL of the sitemap"
+        description: URL of the sitemap
+        type: string
+        required: true
+      dashify-command:
+        description: Command for building the docset
+        type: string
+        required: true
+      docset-name:
+        description: File name for the output docset
+        type: string
+        required: true
+      docset-title:
+        description: Title of the output docset
         type: string
         required: true
 
 jobs:
   download:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       # -----------------------------------------------------------------------
       # Setup environment
@@ -39,12 +53,10 @@ jobs:
       - name: Check target branch exists
         id: check-branch
         run: |
-          if git ls-remote --exit-code --heads origin refs/heads/${{ inputs.storage-branch }} > /dev/null; then
-            echo "Branch '${{ inputs.storage-branch }}' exists"
-            echo 'exists=true' >> $GITHUB_OUTPUT
+          if git ls-remote --exit-code --heads origin refs/heads/${{ inputs.storage-branch }}; then
+            echo 'exists=true' | tee -a $GITHUB_OUTPUT
           else
-            echo "Branch '${{ inputs.storage-branch }}' does not exist"
-            echo 'exists=false' >> $GITHUB_OUTPUT
+            echo 'exists=false' | tee -a $GITHUB_OUTPUT
           fi
 
       - name: Prepare storage [1]
@@ -83,4 +95,46 @@ jobs:
       - name: Parse sitemap
         run: |
           wget ${{ inputs.sitemap-url }} --no-verbose -O- | dashify extract-sitemap-urls >> '${{ runner.temp }}/site-urls.txt'
-          echo "Found $(wc -l < '${{ runner.temp }}/site-urls.txt') URLs" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Download documents
+        run: |
+          wget \
+            --adjust-extension \
+            --content-on-error \
+            --input-file='${{ runner.temp }}/site-urls.txt' \
+            --mirror \
+            --no-parent \
+            --no-verbose \
+            --page-requisites \
+            --reject=pdf,zip \
+          || true
+
+      # -----------------------------------------------------------------------
+      # Save
+      # -----------------------------------------------------------------------
+      - name: Save documents
+        uses: stefanzweifel/git-auto-commit-action@v5
+        id: commit
+        with:
+          repository: ./docs.aws.amazon.com
+          commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+
+      # -----------------------------------------------------------------------
+      # Build docset
+      # -----------------------------------------------------------------------
+      - name: Build docset
+        if: steps.commit.changes_detected == 'true'
+        run: |
+          dashify \
+            ${{ inputs.dashify-command }} \
+            --site-url $(dirname '${{ inputs.sitemap-url }}') \
+            --docset-path '${{ inputs.docset-name }}.docset' \
+            --title '${{ inputs.docset-title }}'
+          tar cvzf '${{ inputs.docset-name }}.tgz' '${{ inputs.docset-name }}.docset'
+
+      - name: Upload docset
+        if: steps.commit.changes_detected == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.docset-name }}
+          path: ${{ inputs.docset-name }}.tgz
