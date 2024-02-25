@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="fr-FR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Chargement de données semi-structurées dans Amazon Redshift - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="ingest-super" /><meta name="default_state" content="ingest-super" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/ingest-super.html" /><meta name="description" content="Utilisez le type de données SUPER pour persister et interroger des données hiérarchiques et génériques dans Amazon Redshift. Amazon Redshift introduit la fonction json_parse pour analyser les données au format JSON et les convertir en représentation SUPER. Amazon Redshift prend également en charge le chargement des colonnes SUPER via l’instruction COPY. Les formats de fichiers pris en charge sont JSON, Avro, texte, format CSV (valeurs séparées par des virgules), Parquet et ORC." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guide du développeur de base de données" /><meta name="abstract" content="Créez et gérez un entrepôt de données avec Amazon Redshift, service d’entrepôt de données au niveau de l’entreprise, pouvant atteindre plusieurs Po et entièrement géré." /><meta name="guide-locale" content="fr_fr" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/ingest-super.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/ingest-super.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/ingest-super.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/ingest-super.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/ingest-super.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/ingest-super.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/ingest-super.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/ingest-super.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/ingest-super.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/ingest-super.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/ingest-super.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/ingest-super.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/ingest-super.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/ingest-super.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/ingest-super.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/ingest-super.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/ingest-super.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/ingest-super.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/ingest-super.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/ingest-super.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/ingest-super.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/ingest-super.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guide du développeur de base de données" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guide du développeur de base de données" /><meta id="panorama-serviceConsolePage" value="Chargement de données semi-structurées dans Amazon Redshift" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Chargement de données semi-structurées dans Amazon Redshift - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#ingest-super" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/ingest-super.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/ingest-super.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/ingest-super.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,entrepôt de données,développeur,exemples de données,database,développeur de base de données,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guide du développeur de base de données",
+        "item" : "https://docs.aws.amazon.com/fr_fr/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Ingestion et interrogation de données semi-structurées dans Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/super-overview.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Chargement de données semi-structurées dans Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/super-overview.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#ingest-super" target="_blank" rel="noopener noreferrer" title="Ouvrir le PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guide du développeur de base de données</a></div><div id="page-toc-src"><a href="#parse_json">Analyse de documents JSON en colonnes SUPER</a><a href="#copy_json">Utilisation de COPY pour charger des données JSON dans Amazon Redshift</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Les traductions sont fournies par des outils de traduction automatique. En cas de conflit entre le contenu d'une traduction et celui de la version originale en anglais, la version anglaise prévaudra.</p></awsui-alert><h1 class="topictitle" id="ingest-super">Chargement de données semi-structurées dans Amazon Redshift</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Utilisez le type de données SUPER pour persister et interroger des données hiérarchiques et génériques dans Amazon Redshift. Amazon Redshift introduit la fonction <code class="code">json_parse</code> pour analyser les données au format JSON et les convertir en représentation SUPER. Amazon Redshift prend également en charge le chargement des colonnes SUPER via l’instruction COPY. Les formats de fichiers pris en charge sont JSON, Avro, texte, format CSV (valeurs séparées par des virgules), Parquet et ORC.</p><p>Pour en savoir plus sur les tables utilisées dans les exemples suivants, consultez <a href="./r_SUPER_sample_dataset.html">Jeu de données échantillon SUPER</a>.</p><p>Pour plus d’informations sur la fonction <code class="code">json_parse</code>, consultez <a href="./JSON_PARSE.html">Fonction JSON_PARSE</a>.</p><p>L’encodage par défaut pour le type de données SUPER est ZSTD. </p>
+         <h2 id="parse_json">Analyse de documents JSON en colonnes SUPER</h2>
+         <p>Vous pouvez insérer ou mettre à jour des données JSON dans une colonne SUPER à l’aide de la fonction <code class="code">json_parse</code>. La fonction analyse les données au format JSON et les convertit en type de données SUPER que vous pouvez utiliser dans les instructions INSERT ou UPDATE. </p>
+         <p>L’exemple suivant insère des données JSON dans une colonne SUPER. Si la fonction <code class="code">json_parse</code> est absente de la requête, Amazon Redshift traite la valeur comme une chaîne unique au lieu d’une chaîne formatée JSON qui doit être analysée.</p>
+         <p>Si vous mettez à jour une colonne de données SUPER, Amazon Redshift exige que le document complet soit transmis aux valeurs de colonne. Amazon Redshift ne prend pas en charge les mises à jour partielles. </p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="">INSERT INTO region_nations VALUES(0,
+   'lar deposits. blithely final packages cajole. regular waters are final requests. regular accounts are according to',
+   'AFRICA',
+   JSON_PARSE('<span>{</span>"r_nations":[
+      <span>{</span>"n_comment":" haggle. carefully final deposits detect slyly agai",
+         "n_nationkey":0,
+         "n_name":"ALGERIA"
+      },
+      <span>{</span>"n_comment":"ven packages wake quickly. regu",
+         "n_nationkey":5,
+         "n_name":"ETHIOPIA"
+      },
+      <span>{</span>"n_comment":" pending excuses haggle furiously deposits. pending, express pinto beans wake fluffily past t",
+         "n_nationkey":14,
+         "n_name":"KENYA"
+      },
+      <span>{</span>"n_comment":"rns. blithely bold courts among the closely regular packages use furiously bold platelets?",
+         "n_nationkey":15,
+         "n_name":"MOROCCO"
+      },
+      <span>{</span>"n_comment":"s. ironic, unusual asymptotes wake blithely r",
+         "n_nationkey":16,
+         "n_name":"MOZAMBIQUE"
+      }
+   ]
+}'));</code></pre>
+       
+         <h2 id="copy_json">Utilisation de COPY pour charger des colonnes SUPER dans Amazon Redshift</h2>
+         
+         <p>Dans les sections suivantes, vous pouvez découvrir les différentes façons d’utiliser l’instruction COPY pour charger des données JSON dans Amazon Redshift.</p>
+         
+          
+            <h3 id="copy_json-from-JSON">Copie de données à partir de JSON et Avro</h3>
+         <p>En utilisant la prise en charge des données semi-structurées dans Amazon Redshift, vous pouvez charger un document JSON sans fragmenter les attributs de ses structures JSON en plusieurs colonnes. </p>
+            <p>Amazon Redshift fournit deux méthodes pour ingérer un document JSON en utilisant COPY, même avec une structure JSON totalement ou partiellement inconnue : </p>
+         <div class="orderedlist">
+            
+             
+             
+
+         <ol><li>
+               <p>Stocker les données dérivées d’un document JSON dans une seule colonne de données SUPER en choisissant l’option <code class="code">noshred</code>. Cette méthode est utile lorsque le schéma n’est pas connu ou est censé changer. Ainsi, cette méthode facilite le stockage du tuple entier dans une seule colonne SUPER.</p>
+            </li><li>
+               <p>Déchiquetez le document JSON en plusieurs colonnes Amazon Redshift en choisissant l’option <code class="code">auto</code> ou <code class="code">jsonpaths</code>. Les attributs peuvent être des scalaires Amazon Redshift ou des valeurs SUPER. </p>
+            </li></ol></div><p>Vous pouvez utiliser ces options avec les formats JSON ou Avro.</p>
+            <p>La taille maximale d’un objet JSON avant le déchiquetage est de 4 Mo.</p>
+          
+
+          
+            <h3 id="copy_json-one-column">Copie d’un document JSON dans une seule colonne de données SUPER</h3>
+         <p>Pour copier un document JSON dans une seule colonne de données SUPER, créez une table avec une seule colonne de données SUPER.</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE region_nations_noshred (rdata SUPER);</code></pre>
+         <p>Copiez les données d’Amazon S3 dans la colonne de données SUPER unique. Pour ingérer les données source JSON dans une seule colonne de données SUPER, spécifiez l’option <code class="code">noshred</code> dans la clause FORMAT JSON.</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations_noshred FROM 's3://redshift-downloads/semistructured/tpch-nested/data/json/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT JSON 'noshred';</code></pre>
+            
+         <p>Une fois que COPY a réussi à ingérer le JSON, votre table a une colonne de données SUPER <code class="code">rdata</code> qui contient les données de l’objet JSON entier. Les données ingérées conservent toutes les propriétés de la hiérarchie JSON. Toutefois, les feuilles sont converties en types scalaires Amazon Redshift pour un traitement efficace des requêtes.</p>
+         <p>Utilisez la requête suivante pour récupérer la chaîne JSON originale.</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT rdata FROM region_nations_noshred;</code></pre>
+         <p>Lorsque Amazon Redshift génère une colonne de données SUPER, elle devient accessible à l’aide de JDBC en tant que chaîne de caractères par sérialisation JSON. Pour plus d'informations, consultez <a href="./serializing-complex-JSON.html">Sérialisation de JSON imbriqué complexe</a>.</p>      
+                   
+         
+         
+          
+            <h3 id="copy_json-multiple-columns">Copier un document JSON dans plusieurs colonnes de données SUPER</h3>
+         <p>Vous pouvez fragmenter un document JSON en plusieurs colonnes, qui peuvent être des colonnes de données SUPER ou des types scalaires Amazon Redshift. Amazon Redshift répartit différentes portions de l’objet JSON dans différentes colonnes.</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE region_nations
+(
+ r_regionkey smallint
+ ,r_name varchar
+ ,r_comment varchar
+ ,r_nations super
+ );</code></pre>
+            <p>Pour copier les données de l’exemple précédent dans la table, spécifiez l’option AUTO dans la clause FORMAT JSON pour diviser la valeur JSON sur plusieurs colonnes. COPY fait correspondre les attributs JSON de premier niveau avec les noms de colonnes et permet d’ingérer les valeurs imbriquées en tant que valeurs SUPER, comme les tableaux et les objets JSON. </p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/json/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT JSON 'auto';</code></pre>
+            
+             
+            <p>Lorsque les noms d’attributs JSON sont en majuscules et casse mixtes, spécifiez l’option <code class="code">auto ignorecase</code> dans la clause FORMAT JSON. Pour plus d’informations sur la commande COPY, consultez <a href="./r_COPY_command_examples.html#copy-from-json-examples-using-auto-ignorecase">Charger des données JSON à l’aide de l’option ’auto ignorecase’</a>.</p>
+            
+            
+         <p>Dans certains cas, il existe un décalage entre les noms de colonnes et les attributs JSON ou l’attribut à charger est imbriqué sur plus d’un niveau. Si c’est le cas, utilisez un fichier <code class="code">jsonpaths</code> pour mapper manuellement les attributs JSON aux colonnes Amazon Redshift.</p>
+            
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE nations
+(
+ regionkey smallint
+ ,name varchar
+ ,comment super
+ ,nations super
+ ); </code></pre>
+         <p>Supposons que vous souhaitiez charger des données dans une table où les noms de colonnes ne correspondent pas aux attributs JSON. Dans l’exemple suivant, la table <code class="code">nations</code> est une telle table. Vous pouvez créer un fichier <code class="code">jsonpaths</code> qui fait correspondre les chemins d’accès des attributs aux colonnes de la table par leur position dans le tableau <code class="code">jsonpaths</code>.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>"jsonpaths": [
+       "$.r_regionkey",
+       "$.r_name",
+       "$.r_comment",
+       "$.r_nations
+    ]
+}</code></pre>
+         <p>L’emplacement du fichier <code class="code">jsonpaths</code> est utilisé comme argument de FORMAT JSON.</p>
+            
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/json/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT JSON 's3://redshift-downloads/semistructured/tpch-nested/data/jsonpaths/nations_jsonpaths.json';</code></pre>
+         <p>Utilisez la requête suivante pour accéder à la table qui présente des données réparties sur plusieurs colonnes. Les colonnes de données SUPER sont imprimées en utilisant le format JSON.</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT r_regionkey,r_name,r_comment,r_nations[0].n_nationkey FROM region_nations ORDER BY 1,2,3 LIMIT 1;</code></pre>
+            
+            <p>Les fichiers jsonpaths mappent les champs du document JSON aux colonnes du tableau. Vous pouvez extraire des colonnes supplémentaires, telles que des clés de distribution et de tri, tout en chargeant le document complet en tant que colonne SUPER. La requête suivante charge le document complet dans la colonne nations. La colonne <code class="code">name</code> est la clé de tri et la colonne <code class="code">regionkey</code> est la clé de distribution.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE nations_sorted (
+    regionkey smallint,
+    name varchar,
+    nations super
+) DISTKEY(regionkey) SORTKEY(name);</code></pre>
+            <p>La racine jsonpath « $ » mappe à la racine du document comme suit :</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>"jsonpaths": [
+       "$.r_regionkey",
+       "$.r_name",
+       "$"
+    ]
+}</code></pre>
+            <p>L’emplacement du fichier jsonpaths est utilisé comme argument pour FORMAT JSON.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY nations_sorted FROM 's3://redshift-downloads/semistructured/tpch-nested/data/json/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT JSON 's3://redshift-downloads/semistructured/tpch-nested/data/jsonpaths/nations_sorted_jsonpaths.json';</code></pre>
+            
+                   
+         
+          
+            <h3 id="copy_json-from-text-csv">Copie de données à partir de texte et CSV</h3>
+         
+            <p>Amazon Redshift représente des colonnes SUPER au format texte et CSV en tant que JSON sérialisés. Un formatage JSON valide est requis pour que les colonnes SUPER soient chargées avec les informations type correctes. Supprimez les objets, les tableaux, les nombres, les valeurs booléennes et les valeurs null. Placez les valeurs de chaîne entre guillemets. Les colonnes SUPER utilisent des règles d’échappement standard pour les formats texte et CSV. Pour CSV, les délimiteurs sont échappés conformément à la norme CSV. Pour le format texte, si le délimiteur choisi peut également apparaître dans un champ SUPER, utilisez l’option ESCAPE pour les instructions COPY et UNLOAD.</p>
+            
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/csv/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT CSV;</code></pre>
+            
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/text/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+DELIMITER ','
+ESCAPE;</code></pre>
+       
+
+         
+          
+            <h3 id="copy_json-from-parquet-orc">Copie de données à partir de Parquet et ORC au format colonne</h3>        
+         <p>Si vos données semi-structurées ou imbriquées sont déjà disponibles au format Apache Parquet ou Apache ORC, vous pouvez utiliser l’instruction COPY pour ingérer des données dans Amazon Redshift. </p>
+            <p>La structure de la table Amazon Redshift doit correspondre au nombre de colonnes et aux types de données de colonne des fichiers Parquet ou ORC. En spécifiant SERIALIZETOJSON dans l’instruction COPY, vous pouvez charger n’importe quel type de colonne dans le fichier qui s’aligne sur une colonne SUPER de la table en tant que SUPER. Cela inclut les types de structure et de tableau.</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/parquet/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT PARQUET SERIALIZETOJSON;</code></pre>
+         <p>L’exemple suivant utilise un format ORC.</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/orc/region_nation'
+IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT ORC SERIALIZETOJSON;</code></pre>
+            <p>Lorsque les attributs des types de données de date ou d’heure sont en ORC, Amazon Redshift les convertit en varchar lors de leur encodage en SUPER.</p>
+       
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Avertissement" /> <strong>JavaScript est désactivé ou n'est pas disponible dans votre navigateur.</strong></p><p>Pour que vous puissiez utiliser la documentation AWS, Javascript doit être activé. Vous trouverez des instructions sur les pages d'aide de votre navigateur.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Conventions de rédaction</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_SUPER_sample_dataset.html">Jeu de données échantillon SUPER</div><div id="next" class="next-link" accesskey="n" href="./unload-super.html">Déchargement des données semi-structurées</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Cette page vous a-t-elle été utile ? - Oui</div><div class="content"><p>Merci de nous avoir fait part de votre satisfaction.</p><p>Si vous avez quelques minutes à nous consacrer, merci de nous indiquer ce qui vous a plu afin que nous puissions nous améliorer davantage.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Commentaire" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/ingest-super.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Cette page vous a-t-elle été utile ? - Non</div><div class="content"><p>Merci de nous avoir avertis que cette page avait besoin d'être retravaillée. Nous sommes désolés de ne pas avoir répondu à vos attentes.</p><p>Si vous avez quelques minutes à nous consacrer, merci de nous indiquer comment nous pourrions améliorer cette documentation.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Commentaire" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/ingest-super.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
