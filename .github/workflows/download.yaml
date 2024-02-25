@@ -72,6 +72,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config push.autoSetupRemote true
 
           git checkout --orphan ${{ inputs.storage-branch }}
           git reset --hard
@@ -123,7 +124,7 @@ jobs:
       # Build docset
       # -----------------------------------------------------------------------
       - name: Build docset
-        if: steps.commit.changes_detected == 'true'
+        if: steps.commit.outputs.changes_detected == 'true'
         run: |
           dashify \
             ${{ inputs.dashify-command }} \
@@ -133,7 +134,7 @@ jobs:
           tar cvzf '${{ inputs.docset-name }}.tgz' '${{ inputs.docset-name }}.docset'
 
       - name: Upload docset
-        if: steps.commit.changes_detected == 'true'
+        if: steps.commit.outputs.changes_detected == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.docset-name }}
