@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="id-ID"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Bagian 3: Merutekan kueri ke antrian berdasarkan grup pengguna dan grup kueri - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-wlm-routing-queries-to-queues" /><meta name="default_state" content="tutorial-wlm-routing-queries-to-queues" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="description" content="Sekarang Anda memiliki cluster Anda terkait dengan grup parameter baru dan Anda telah mengkonfigurasi WLM. Selanjutnya, jalankan beberapa kueri untuk melihat bagaimana Amazon Redshift merutekan kueri ke antrean untuk diproses." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Panduan Pengembang Database" /><meta name="abstract" content="Buat dan kelola gudang data dengan Amazon Redshift, skala petabyte tingkat perusahaan, layanan pergudangan data yang dikelola sepenuhnya." /><meta name="guide-locale" content="id_id" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Panduan Pengembang Database" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Panduan Pengembang Database" /><meta id="panorama-serviceConsolePage" value="Bagian 3: Merutekan kueri ke antrian berdasarkan grup pengguna dan grup kueri" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Bagian 3: Merutekan kueri ke antrian berdasarkan grup pengguna dan grup kueri - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-wlm-routing-queries-to-queues" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="keywords" content="Amazon Redshift,AWSPergeseran Merah,Redshift,Spektrum Pergeseran Merah,Klaster,gudang data,pengembang,data sampel,database,pengembang basis data,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Panduan Pengembang Database",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Menerapkan manajemen beban kerja",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Menerapkan manual WLM",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Tutorial: Mengkonfigurasi antrian manajemen beban kerja manual (WLM)",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "Bagian 3: Merutekan kueri ke antrian berdasarkan grup pengguna dan grup kueri",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-wlm-routing-queries-to-queues" target="_blank" rel="noopener noreferrer" title="Buka PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Dokumentasi</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Panduan Pengembang Database</a></div><div id="page-toc-src"><a href="#tutorial-wlm-view-query-config">Langkah 1: Lihat konfigurasi antrian kueri dalam database</a><a href="#tutorial-wlm-query-group">Langkah 2: Jalankan kueri menggunakan antrian grup kueri</a><a href="#tutorial-wlm-create-db-user-and-group">Langkah 3: Membuat pengguna basis data dan grup</a><a href="#tutorial-wlm-user-group-query">Langkah 4: Jalankan kueri menggunakan antrean grup pengguna</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Terjemahan disediakan oleh mesin penerjemah. Jika konten terjemahan yang diberikan bertentangan dengan versi bahasa Inggris aslinya, utamakan versi bahasa Inggris.</p></awsui-alert><h1 class="topictitle" id="tutorial-wlm-routing-queries-to-queues">Bagian 3: Merutekan kueri ke antrian berdasarkan grup pengguna dan grup kueri</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Sekarang Anda memiliki cluster Anda terkait dengan grup parameter baru dan Anda telah mengkonfigurasi WLM. Selanjutnya, jalankan beberapa kueri untuk melihat bagaimana Amazon Redshift merutekan kueri ke antrean untuk diproses.</p>
+            <h2 id="tutorial-wlm-view-query-config">Langkah 1: Lihat konfigurasi antrian kueri dalam database</h2>
+
+            <p>Pertama, verifikasi bahwa database memiliki konfigurasi WLM yang Anda harapkan.</p>
+             
+                <h3 id="how-to-wlm-view-query-config">Untuk melihat konfigurasi antrian kueri</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                <ol><li>
+                        <p>Buka RSQL dan jalankan kueri berikut. Kueri menggunakan tampilan WLM_QUEUE_STATE_VW yang Anda buat<a href="./tutorial-wlm-understanding-default-processing.html#tutorial-wlm-create-queue-state-view">Langkah 1: Buat tampilan WLM_QUEUE_STATE_VW</a>. Jika Anda sudah memiliki sesi yang terhubung ke database sebelum cluster reboot, Anda perlu menyambung kembali.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;</code></pre>
+                        <p>Berikut ini adalah contoh hasil.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_060.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>Bandingkan hasil ini dengan hasil yang Anda terima<a href="./tutorial-wlm-understanding-default-processing.html#tutorial-wlm-create-queue-state-view">Langkah 1: Buat tampilan WLM_QUEUE_STATE_VW</a>. Perhatikan bahwa sekarang ada dua antrian tambahan. Antrian 1 sekarang antrian untuk grup kueri pengujian, dan antrian 2 adalah antrian untuk grup pengguna admin.</p>
+                        <p>Antrean 3 sekarang adalah antrean defaultnya. Antrian terakhir dalam daftar selalu antrian default. Itulah antrian yang query diarahkan secara default jika tidak ada kelompok pengguna atau kelompok query ditentukan dalam query.</p>
+                    </li><li>
+                        <p>Jalankan kueri berikut untuk mengonfirmasi bahwa kueri Anda sekarang berjalan dalam antrian 3.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;</code></pre>
+                        <p>Berikut ini adalah contoh hasil.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_070.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-query-group">Langkah 2: Jalankan kueri menggunakan antrian grup kueri</h2>
+
+
+             
+                <h3 id="how-to-wlm-query-group">Untuk menjalankan kueri menggunakan antrean grup kueri</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+                     
+                     
+                <ol><li>
+                        <p>Jalankan kueri berikut untuk merutekan ke grup<code class="code">test</code> kueri.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set query_group to test;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>Dari jendela RSQL lainnya, jalankan kueri berikut.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;</code></pre>
+                        <p>Berikut ini adalah contoh hasil.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_080.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>Query dialihkan ke kelompok query pengujian, yang antrian 1 sekarang.</p>
+                    </li><li>
+                        <p>Pilih semua dari tampilan status antrian.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;</code></pre>
+                        <p>Anda melihat hasil yang mirip dengan berikut ini.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_090.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li><li>
+                        <p>Sekarang, atur ulang grup kueri dan jalankan kueri panjang lagi:</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">reset query_group;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>Jalankan kueri terhadap tampilan untuk melihat hasilnya.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;
+select * from wlm_query_state_vw;</code></pre>
+                        <p>Berikut ini adalah contoh hasil.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_100.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_110.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>Hasilnya harus bahwa query sekarang berjalan dalam antrian 3 lagi.</p>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-create-db-user-and-group">Langkah 3: Membuat pengguna basis data dan grup</h2>
+
+            <p>Sebelum Anda dapat menjalankan kueri dalam antrian ini, Anda perlu membuat grup pengguna dalam database dan menambahkan pengguna ke grup. Kemudian Anda masuk dengan RSQL menggunakan kredensi pengguna baru dan menjalankan kueri. Anda perlu menjalankan kueri sebagai superuser, seperti pengguna admin, untuk membuat pengguna database.</p>
+             
+                <h3 id="how-to-wlm-create-db-user-and-group">Untuk membuat pengguna basis data baru dan grup pengguna</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                <ol><li>
+                        <p>Dalam database, membuat pengguna database baru bernama<code class="code">adminwlm</code> dengan menjalankan perintah berikut di jendela RSQL.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create user adminwlm createuser password '123Admin';</code></pre>
+                    </li><li>
+                        <p>Kemudian, jalankan perintah berikut untuk membuat grup pengguna baru dan tambahkan<code class="code">adminwlm</code> pengguna baru Anda ke dalamnya.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create group admin;
+alter group admin add user adminwlm;</code></pre>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-user-group-query">Langkah 4: Jalankan kueri menggunakan antrean grup pengguna</h2>
+
+            <p>Selanjutnya Anda menjalankan kueri dan merutekan ke antrian grup pengguna. Anda melakukan ini ketika Anda ingin merutekan kueri Anda ke antrian yang dikonfigurasi untuk menangani jenis kueri yang ingin Anda jalankan.</p>
+             
+                <h3 id="how-to-wlm-user-group-query">Untuk menjalankan kueri menggunakan antrean grup pengguna</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+                     
+                     
+                <ol><li>
+                        <p>Di jendela RSQL 2, jalankan query berikut untuk beralih ke<code class="code">adminwlm</code> account dan menjalankan query sebagai pengguna itu.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set session authorization 'adminwlm';
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>Di jendela RSQL 1, jalankan query berikut untuk melihat antrian query yang query diarahkan ke.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;
+select * from wlm_queue_state_vw;</code></pre>
+                        <p>Berikut ini adalah contoh hasil.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_120.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_130.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>Antrian yang dijalankan kueri ini adalah antrian 2, antrian<code class="code">admin</code> pengguna. Kapan pun Anda menjalankan kueri yang masuk sebagai pengguna ini, mereka berjalan dalam antrian 2 kecuali Anda menentukan grup kueri yang berbeda untuk digunakan. Antrian yang dipilih tergantung pada aturan penugasan antrian. Untuk informasi selengkapnya, lihat <a href="./cm-c-wlm-queue-assignment-rules.html">Aturan penetapan antrian WLM</a>. </p>
+                    </li><li>
+                        <p>Sekarang jalankan query berikut dari jendela RSQL 2.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set query_group to test;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>Di jendela RSQL 1, jalankan query berikut untuk melihat antrian query yang query diarahkan ke.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;
+select * from wlm_query_state_vw;</code></pre>
+                        <p>Berikut ini adalah contoh hasil.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_140.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_150.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li><li>
+                        <p>Setelah selesai, atur ulang grup kueri.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">reset query_group;</code></pre>
+                    </li></ol></div>
+             
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Awas" /> <strong>Javascript dinonaktifkan atau tidak tersedia di browser Anda.</strong></p><p>Untuk menggunakan Dokumentasi AWS, Javascript harus diaktifkan. Lihat halaman Bantuan browser Anda untuk petunjuk.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Konvensi Dokumen</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-wlm-modifying-wlm-configuration.html">Bagian 2: Memodifikasi konfigurasi antrian kueri WLM</div><div id="next" class="next-link" accesskey="n" href="./tutorial-wlm-query-slot-count.html">Bagian 4: Menggunakan wlm_query_slot_count untuk sementara mengesampingkan tingkat konkurensi dalam antrian</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Apakah halaman ini membantu Anda? - Ya</div><div class="content"><p>Terima kasih telah memberitahukan bahwa hasil pekerjaan kami sudah baik.</p><p>Jika Anda memiliki waktu luang, beri tahu kami aspek apa saja yang sudah bagus, agar kami dapat menerapkannya secara lebih luas.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Umpan Balik" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Apakah halaman ini membantu Anda? - Tidak</div><div class="content"><p>Terima kasih telah memberi tahu kami bahwa halaman ini perlu ditingkatkan. Maaf karena telah mengecewakan Anda.</p><p>Jika Anda memiliki waktu luang, beri tahu kami bagaimana dokumentasi ini dapat ditingkatkan.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Umpan Balik" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

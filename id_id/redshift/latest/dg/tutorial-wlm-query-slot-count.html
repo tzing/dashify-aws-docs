@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="id-ID"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Bagian 4: Menggunakan wlm_query_slot_count untuk sementara mengesampingkan tingkat konkurensi dalam antrian - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-wlm-query-slot-count" /><meta name="default_state" content="tutorial-wlm-query-slot-count" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="description" content="Terkadang, pengguna mungkin memerlukan lebih banyak sumber daya untuk kueri tertentu untuk sementara waktu. Jika demikian, mereka dapat menggunakan pengaturan konfigurasi wlm_query_slot_count untuk sementara mengesampingkan cara slot dialokasikan dalam antrian kueri." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Panduan Pengembang Database" /><meta name="abstract" content="Buat dan kelola gudang data dengan Amazon Redshift, skala petabyte tingkat perusahaan, layanan pergudangan data yang dikelola sepenuhnya." /><meta name="guide-locale" content="id_id" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Panduan Pengembang Database" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Panduan Pengembang Database" /><meta id="panorama-serviceConsolePage" value="Bagian 4: Menggunakan wlm_query_slot_count untuk sementara mengesampingkan tingkat konkurensi dalam antrian" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Bagian 4: Menggunakan wlm_query_slot_count untuk sementara mengesampingkan tingkat konkurensi dalam antrian - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-wlm-query-slot-count" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="keywords" content="Amazon Redshift,AWSPergeseran Merah,Redshift,Spektrum Pergeseran Merah,Klaster,gudang data,pengembang,data sampel,database,pengembang basis data,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Panduan Pengembang Database",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Menerapkan manajemen beban kerja",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Menerapkan manual WLM",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Tutorial: Mengkonfigurasi antrian manajemen beban kerja manual (WLM)",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "Bagian 4: Menggunakan wlm_query_slot_count untuk sementara mengesampingkan tingkat konkurensi dalam antrian",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-wlm-query-slot-count" target="_blank" rel="noopener noreferrer" title="Buka PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Dokumentasi</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Panduan Pengembang Database</a></div><div id="page-toc-src"><a href="#tutorial-wlm-override-slot-count">Langkah 1: Ganti tingkat konkurensi menggunakan wlm_query_slot_count</a><a href="#tutorial-wlm-run-queries-from-different-sessions">Langkah 2: Jalankan kueri dari sesi yang berbeda</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Terjemahan disediakan oleh mesin penerjemah. Jika konten terjemahan yang diberikan bertentangan dengan versi bahasa Inggris aslinya, utamakan versi bahasa Inggris.</p></awsui-alert><h1 class="topictitle" id="tutorial-wlm-query-slot-count">Bagian 4: Menggunakan wlm_query_slot_count untuk sementara mengesampingkan tingkat konkurensi dalam antrian</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Terkadang, pengguna mungkin memerlukan lebih banyak sumber daya untuk kueri tertentu untuk sementara waktu. Jika demikian, mereka dapat menggunakan pengaturan konfigurasi wlm_query_slot_count untuk sementara mengesampingkan cara slot dialokasikan dalam antrian kueri. <em>Slot</em> adalah unit memori dan CPU yang digunakan untuk memproses kueri. Anda mungkin menimpa jumlah slot ketika Anda memiliki pertanyaan sesekali yang mengambil banyak sumber daya di cluster, seperti ketika Anda melakukan operasi VACUUM dalam database. </p><p>Anda mungkin menemukan bahwa pengguna sering perlu mengatur wlm_query_slot_count untuk jenis kueri tertentu. Jika demikian, pertimbangkan untuk menyesuaikan konfigurasi WLM dan memberi pengguna antrian yang lebih sesuai dengan kebutuhan kueri mereka. Untuk informasi lebih lanjut tentang sementara mengesampingkan tingkat konkurensi dengan menggunakan jumlah slot, lihat<a href="./r_wlm_query_slot_count.html">wlm_query_slot_count</a>.</p>
+            <h2 id="tutorial-wlm-override-slot-count">Langkah 1: Ganti tingkat konkurensi menggunakan wlm_query_slot_count</h2>
+
+            <p>Untuk tujuan tutorial ini, kita menjalankan kueri SELECT yang berjalan lama. Kami menjalankannya sebagai<code class="code">adminwlm</code> pengguna menggunakan wlm_query_slot_count untuk meningkatkan jumlah slot yang tersedia untuk query.</p>
+             
+                <h3 id="how-to-wlm-override-slot-count">Untuk menimpa tingkat concurrency menggunakan wlm_query_slot_count</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+                     
+                <ol><li>
+                        <p>Tingkatkan batas kueri untuk memastikan bahwa Anda memiliki cukup waktu untuk menanyakan tampilan WLM_QUERY_STATE_VW dan melihat hasilnya. </p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set wlm_query_slot_count to 3; 
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>Sekarang, kueri WLM_QUERY_STATE_VW dengan pengguna admin untuk melihat bagaimana kueri berjalan.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;</code></pre>
+                        <p>Berikut ini adalah contoh hasil.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_170.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>Perhatikan bahwa jumlah slot untuk query adalah 3. Hitungan ini berarti bahwa query menggunakan ketiga slot untuk memproses query, mengalokasikan semua sumber daya dalam antrian untuk query itu.</p>
+                    </li><li>
+                        <p>Sekarang, jalankan kueri berikut.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from WLM_QUEUE_STATE_VW;</code></pre>
+                        <p>Berikut ini adalah contoh hasil.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_160.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>Pengaturan konfigurasi wlm_query_slot_count berlaku untuk sesi saat ini saja. Jika sesi tersebut berakhir, atau pengguna lain menjalankan kueri, konfigurasi WLM akan digunakan.</p>
+                    </li><li>
+                        <p>Setel ulang jumlah slot dan jalankan kembali tes.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">reset wlm_query_slot_count;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                        <p>Berikut ini adalah contoh hasil.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_180.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_190.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-run-queries-from-different-sessions">Langkah 2: Jalankan kueri dari sesi yang berbeda</h2>
+
+            <p>Selanjutnya, jalankan kueri dari sesi yang berbeda.</p>
+             
+                <h3 id="how-to-wlm-run-queries-from-different-sessions">Untuk menjalankan kueri dari sesi yang berbeda</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+
+                     
+                <ol><li>
+                        <p>Di jendela RSQL 1 dan 2, jalankan berikut ini untuk menggunakan grup kueri pengujian.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set query_group to test;</code></pre>
+                    </li><li>
+                        <p>Di jendela RSQL 1, jalankan kueri lama berjalan berikut.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>Sebagai permintaan lama berjalan masih akan di jendela RSQL 1, jalankan berikut ini. Perintah ini meningkatkan jumlah slot untuk menggunakan semua slot untuk antrian dan kemudian mulai menjalankan kueri yang sudah berjalan lama.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set wlm_query_slot_count to 2;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>Buka jendela RSQL ketiga dan kueri tampilan untuk melihat hasilnya.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;
+select * from wlm_query_state_vw;</code></pre>
+                        <p>Berikut ini adalah contoh hasil.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_200.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_210.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>Perhatikan bahwa query pertama menggunakan salah satu slot dialokasikan untuk antrian 1 untuk menjalankan query. Selain itu, perhatikan bahwa ada satu kueri yang menunggu dalam antrian (di mana<code class="code">queued</code> ada<code class="code">1</code> dan<code class="code">state</code> berada<code class="code">QueuedWaiting</code>). Setelah kueri pertama selesai, yang kedua mulai berjalan. Eksekusi ini terjadi karena kedua kueri dialihkan ke grup<code class="code">test</code> kueri, dan kueri kedua harus menunggu slot yang cukup untuk mulai diproses.</p>
+                    </li></ol></div>
+             
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Awas" /> <strong>Javascript dinonaktifkan atau tidak tersedia di browser Anda.</strong></p><p>Untuk menggunakan Dokumentasi AWS, Javascript harus diaktifkan. Lihat halaman Bantuan browser Anda untuk petunjuk.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Konvensi Dokumen</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-wlm-routing-queries-to-queues.html">Bagian 3: Merutekan kueri ke antrian berdasarkan grup pengguna dan grup kueri</div><div id="next" class="next-link" accesskey="n" href="./tutorial-wlm-cleaning-up-resources.html">Bagian 5: Membersihkan sumber daya Anda</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Apakah halaman ini membantu Anda? - Ya</div><div class="content"><p>Terima kasih telah memberitahukan bahwa hasil pekerjaan kami sudah baik.</p><p>Jika Anda memiliki waktu luang, beri tahu kami aspek apa saja yang sudah bagus, agar kami dapat menerapkannya secara lebih luas.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Umpan Balik" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-query-slot-count.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Apakah halaman ini membantu Anda? - Tidak</div><div class="content"><p>Terima kasih telah memberi tahu kami bahwa halaman ini perlu ditingkatkan. Maaf karena telah mengecewakan Anda.</p><p>Jika Anda memiliki waktu luang, beri tahu kami bagaimana dokumentasi ini dapat ditingkatkan.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Umpan Balik" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-query-slot-count.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

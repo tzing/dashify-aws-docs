@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="id-ID"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Membuat skalar Lambda UDF - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="udf-creating-a-lambda-sql-udf" /><meta name="default_state" content="udf-creating-a-lambda-sql-udf" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="description" content="Amazon Redshift dapat menggunakan fungsi khusus yang ditentukan dalamAWS Lambdasebagai bagian dari query SQL. Anda dapat menulis skalar Lambda UDF dalam bahasa pemrograman apa pun yang didukung oleh Lambda, seperti Java, Go, PowerShell, C #, C #, Python, dan Ruby. Node.js Untuk, Anda dapat melakukannya, gunakan runtime khusus." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Panduan Pengembang Database" /><meta name="abstract" content="Buat dan kelola gudang data dengan Amazon Redshift, skala petabyte tingkat perusahaan, layanan pergudangan data yang dikelola sepenuhnya." /><meta name="guide-locale" content="id_id" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Panduan Pengembang Database" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Panduan Pengembang Database" /><meta id="panorama-serviceConsolePage" value="Membuat skalar Lambda UDF" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Membuat skalar Lambda UDF - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#udf-creating-a-lambda-sql-udf" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="keywords" content="Amazon Redshift,AWSPergeseran Merah,Redshift,Spektrum Pergeseran Merah,Klaster,gudang data,pengembang,data sampel,database,pengembang basis data,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Panduan Pengembang Database",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Untuk melakukannya, jalankan fungsi yang ditentukan pengguna",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg/user-defined-functions.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Membuat skalar Lambda UDF",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg/user-defined-functions.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#udf-creating-a-lambda-sql-udf" target="_blank" rel="noopener noreferrer" title="Buka PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Dokumentasi</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Panduan Pengembang Database</a></div><div id="page-toc-src"><a href="#udf-lambda-register">Mendaftarkan Lambda UDF</a><a href="#udf-lambda-security">Mengelola keamanan dan hak istimewa Lambda UDF</a><a href="#udf-lambda-authorization">Mengkonfigurasi parameter otorisasi untuk Lambda UDF</a><a href="#udf-lambda-json">Menggunakan antarmuka JSON antara Amazon Redshift dan Lambda</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Terjemahan disediakan oleh mesin penerjemah. Jika konten terjemahan yang diberikan bertentangan dengan versi bahasa Inggris aslinya, utamakan versi bahasa Inggris.</p></awsui-alert><h1 class="topictitle" id="udf-creating-a-lambda-sql-udf">Membuat skalar Lambda UDF</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Amazon Redshift dapat menggunakan fungsi khusus yang ditentukan dalamAWS Lambdasebagai bagian dari query SQL. Anda dapat menulis skalar Lambda UDF dalam bahasa pemrograman apa pun yang didukung oleh Lambda, seperti Java, Go, PowerShell, C #, C #, Python, dan Ruby. Node.js Untuk, Anda dapat melakukannya, gunakan runtime khusus.</p><p>Lambda UDF didefinisikan dan dikelola di Lambda, dan Anda dapat mengontrol hak akses untuk menjalankan UDF ini di Amazon Redshift. Anda dapat memanggil beberapa fungsi Lambda dalam kueri yang sama atau menjalankan fungsi yang sama beberapa kali.</p><p>Gunakan Lambda UDF dalam klausa pernyataan SQL di mana fungsi skalar didukung. Anda juga dapat menggunakan Lambda UDF dalam pernyataan SQL seperti SELECT, UPDATE, INSERT, atau DELETE. </p><div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>catatan</h6></div><div class="awsdocs-note-text"><p>Menggunakan Lambda UDF dapat dikenakan biaya tambahan dari layanan Lambda. Apakah itu tergantung pada faktor-faktor seperti jumlah permintaan Lambda (pemanggilan UDF) dan total durasi eksekusi program Lambda. Namun, tidak ada biaya tambahan untuk menggunakan Lambda UDF di Amazon Redshift. Untuk informasi tentangAWSHarga Lambda, lihat<a href="https://aws.amazon.com/lambda/pricing" rel="noopener noreferrer" target="_blank"><span>AWS LambdaHarga</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p><p>Jumlah permintaan Lambda bervariasi tergantung pada klausa pernyataan SQL tertentu di mana Lambda UDF digunakan. Misalnya, misalkan fungsi digunakan dalam klausa WHERE seperti berikut ini.<code class="code"></code></p><p><code class="code">SELECT a, b FROM t1 WHERE lambda_multiply(a, b) = 64; SELECT a, b FROM t1 WHERE
+               a*b = lambda_multiply(2, 32) </code></p><p>Dalam hal ini, Amazon Redshift memanggil pernyataan SELECT pertama untuk masing-masing dan memanggil pernyataan SELECT kedua hanya sekali.</p><p>Namun, menggunakan UDF di bagian proyeksi kueri mungkin hanya memanggil fungsi Lambda sekali untuk setiap baris yang memenuhi syarat atau gabungan dalam kumpulan hasil. </p></div></div>
+         <h2 id="udf-lambda-register">Mendaftarkan Lambda UDF</h2>
+      <p> The<a href="./r_CREATE_EXTERNAL_FUNCTION.html">BUAT FUNGSI EKSTERNAL</a>perintah menciptakan sebuah peran sebagai berikut:</p>
+      <div class="itemizedlist">
+          
+          
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>(Opsional) Daftar argumen dengan tipe data. </p>
+         </li><li class="listitem">
+            <p>Satu tipe data pengembalian.</p>
+         </li><li class="listitem">
+            <p>Salah satu nama fungsi dari fungsi eksternal yang disebut oleh Amazon Redshift. </p>
+         </li><li class="listitem">
+            <p>Salah satu peran IAM yang diizinkan oleh cluster Amazon Redshift untuk diasumsikan dan dipanggil ke Lambda.</p>
+         </li><li class="listitem">
+            <p>Satu nama fungsi Lambda yang dipanggil Lambda UDF.</p>
+         </li></ul></div>
+         <p>Untuk informasi tentang MEMBUAT FUNGSI EKSTERNAL, lihat<a href="./r_CREATE_EXTERNAL_FUNCTION.html">BUAT FUNGSI EKSTERNAL</a>.</p>
+      <p>Tipe data input dan pengembalian untuk fungsi ini dapat berupa tipe data Amazon Redshift standar apa pun.</p>
+      <p>Amazon Redshift memastikan bahwa fungsi eksternal dapat mengirim dan menerima argumen dan hasil batch. </p>
+       
+         <h2 id="udf-lambda-security">Mengelola keamanan dan hak istimewa Lambda UDF</h2>
+         <p>Untuk membuat UDF Lambda, pastikan Anda memiliki izin untuk penggunaan pada BAHASA EXFUNC. Anda harus secara eksplisit memberikan PENGGUNAAN PADA BAHASA EXFUNC atau mencabut PENGGUNAAN PADA BAHASA EXFUNC kepada pengguna, grup, atau publik tertentu.</p>
+            <p>Contoh berikut memberikan penggunaan pada EXFUNC ke PUBLIC.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">grant usage on language exfunc to PUBLIC; </code></pre>
+         <p>Contoh berikut mencabut penggunaan pada exfunc dari PUBLIC dan kemudian memberikan penggunaan ke grup pengguna lambda_udf_devs.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">revoke usage on language exfunc from PUBLIC;
+grant usage on language exfunc to group lambda_udf_devs;</code></pre>
+         <p>Untuk menjalankan UDF Lambda, pastikan Anda memiliki izin untuk setiap fungsi yang dipanggil. Secara default, izin untuk menjalankan UDF Lambda baru diberikan kepada PUBLIC. Untuk membatasi penggunaan, cabut izin ini dari PUBLIC untuk fungsi tersebut. Kemudian, berikan hak istimewa kepada pengguna atau grup tertentu.</p>
+           <p>Contoh berikut mencabut eksekusi pada fungsi exfunc_sum dari PUBLIC. Kemudian, itu memberikan penggunaan ke grup pengguna lambda_udf_devs.</p>
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">revoke execute on function exfunc_sum(int, int) from PUBLIC;
+grant execute on function exfunc_sum(int, int) to group lambda_udf_devs;</code></pre>
+         <p>Superuser memiliki semua hak istimewa secara default.</p>
+               <p>Untuk informasi lebih lanjut tentang pemberian dan pencabutan hak istimewa, lihat<a href="./r_GRANT.html">HIBAH</a>dan<a href="./r_REVOKE.html">MENCABUT</a>.</p>
+       
+         <h2 id="udf-lambda-authorization">Mengkonfigurasi parameter otorisasi untuk Lambda UDF</h2>
+         
+         <p>Perintah CREATE EXTERNAL FUNCTION memerlukan otorisasi untuk memanggil fungsi Lambda diAWS Lambda. Untuk memulai otorisasi, tentukanAWS Identity and Access Management(IAM) peran ketika Anda menjalankan perintah CREATE EXTERNAL FUNCTION. Untuk informasi lebih lanjut tentang peran IAM, lihat <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html">Peran IAM</a> dalam <em>Panduan Pengguna IAM</em>.</p>
+            <p>Jika ada peran IAM yang sudah ada dengan izin untuk memanggil fungsi Lambda yang dilampirkan ke klaster Anda, maka Anda dapat mengganti peran Anda Amazon Resource Name (ARN) di parameter IAM_ROLE untuk perintah tersebut. Bagian berikut menjelaskan langkah-langkah untuk menggunakan peran IAM dalam perintah CREATE EXTERNAL FUNCTION.</p>
+         
+          
+            <h3 id="udf-lambda-create-iam">Untuk Mini.</h3>
+            <p>Sebuah peran IAM membutuhkan izin untuk menciptakan sebuah peran Lambda. Saat menciptakan sebuah peran IAM, berikan izin dengan salah satu cara berikut:</p>
+                  <div class="itemizedlist">
+                      
+                      
+                  <ul class="itemizedlist"><li class="listitem"><p>Lampirkan yang berikut ini.<code class="code">AWSLambdaRole</code>kebijakan pada<b>Lampirkan kebijakan izin</b>halaman saat membuat peran IAM. The<code class="code">AWSLambdaRole</code>kebijakan memberikan izin untuk menciptakan sebuah peran Lambda yang merupakan persyaratan minimal. Untuk informasi lebih lanjut dan kebijakan lainnya, lihat<a href="https://docs.aws.amazon.com/lambda/latest/dg/access-control-identity-based.html">Kebijakan IAM berbasis identitas untukAWS Lambda</a>di<em>AWS LambdaPanduan Pengembang</em>.</p></li><li class="listitem"><p>Buat kebijakan kustom Anda sendiri untuk dilampirkan ke peran IAM Anda dengan<code class="code">lambda:InvokeFunction</code>izin dari semua sumber daya atau fungsi Lambda tertentu dengan ARN dari fungsi itu. Untuk informasi selengkapnya tentang cara menciptakan sebuah kebijakan, lihat<a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_create.html">Membuat kebijakan IAM</a>di<em>Panduan Pengguna IAM</em>.</p>
+                       <p>Kebijakan contoh berikut memungkinkan pemanggilan Lambda pada fungsi Lambda tertentu.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+    "Version": "2012-10-17",
+    "Statement": [
+        <span>{</span>
+            "Sid": "Invoke",
+            "Effect": "Allow",
+            "Action": [
+                "lambda:InvokeFunction"
+            ],
+            "Resource": "arn:aws:lambda:us-west-2:123456789012:function:my-function"
+        }
+    ]
+}</code></pre>
+                        <p>Untuk informasi lebih lanjut tentang sumber daya untuk fungsi Lambda, lihat<a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-api-permissions-ref.html">Sumber daya dan kondisi untuk tindakan Lambda</a>di<em>Referensi API IAM</em>.</p>
+                        <p>Setelah membuat kebijakan kustom dengan izin yang diperlukan, Anda dapat melampirkan kebijakan Anda ke peran IAM di<b>Lampirkan kebijakan izin</b>halaman saat membuat peran IAM.</p></li></ul></div>
+            <p>Untuk melakukannya, lihat Langkah-langkah untuk melakukannya, lihat<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/authorizing-redshift-service.html">Mengotorisasi Amazon Redshift untuk mengakses lainnyaAWSlayanan atas nama Anda</a>di<em>Panduan Manajemen Amazon Redshift</em>.</p>
+              <p>Jika Anda tidak ingin menciptakan sebuah peran IAM baru, Anda bisa menciptakan sebuah peran IAM yang sudah ada.</p>
+                
+        
+          
+            <h3 id="udf-lambda-associate-iam">Mengaitkan sebuah peran IAM dengan cluster</h3>
+              <p>Lampirkan peran IAM ke cluster Anda. Anda dapat menambahkan peran ke klaster atau melihat peran yang terkait dengan klaster menggunakan Amazon Redshift Management Console, CLI, atau API. Untuk informasi selengkapnya, lihat<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/copy-unload-iam-role.html">Mengaitkan Peran IAM Dengan Cluster</a>di<em>Panduan Manajemen Amazon Redshift</em>.</p>
+          
+            
+             
+               <h3 id="udf-lambda-include-iam">Termasuk peran IAM dalam perintah</h3>
+               <p>Sertakan peran IAM ARN dalam perintah CREATE EXTERNAL FUNCTION. Saat Anda menciptakan sebuah peran IAM, IAM menampilkan sebuah peran IAM. Untuk menentukan peran IAM, berikan peran ARN dengan<code class="code">IAM_ROLE</code>parameter. berikut ini.<code class="code">IAM_ROLE</code>parameter.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">IAM_ROLE 'arn:aws:iam::aws-account-id:role/role-name'</code></pre>
+               <p>Untuk menjalankan fungsi Lambda yang berada di akun lain dalam Wilayah yang sama, lihat<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/authorizing-redshift-service.html#authorizing-redshift-service-chaining-roles.html">Merantai peran IAM di Amazon Redshift</a>.</p>
+             
+       
+         <h2 id="udf-lambda-json">Menggunakan antarmuka JSON antara Amazon Redshift danAWS Lambda</h2>
+         
+         <p>Amazon Redshift menggunakan antarmuka umum untuk semua fungsi Lambda yang dikomunikasikan oleh Amazon Redshift.</p>
+         <p>Tabel berikut menunjukkan daftar kolom input yang fungsi Lambda yang ditunjuk yang dapat Anda harapkan untuk payload JSON.</p>
+         
+         
+         <div class="table-container"><div class="table-contents"><table id="w319aac17c21c17b7"><thead>
+                  <tr>
+                     <th>Nama kolom</th>
+                     <th>
+                        <p>Deskripsi</p>
+                     </th>
+                     <th>Rentang nilai</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">request_id</td>
+                     <td tabindex="-1">Sebuah peran unik secara universal (UUID) yang secara unik mengidentifikasi setiap permintaan pemanggilan.</td>
+                     <td tabindex="-1">
+                        <p>UUID yang valid.</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>klaster</p>
+                     </td>
+                     <td tabindex="-1">Nama Sumber Daya Amazon (ARN) lengkap dari cluster.</td>
+                     <td tabindex="-1">
+                        <p>Kluster ARN yang valid.</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>pengguna</p>
+                     </td>
+                     <td tabindex="-1">Nama pengguna yang menciptakan sebuah panggilan.</td>
+                     <td tabindex="-1">Nama pengguna yang valid.</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>basis data</p>
+                     </td>
+                     <td tabindex="-1">Nama database tempat kueri sedang berjalan.</td>
+                     <td tabindex="-1">Nama database yang valid.</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>external_function</p>
+                     </td>
+                     <td tabindex="-1">Nama yang sepenuhnya memenuhi syarat dari fungsi eksternal yang menciptakan panggilan.</td>
+                     <td tabindex="-1">Nama fungsi yang sepenuhnya memenuhi syarat yang valid.</td>
+                  </tr>
+                 
+                  
+                  <tr>
+                     <td tabindex="-1">
+                        <p>query_id</p>
+                     </td>
+                     <td tabindex="-1">ID kueri dari kueri yang membuat panggilan.</td>
+                     <td tabindex="-1">ID kueri yang valid.</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>num_records</p>
+                     </td>
+                     <td tabindex="-1">Jumlah argumen dalam payload.</td>
+                     <td tabindex="-1">Nilai 1 - 2^64.</td>
+                  </tr>
+                 
+                  <tr>
+                     <td tabindex="-1">
+                        <p>argumen</p>
+                     </td>
+                     <td tabindex="-1">Payload data dalam format yang ditentukan.</td>
+                     <td tabindex="-1">Data dalam format array harus berupa array JSON. Setiap elemen adalah record yang merupakan array jika jumlah argumen lebih besar dari 1. Dengan menggunakan array, Amazon Redshift mempertahankan urutan catatan dalam payload.</td>
+                  </tr>
+               </table></div></div>
+         <p>Urutan array JSON menentukan urutan pemrosesan batch. Fungsi Lambda harus memproses argumen secara iteratif dan menghasilkan jumlah catatan yang tepat. Berikut ini adalah sebuah contoh sebuah muatan. </p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+  "request_id" : "23FF1F97-F28A-44AA-AB67-266ED976BF40",
+  "cluster" : "arn:aws:redshift:xxxx",
+  "user" : "adminuser",
+  "database" : "db1",
+  "external_function": "public.foo",
+  "query_id" : 5678234,
+  "num_records" : 4,
+  "arguments" : [
+     [ 1, 2 ],
+     [ 3, null],
+     null,
+     [ 4, 6]
+   ]
+ }</code></pre>
+         <p>Output kembali dari fungsi Lambda berisi bidang-bidang berikut.</p>
+         
+         <div class="table-container"><div class="table-contents"><table id="w319aac17c21c17c15"><thead>
+                  <tr>
+                     <th>Nama kolom</th>
+                     <th>
+                        <p>Deskripsi</p>
+                     </th>
+                     <th>Rentang nilai</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">keberhasilan</td>
+                     <td tabindex="-1">Indikasi keberhasilan atau kegagalan fungsi.</td>
+                     <td tabindex="-1">
+                        <p>Sebuah nilai dari<code class="code">"true"</code>atau<code class="code">"false"</code>.</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>error_msg</p>
+                     </td>
+
+                     <td tabindex="-1">Pesan kesalahan jika nilai keberhasilan adalah<code class="code">"false"</code>(jika fungsi gagal); jika tidak, bidang ini diabaikan.</td>
+
+                     <td tabindex="-1">
+                        <p>Pesan yang valid.</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>num_records</p>
+                     </td>
+                     <td tabindex="-1">Jumlah catatan dalam muatan.</td>
+                     <td tabindex="-1">Nilai 1 - 2^64.</td>
+                  </tr>
+                 
+                  <tr>
+                     <td tabindex="-1">
+                        <p>hasil</p>
+                     </td>
+                     <td tabindex="-1">Hasil panggilan dalam format yang ditentukan.</td>
+                     <td tabindex="-1">T/A</td>
+                  </tr>
+               </table></div></div>
+         <p>Berikut ini adalah sebuah contoh dari sebuah peran fungsi Lambda.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+  "success": true,   // true indicates the call succeeded
+  "error_msg" : "my function isn't working",  // shall only exist when success != true
+  "num_records": 4,      // number of records in this payload
+  "results" : [
+     1,
+     4,
+     null,
+     7
+   ]
+}</code></pre>
+         <p>Saat Anda memanggil fungsi Lambda dari kueri SQL, Amazon Redshift memastikan keamanan koneksi dengan pertimbangan berikut:</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem"><p>IZIN GRANT dan REVOKE. Untuk informasi lebih lanjut tentang keamanan dan hak istimewa UDF, lihat<a href="./udf-security-and-privileges.html">Keamanan dan hak istimewa UDF</a>.</p></li><li class="listitem"><p>Amazon Redshift hanya mengirimkan kumpulan data minimum ke fungsi Lambda yang ditentukan.</p></li><li class="listitem"><p>Amazon Redshift hanya memanggil fungsi Lambda yang ditunjuk dengan peran IAM yang ditunjuk.</p></li></ul></div>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Awas" /> <strong>Javascript dinonaktifkan atau tidak tersedia di browser Anda.</strong></p><p>Untuk menggunakan Dokumentasi AWS, Javascript harus diaktifkan. Lihat halaman Bantuan browser Anda untuk petunjuk.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Konvensi Dokumen</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./udf-logging-messages.html">Kesalahan dan peringatan pencatatan</div><div id="next" class="next-link" accesskey="n" href="./udf-example-uses.html">Contoh penggunaan UDF</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Apakah halaman ini membantu Anda? - Ya</div><div class="content"><p>Terima kasih telah memberitahukan bahwa hasil pekerjaan kami sudah baik.</p><p>Jika Anda memiliki waktu luang, beri tahu kami aspek apa saja yang sudah bagus, agar kami dapat menerapkannya secara lebih luas.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Umpan Balik" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Apakah halaman ini membantu Anda? - Tidak</div><div class="content"><p>Terima kasih telah memberi tahu kami bahwa halaman ini perlu ditingkatkan. Maaf karena telah mengecewakan Anda.</p><p>Jika Anda memiliki waktu luang, beri tahu kami bagaimana dokumentasi ini dapat ditingkatkan.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Umpan Balik" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="id-ID"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Menerapkan manual WLM - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="cm-c-defining-query-queues" /><meta name="default_state" content="cm-c-defining-query-queues" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="description" content="Tentukan antrian kueri dengan memodifikasi konfigurasi WLM manual di Amazon Redshift agar klaster menentukan hingga delapan antrian kueri selain antrian superuser." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Panduan Pengembang Database" /><meta name="abstract" content="Buat dan kelola gudang data dengan Amazon Redshift, skala petabyte tingkat perusahaan, layanan pergudangan data yang dikelola sepenuhnya." /><meta name="guide-locale" content="id_id" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Panduan Pengembang Database" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Panduan Pengembang Database" /><meta id="panorama-serviceConsolePage" value="Menerapkan manual WLM" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Menerapkan manual WLM - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#cm-c-defining-query-queues" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="keywords" content="Amazon Redshift,AWSPergeseran Merah,Redshift,Spektrum Pergeseran Merah,Klaster,gudang data,pengembang,data sampel,database,pengembang basis data,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Panduan Pengembang Database",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Menerapkan manajemen beban kerja",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Menerapkan manual WLM",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#cm-c-defining-query-queues" target="_blank" rel="noopener noreferrer" title="Buka PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Dokumentasi</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Panduan Pengembang Database</a></div><div id="page-toc-src"><a href="#concurrency-scaling-mode">Mode penskalaan konkurensi</a><a href="#cm-c-defining-query-queues-concurrency-level">Tingkat konkurensi</a><a href="#cm-c-defining-query-queues-user-groups">Grup pengguna</a><a href="#cm-c-defining-query-queues-query-groups">Grup kueri</a><a href="#wlm-wildcards">Wildcard</a><a href="#wlm-memory-percent">Persen memori WLM untuk digunakan</a><a href="#wlm-timeout">Batas waktu WLM</a><a href="#wlm-query-monitoring-rules">Aturan pemantauan kueri</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Terjemahan disediakan oleh mesin penerjemah. Jika konten terjemahan yang diberikan bertentangan dengan versi bahasa Inggris aslinya, utamakan versi bahasa Inggris.</p></awsui-alert><h1 class="topictitle" id="cm-c-defining-query-queues">Menerapkan manual WLM</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Dengan WLM manual, Anda dapat mengelola kinerja sistem dan pengalaman pengguna Anda dengan memodifikasi konfigurasi WLM untuk membuat antrian terpisah untuk kueri yang berjalan lama dan kueri jangka pendek.</p><p>Saat pengguna menjalankan kueri di Amazon Redshift, kueri dirutekan ke antrian kueri. Setiap antrian kueri berisi sejumlah slot kueri. Setiap antrian dialokasikan sebagian dari memori cluster yang tersedia. Memori antrian dibagi di antara slot kueri antrian. Anda dapat mengaktifkan Amazon Redshift untuk mengelola konkurensi kueri dengan WLM otomatis. Untuk informasi selengkapnya, lihat <a href="./automatic-wlm.html">Menerapkan WLM otomatis</a>.</p><p>Atau Anda dapat mengonfigurasi properti WLM untuk setiap antrian kueri. Anda melakukannya untuk menentukan cara memori dialokasikan di antara slot dan bagaimana kueri dapat diarahkan ke antrian tertentu saat runtime. Anda juga dapat mengonfigurasi properti WLM untuk membatalkan kueri yang berjalan lama.</p><p>Secara default, Amazon Redshift mengonfigurasi antrian kueri berikut:</p><div class="itemizedlist">
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p> <b>Satu antrian superuser</b> </p>
+            <p>Antrian superuser hanya disediakan untuk pengguna super dan tidak dapat dikonfigurasi. Gunakan antrian ini hanya ketika Anda perlu menjalankan kueri yang memengaruhi sistem atau untuk tujuan pemecahan masalah. Misalnya, gunakan antrean ini saat Anda perlu membatalkan kueri pengguna yang sudah berjalan lama atau menambahkan pengguna ke database. Jangan menggunakannya untuk melakukan kueri rutin. Antrian tidak muncul di konsol, tetapi muncul di tabel sistem dalam database sebagai antrian kelima. Untuk menjalankan kueri dalam antrean superuser, pengguna harus login sebagai superuser, dan harus menjalankan kueri menggunakan grup kueri yang telah <code class="code">superuser</code> ditentukan sebelumnya.</p>
+         </li><li class="listitem">
+            <p> <b>Satu antrian pengguna default</b> </p>
+            <p>Antrian default awalnya dikonfigurasi untuk menjalankan lima kueri secara bersamaan. Bila Anda menggunakan WLM manual, Anda dapat mengubah properti konkurensi, batas waktu, dan alokasi memori untuk antrian default, tetapi Anda tidak dapat menentukan grup pengguna atau grup kueri. Antrian default harus antrian terakhir dalam konfigurasi WLM. Setiap kueri yang tidak dirutekan ke antrian lain berjalan dalam antrian default. </p>
+         </li></ul></div><p>Antrian kueri didefinisikan dalam konfigurasi WLM. Konfigurasi WLM adalah parameter yang dapat diedit (<code class="code">wlm_json_configuration</code>) dalam grup parameter, yang dapat dikaitkan dengan satu atau lebih cluster. Untuk informasi selengkapnya, lihat <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/workload-mgmt-config.html">Mengonfigurasi Manajemen Beban Kerja di Panduan Manajemen</a> <em>Amazon Redshift</em>. </p><p>Anda dapat menambahkan antrian kueri tambahan ke konfigurasi WLM default, hingga total delapan antrian pengguna. Anda dapat mengonfigurasi berikut ini untuk setiap antrian kueri: </p><div class="itemizedlist">
+          
+          
+          
+          
+          
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>Mode penskalaan konkurensi </p>
+         </li><li class="listitem">
+            <p>Tingkat konkurensi </p>
+         </li><li class="listitem">
+            <p>Grup pengguna </p>
+         </li><li class="listitem">
+            <p>Grup kueri </p>
+         </li><li class="listitem">
+            <p>Persen memori WLM untuk digunakan</p>
+         </li><li class="listitem">
+            <p>Batas waktu WLM</p>
+         </li><li class="listitem">
+            <p>Antrian kueri WLM melompat</p>
+         </li><li class="listitem">
+            <p>Aturan pemantauan kueri</p>
+         </li></ul></div>
+         <h2 id="concurrency-scaling-mode">Mode penskalaan konkurensi</h2>
+         <p>Saat penskalaan konkurensi diaktifkan, Amazon Redshift secara otomatis menambahkan kapasitas klaster tambahan saat Anda membutuhkannya untuk memproses peningkatan kueri baca dan tulis bersamaan. Pengguna melihat data terbaru, apakah kueri berjalan di cluster utama atau pada cluster penskalaan konkurensi. </p>
+         <p>Anda mengelola kueri mana yang dikirim ke cluster penskalaan konkurensi dengan mengonfigurasi antrian WLM. Saat Anda mengaktifkan penskalaan konkurensi untuk antrian, kueri yang memenuhi syarat akan dikirim ke klaster penskalaan konkurensi alih-alih menunggu dalam antrian. Untuk informasi selengkapnya, lihat <a href="./concurrency-scaling.html">Bekerja dengan penskalaan konkurensi</a>.</p>
+       
+         <h2 id="cm-c-defining-query-queues-concurrency-level">Tingkat konkurensi</h2>
+         <p>Kueri dalam antrian berjalan secara bersamaan hingga mencapai jumlah slot kueri WLM, atau tingkat <em>konkurensi</em>, yang ditentukan untuk antrian tersebut. Pertanyaan selanjutnya kemudian menunggu dalam antrian.</p>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>catatan</h6></div><div class="awsdocs-note-text"><p>Tingkat konkurensi WLM berbeda dari jumlah koneksi pengguna bersamaan yang dapat dibuat ke cluster. Untuk informasi selengkapnya, lihat <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/connecting-to-cluster.html">Menghubungkan ke Cluster</a> di Panduan <em>Manajemen Pergeseran Merah Amazon</em>.</p></div></div>
+         <p><b>Dalam konfigurasi WLM otomatis, yang direkomendasikan, level konkurensi diatur ke Otomatis.</b> Amazon Redshift secara dinamis mengalokasikan memori ke kueri, yang kemudian menentukan berapa banyak yang akan dijalankan secara bersamaan. Ini didasarkan pada sumber daya yang diperlukan untuk kueri berjalan dan antrian. Auto WLM tidak dapat dikonfigurasi. Untuk informasi selengkapnya, lihat <a href="./automatic-wlm.html">Menerapkan WLM otomatis</a>. </p>
+        
+         <p>Dalam konfigurasi WLM manual, Amazon Redshift secara statis mengalokasikan jumlah memori tetap untuk setiap antrian. Memori antrian dibagi secara merata di antara slot kueri. Sebagai ilustrasi, jika antrian dialokasikan 20% dari memori cluster dan memiliki 10 slot, setiap kueri dialokasikan 2% dari memori cluster. Alokasi memori tetap tetap terlepas dari jumlah kueri yang berjalan secara bersamaan. Karena alokasi memori tetap ini, kueri yang berjalan sepenuhnya dalam memori ketika jumlah slot adalah 5 mungkin menulis hasil antara ke disk jika jumlah slot ditingkatkan menjadi 20. Dalam hal ini, setiap bagian kueri dari memori antrian dikurangi dari 1/5 menjadi 1/20. Disk I/O tambahan dapat menurunkan kinerja. </p>
+         <p>Jumlah slot maksimum di semua antrian yang ditentukan pengguna adalah 50. Ini membatasi total slot untuk semua antrian, termasuk antrian default. Satu-satunya antrian yang tidak tunduk pada batas adalah antrian superuser yang dicadangkan.</p>
+      
+  
+         
+   
+         <p>Secara default, antrian WLM manual memiliki tingkat konkurensi 5. Beban kerja Anda mungkin mendapat manfaat dari tingkat konkurensi yang lebih tinggi dalam kasus-kasus tertentu, seperti berikut ini:</p>
+         <div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>Jika banyak kueri kecil dipaksa untuk menunggu kueri yang berjalan lama, buat antrian terpisah dengan jumlah slot yang lebih tinggi dan tetapkan kueri yang lebih kecil ke antrian itu. Antrian dengan tingkat konkurensi yang lebih tinggi memiliki lebih sedikit memori yang dialokasikan untuk setiap slot kueri, tetapi kueri yang lebih kecil membutuhkan lebih sedikit memori.</p>
+               <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>catatan</h6></div><div class="awsdocs-note-text"><p>Jika Anda mengaktifkan akselerasi kueri pendek (SQA), WLM secara otomatis memprioritaskan kueri pendek daripada kueri yang berjalan lebih lama, sehingga Anda tidak memerlukan antrian terpisah untuk kueri singkat untuk sebagian besar alur kerja. Untuk informasi selengkapnya, lihat <a href="./wlm-short-query-acceleration.html">Bekerja dengan akselerasi kueri pendek</a>. </p></div></div>
+            </li><li class="listitem">
+               <p>Jika Anda memiliki beberapa kueri yang masing-masing mengakses data pada satu irisan, siapkan antrian WLM terpisah untuk menjalankan kueri tersebut secara bersamaan. Amazon Redshift menetapkan kueri bersamaan ke irisan terpisah, yang memungkinkan beberapa kueri berjalan secara paralel pada beberapa irisan. Misalnya, jika kueri adalah agregat sederhana dengan predikat pada kunci distribusi, data untuk kueri terletak pada satu irisan. </p>
+            </li></ul></div>
+    
+          
+            <h3 id="cm-c-defining-query-queues-concurrency-level-example">Contoh WLM manual</h3>
+            <p> Contoh ini adalah skenario WLM manual sederhana untuk menunjukkan bagaimana slot dan memori dapat dialokasikan. Anda menerapkan WLM manual dengan tiga antrian, yaitu sebagai berikut: </p>
+            <div class="itemizedlist">
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem"><p><em>antrian konsumsi data</em> — Ini disiapkan untuk menelan data. Ini dialokasikan 20% dari memori cluster dan memiliki 5 slot. Selanjutnya, 5 kueri dapat berjalan secara bersamaan dalam antrian dan masing-masing dialokasikan 4% dari memori.</p></li><li class="listitem"><p><em>antrian data-scientist</em> — Ini dirancang untuk kueri intensif memori. Ini dialokasikan 40% dari memori cluster dan memiliki 5 slot. Selanjutnya, 5 kueri dapat berjalan secara bersamaan dan masing-masing dialokasikan 8% dari memori.</p></li><li class="listitem"><p><em>antrian default</em> — Ini dirancang untuk sebagian besar pengguna dalam organisasi. Ini termasuk grup penjualan dan akuntansi yang biasanya memiliki kueri berjalan pendek atau menengah yang tidak rumit. Ini dialokasikan 40% dari memori cluster dan memiliki 40 slot. 40 kueri dapat berjalan secara bersamaan dalam antrian ini, dengan setiap kueri dialokasikan 1% dari memori. Ini adalah jumlah maksimum slot yang dapat dialokasikan untuk antrian ini karena di antara semua antrian batasnya adalah 50.</p></li></ul></div>
+  
+          
+         
+         <p>Jika Anda menjalankan WLM otomatis dan beban kerja Anda memerlukan lebih dari 15 kueri untuk dijalankan secara paralel, sebaiknya aktifkan penskalaan konkurensi. Ini karena meningkatkan jumlah slot kueri di atas 15 dapat menciptakan pertengkaran untuk sumber daya sistem dan membatasi keseluruhan throughput dari satu cluster. Dengan penskalaan konkurensi, Anda dapat menjalankan ratusan kueri secara paralel, hingga sejumlah cluster penskalaan konkurensi yang dikonfigurasi. Jumlah cluster penskalaan konkurensi dikendalikan oleh. <a href="./r_max_concurrency_scaling_clusters.html">max_concurrency_scaling_clusters</a> Untuk informasi selengkapnya tentang penskalaan konkurensi, lihat. <a href="./concurrency-scaling.html">Bekerja dengan penskalaan konkurensi</a> </p>
+            
+             
+         
+         
+         
+         
+   
+         <p>Untuk informasi selengkapnya, lihat <a href="./query-performance-improvement-opportunities.html">Meningkatkan kinerja kueri</a>. </p>
+       
+         <h2 id="cm-c-defining-query-queues-user-groups">Grup pengguna</h2>
+         
+         
+         <p>Anda dapat menetapkan satu set grup pengguna ke antrian dengan menentukan setiap nama grup pengguna atau dengan menggunakan wildcard. Ketika anggota grup pengguna yang terdaftar menjalankan kueri, kueri tersebut berjalan dalam antrean yang sesuai. Tidak ada batasan yang ditetapkan pada jumlah grup pengguna yang dapat ditetapkan ke antrian. Untuk informasi selengkapnya, lihat <a href="./cm-c-executing-queries.html#cm-c-executing-queries-assigning-queries-to-queues-based-on-user-groups">Menetapkan kueri ke antrian berdasarkan grup pengguna</a>. </p>
+       
+         <h2 id="cm-c-defining-query-queues-query-groups">Grup kueri </h2>
+         
+         
+         <p>Anda dapat menetapkan satu set grup kueri ke antrian dengan menentukan setiap nama grup kueri atau dengan menggunakan wildcard. Grup kueri hanyalah sebuah label. Saat runtime, Anda dapat menetapkan label grup kueri ke serangkaian kueri. Setiap kueri yang ditetapkan ke grup kueri terdaftar berjalan dalam antrean yang sesuai. Tidak ada batasan yang ditetapkan untuk jumlah grup kueri yang dapat ditetapkan ke antrian. Untuk informasi selengkapnya, lihat <a href="./cm-c-executing-queries.html#cm-c-executing-queries-assigning-a-query-to-a-query-group">Menetapkan kueri ke grup kueri</a>. </p>
+       
+         <h2 id="wlm-wildcards">Wildcard</h2>
+         
+         <p>Jika wildcard diaktifkan dalam konfigurasi antrian WLM, Anda dapat menetapkan grup pengguna dan grup kueri ke antrian baik secara individual atau dengan menggunakan wildcard bergaya shell Unix. Pencocokan pola tidak peka huruf besar/kecil. </p>
+         <p>Misalnya, karakter wildcard '*' cocok dengan sejumlah karakter. Jadi, jika Anda menambahkan <code class="code">dba_*</code> ke daftar grup pengguna untuk antrian, setiap kueri yang dijalankan pengguna yang termasuk dalam grup dengan nama yang dimulai dengan <code class="code">dba_</code> ditetapkan ke antrian tersebut. Contohnya adalah <code class="code">dba_admin</code> atau<code class="code">DBA_primary</code>,. Yang '?' karakter wildcard cocok dengan karakter tunggal apa pun. Jadi, jika antrian menyertakan grup pengguna<code class="code">dba?1</code>, maka grup pengguna bernama <code class="code">dba11</code> dan <code class="code">dba21</code> cocok, tetapi <code class="code">dba12</code> tidak cocok. </p>
+         <p>Wildcard dimatikan secara default.</p>
+       
+         <h2 id="wlm-memory-percent">Persen memori WLM untuk digunakan</h2>
+         <p>Dalam konfigurasi WLM otomatis, persen memori diatur ke. <code class="userinput">auto</code> Untuk informasi selengkapnya, lihat <a href="./automatic-wlm.html">Menerapkan WLM otomatis</a>. </p>
+         
+         <p>Dalam konfigurasi WLM manual, untuk menentukan jumlah memori yang tersedia yang dialokasikan ke kueri, Anda dapat mengatur parameter. <code class="code">WLM Memory Percent to Use</code> Secara default, setiap antrian yang ditentukan pengguna dialokasikan porsi yang sama dari memori yang tersedia untuk kueri yang ditentukan pengguna. Misalnya, jika Anda memiliki empat antrian yang ditentukan pengguna, setiap antrian dialokasikan 25 persen dari memori yang tersedia. Antrian superuser memiliki memori yang dialokasikan sendiri dan tidak dapat dimodifikasi. Untuk mengubah alokasi, Anda menetapkan persentase integer memori untuk setiap antrian, hingga total 100 persen. Memori yang tidak teralokasi dikelola oleh Amazon Redshift dan dapat diberikan sementara ke antrian jika antrian meminta memori tambahan untuk diproses. </p>
+         <p>Misalnya, jika Anda mengonfigurasi empat antrian, Anda dapat mengalokasikan memori sebagai berikut: 20 persen, 30 persen, 15 persen, 15 persen. Sisanya 20 persen tidak dialokasikan dan dikelola oleh layanan.</p>
+       
+         <h2 id="wlm-timeout">Batas waktu WLM</h2>
+         <p>WLM timeout (<code class="code">max_execution_time</code>) tidak digunakan lagi. Sebagai gantinya, buat aturan pemantauan kueri (QMR) menggunakan <code class="code">query_execution_time</code> untuk membatasi waktu eksekusi yang telah berlalu untuk kueri. Untuk informasi selengkapnya, lihat <a href="./cm-c-wlm-query-monitoring-rules.html">Aturan pemantauan kueri WLM</a>. </p>
+         
+         <p>Untuk membatasi jumlah waktu kueri dalam antrian WLM tertentu diizinkan untuk digunakan, Anda dapat mengatur nilai batas waktu WLM untuk setiap antrian. Parameter batas waktu menentukan jumlah waktu, dalam milidetik, Amazon Redshift menunggu kueri berjalan sebelum membatalkan atau melompati kueri. Batas waktu didasarkan pada waktu eksekusi kueri dan tidak termasuk waktu yang dihabiskan menunggu dalam antrian. </p>
+         <p>WLM mencoba untuk melompat <a href="./r_CREATE_TABLE_AS.html">BUAT TABEL SEBAGAI</a> (CTAS) pernyataan dan query read-only, seperti pernyataan SELECT. Kueri yang tidak dapat dilewati dibatalkan. Untuk informasi selengkapnya, lihat <a href="./wlm-queue-hopping.html">Antrian kueri WLM melompat</a>.</p>
+         <p>Batas waktu WLM tidak berlaku untuk kueri yang telah mencapai status kembali. Untuk melihat status kueri, lihat tabel <a href="./r_STV_WLM_QUERY_STATE.html">STV_WLM_QUERY_STATE</a> sistem. Pernyataan COPY dan operasi pemeliharaan, seperti ANALISIS dan VACUUM, tidak tunduk pada batas waktu WLM.</p>
+         <p>Fungsi batas waktu WLM mirip dengan parameter konfigurasi. <a href="./r_statement_timeout.html">statement_timeout</a> Perbedaannya adalah, di mana parameter <code class="code">statement_timeout</code> konfigurasi berlaku untuk seluruh cluster, batas waktu WLM khusus untuk antrian tunggal dalam konfigurasi WLM. </p>
+         <p>Jika juga <a href="./r_statement_timeout.html">statement_timeout</a> ditentukan, yang lebih rendah dari statement_timeout dan WLM timeout (max_execution_time) digunakan. </p>
+       
+         <h2 id="wlm-query-monitoring-rules">Aturan pemantauan kueri</h2>
+         
+
+         <p>Aturan pemantauan kueri menentukan batas kinerja berbasis metrik untuk antrian WLM dan menentukan tindakan apa yang harus diambil ketika kueri melampaui batas-batas tersebut. Misalnya, untuk antrian yang didedikasikan untuk kueri berjalan pendek, Anda dapat membuat aturan yang membatalkan kueri yang berjalan selama lebih dari 60 detik. Untuk melacak kueri yang dirancang dengan buruk, Anda mungkin memiliki aturan lain yang mencatat kueri yang berisi loop bersarang. Untuk informasi selengkapnya, lihat <a href="./cm-c-wlm-query-monitoring-rules.html">Aturan pemantauan kueri WLM</a>.</p>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Awas" /> <strong>Javascript dinonaktifkan atau tidak tersedia di browser Anda.</strong></p><p>Untuk menggunakan Dokumentasi AWS, Javascript harus diaktifkan. Lihat halaman Bantuan browser Anda untuk petunjuk.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Konvensi Dokumen</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./query-priority.html">Prioritas kueri</div><div id="next" class="next-link" accesskey="n" href="./wlm-queue-hopping.html">Antrian kueri WLM melompat</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Apakah halaman ini membantu Anda? - Ya</div><div class="content"><p>Terima kasih telah memberitahukan bahwa hasil pekerjaan kami sudah baik.</p><p>Jika Anda memiliki waktu luang, beri tahu kami aspek apa saja yang sudah bagus, agar kami dapat menerapkannya secara lebih luas.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Umpan Balik" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Apakah halaman ini membantu Anda? - Tidak</div><div class="content"><p>Terima kasih telah memberi tahu kami bahwa halaman ini perlu ditingkatkan. Maaf karena telah mengecewakan Anda.</p><p>Jika Anda memiliki waktu luang, beri tahu kami bagaimana dokumentasi ini dapat ditingkatkan.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Umpan Balik" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

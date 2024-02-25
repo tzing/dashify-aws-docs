@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="id-ID"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Tutorial: Menanyakan data bersarang dengan Amazon Redshift Spectrum - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-query-nested-data" /><meta name="default_state" content="tutorial-query-nested-data" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="description" content="Kueri data bersarang dengan Amazon Redshift Spectrum." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Panduan Pengembang Database" /><meta name="abstract" content="Buat dan kelola gudang data dengan Amazon Redshift, skala petabyte tingkat perusahaan, layanan pergudangan data yang dikelola sepenuhnya." /><meta name="guide-locale" content="id_id" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-query-nested-data.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Panduan Pengembang Database" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Panduan Pengembang Database" /><meta id="panorama-serviceConsolePage" value="Tutorial: Menanyakan data bersarang dengan Amazon Redshift Spectrum" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Tutorial: Menanyakan data bersarang dengan Amazon Redshift Spectrum - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-query-nested-data" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="keywords" content="Amazon Redshift,AWSPergeseran Merah,Redshift,Spektrum Pergeseran Merah,Klaster,gudang data,pengembang,data sampel,database,pengembang basis data,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Panduan Pengembang Database",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Menanyakan data eksternal menggunakan Amazon Redshift Spectrum",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-using-spectrum.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Tutorial: Menanyakan data bersarang dengan Amazon Redshift Spectrum",
+        "item" : "https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-using-spectrum.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-query-nested-data" target="_blank" rel="noopener noreferrer" title="Buka PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Dokumentasi</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Panduan Pengembang Database</a></div><div id="page-toc-src"><a href="#tutorial-nested-data-overview">Ikhtisar</a><a href="#tutorial-nested-data-create-table">Langkah 1: Buat tabel eksternal yang berisi data bersarang</a><a href="#tutorial-query-nested-data-sqlextensions">Langkah 2: Kueri data bersarang Anda di Amazon S3 dengan ekstensi SQL</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Terjemahan disediakan oleh mesin penerjemah. Jika konten terjemahan yang diberikan bertentangan dengan versi bahasa Inggris aslinya, utamakan versi bahasa Inggris.</p></awsui-alert><h1 class="topictitle" id="tutorial-query-nested-data">Tutorial: Menanyakan data bersarang dengan Amazon Redshift Spectrum</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div>
+        <h2 id="tutorial-nested-data-overview">Ikhtisar</h2>
+                
+        <p>Amazon Redshift Spectrum mendukung kueri data bersarang dalam format file Parket, ORC, JSON, dan Ion. Redshift Spectrum mengakses data menggunakan tabel eksternal. Anda dapat membuat tabel eksternal yang menggunakan tipe data yang kompleks<code class="code">struct</code>,<code class="code">array</code>, dan<code class="code">map</code>.</p>
+        <p>Misalnya, misalkan file data Anda berisi data berikut di Amazon S3 dalam folder bernama. <code class="code">customers</code> Meskipun tidak ada elemen root tunggal, setiap objek JSON dalam data sampel ini mewakili baris dalam tabel. </p>
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>"id": 1,
+ "name": <span>{</span>"given": "John", "family": "Smith"},
+ "phones": ["123-457789"],
+ "orders": [<span>{</span>"shipdate": "2018-03-01T11:59:59.000Z", "price": 100.50},
+            <span>{</span>"shipdate": "2018-03-01T09:10:00.000Z", "price": 99.12}]
+}
+<span>{</span>"id": 2,
+ "name": <span>{</span>"given": "Jenny", "family": "Doe"},
+ "phones": ["858-8675309", "415-9876543"],
+ "orders": []
+}
+<span>{</span>"id": 3,
+ "name": <span>{</span>"given": "Andy", "family": "Jones"},
+ "phones": [],
+ "orders": [<span>{</span>"shipdate": "2018-03-02T08:02:15.000Z", "price": 13.50}]
+}  </code></pre>        
+   
+        
+        <p>Anda dapat menggunakan Amazon Redshift Spectrum untuk menanyakan data bersarang dalam file. Tutorial berikut menunjukkan cara melakukannya dengan data Apache Parquet.</p> 
+        <p>Untuk prasyarat tutorial, langkah, dan kasus penggunaan data bersarang, lihat topik berikut:</p>
+        <div class="itemizedlist">
+             
+             
+             
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p><a href="#tutorial-nested-data-prereq">Prasyarat</a></p>
+            </li><li class="listitem">
+                <p><a href="#tutorial-nested-data-create-table">Langkah 1: Buat tabel eksternal yang berisi data bersarang</a></p>
+            </li><li class="listitem">
+                <p><a href="#tutorial-query-nested-data-sqlextensions">Langkah 2: Kueri data bersarang Anda di Amazon S3 dengan ekstensi SQL</a></p>
+            </li><li class="listitem">
+                <p><a href="./nested-data-use-cases.html">Kasus penggunaan data bersarang </a></p>
+            </li><li class="listitem">
+                <p><a href="./nested-data-restrictions.html">Batasan data bersarang (pratinjau)</a></p>
+            </li><li class="listitem">
+                <p><a href="./serializing-complex-JSON.html">Serialisasi JSON bersarang kompleks</a></p>
+            </li></ul></div>
+        
+        
+
+
+         
+            <h3 id="tutorial-nested-data-prereq">Prasyarat</h3>
+            
+            <p>Jika Anda belum menggunakan Redshift Spectrum, ikuti langkah-langkah di <a href="./c-getting-started-using-spectrum.html">Memulai dengan Amazon Redshift Spectrum</a> sebelum melanjutkan.</p>
+            
+            <p><a href="./c-getting-started-using-spectrum-create-role.html">Untuk membuat skema eksternal, ganti ARN peran IAM dalam perintah berikut dengan peran ARN yang Anda buat di Buat peran IAM.</a> Kemudian jalankan perintah di klien SQL Anda.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create external schema spectrum 
+from data catalog 
+database 'myspectrum_db' 
+iam_role 'arn:aws:iam::123456789012:role/myspectrum_role'
+create external database if not exists;</code></pre>
+         
+
+     
+        <h2 id="tutorial-nested-data-create-table">Langkah 1: Buat tabel eksternal yang berisi data bersarang</h2>
+        <p>Anda dapat melihat <a href="https://s3.amazonaws.com/redshift-downloads/tickit/spectrum/customers/customer_file1" rel="noopener noreferrer" target="_blank"><span>data sumber</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> dengan mengunduhnya dari Amazon S3. </p>
+
+        <p>Untuk membuat tabel eksternal untuk tutorial ini, jalankan perintah berikut. </p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE EXTERNAL TABLE spectrum.customers (
+  id     int,
+  name   struct&lt;given:varchar(20), family:varchar(20)&gt;,
+  phones array&lt;varchar(20)&gt;,
+  orders array&lt;struct&lt;shipdate:timestamp, price:double precision&gt;&gt;
+)
+STORED AS PARQUET
+LOCATION 's3://redshift-downloads/tickit/spectrum/customers/';     </code></pre>
+        
+        <p>Pada contoh sebelumnya, tabel eksternal <code class="code">spectrum.customers</code> menggunakan tipe <code class="code">array</code> data <code class="code">struct</code> dan untuk menentukan kolom dengan data bersarang. Amazon Redshift Spectrum mendukung kueri data bersarang dalam format file Parket, ORC, JSON, dan Ion. <code class="code">STORED AS</code>Parameternya <code class="code">PARQUET</code> untuk file Apache Parquet. <code class="code">LOCATION</code>Parameter harus merujuk ke folder Amazon S3 yang berisi data atau file bersarang. Untuk informasi selengkapnya, lihat <a href="./r_CREATE_EXTERNAL_TABLE.html">CREATE EXTERNAL TABLE</a>.</p>
+        
+        
+        <p>Anda dapat bersarang <code class="code">array</code> dan <code class="code">struct</code> mengetik di tingkat mana pun. Misalnya, Anda dapat menentukan kolom bernama <code class="code">toparray</code> seperti yang ditunjukkan pada contoh berikut.</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">toparray array&lt;struct&lt;nestedarray:
+         array&lt;struct&lt;morenestedarray: 
+         array&lt;string&gt;&gt;&gt;&gt;&gt;</code></pre>
+        <p>Anda juga dapat <code class="code">struct</code> jenis sarang seperti yang ditunjukkan untuk kolom <code class="code">x</code> dalam contoh berikut.</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">x struct&lt;a: string,
+         b: struct&lt;c: integer,
+                   d: struct&lt;e: string&gt;
+                  &gt;
+        &gt;</code></pre>
+   
+     
+                <h2 id="tutorial-query-nested-data-sqlextensions">Langkah 2: Kueri data bersarang Anda di Amazon S3 dengan ekstensi SQL</h2>
+                <p>Redshift Spectrum mendukung kueri <code class="code">array</code><code class="code">map</code>, dan jenis <code class="code">struct</code> kompleks melalui ekstensi ke sintaks Amazon Redshift SQL. </p>
+                 
+                    <h3 id="nested-data-sqlextension1">Ekstensi 1: Akses ke kolom struct</h3>
+                    <p>Anda dapat mengekstrak data dari <code class="code">struct</code> kolom menggunakan notasi titik yang menggabungkan nama bidang menjadi jalur. Misalnya, permintaan berikut mengembalikan nama yang diberikan dan keluarga untuk pelanggan. Nama yang diberikan diakses oleh jalur panjang<code class="code">c.name.given</code>. Nama keluarga diakses oleh jalan panjang<code class="code">c.name.family</code>. </p>    
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, c.name.given, c.name.family
+FROM   spectrum.customers c;</code></pre>
+                    <p>Query sebelumnya mengembalikan data berikut.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">id | given | family
+---|-------|-------
+1  | John  | Smith
+2  | Jenny | Doe
+3  | Andy  | Jones
+(3 rows)</code></pre>
+                    <p>A <code class="code">struct</code> bisa berupa kolom lain<code class="code">struct</code>, yang bisa berupa kolom lain<code class="code">struct</code>, di tingkat mana pun. Jalur yang mengakses kolom dalam <code class="code">struct</code> s bersarang sedemikian dalam bisa sangat panjang. Misalnya, lihat definisi untuk kolom <code class="code">x</code> dalam contoh berikut.</p>     
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">x struct&lt;a: string,
+         b: struct&lt;c: integer, 
+                      d: struct&lt;e: string&gt;
+                  &gt;
+        &gt;</code></pre>        
+        <p>Anda dapat mengakses data di <code class="code">e</code> as<code class="code">x.b.d.e</code>.</p>
+    
+                    
+                    
+                   
+                 
+                    <h3 id="nested-data-sqlextension2">Ekstensi 2: Mulai dari array dalam klausa FROM</h3>
+                    <p>Anda dapat mengekstrak data dari <code class="code">array</code> kolom (dan, dengan ekstensi, <code class="code">map</code> kolom) dengan menentukan <code class="code">array</code> kolom dalam <code class="code">FROM</code> klausa sebagai pengganti nama tabel. Ekstensi berlaku untuk <code class="code">FROM</code> klausa kueri utama, dan juga <code class="code">FROM</code> klausa subquery.</p>
+                        
+                <p>Anda dapat mereferensikan <code class="code">array</code> elemen berdasarkan posisi, seperti<code class="code">c.orders[0]</code>. (pratinjau)</p>
+                    <p>Dengan menggabungkan mulai <code class="code">arrays</code> dengan gabungan, Anda dapat mencapai berbagai jenis unnesting, seperti yang dijelaskan dalam kasus penggunaan berikut. </p>
+                     
+                        <h4 id="unnest-inner-joins">Menghapus sarang menggunakan sambungan batin</h4>
+                        <p>Kueri berikut memilih ID pelanggan dan tanggal pengiriman pesanan untuk pelanggan yang memiliki pesanan. Ekstensi SQL dalam klausa FROM <code class="code">c.orders
+                        o</code> tergantung pada alias. <code class="code">c</code></p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, o.shipdate
+FROM   spectrum.customers c, c.orders o </code></pre> 
+                        <p>Untuk setiap pelanggan <code class="code">c</code> yang memiliki pesanan, <code class="code">FROM</code> klausa mengembalikan satu baris untuk setiap pesanan <code class="code">o</code> pelanggan<code class="code">c</code>. Baris itu menggabungkan baris pelanggan <code class="code">c</code> dan baris pesanan<code class="code">o</code>. Kemudian <code class="code">SELECT</code> klausa hanya menyimpan <code class="code">c.id</code> dan<code class="code">o.shipdate</code>. Hasilnya adalah sebagai berikut.</p>
+                         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">id|      shipdate
+--|----------------------
+1 |2018-03-01  11:59:59
+1 |2018-03-01  09:10:00
+3 |2018-03-02  08:02:15
+(3 rows) </code></pre>   
+                        <p>Alias <code class="code">c</code> menyediakan akses ke bidang pelanggan, dan alias <code class="code">o</code> menyediakan akses ke bidang pesanan. </p>
+                        <p>Semantiknya mirip dengan SQL standar. Anda dapat menganggap <code class="code">FROM</code> klausa sebagai menjalankan loop bersarang berikut, yang diikuti dengan <code class="code">SELECT</code> memilih bidang yang akan dikeluarkan. </p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">for each customer c in spectrum.customers
+  for each order o in c.orders
+     output c.id and o.shipdate </code></pre>
+                        <p>Oleh karena itu, jika pelanggan tidak memiliki pesanan, pelanggan tidak muncul di hasilnya.</p>
+                        <p>Anda juga dapat menganggap ini sebagai <code class="code">FROM</code> klausa yang melakukan a <code class="code">JOIN</code> dengan <code class="code">customers</code> tabel dan <code class="code">orders</code> array. Bahkan, Anda juga dapat menulis query seperti yang ditunjukkan pada contoh berikut.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, o.shipdate
+FROM   spectrum.customers c INNER JOIN c.orders o ON true </code></pre>
+                        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>catatan</h6></div><div class="awsdocs-note-text"><p>Jika skema bernama <code class="code">c</code> ada dengan tabel bernama<code class="code">orders</code>, maka <code class="code">c.orders</code> mengacu pada tabel<code class="code">orders</code>, dan bukan kolom array. <code class="code">customers</code></p></div></div>
+                 
+                 
+                    <h4 id="unnest-left-joins">Menghapus sarang menggunakan gabungan kiri</h4>
+                    <p>Kueri berikut menghasilkan semua nama pelanggan dan pesanan mereka. Jika pelanggan belum melakukan pemesanan, nama pelanggan masih dikembalikan. Namun, dalam kasus ini, kolom urutan adalah NULL, seperti yang ditunjukkan pada contoh berikut untuk Jenny Doe.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, c.name.given, c.name.family, o.shipdate, o.price
+FROM   spectrum.customers c LEFT JOIN c.orders o ON true</code></pre>
+                    
+                    <p>Query sebelumnya mengembalikan data berikut.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">id  |  given  | family  |    shipdate          | price
+----|---------|---------|----------------------|--------
+ 1  |  John   | Smith   | 2018-03-01  11:59:59 | 100.5
+ 1  |  John   | Smith   | 2018-03-01  09:10:00 |  99.12
+ 2  |  Jenny  | Doe     |                      |
+ 3  |  Andy   | Jones   | 2018-03-02  08:02:15 |  13.5
+ (4 rows)</code></pre>
+                 
+                
+                 
+                    <h3 id="nested-data-sqlextension3">Ekstensi 3: Mengakses array skalar secara langsung menggunakan alias </h3>
+                    <p>Ketika alias <code class="code">p</code> dalam <code class="code">FROM</code> klausa berkisar pada array skalar, kueri mengacu pada nilai as. <code class="code">p</code> <code class="code">p</code> Misalnya, kueri berikut menghasilkan pasangan nama pelanggan dan nomor telepon.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.name.given, c.name.family, p AS phone
+FROM   spectrum.customers c LEFT JOIN c.phones p ON true  </code></pre>
+                    <p>Query sebelumnya mengembalikan data berikut.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">given  |  family  |  phone
+-------|----------|-----------
+John   | Smith    | 123-4577891
+Jenny  | Doe      | 858-8675309
+Jenny  | Doe      | 415-9876543
+Andy   | Jones    | 
+(4 rows) </code></pre>
+                     
+                 
+                    <h3 id="nested-data-sqlextension4">Ekstensi 4: Mengakses elemen peta </h3>
+                    <p>Redshift Spectrum memperlakukan tipe <code class="code">map</code> data sebagai <code class="code">array</code> tipe yang berisi <code class="code">struct</code> tipe dengan <code class="code">key</code> kolom dan kolom. <code class="code">value</code> <code class="code">key</code>Harus a<code class="code">scalar</code>; nilainya bisa berupa tipe data apa pun. </p>
+                    <p>Misalnya, kode berikut membuat tabel eksternal dengan <code class="code">map</code> untuk menyimpan nomor telepon.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE EXTERNAL TABLE spectrum.customers2 (
+  id     int,
+  name   struct&lt;given:varchar(20), family:varchar(20)&gt;,
+  phones map&lt;varchar(20), varchar(20)&gt;,
+  orders array&lt;struct&lt;shipdate:timestamp, price:double precision&gt;&gt;
+)
+STORED AS PARQUET
+LOCATION 's3://redshift-downloads/tickit/spectrum/customers/';</code></pre>
+                    <p>Karena <code class="code">map</code> tipe berperilaku seperti <code class="code">array</code> tipe dengan kolom <code class="code">key</code> dan<code class="code">value</code>, Anda dapat memikirkan skema sebelumnya seolah-olah mereka adalah sebagai berikut.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Salinan"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE EXTERNAL TABLE spectrum.customers3 (
+  id     int,
+  name   struct&lt;given:varchar(20), family:varchar(20)&gt;,
+  phones array&lt;struct&lt;key:varchar(20), value:varchar(20)&gt;&gt;,
+  orders array&lt;struct&lt;shipdate:timestamp, price:double precision&gt;&gt;
+)
+STORED AS PARQUET
+LOCATION 's3://redshift-downloads/tickit/spectrum/customers/';   </code></pre>
+                    
+                    <p>Kueri berikut mengembalikan nama pelanggan dengan nomor ponsel dan mengembalikan nomor untuk setiap nama. Kueri peta diperlakukan sebagai setara dengan menanyakan tipe bersarang<code class="code">array</code>. <code class="code">struct</code> Query berikut hanya mengembalikan data jika Anda telah membuat tabel eksternal seperti yang dijelaskan sebelumnya. </p>   
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="">SELECT c.name.given, c.name.family, p.value 
+FROM   spectrum.customers c, c.phones p 
+WHERE  p.key = 'mobile';  </code></pre>   
+                  <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>catatan</h6></div><div class="awsdocs-note-text"><p>The <code class="code">key</code> for a <code class="code">map</code> adalah <code class="code">string</code> untuk jenis file Ion dan JSON.</p></div></div>      
+                    
+                    
+                     
+                <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Awas" /> <strong>Javascript dinonaktifkan atau tidak tersedia di browser Anda.</strong></p><p>Untuk menggunakan Dokumentasi AWS, Javascript harus diaktifkan. Lihat halaman Bantuan browser Anda untuk petunjuk.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Konvensi Dokumen</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c-spectrum-troubleshooting.html">Memecahkan masalah kueri</div><div id="next" class="next-link" accesskey="n" href="./nested-data-use-cases.html">Kasus penggunaan data bersarang </div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Apakah halaman ini membantu Anda? - Ya</div><div class="content"><p>Terima kasih telah memberitahukan bahwa hasil pekerjaan kami sudah baik.</p><p>Jika Anda memiliki waktu luang, beri tahu kami aspek apa saja yang sudah bagus, agar kami dapat menerapkannya secara lebih luas.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Umpan Balik" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-query-nested-data.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Apakah halaman ini membantu Anda? - Tidak</div><div class="content"><p>Terima kasih telah memberi tahu kami bahwa halaman ini perlu ditingkatkan. Maaf karena telah mengecewakan Anda.</p><p>Jika Anda memiliki waktu luang, beri tahu kami bagaimana dokumentasi ini dapat ditingkatkan.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Umpan Balik" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-query-nested-data.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
