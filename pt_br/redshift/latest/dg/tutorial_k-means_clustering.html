@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Tutorial: Como construir modelos de clusterização K-means - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_k-means_clustering" /><meta name="default_state" content="tutorial_k-means_clustering" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_k-means_clustering.html" /><meta name="description" content="Use este tutorial para obter um exemplo completo de como criar um modelo de machine learning do Amazon Redshift e executar consultas de inferência." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guia do desenvolvedor de banco de dados" /><meta name="abstract" content="Crie e gerencie um data warehouse com o Amazon Redshift, um serviço de data warehouse totalmente gerenciado, em escala de petabyte e de nível empresarial." /><meta name="guide-locale" content="pt_br" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_k-means_clustering.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guia do desenvolvedor de banco de dados" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guia do desenvolvedor de banco de dados" /><meta id="panorama-serviceConsolePage" value="Tutorial: Como construir modelos de clusterização K-means" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Tutorial: Como construir modelos de clusterização K-means - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_k-means_clustering" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_k-means_clustering.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_k-means_clustering.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_k-means_clustering.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,desenvolvedor,dados de amostra,banco de dados,desenvolvedor do banco de dados,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guia do desenvolvedor de banco de dados",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Usar Machine Learning no Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Conceitos básicos do Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Tutoriais para o Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "Tutorial: Como construir modelos de clusterização K-means",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_k-means_clustering" target="_blank" rel="noopener noreferrer" title="Abrir em PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentação</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guia do desenvolvedor de banco de dados</a></div><div id="page-toc-src"><a href="#tutorial_k-means_clustering_tasks">Exemplos de casos de uso</a><a href="#tutorial_k-means_clustering_prereqs">Pré-requisitos</a><a href="#tutorial_k-means_clustering_step_load">Etapa 1: Carregar dados do Amazon S3 para o Amazon Redshift</a><a href="#tutorial_k-means_clustering_create_model">Etapa 2: Criar o modelo de machine learning</a><a href="#tutorial_k-means_clustering_step_perform_predictions">Etapa 3: Executar previsões com o modelo</a><a href="#tutorial_k-means_clustering_related_topics">Tópicos relacionados</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_k-means_clustering">Tutorial: Como construir modelos de clusterização K-means</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Neste tutorial, você usará o Amazon Redshift ML para criar, treinar e implantar um modelo de machine learning com base no <a href="url-sm-dev;k-means.html" rel="noopener noreferrer" target="_blank">algoritmo K-means</a>. Esse algoritmo resolve problemas de clusterização em que você deseja detectar agrupamentos nos dados. O K-means ajuda a agrupar dados que ainda não foram rotulados. Para saber mais sobre a clusterização K-means, consulte <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/algo-kmeans-tech-notes.html">How K-means Clustering Works</a> (Como funciona a clusterização K-means) no Guia do desenvolvedor do Amazon SageMaker.</p><p>Você usará uma operação CREATE MODEL para criar um modelo K-means com base em um cluster do Amazon Redshift. Você pode usar um comando CREATE MODEL para exportar dados de treinamento, treinar um modelo, importar o modelo e preparar uma função de previsão do Amazon Redshift. Use a operação CREATE MODEL para especificar dados de treinamento como uma tabela ou instrução SELECT.</p><p>Neste tutorial, você usa o K-means no conjunto de dados <a href="https://aws.amazon.com/public-datasets/gdelt/" rel="noopener noreferrer" target="_blank"><span>Banco de dados global de eventos, linguagem e tom (GDELT)</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>, que monitora notícias mundiais em todo o planeta, e os dados são armazenados a cada segundo, diariamente. O K-means agrupará eventos que tenham tom, atores ou locais semelhantes. Os dados são armazenados como vários arquivos no Amazon Simple Storage Service, em duas pastas diferentes. As pastas são históricas, que cobrem os anos de 1979 a 2013, e atualizações diárias, que cobrem os anos de 2013 e posteriores. Para este exemplo, usamos o formato histórico e trazemos dados de 1979.</p>
+               <h2 id="tutorial_k-means_clustering_tasks">Exemplos de casos de uso</h2>
+               <p>Você pode resolver outros problemas de clusterização com o Amazon Redshift ML, como agrupar clientes com hábitos de visualização semelhantes em um serviço de streaming. Você também pode usar o Redshift ML para prever o número ideal de centros de expedição para um serviço de entrega.</p>
+            <p><b>Tarefas</b></p><div class="itemizedlist">
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>Pré-requisitos</p>
+               </li><li class="listitem">
+                  <p>Etapa 1: Carregar dados do Amazon S3 para o Amazon Redshift</p>
+               </li><li class="listitem">
+                  <p>Etapa 2: Criar o modelo de machine learning</p>
+               </li><li class="listitem">
+                  <p>Etapa 3: Executar previsões com o modelo</p>
+               </li></ul></div>
+            <h2 id="tutorial_k-means_clustering_prereqs">Pré-requisitos</h2>
+               <p>Para finalizar este tutorial, você deve concluir a <a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">configuração administrativa</a> do Amazon Redshift ML.</p>
+          
+               <h2 id="tutorial_k-means_clustering_step_load">Etapa 1: Carregar dados do Amazon S3 para o Amazon Redshift</h2>
+               <div class="orderedlist">
+                   
+                   
+               <ol><li>
+                     <p>Use o <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">editor de consultas v2 do Amazon Redshift</a> para executar a consulta a seguir. A consulta descarta a tabela <code class="code">gdelt_data</code> no esquema público, caso ela exista, e cria uma tabela com o mesmo nome no esquema público.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">DROP TABLE IF EXISTS gdelt_data CASCADE;
+
+CREATE TABLE gdelt_data (
+    GlobalEventId bigint,
+    SqlDate bigint,
+    MonthYear bigint,
+    Year bigint,
+    FractionDate double precision,
+    Actor1Code varchar(256),
+    Actor1Name varchar(256),
+    Actor1CountryCode varchar(256),
+    Actor1KnownGroupCode varchar(256),
+    Actor1EthnicCode varchar(256),
+    Actor1Religion1Code varchar(256),
+    Actor1Religion2Code varchar(256),
+    Actor1Type1Code varchar(256),
+    Actor1Type2Code varchar(256),
+    Actor1Type3Code varchar(256),
+    Actor2Code varchar(256),
+    Actor2Name varchar(256),
+    Actor2CountryCode varchar(256),
+    Actor2KnownGroupCode varchar(256),
+    Actor2EthnicCode varchar(256),
+    Actor2Religion1Code varchar(256),
+    Actor2Religion2Code varchar(256),
+    Actor2Type1Code varchar(256),
+    Actor2Type2Code varchar(256),
+    Actor2Type3Code varchar(256),
+    IsRootEvent bigint,
+    EventCode bigint,
+    EventBaseCode bigint,
+    EventRootCode bigint,
+    QuadClass bigint,
+    GoldsteinScale double precision,
+    NumMentions bigint,
+    NumSources bigint,
+    NumArticles bigint,
+    AvgTone double precision,
+    Actor1Geo_Type bigint,
+    Actor1Geo_FullName varchar(256),
+    Actor1Geo_CountryCode varchar(256),
+    Actor1Geo_ADM1Code varchar(256),
+    Actor1Geo_Lat double precision,
+    Actor1Geo_Long double precision,
+    Actor1Geo_FeatureID bigint,
+    Actor2Geo_Type bigint,
+    Actor2Geo_FullName varchar(256),
+    Actor2Geo_CountryCode varchar(256),
+    Actor2Geo_ADM1Code varchar(256),
+    Actor2Geo_Lat double precision,
+    Actor2Geo_Long double precision,
+    Actor2Geo_FeatureID bigint,
+    ActionGeo_Type bigint,
+    ActionGeo_FullName varchar(256),
+    ActionGeo_CountryCode varchar(256),
+    ActionGeo_ADM1Code varchar(256),
+    ActionGeo_Lat double precision,
+    ActionGeo_Long double precision,
+    ActionGeo_FeatureID bigint,
+    DATEADDED bigint
+);</code></pre>
+                  </li><li>
+                     <p>A consulta a seguir carrega os dados de exemplo na tabela <code class="code">gdelt_data</code>.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY gdelt_data
+FROM 's3://gdelt-open-data/events/1979.csv' 
+REGION 'us-east-1'
+IAM_ROLE default 
+CSV
+DELIMITER '\t';</code></pre>
+                  </li></ol></div>
+                
+                  <h3 id="tutorial_k-means_clustering_examine">Examinar os dados de treinamento (opcional)</h3>
+                  <p>Para ver em quais dados seu modelo será treinado, use a consulta a seguir.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    AvgTone,
+    EventCode,
+    NumArticles,
+    Actor1Geo_Lat,
+    Actor1Geo_Long,
+    Actor2Geo_Lat,
+    Actor2Geo_Long
+FROM
+    gdelt_data LIMIT 100;</code></pre>
+                
+             
+               <h2 id="tutorial_k-means_clustering_create_model">Etapa 2: Criar o modelo de machine learning</h2>
+               <p>O exemplo a seguir usa o comando CREATE MODEL para criar um modelo que agrupa os dados em sete clusters. O valor K é o número de clusters nos quais os pontos de dados são divididos. O modelo classifica os pontos de dados em clusters nos quais os pontos de dados são mais semelhantes entre si. Ao agrupar os pontos de dados em vários grupos, o algoritmo K-means determina iterativamente o melhor centro de cluster. Em seguida, o algoritmo atribui cada ponto de dados ao centro de cluster mais próximo. Os membros mais próximos do mesmo centro de cluster pertencem ao mesmo grupo. Os membros de um grupo são o mais semelhantes possível a outros membros do mesmo grupo e o mais diferentes possível de membros de outros grupos. O valor de K é subjetivo e depende de métodos que medem as semelhanças entre os pontos de dados. Você pode alterar o valor de K para suavizar os tamanhos do cluster se os clusters estiverem distribuídos de modo desigual.</p>
+               <p>No exemplo a seguir, substitua <code class="replaceable"><code class="code">DOC-EXAMPLE-BUCKET</code></code> pelo bucket do Amazon S3.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL news_data_clusters
+FROM
+    (
+        SELECT
+            AvgTone,
+            EventCode,
+            NumArticles,
+            Actor1Geo_Lat,
+            Actor1Geo_Long,
+            Actor2Geo_Lat,
+            Actor2Geo_Long
+        FROM
+            gdelt_data
+    ) FUNCTION news_monitoring_cluster 
+    IAM_ROLE default 
+    AUTO OFF 
+    MODEL_TYPE KMEANS 
+    PREPROCESSORS 'none' 
+    HYPERPARAMETERS DEFAULT
+    EXCEPT
+    (K '7') 
+    SETTINGS (S3_BUCKET '<code class="replaceable">&lt;DOC-EXAMPLE-BUCKET&gt;</code>');</code></pre>
+                
+                  <h3 id="tutorial_k-means_clustering_check_status">Conferir o status do modelo de treinamento (opcional)</h3>
+                  <p>Você pode usar o comando SHOW MODEL para saber quando o modelo está pronto.</p>
+                  <p>Para verificar o status do modelo, use a operação SHOW MODEL a seguir e verifique se <code class="code">Model State</code> é <code class="code">Ready</code>.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL NEWS_DATA_CLUSTERS;</code></pre>
+                  <p>Quando o modelo estiver pronto, a saída da operação anterior deverá mostrar que o <code class="code">Model State</code> é <code class="code">Ready</code>. Veja a seguir um exemplo de saída da operação anterior SHOW MODEL.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------+------------------------------------------------------------------------------------------------------+
+|        Model Name        |                                          news_data_clusters                                          |
++--------------------------+------------------------------------------------------------------------------------------------------+
+|       Schema Name        |                                                public                                                |
+|          Owner           |                                               awsuser                                                |
+|      Creation Time       |                                       Fri, 17.06.2022 16:32:19                                       |
+|       Model State        |                                                READY                                                 |
+|        train:msd         |                                             2973.822754                                              |
+|      train:progress      |                                              100.000000                                              |
+|     train:throughput     |                                            237114.875000                                             |
+|      Estimated Cost      |                                               0.004983                                               |
+|                          |                                                                                                      |
+|      TRAINING DATA:      |                                                                                                      |
+|          Query           | SELECT AVGTONE, EVENTCODE, NUMARTICLES, ACTOR1GEO_LAT, ACTOR1GEO_LONG, ACTOR2GEO_LAT, ACTOR2GEO_LONG |
+|                          |                                           FROM GDELT_DATA                                            |
+|                          |                                                                                                      |
+|       PARAMETERS:        |                                                                                                      |
+|        Model Type        |                                                kmeans                                                |
+|    Training Job Name     |                                redshiftml-20220617163219978978-kmeans                                |
+|      Function Name       |                                       news_monitoring_cluster                                        |
+|   Function Parameters    |       avgtone eventcode numarticles actor1geo_lat actor1geo_long actor2geo_lat actor2geo_long        |
+| Function Parameter Types |                             float8 int8 int8 float8 float8 float8 float8                             |
+|         IAM Role         |                                         default-aws-iam-role                                         |
+|        S3 Bucket         |                                            <code class="replaceable">DOC-EXAMPLE-BUCKET</code>                                        |
+|       Max Runtime        |                                                 5400                                                 |
+|                          |                                                                                                      |
+|     HYPERPARAMETERS:     |                                                                                                      |
+|       feature_dim        |                                                  7                                                   |
+|            k             |                                                  7                                                   |
++--------------------------+------------------------------------------------------------------------------------------------------+</code></pre>
+                
+             
+               <h2 id="tutorial_k-means_clustering_step_perform_predictions">Etapa 3: Executar previsões com o modelo</h2>
+                
+                  <h3 id="tutorial_k-means_clustering_identify_clusters">Identificar os clusters</h3>
+                  <p>Você pode encontrar agrupamentos discretos identificados nos dados pelo seu modelo, também conhecidos como clusters. Cluster é o conjunto de pontos de dados que está mais próximo do respectivo centro de cluster do que de qualquer outro centro de cluster. Como o valor K representa o número de clusters no modelo, ele também representa o número de centros de cluster. A consulta a seguir identifica os clusters mostrando o cluster associado a cada <code class="code">globaleventid</code>.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    globaleventid,
+    news_monitoring_cluster (
+        AvgTone,
+        EventCode,
+        NumArticles,
+        Actor1Geo_Lat,
+        Actor1Geo_Long,
+        Actor2Geo_Lat,
+        Actor2Geo_Long
+    ) AS cluster
+FROM
+    gdelt_data;</code></pre>
+                
+                
+                  <h3 id="tutorial_k-means_clustering_check_distribution">Conferir a distribuição dos dados</h3>
+                  <p>Você pode verificar a distribuição de dados entre clusters para ver se o valor K escolhido possibilitou que os dados fossem distribuídos de maneira uniforme. Use a consulta a seguir para determinar se os dados são distribuídos uniformemente pelos clusters.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    events_cluster,
+    COUNT(*) AS nbr_events
+FROM
+    (
+        SELECT
+            globaleventid,
+            news_monitoring_cluster(
+                AvgTone,
+                EventCode,
+                NumArticles,
+                Actor1Geo_Lat,
+                Actor1Geo_Long,
+                Actor2Geo_Lat,
+                Actor2Geo_Long
+            ) AS events_cluster
+        FROM
+            gdelt_data
+    )
+GROUP BY
+    1;</code></pre>
+                  <p>Você pode alterar o valor de K para nivelar o tamanho dos agrupamentos se os clusters estiverem distribuídos de forma desigual.</p>
+                
+                
+                  <h3 id="tutorial_k-means_clustering_determine_centers">Determinar os centros de cluster</h3>
+                  <p>Um conjunto de pontos de dados que está mais próximo do respectivo centro de cluster do que de qualquer outro centro de cluster. Por isso, encontrar os centros de cluster ajuda a definir os clusters.</p>
+                  <p>Execute a consulta a seguir para determinar os centros dos clusters com base no número de artigos por código de evento.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    news_monitoring_cluster (
+        AvgTone,
+        EventCode,
+        NumArticles,
+        Actor1Geo_Lat,
+        Actor1Geo_Long,
+        Actor2Geo_Lat,
+        Actor2Geo_Long
+    ) AS events_cluster,
+    eventcode,
+    SUM(numArticles) AS numArticles
+FROM
+    gdelt_data
+GROUP BY
+    1,
+    2;</code></pre>
+                
+                
+                  <h3 id="tutorial_k-means_clustering_data_points_info">Mostrar informações sobre os pontos de dados em um cluster</h3>
+                  <p>Use a consulta a seguir para retornar os dados dos pontos atribuídos ao quinto cluster. Os artigos selecionados devem ter dois atores.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    news_monitoring_cluster (
+        AvgTone,
+        EventCode,
+        NumArticles,
+        Actor1Geo_Lat,
+        Actor1Geo_Long,
+        Actor2Geo_Lat,
+        Actor2Geo_Long
+    ) AS events_cluster,
+    eventcode,
+    actor1name,
+    actor2name,
+    SUM(numarticles) AS totalarticles
+FROM
+    gdelt_data
+WHERE
+    events_cluster = 5
+    AND actor1name &lt;&gt; ' '
+    AND actor2name &lt;&gt; ' '
+GROUP BY
+    1,
+    2,
+    3,
+    4
+ORDER BY
+    5 desc;</code></pre>
+                
+                
+                  <h3 id="tutorial_k-means_clustering_show_events_data">Mostrar dados sobre eventos com representantes do mesmo código étnico</h3>
+                  <p>A consulta a seguir conta o número de artigos escritos sobre eventos com um tom positivo. A consulta também exige que os dois atores tenham o mesmo código étnico e retorna a qual cluster cada evento está atribuído.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    news_monitoring_cluster (
+        AvgTone,
+        EventCode,
+        NumArticles,
+        Actor1Geo_Lat,
+        Actor1Geo_Long,
+        Actor2Geo_Lat,
+        Actor2Geo_Long
+    ) AS events_cluster,
+    SUM(numarticles) AS total_articles,
+    eventcode AS event_code,
+    Actor1EthnicCode AS ethnic_code
+FROM
+    gdelt_data
+WHERE
+    Actor1EthnicCode = Actor2EthnicCode
+    AND Actor1EthnicCode &lt;&gt; ' '
+    AND Actor2EthnicCode &lt;&gt; ' '
+    AND AvgTone &gt; 0
+GROUP BY
+    1,
+    3,
+    4
+HAVING
+    (total_articles) &gt; 4
+ORDER BY
+    1,
+    2 ASC;</code></pre>
+                
+             
+               <h2 id="tutorial_k-means_clustering_related_topics">Tópicos relacionados</h2>
+               <p>Para obter mais informações sobre o Amazon Redshift ML, consulte a seguinte documentação:</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html"> Custos para usar o ML do Amazon Redshift</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">Operação CREATE MODEL</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">Função EXPLAIN_MODEL</a></p>
+                  </li></ul></div>
+               <p>Para obter mais informações sobre machine learning, consulte a seguinte documentação:</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">Visão geral do Machine Learning</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">Machine Learning para iniciantes e especialistas</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">What Is Fairness and Model Explainability for Machine Learning Predictions?</a> (O que é equidade e explicabilidade de modelo para previsões de machine learning?)</p>
+                  </li></ul></div>
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Atenção" /> <strong>O Javascript está desativado ou não está disponível no seu navegador.</strong></p><p>Para usar a documentação da AWS, o Javascript deve estar ativado. Consulte as páginas de Ajuda do navegador para obter instruções.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenções do documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial_remote_inference.html">Tutorial: Como criar modelos de inferência remota</div><div id="next" class="next-link" accesskey="n" href="./tutorial_multi-class_classification.html">Tutorial: Como criar modelos de classificação multiclasse</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Essa página foi útil? - Sim</div><div class="content"><p>Obrigado por nos informar que estamos fazendo um bom trabalho!</p><p>Se tiver tempo, conte-nos sobre o que você gostou para que possamos melhorar ainda mais.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_k-means_clustering.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Essa página foi útil? - Não</div><div class="content"><p>Obrigado por nos informar que precisamos melhorar a página. Lamentamos ter decepcionado você.</p><p>Se tiver tempo, conte-nos como podemos melhorar a documentação.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_k-means_clustering.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

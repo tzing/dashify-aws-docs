@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Salto na fila de consultas do WLM - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="wlm-queue-hopping" /><meta name="default_state" content="wlm-queue-hopping" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/wlm-queue-hopping.html" /><meta name="description" content="Uma consulta pode ser saltada devido a um tempo limite do WLM ou uma ação de salto da regra de monitoramento de consultas (QMR) . Só é possível saltar consultas em uma configuração manual do WLM." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guia do desenvolvedor de banco de dados" /><meta name="abstract" content="Crie e gerencie um data warehouse com o Amazon Redshift, um serviço de data warehouse totalmente gerenciado, em escala de petabyte e de nível empresarial." /><meta name="guide-locale" content="pt_br" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/wlm-queue-hopping.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/wlm-queue-hopping.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/wlm-queue-hopping.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/wlm-queue-hopping.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/wlm-queue-hopping.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/wlm-queue-hopping.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/wlm-queue-hopping.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/wlm-queue-hopping.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/wlm-queue-hopping.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/wlm-queue-hopping.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/wlm-queue-hopping.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/wlm-queue-hopping.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/wlm-queue-hopping.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/wlm-queue-hopping.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/wlm-queue-hopping.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/wlm-queue-hopping.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/wlm-queue-hopping.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/wlm-queue-hopping.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/wlm-queue-hopping.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/wlm-queue-hopping.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/wlm-queue-hopping.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/wlm-queue-hopping.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guia do desenvolvedor de banco de dados" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guia do desenvolvedor de banco de dados" /><meta id="panorama-serviceConsolePage" value="Salto na fila de consultas do WLM" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Salto na fila de consultas do WLM - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#wlm-queue-hopping" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/wlm-queue-hopping.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/wlm-queue-hopping.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/wlm-queue-hopping.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,desenvolvedor,dados de amostra,banco de dados,desenvolvedor do banco de dados,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guia do desenvolvedor de banco de dados",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Como implementar o gerenciamento do workload",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Implementar o WLM manual",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Salto na fila de consultas do WLM",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#wlm-queue-hopping" target="_blank" rel="noopener noreferrer" title="Abrir em PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentação</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guia do desenvolvedor de banco de dados</a></div><div id="page-toc-src"><a href="#wlm-queue-hopping-summary">Ações de tempo limite do WLM</a><a href="#wlm-timeout-queue-hopping">Salto na fila de tempo limite do WLM</a><a href="#wlm-timeout-reassigned-and-restarted-queries">Consultas reatribuídas e reiniciadas devido ao tempo limite do WLM</a><a href="#qmr-hop-action-queue-hopping">Ações de salto do QMR</a><a href="#qmr-hop-action-reassigned-and-restarted-queries">Consultas reatribuídas e reiniciadas devido à ação de salto do QMR</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="wlm-queue-hopping">Salto na fila de consultas do WLM</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Uma consulta pode ser saltada devido a um <a href="./cm-c-defining-query-queues.html#wlm-timeout">tempo limite do WLM</a> ou uma <a href="./cm-c-wlm-query-monitoring-rules.html#cm-c-wlm-defining-query-monitoring-rules">ação de salto da regra de monitoramento de consultas (QMR)</a>. Só é possível saltar consultas em uma configuração manual do WLM. </p><p>Quando uma consulta é saltada, o WLM tenta rotear a consulta para a próxima fila correspondente com base nas <a href="./cm-c-wlm-queue-assignment-rules.html">regras de atribuição de filas do WLM</a>. Se a consulta não corresponder a qualquer outra definição de fila, ela será cancelada. Ela não é atribuída à fila padrão. </p>
+         <h2 id="wlm-queue-hopping-summary">Ações de tempo limite do WLM</h2>
+         <p>A tabela a seguir resume o comportamento dos diferentes tipos de consultas com um tempo limite do WLM.</p>
+         <div class="table-container"><div class="table-contents"><table id="w319aac43c45c35b7b5"><thead>
+                  <tr>
+                     <th>Tipo da consulta</th>
+                     <th>Ação</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">INSERT, UPDATE e DELETE</td>
+                     <td tabindex="-1">Cancelar</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Funções definidas pelo usuário (UDFs)</td>
+                     <td tabindex="-1">Cancelar</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">UNLOAD</td>
+                     <td tabindex="-1">Cancelar</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">COPY</td>
+                     <td tabindex="-1">Continuar a execução</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Operações de manutenção</td>
+                     <td tabindex="-1">Continuar a execução</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Consultas somente leitura em estado <code class="code">returning</code></td>
+                     <td tabindex="-1">Continuar a execução</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Consultas somente leitura em estado <code class="code">running</code></td>
+                     <td tabindex="-1">Reatribuir ou reiniciar</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">CREATE TABLE AS (CTAS), SELECT INTO</td>
+                     <td tabindex="-1">Reatribuir ou reiniciar</td>
+                  </tr>
+               </table></div></div>
+         
+       
+         <h2 id="wlm-timeout-queue-hopping">Salto na fila de tempo limite do WLM</h2>
+         <p>O WLM salta os seguintes tipos de consultas quando seus tempos limite são expirados:</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>Consultas somente leitura, como instruções SELECT que estejam em estado <code class="code">running</code> no WLM. Para encontrar o estado do WLM de uma consulta, exiba a coluna STATE na tabela do sistema <a href="./r_STV_WLM_QUERY_STATE.html">STV_WLM_QUERY_STATE</a>. </p>
+            </li><li class="listitem">
+               <p>Instruções CREATE TABLE AS (CTAS). O salto de filas do WLM oferece suporte para as instruções CTAS definidas pelo usuário e para as geradas pelo sistema. </p>
+            </li><li class="listitem">
+               <p>Instruções SELECT INTO.</p>
+            </li></ul></div>
+         <p>As consultas que não estão sujeitas ao tempo limite do WLM continuam a ser executadas na fila original até que sejam concluídas. Os seguintes tipos de consultas não estão sujeitos ao tempo limite do WLM:</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>Instruções COPY</p>
+            </li><li class="listitem">
+               <p>Operações de manutenção, como ANALYZE e VACUUM</p>
+            </li><li class="listitem">
+               <p>Consultas somente leitura, como instruções SELECT que estejam em estado <code class="code">returning</code> no WLM. Para encontrar o estado do WLM de uma consulta, exiba a coluna STATE na tabela do sistema <a href="./r_STV_WLM_QUERY_STATE.html">STV_WLM_QUERY_STATE</a>. </p>
+            </li></ul></div>
+         <p>Consultas que não estão qualificadas para a operação de salto por tempo limite do WLM são canceladas quando seus tempos limite expiram. Os seguintes tipos de consultas não estão qualificados para a operação de salto por tempo limite do WLM:</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>Instruções INSERT, UPDATE e DELETE</p>
+            </li><li class="listitem">
+               <p>Instruções UNLOAD</p>
+            </li><li class="listitem">
+               <p>Funções definidas pelo usuário (UDFs)</p>
+            </li></ul></div>
+
+       
+         <h2 id="wlm-timeout-reassigned-and-restarted-queries">Consultas reatribuídas e reiniciadas devido ao tempo limite do WLM</h2>
+         <p>Quando uma consulta é saltada e nenhuma fila correspondente é encontrada, a consulta é cancelada.</p>
+         <p>Quando uma consulta é saltada e uma fila correspondente é encontrada, o WLM tenta reatribuir a consulta à nova fila. Caso não seja possível reatribuir uma consulta, ela é reiniciada em uma fila nova, como descrito a seguir.</p>
+         <p>Uma consulta somente será reatribuída se todas as afirmações a seguir forem verdadeiras:</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>Uma fila correspondente foi encontrada.</p>
+            </li><li class="listitem">
+               <p>A fila nova tem slots livres suficientes para executar a consulta. Uma consulta pode exigir vários slots se o parâmetro <a href="./r_wlm_query_slot_count.html">wlm_query_slot_count</a> foi definido com um valor maior que 1.</p>
+            </li><li class="listitem">
+               <p>A fila nova tem, no mínimo, a mesma quantidade de memória disponível usada pela consulta no momento. </p>
+            </li></ul></div>
+         <p>Se a consulta for reatribuída, ela continuará sendo executada na fila nova. Os resultados intermediários são conservados, de forma que o efeito sobre o tempo total de execução é mínimo. </p>
+         <p>Se a consulta não puder ser reatribuída, ela será cancelada e reiniciada na nova fila. Os resultados intermediários são excluídos. A consulta espera na fila e inicia a execução quando há slots suficientes disponíveis.</p>
+
+       
+         <h2 id="qmr-hop-action-queue-hopping">Ações de salto do QMR</h2>
+         
+         <p>A tabela a seguir resume o comportamento dos diferentes tipos de consultas com uma ação de salto do QMR.</p>
+         <div class="table-container"><div class="table-contents"><table id="w319aac43c45c35c13b5"><thead>
+                  <tr>
+                     <th>Tipo da consulta</th>
+                     <th>Ação</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">COPY</td>
+                     <td tabindex="-1">Continuar a execução</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Operações de manutenção</td>
+                     <td tabindex="-1">Continuar a execução</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Funções definidas pelo usuário (UDFs)</td>
+                     <td tabindex="-1">Continuar a execução</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">UNLOAD</td>
+                     <td tabindex="-1">Reatribuir ou continuar a execução</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">INSERT, UPDATE e DELETE</td>
+                     <td tabindex="-1">Reatribuir ou continuar a execução</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Consultas somente leitura em estado <code class="code">returning</code></td>
+                     <td tabindex="-1">Reatribuir ou continuar a execução</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Consultas somente leitura em estado <code class="code">running</code></td>
+                     <td tabindex="-1">Reatribuir ou reiniciar</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">CREATE TABLE AS (CTAS), SELECT INTO</td>
+                     <td tabindex="-1">Reatribuir ou reiniciar</td>
+                  </tr>
+               </table></div></div>
+         
+         <p>Para saber se uma consulta que foi saltada pelo QMR foi reatribuída, reiniciada ou cancelada, consulte a <a href="./r_STL_WLM_RULE_ACTION.html">STL_WLM_RULE_ACTION</a>tabela de log do sistema.</p>
+  
+         
+
+       
+         <h2 id="qmr-hop-action-reassigned-and-restarted-queries">Consultas reatribuídas e reiniciadas devido à ação de salto do QMR</h2>
+         <p>Quando uma consulta é saltada e nenhuma fila correspondente é encontrada, a consulta é cancelada.</p>
+         <p>Quando uma consulta é saltada e uma fila correspondente é encontrada, o WLM tenta reatribuir a consulta à nova fila. Caso não seja possível reatribuir uma consulta, ela será reiniciada na fila nova ou continuará a ser executada na fila original, como descrito a seguir.</p>
+         <p>Uma consulta somente será reatribuída se todas as afirmações a seguir forem verdadeiras:</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>Uma fila correspondente foi encontrada.</p>
+            </li><li class="listitem">
+               <p>A fila nova tem slots livres suficientes para executar a consulta. Uma consulta pode exigir vários slots se o parâmetro <a href="./r_wlm_query_slot_count.html">wlm_query_slot_count</a> foi definido com um valor maior que 1.</p>
+            </li><li class="listitem">
+               <p>A fila nova tem, no mínimo, a mesma quantidade de memória disponível usada pela consulta no momento. </p>
+            </li></ul></div>
+         <p>Se a consulta for reatribuída, ela continuará sendo executada na fila nova. Os resultados intermediários são conservados, de forma que o efeito sobre o tempo total de execução é mínimo. </p>
+         <p>Caso não seja possível reatribuir uma consulta, ela será reiniciada ou continuará a ser executada na fila original. Se a consulta for reiniciada, ela será cancelada e reiniciada na nova fila. Os resultados intermediários são excluídos. A consulta espera na fila e inicia a execução quando há slots suficientes disponíveis.</p>
+            
+          
+         
+
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Atenção" /> <strong>O Javascript está desativado ou não está disponível no seu navegador.</strong></p><p>Para usar a documentação da AWS, o Javascript deve estar ativado. Consulte as páginas de Ajuda do navegador para obter instruções.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenções do documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./cm-c-defining-query-queues.html">WLM manual</div><div id="next" class="next-link" accesskey="n" href="./tutorial-configuring-workload-management.html">Tutorial: Configuração de filas de WLM manual</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Essa página foi útil? - Sim</div><div class="content"><p>Obrigado por nos informar que estamos fazendo um bom trabalho!</p><p>Se tiver tempo, conte-nos sobre o que você gostou para que possamos melhorar ainda mais.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/wlm-queue-hopping.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Essa página foi útil? - Não</div><div class="content"><p>Obrigado por nos informar que precisamos melhorar a página. Lamentamos ter decepcionado você.</p><p>Se tiver tempo, conte-nos como podemos melhorar a documentação.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/wlm-queue-hopping.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

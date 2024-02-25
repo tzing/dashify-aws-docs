@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Tutorial: Como criar modelos de rotatividade de clientes - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_customer_churn" /><meta name="default_state" content="tutorial_customer_churn" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_customer_churn.html" /><meta name="description" content="Use este tutorial para obter um exemplo completo de como criar um modelo de machine learning do Amazon Redshift e executar consultas de inferência." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guia do desenvolvedor de banco de dados" /><meta name="abstract" content="Crie e gerencie um data warehouse com o Amazon Redshift, um serviço de data warehouse totalmente gerenciado, em escala de petabyte e de nível empresarial." /><meta name="guide-locale" content="pt_br" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_customer_churn.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_customer_churn.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_customer_churn.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_customer_churn.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_customer_churn.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_customer_churn.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_customer_churn.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_customer_churn.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_customer_churn.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_customer_churn.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_customer_churn.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_customer_churn.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_customer_churn.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_customer_churn.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_customer_churn.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_customer_churn.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_customer_churn.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_customer_churn.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_customer_churn.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_customer_churn.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_customer_churn.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_customer_churn.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guia do desenvolvedor de banco de dados" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guia do desenvolvedor de banco de dados" /><meta id="panorama-serviceConsolePage" value="Tutorial: Como criar modelos de rotatividade de clientes" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Tutorial: Como criar modelos de rotatividade de clientes - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_customer_churn" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_customer_churn.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_customer_churn.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_customer_churn.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,desenvolvedor,dados de amostra,banco de dados,desenvolvedor do banco de dados,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guia do desenvolvedor de banco de dados",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Usar Machine Learning no Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Conceitos básicos do Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Tutoriais para o Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "Tutorial: Como criar modelos de rotatividade de clientes",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_customer_churn" target="_blank" rel="noopener noreferrer" title="Abrir em PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentação</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guia do desenvolvedor de banco de dados</a></div><div id="page-toc-src"><a href="#tutorial_customer_churn_tasks">Exemplos de casos de uso</a><a href="#tutorial_customer_churn_prereqs">Pré-requisitos</a><a href="#tutorial_customer_churn_step_load">Etapa 1: Carregar dados do Amazon S3 para o Amazon Redshift</a><a href="#tutorial_customer_churn_step_create_model">Etapa 2: Criar o modelo de machine learning</a><a href="#tutorial_customer_churn_step_perform_predictions">Etapa 3: Executar previsões com o modelo</a><a href="#tutorial_customer_churn_related_topics">Tópicos relacionados</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_customer_churn">Tutorial: Como criar modelos de rotatividade de clientes</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Neste tutorial, você usa o Amazon Redshift ML para criar um modelo de rotatividade de clientes com o comando CREATE MODEL e executar consultas de previsão para cenários de usuários. Em seguida, você implementa consultas usando a função SQL gerada pelo comando CREATE MODEL.</p><p>Você pode usar um comando CREATE MODEL simples para exportar dados de treinamento, treinar um modelo, importar o modelo e preparar uma função de previsão do Amazon Redshift. Use a instrução CREATE MODEL para especificar dados de treinamento como uma tabela ou instrução SELECT.</p><p>Esse exemplo usa informações históricas para construir um modelo de machine learning de rotatividade de clientes de uma operadora de telefonia móvel. Primeiro, o SageMaker treina e, em seguida, testa o modelo de machine learning usando as informações de perfil de um cliente arbitrário. Após a validação do modelo, o Amazon SageMaker implanta o modelo e a função de previsão no Amazon Redshift. Você pode usar a função de previsão para prever se um cliente vai se desligar ou não.</p>
+            <h2 id="tutorial_customer_churn_tasks">Exemplos de casos de uso</h2>
+            <p>Você pode resolver outros problemas de classificação binária usando o Amazon Redshift ML, como prever se é possível ou não fechar um lead de vendas. Você também pode prever se uma transação financeira é fraudulenta ou não.</p>
+            <p><b>Tarefas</b></p><div class="itemizedlist">
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>Pré-requisitos</p>
+               </li><li class="listitem">
+                  <p>Etapa 1: Carregar dados do Amazon S3 para o Amazon Redshift</p>
+               </li><li class="listitem">
+                  <p>Etapa 2: Criar o modelo de machine learning</p>
+               </li><li class="listitem">
+                  <p>Etapa 3: Executar previsões com o modelo</p>
+               </li></ul></div>
+          
+            <h2 id="tutorial_customer_churn_prereqs">Pré-requisitos</h2>
+            <p>Para concluir as etapas neste tutorial, você precisa atender aos seguintes pré-requisitos:</p>
+            
+            
+            <div class="itemizedlist">
+               
+                
+                
+                
+               
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>Você deve configurar um cluster do Amazon Redshift para o Amazon Redshift ML. Para isso, use a documentação <a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">Definir cluster e configuração para administração do Amazon Redshift ML</a>.</p>
+               </li><li class="listitem">
+                  <p>O cluster do Amazon Redshift que você usa para criar o modelo e o bucket do Amazon S3 usado para preparar os dados de treinamento e os artefatos do modelo devem estar na mesma região da AWS.</p>
+               </li><li class="listitem">
+                  <p>Para baixar os comandos SQL e o conjunto de dados de exemplo usados nessa documentação, siga um destes procedimentos:</p>
+                  <div class="itemizedlist">
+                      
+                      
+                  <ul class="itemizedlist"><li class="listitem">
+                        <p>Baixe os <a href="https://s3.amazonaws.com/redshift-downloads/redshift-ml/tutorial-scripts/redshift-ml-tutorial.sql" rel="noopener noreferrer" target="_blank"><span>Comandos SQL</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>, o <a href="https://s3.amazonaws.com/redshift-downloads/redshift-ml/customer_activity/customer_activity.csv" rel="noopener noreferrer" target="_blank"><span>Arquivo de atividade do cliente</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> e o <a href="https://s3.amazonaws.com/redshift-downloads/redshift-ml/abalone_xg/abalone.csv" rel="noopener noreferrer" target="_blank"><span>Arquivo Abalone</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p>
+                     </li><li class="listitem">
+                        <p>Usando a AWS CLI para Amazon S3, execute o comando a seguir. Você pode usar seu próprio caminho de destino.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">aws s3 cp s3://redshift-downloads/redshift-ml/tutorial-scripts/redshift-ml-tutorial.sql <code class="replaceable">&lt;/target/path&gt;</code>
+aws s3 cp s3://redshift-downloads/redshift-ml/customer_activity/customer_activity.csv <code class="replaceable">&lt;/target/path&gt;</code>
+aws s3 cp s3://redshift-downloads/redshift-ml/abalone_xgb/abalone_xgb.csv <code class="replaceable">&lt;/target/path&gt;</code></code></pre>
+                     </li></ul></div>
+               </li></ul></div>
+          
+            <h2 id="tutorial_customer_churn_step_load">Etapa 1: Carregar dados do Amazon S3 para o Amazon Redshift</h2>
+            <p>Use o <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">editor de consultas v2 do Amazon Redshift</a> para editar e executar consultas e visualizar resultados.</p>
+            <p>A execução das consultas a seguir cria um perfil chamado <code class="code">customer_activity</code> e ingere o conjunto de dados de exemplo do Amazon S3.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">DROP TABLE IF EXISTS customer_activity;
+
+CREATE TABLE customer_activity (
+state varchar(2),
+account_length int,
+area_code int,
+phone varchar(8),
+intl_plan varchar(3),
+vMail_plan varchar(3),
+vMail_message int,
+day_mins float,
+day_calls int,
+day_charge float,
+total_charge float,
+eve_mins float,
+eve_calls int,
+eve_charge float,
+night_mins float,
+night_calls int,
+night_charge float,
+intl_mins float,
+intl_calls int,
+intl_charge float,
+cust_serv_calls int,
+churn varchar(6),
+record_date date
+);
+
+COPY customer_activity
+FROM 's3://redshift-downloads/redshift-ml/customer_activity/'
+REGION 'us-east-1' IAM_ROLE default
+FORMAT AS CSV IGNOREHEADER 1;</code></pre>
+          
+            <h2 id="tutorial_customer_churn_step_create_model">Etapa 2: Criar o modelo de machine learning</h2>
+            
+            <p>A rotatividade é nossa entrada de destino nesse modelo. Todas as outras entradas para o modelo são atributos que ajudam a criar uma função para prever a rotatividade.</p>
+            <p>O exemplo a seguir usa a operação CREATE MODEL para fornecer um modelo que prevê se um cliente estará ativo, usando entradas como idade, código postal, gastos e casos do cliente. No exemplo a seguir, substitua <code class="replaceable"><code class="code">DOC-EXAMPLE-BUCKET</code></code> pelo seu próprio bucket do Amazon S3.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL customer_churn_auto_model
+FROM
+    (
+      SELECT state,
+             account_length,
+             area_code,
+             total_charge/account_length AS average_daily_spend,
+             cust_serv_calls/account_length AS average_daily_cases,
+             churn
+      FROM customer_activity
+      WHERE  record_date &lt; '2020-01-01'
+     )
+TARGET churn FUNCTION ml_fn_customer_churn_auto
+IAM_ROLE default SETTINGS (
+  S3_BUCKET '<code class="replaceable">&lt;DOC-EXAMPLE-BUCKET&gt;</code>'
+);</code></pre>
+            <p>A consulta SELECT no exemplo anterior cria os dados de treinamento. A cláusula TARGET especifica qual coluna é o “rótulo” de machine learning que CREATE MODEL usa para aprender a prever. A coluna de destino “rotatividade” indica se o cliente ainda tem uma associação ativa ou suspendeu a associação. O campo S3_BUCKET é o nome do bucket do Amazon S3 que você criou anteriormente. O bucket do Amazon S3 é usado para compartilhar dados de treinamento e artefatos entre o Amazon Redshift e o Amazon SageMaker. As colunas restantes são os recursos que são usados para a previsão.</p>
+            <p>Para obter um resumo da sintaxe e dos recursos de um caso de uso simples do comando CREATE MODEL, consulte <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_create_model_use_cases.html#r_simple_create_model">Simple CREATE MODEL</a> (CREATE MODEL simples).</p>
+             
+               <h3 id="tutorial_customer_churn_encryption">Adicionar permissões para criptografia do lado do servidor (opcional)</h3>
+               <p>Por padrão, o Amazon Redshift usa o Amazon SageMaker Autopilot para treinamento. Observe, especificamente, que o Amazon Redshift exporta os dados de treinamento com segurança para o bucket do Amazon S3 especificado pelo cliente. Se você não especificar um <code class="code">KMS_KEY_ID</code>, os dados serão criptografados usando a criptografia do lado do servidor SSE-S3 por padrão.</p>
+               <p>Se sua entrada for criptografada usando a criptografia do lado do servidor com uma chave gerenciada pelo AWS KMS (SSE-KMS), adicione as seguintes permissões:</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+    "Effect": "Allow",
+    "Action": [
+    "kms:Encrypt"
+    "kms:Decrypt"
+    ]
+}</code></pre>
+               <p>Para obter mais informações sobre as funções do Amazon SageMaker, consulte <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html">Amazon SageMaker roles</a> (Funções do Amazon SageMaker) no <em>Guia do desenvolvedor do Amazon SageMaker</em>.</p>
+               
+             
+             
+               <h3 id="tutorial_customer_churn_check_status">Conferir o status do modelo de treinamento (opcional)</h3>
+               <p>Você pode usar o comando SHOW MODEL para saber quando o modelo está pronto.</p><p>Use a operação a seguir para verificar o status do modelo.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL customer_churn_auto_model;</code></pre><p>Veja a seguir um exemplo de saída da operação anterior.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|           Key            |                                                                             Value                                                                             |
++--------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|        Model Name        |                                                                   customer_churn_auto_model                                                                   |
+|       Schema Name        |                                                                            public                                                                             |
+|          Owner           |                                                                            awsuser                                                                            |
+|      Creation Time       |                                                                   Tue, 14.06.2022 17:15:52                                                                    |
+|       Model State        |                                                                           TRAINING                                                                            |
+|                          |                                                                                                                                                               |
+|      TRAINING DATA:      |                                                                                                                                                               |
+|          Query           | SELECT STATE, ACCOUNT_LENGTH, AREA_CODE, TOTAL_CHARGE / ACCOUNT_LENGTH AS AVERAGE_DAILY_SPEND, CUST_SERV_CALLS / ACCOUNT_LENGTH AS AVERAGE_DAILY_CASES, CHURN |
+|                          |                                                                    FROM CUSTOMER_ACTIVITY                                                                     |
+|                          |                                                               WHERE RECORD_DATE &lt; '2020-01-01'                                                                |
+|      Target Column       |                                                                             CHURN                                                                             |
+|                          |                                                                                                                                                               |
+|       PARAMETERS:        |                                                                                                                                                               |
+|        Model Type        |                                                                             auto                                                                              |
+|       Problem Type       |                                                                                                                                                               |
+|        Objective         |                                                                                                                                                               |
+|     AutoML Job Name      |                                                                redshiftml-20220614171552640901                                                                |
+|      Function Name       |                                                                   ml_fn_customer_churn_auto                                                                   |
+|   Function Parameters    |                                            state account_length area_code average_daily_spend average_daily_cases                                             |
+| Function Parameter Types |                                                                 varchar int4 int4 float8 int4                                                                 |
+|         IAM Role         |                                                                     default-aws-iam-role                                                                      |
+|        S3 Bucket         |                                                                        <code class="replaceable">DOC-EXAMPLE-BUCKET</code>                                                                     |
+|       Max Runtime        |                                                                             5400                                                                              |
++--------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+</code></pre><p>Ao concluir o treinamento do modelo, a variável <code class="code">model_state</code> se tornará <code class="code">Model is Ready</code> e a função de previsão se tornará disponível.</p>
+             
+            
+            
+            
+            
+          
+            <h2 id="tutorial_customer_churn_step_perform_predictions">Etapa 3: Executar previsões com o modelo</h2>
+            <p>Você pode usar instruções SQL para exibir as previsões feitas pelo respectivo modelo. Neste exemplo, a função de previsão criada pela operação CREATE MODEL é denominada <code class="code">ml_fn_customer_churn_auto</code>. Os argumentos de entrada para a função de previsão correspondem aos tipos de recurso, como varchar para <code class="code">state</code> e integer para <code class="code">account_length</code>. A saída da função de previsão é do mesmo tipo que a coluna TARGET da instrução CREATE MODEL.</p><div class="orderedlist">
+                   
+                   
+                   
+               <ol><li>
+                     <p>Como você treinou o modelo em dados anteriores a 1/1/2020, agora você usa a função de previsão no conjunto de testes. A consulta a seguir exibe as previsões sobre se os clientes cadastrados após 1.º/1/2020 passarão por rotatividade ou não.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    phone,
+    ml_fn_customer_churn_auto(
+        state,
+        account_length,
+        area_code,
+        total_charge / account_length,
+        cust_serv_calls / account_length
+    ) AS active
+FROM
+    customer_activity
+WHERE
+    record_date &gt; '2020-01-01';</code></pre>
+                  </li><li>
+                     <p>O exemplo a seguir usa a mesma função de previsão para um caso de uso diferente. Neste caso, o Amazon Redshift prevê a proporção de rotatividade e não rotatividade entre clientes de diferentes estados onde a data de registro é posterior a 1.º/1/2020.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">WITH predicted AS (
+    SELECT
+        state,
+        ml_fn_customer_churn_auto(
+            state,
+            account_length,
+            area_code,
+            total_charge / account_length,
+            cust_serv_calls / account_length
+        ) :: varchar(6) AS active
+    FROM
+        customer_activity
+    WHERE
+        record_date &gt; '2020-01-01'
+)
+SELECT
+    state,
+    SUM(
+        CASE
+            WHEN active = 'True.' THEN 1
+            ELSE 0
+        END
+    ) AS churners,
+    SUM(
+        CASE
+            WHEN active = 'False.' THEN 1
+            ELSE 0
+        END
+    ) AS nonchurners,
+    COUNT(*) AS total_per_state
+FROM
+    predicted
+GROUP BY
+    state
+ORDER BY
+    state;</code></pre>
+                  </li><li>
+                     <p>O exemplo a seguir usa a função de previsão para o caso de uso de previsão da porcentagem de clientes que se desligam em um estado. Neste caso, o Amazon Redshift prevê a porcentagem de rotatividade quando a data de registro é posterior a 1/1/2020.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">WITH predicted AS (
+    SELECT
+        state,
+        ml_fn_customer_churn_auto(
+            state,
+            account_length,
+            area_code,
+            total_charge / account_length,
+            cust_serv_calls / account_length
+        ) :: varchar(6) AS active
+    FROM
+        customer_activity
+    WHERE
+        record_date &gt; '2020-01-01'
+)
+SELECT
+    state,
+    CAST((CAST((SUM(
+        CASE
+            WHEN active = 'True.' THEN 1
+            ELSE 0
+        END
+    )) AS FLOAT) / CAST(COUNT(*) AS FLOAT)) AS DECIMAL (3, 2)) AS pct_churn,
+    COUNT(*) AS total_customers_per_state
+FROM
+    predicted
+GROUP BY
+    state
+ORDER BY
+    3 DESC;</code></pre>
+                  </li></ol></div>
+          
+            <h2 id="tutorial_customer_churn_related_topics">Tópicos relacionados</h2>
+            <p>Para obter mais informações sobre o Amazon Redshift ML, consulte a seguinte documentação:</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">Custos para usar o Amazon Redshift ML</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">Comando CREATE MODEL</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">Função EXPLAIN_MODEL</a></p>
+                  </li></ul></div>
+            <p>Para obter mais informações sobre machine learning, consulte a seguinte documentação:</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">Visão geral do Machine Learning</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">Machine Learning para iniciantes e especialistas</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">What Is Fairness and Model Explainability for Machine Learning Predictions?</a> (O que é equidade e explicabilidade de modelo para previsões de machine learning?)</p>
+                  </li></ul></div>
+         <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Atenção" /> <strong>O Javascript está desativado ou não está disponível no seu navegador.</strong></p><p>Para usar a documentação da AWS, o Javascript deve estar ativado. Consulte as páginas de Ajuda do navegador para obter instruções.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenções do documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorials_for_amazon_redshift_ml.html">Tutoriais para o Amazon Redshift ML</div><div id="next" class="next-link" accesskey="n" href="./tutorial_remote_inference.html">Tutorial: Como criar modelos de inferência remota</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Essa página foi útil? - Sim</div><div class="content"><p>Obrigado por nos informar que estamos fazendo um bom trabalho!</p><p>Se tiver tempo, conte-nos sobre o que você gostou para que possamos melhorar ainda mais.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_customer_churn.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Essa página foi útil? - Não</div><div class="content"><p>Obrigado por nos informar que precisamos melhorar a página. Lamentamos ter decepcionado você.</p><p>Se tiver tempo, conte-nos como podemos melhorar a documentação.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_customer_churn.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

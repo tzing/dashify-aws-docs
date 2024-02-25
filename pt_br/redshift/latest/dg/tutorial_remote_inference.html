@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Tutorial: Como criar modelos de inferência remota - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_remote_inference" /><meta name="default_state" content="tutorial_remote_inference" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_remote_inference.html" /><meta name="description" content="Use este tutorial para obter um exemplo completo de como criar um modelo de machine learning do Amazon Redshift e executar consultas de inferência." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guia do desenvolvedor de banco de dados" /><meta name="abstract" content="Crie e gerencie um data warehouse com o Amazon Redshift, um serviço de data warehouse totalmente gerenciado, em escala de petabyte e de nível empresarial." /><meta name="guide-locale" content="pt_br" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_remote_inference.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_remote_inference.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_remote_inference.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_remote_inference.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_remote_inference.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_remote_inference.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_remote_inference.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_remote_inference.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_remote_inference.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_remote_inference.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_remote_inference.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_remote_inference.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_remote_inference.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_remote_inference.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_remote_inference.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_remote_inference.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_remote_inference.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_remote_inference.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_remote_inference.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_remote_inference.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_remote_inference.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_remote_inference.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guia do desenvolvedor de banco de dados" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guia do desenvolvedor de banco de dados" /><meta id="panorama-serviceConsolePage" value="Tutorial: Como criar modelos de inferência remota" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Tutorial: Como criar modelos de inferência remota - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_remote_inference" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_remote_inference.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_remote_inference.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_remote_inference.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,desenvolvedor,dados de amostra,banco de dados,desenvolvedor do banco de dados,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guia do desenvolvedor de banco de dados",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Usar Machine Learning no Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Conceitos básicos do Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Tutoriais para o Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "Tutorial: Como criar modelos de inferência remota",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_remote_inference" target="_blank" rel="noopener noreferrer" title="Abrir em PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentação</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guia do desenvolvedor de banco de dados</a></div><div id="page-toc-src"><a href="#tutorial_remote_inference_tasks">Exemplos de casos de uso</a><a href="#tutorial_remote_inference_prereqs">Pré-requisitos</a><a href="#tutorial_remote_inference_step_deploy">Etapa 1: Implantar o modelo do Amazon SageMaker</a><a href="#tutorial_remote_inference_step_endpoint">Etapa 2: Obter o endpoint do modelo do SageMaker</a><a href="#tutorial_remote_inference_step_load">Etapa 3: Carregar dados do Amazon S3 para o Amazon Redshift</a><a href="#tutorial_remote_inference_step_create_model">Etapa 4: Criar um modelo com o Amazon Redshift ML</a><a href="#tutorial_remote_inference_step_perform_predictions">Etapa 5: Executar previsões com o modelo</a><a href="#tutorial_remote_inference_related_topics">Tópicos relacionados</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_remote_inference">Tutorial: Como criar modelos de inferência remota</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>O tutorial a seguir explica as etapas sobre como criar um <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/randomcutforest.html">modelo Random Cut Forest</a> que foi treinado e implantado anteriormente no Amazon SageMaker, fora do Amazon Redshift. O algoritmo Random Cut Forest detecta pontos de dados anômalos em um conjunto de dados. A criação de um modelo com inferência remota permite que você leve seu modelo Random Cut Forest do SageMaker para o Amazon Redshift. Em seguida, no Amazon Redshift, você usa SQL para realizar previsões em um endpoint remoto do SageMaker.</p><p>Você pode usar um comando CREATE MODEL para importar um modelo de machine learning de um endpoint do Amazon SageMaker e preparar uma função de previsão do Amazon Redshift. Ao usar a operação CREATE MODEL, você fornece o nome do endpoint do modelo de machine learning do SageMaker.</p><p>Neste tutorial, você cria um modelo de machine learning do Amazon Redshift usando um endpoint de modelo do SageMaker. Quando seu modelo de machine learning estiver pronto, você poderá usá-lo para realizar previsões no Amazon Redshift. Primeiro, você treina e cria um endpoint no Amazon SageMaker e, em seguida, obtém o nome do endpoint. Depois, você usa o comando CREATE MODEL para criar um modelo com o Amazon Redshift ML. Finalmente, você executa previsões no modelo usando a função de previsão que o comando CREATE MODEL gera.</p>
+            <h2 id="tutorial_remote_inference_tasks">Exemplos de casos de uso</h2>
+            <p>Você pode usar modelos Random Cut Forest e inferência remota para detecção de anomalias em outros conjuntos de dados, como prever um rápido aumento ou diminuição nas transações de comércio eletrônico. Você também pode prever mudanças significativas no clima ou na atividade sísmica.</p>
+         <p><b>Tarefas</b></p>
+            <div class="itemizedlist">
+                
+                
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>Pré-requisitos</p>
+               </li><li class="listitem">
+                  <p>Etapa 1: Implantar o modelo do Amazon SageMaker</p>
+               </li><li class="listitem">
+                  <p>Etapa 2: Obter o endpoint do modelo do SageMaker</p>
+               </li><li class="listitem">
+                  <p>Etapa 3: Carregar dados do Amazon S3 para o Amazon Redshift</p>
+               </li><li class="listitem">
+                  <p>Etapa 4: Criar um modelo com o Amazon Redshift ML</p>
+               </li><li class="listitem">
+                  <p>Etapa 5: Executar previsões com o modelo</p>
+               </li></ul></div>
+          
+            <h2 id="tutorial_remote_inference_prereqs">Pré-requisitos</h2>
+            <p>Para concluir as etapas neste tutorial, você precisa atender aos seguintes pré-requisitos:</p>
+            <div class="itemizedlist">
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>Ter concluído a <a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">configuração administrativa</a> do Amazon Redshift ML.</p>
+               </li><li class="listitem">
+                  <p>Ter baixado o <a href="https://s3.amazonaws.com/sagemaker-sample-files/datasets/tabular/anomaly_benchmark_taxi/NAB_nyc_taxi.csv" rel="noopener noreferrer" target="_blank"><span>conjunto de dados NYC taxi</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> (Táxi na cidade de Nova York), <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html">criado um bucket do Amazon S3</a> e <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html">carregado os dados no bucket do Amazon S3</a>.</p>
+               </li><li class="listitem">
+                  <p>Você deve treinar, implantar o modelo e o endpoint do SageMaker e obter o nome do endpoint do SageMaker. Use <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=RedshiftBYOM&amp;templateURL=https://redshift-ml-multiclass.s3.amazonaws.com/redshift-byom-blog.yaml" rel="noopener noreferrer" target="_blank"><span>este modelo do AWS CloudFormation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> para provisionar automaticamente todos os recursos do SageMaker em sua conta da AWS.</p>
+               </li></ul></div>
+          
+            <h2 id="tutorial_remote_inference_step_deploy">Etapa 1: Implantar o modelo do Amazon SageMaker</h2>
+            <div class="orderedlist">
+                
+                
+                
+                
+                
+            <ol><li>
+                  <p>Para implantar o modelo, acesse o console do Amazon SageMaker, escolha <b>Notebook instances</b> (Instâncias de caderno) abaixo de <b>Notebook</b> (Caderno) no painel de navegação.</p>
+               </li><li>
+                  <p> Escolha <b>Open Jupyter</b> (Abrir o Jupyter) para o caderno Jupyter que foi criado pelo modelo do CloudFormation.</p>
+               </li><li>
+                  <p>Selecione <code class="code">bring-your-own-model-remote-inference.ipynb</code>.</p>
+               </li><li>
+                  <p>Configure os parâmetros para armazenar a entrada e a saída do treinamento no Amazon S3 substituindo as linhas a seguir pelo bucket e prefixo do Amazon S3.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">data_location=f"s3://<code class="replaceable"><span>{</span>bucket}/<span>{</span>prefix}/</code>",
+output_path=f"s3://<code class="replaceable"><span>{</span>bucket}/<span>{</span>prefix}/</code>output",</code></pre>
+               </li><li>
+                  <p>Escolha o botão <b>fast-forward</b> (avanço rápido) para executar todas as células.</p>
+               </li></ol></div>
+          
+            <h2 id="tutorial_remote_inference_step_endpoint">Etapa 2: Obter o endpoint do modelo do SageMaker</h2>
+            <p>No console do Amazon SageMaker, em <b>Inference</b> (Inferência) no painel de navegação, escolha <b>Endpoints</b> e encontre o nome do modelo. Você deve copiar o nome do endpoint do modelo ao criar o modelo de inferência remota no Amazon Redshift.</p>
+          
+            <h2 id="tutorial_remote_inference_step_load">Etapa 3: Carregar dados do Amazon S3 para o Amazon Redshift</h2>
+            <p>Use o <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">editor de consultas v2 do Amazon Redshift</a> para executar os comandos SQL a seguir no Amazon Redshift. Esses comandos descartam a tabela <code class="code">rcf_taxi_data</code>, se ela existir, criam uma tabela com o mesmo nome e carregam o conjunto de dados de exemplo na tabela.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">DROP TABLE IF EXISTS public.rcf_taxi_data CASCADE;
+
+CREATE TABLE public.rcf_taxi_data (ride_timestamp timestamp, nbr_passengers int);
+
+COPY public.rcf_taxi_data
+FROM
+    's3://sagemaker-sample-files/datasets/tabular/anomaly_benchmark_taxi/NAB_nyc_taxi.csv'
+    IAM_ROLE default
+    IGNOREHEADER 1
+    FORMAT AS CSV;</code></pre>
+          
+            <h2 id="tutorial_remote_inference_step_create_model">Etapa 4: Criar um modelo com o Amazon Redshift ML</h2>
+            <p>Execute a consulta a seguir para criar um modelo no Amazon Redshift ML usando o endpoint de modelo do SageMaker obtido na etapa anterior. Substitua <code class="replaceable"><code class="code">randomcutforest-xxxxxxxxx</code></code> pelo nome de seu próprio endpoint do SageMaker.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL public.remote_random_cut_forest
+FUNCTION remote_fn_rcf(int)
+RETURNS decimal(10, 6) SAGEMAKER '<code class="replaceable">&lt;randomcutforest-xxxxxxxxx&gt;</code>' IAM_ROLE default;</code></pre>
+             
+               <h3 id="tutorial_remote_inference_check_status">Conferir o status do modelo (opcional)</h3>
+               <p>Você pode usar o comando SHOW MODEL para saber quando o modelo está pronto.</p>
+                  <p>Para verificar o status do modelo, use a operação SHOW MODEL a seguir.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL public.remote_random_cut_forest</code></pre>
+               <p>A saída mostra o endpoint e o nome da função do SageMaker.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------+-----------------------------------------+
+|        Model Name        |        remote_random_cut_forest         |
++--------------------------+-----------------------------------------+
+|       Schema Name        |                 public                  |
+|          Owner           |                 awsuser                 |
+|      Creation Time       |        Wed, 15.06.2022 17:58:21         |
+|       Model State        |                  READY                  |
+|                          |                                         |
+|       PARAMETERS:        |                                         |
+|         Endpoint         |      <code class="replaceable">&lt;randomcutforest-xxxxxxxxx&gt;</code>        |
+|      Function Name       |              remote_fn_rcf              |
+|      Inference Type      |                 Remote                  |
+| Function Parameter Types |                  int4                   |
+|         IAM Role         |          default-aws-iam-role           |
++--------------------------+-----------------------------------------+</code></pre>
+             
+          
+            <h2 id="tutorial_remote_inference_step_perform_predictions">Etapa 5: Executar previsões com o modelo</h2>
+            <p>O algoritmo Random Cut Forest do Amazon SageMaker foi projetado para detectar pontos de dados anômalos em um conjunto de dados. Neste exemplo, seu modelo foi projetado para detectar picos em corridas de táxi devido a eventos importantes. Você pode usar o modelo para prever eventos anômalos gerando uma pontuação de anomalia para cada ponto de dados.</p>
+            <p>Use a consulta a seguir para calcular pontuações de anomalia em todo o conjunto de dados de táxi. Observe que você faz referência à função usada na instrução CREATE MODEL na etapa anterior.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    ride_timestamp,
+    nbr_passengers,
+    public.remote_fn_rcf(nbr_passengers) AS score
+FROM
+    public.rcf_taxi_data;</code></pre>
+             
+               <h3 id="tutorial_remote_inference_anomalies">Consultar se há anomalias altas e baixas (opcional)</h3>
+               <p>Execute a consulta a seguir para encontrar quaisquer pontos de dados com pontuações acima de três desvios padrão da pontuação média.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">WITH score_cutoff AS (
+    SELECT
+        STDDEV(public.remote_fn_rcf(nbr_passengers)) AS std,
+        AVG(public.remote_fn_rcf(nbr_passengers)) AS mean,
+        (mean + 3 * std) AS score_cutoff_value
+    FROM
+        public.rcf_taxi_data
+)
+SELECT
+    ride_timestamp,
+    nbr_passengers,
+    public.remote_fn_rcf(nbr_passengers) AS score
+FROM
+    public.rcf_taxi_data
+WHERE
+    score &gt; (
+        SELECT
+            score_cutoff_value
+        FROM
+            score_cutoff
+    )
+ORDER BY
+    2 DESC;</code></pre>
+               <p>Execute a consulta a seguir para encontrar quaisquer pontos de dados com pontuações acima de três desvios padrão da pontuação média.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">WITH score_cutoff AS (
+    SELECT
+        STDDEV(public.remote_fn_rcf(nbr_passengers)) AS std,
+        AVG(public.remote_fn_rcf(nbr_passengers)) AS mean,
+        (mean - 3 * std) AS score_cutoff_value
+    FROM
+        public.rcf_taxi_data
+)
+SELECT
+    ride_timestamp,
+    nbr_passengers,
+    public.remote_fn_rcf(nbr_passengers) AS score
+FROM
+    public.rcf_taxi_data
+WHERE
+    score &lt; (
+        SELECT
+            score_cutoff_value
+        FROM
+            score_cutoff
+    )
+ORDER BY
+    2 DESC;</code></pre>
+             
+          
+            <h2 id="tutorial_remote_inference_related_topics">Tópicos relacionados</h2>
+            <p>Para obter mais informações sobre o Amazon Redshift ML, consulte a seguinte documentação:</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem"> 
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">Custos para usar o Amazon Redshift ML</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">Operação CREATE MODEL</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">Função EXPLAIN_MODEL</a></p>
+                  </li></ul></div>
+            <p>Para obter mais informações sobre machine learning, consulte a seguinte documentação:</p>
+            <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">Visão geral do Machine Learning</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">Machine Learning para iniciantes e especialistas</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">What Is Fairness and Model Explainability for Machine Learning Predictions?</a> (O que é equidade e explicabilidade de modelo para previsões de machine learning?)</p>
+                  </li></ul></div>
+         <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Atenção" /> <strong>O Javascript está desativado ou não está disponível no seu navegador.</strong></p><p>Para usar a documentação da AWS, o Javascript deve estar ativado. Consulte as páginas de Ajuda do navegador para obter instruções.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenções do documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial_customer_churn.html">Tutorial: Criar modelos de rotatividade de clientes</div><div id="next" class="next-link" accesskey="n" href="./tutorial_k-means_clustering.html">Tutorial: Como construir modelos de agrupamento K-means</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Essa página foi útil? - Sim</div><div class="content"><p>Obrigado por nos informar que estamos fazendo um bom trabalho!</p><p>Se tiver tempo, conte-nos sobre o que você gostou para que possamos melhorar ainda mais.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_remote_inference.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Essa página foi útil? - Não</div><div class="content"><p>Obrigado por nos informar que precisamos melhorar a página. Lamentamos ter decepcionado você.</p><p>Se tiver tempo, conte-nos como podemos melhorar a documentação.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_remote_inference.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

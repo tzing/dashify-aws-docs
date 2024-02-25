@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Implementar o WLM manual - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="cm-c-defining-query-queues" /><meta name="default_state" content="cm-c-defining-query-queues" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="description" content="Defina filas de consulta modificando a configuração manual do WLM no Amazon Redshift para um cluster para definir até oito filas de consulta, além da fila de superusuário." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guia do desenvolvedor de banco de dados" /><meta name="abstract" content="Crie e gerencie um data warehouse com o Amazon Redshift, um serviço de data warehouse totalmente gerenciado, em escala de petabyte e de nível empresarial." /><meta name="guide-locale" content="pt_br" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guia do desenvolvedor de banco de dados" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guia do desenvolvedor de banco de dados" /><meta id="panorama-serviceConsolePage" value="Implementar o WLM manual" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Implementar o WLM manual - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#cm-c-defining-query-queues" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,desenvolvedor,dados de amostra,banco de dados,desenvolvedor do banco de dados,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guia do desenvolvedor de banco de dados",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Como implementar o gerenciamento do workload",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Implementar o WLM manual",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#cm-c-defining-query-queues" target="_blank" rel="noopener noreferrer" title="Abrir em PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentação</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guia do desenvolvedor de banco de dados</a></div><div id="page-toc-src"><a href="#concurrency-scaling-mode">Modo de escalabilidade da simultaneidade</a><a href="#cm-c-defining-query-queues-concurrency-level">Nível de simultaneidade</a><a href="#cm-c-defining-query-queues-user-groups">Grupos de usuários</a><a href="#cm-c-defining-query-queues-query-groups">Grupos de consultas</a><a href="#wlm-wildcards">Curingas</a><a href="#wlm-memory-percent">Porcentagem de memória do WLM a ser usada</a><a href="#wlm-timeout">Tempo limite do WLM</a><a href="#wlm-query-monitoring-rules">Regras de monitoramento de consulta</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="cm-c-defining-query-queues">Implementar o WLM manual</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Com WLM manual, é possível gerenciar a performance do sistema e a experiência dos usuários modificando a configuração de WLM a fim de criar filas separadas para as consultas demoradas e as rápidas.</p><p>Quando os usuários executam consultas no Amazon Redshift, as consultas são encaminhadas para filas de consulta. Cada fila de consultas contém alguns slots de consulta. Cada fila recebe uma parte da memória disponível do cluster. A memória de uma fila é dividida entre os slots de consulta da fila. Você pode habilitar o Amazon Redshift para gerenciar a simultaneidade de consultas com WLM automático. Para obter mais informações, consulte <a href="./automatic-wlm.html">Implementar o WLM automático</a>.</p><p>Como alternativa, é possível configurar as propriedades do WLM para cada fila de consultas. Faça isso especificando a maneira pela qual a memória é alocada entre slots e como as consultas podem ser roteadas para filas específicas em runtime. Você também pode configurar as propriedades de WLM para cancelar consultas demoradas.</p><p>Por padrão, o Amazon Redshift configura as seguintes filas de consulta:</p><div class="itemizedlist">
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p> <b>Uma fila de usuários avançados</b> </p>
+            <p>A fila de superusuários é reservada somente para estes e não pode ser configurada. Use essa fila quando precisar executar consultas que afetam o sistema ou para fins de solução de problemas. Por exemplo, use essa fila quando você precisar cancelar a consulta demorada de um usuário ou adicionar usuários ao banco de dados. Não use para realizar consultas de rotina. A fila não é exibida no console, mas aparece nas tabelas do sistema do banco de dados como a quinta fila. Para executar uma consulta na fila de superusuários, um usuário deve estar conectado como superusuário e executar a consulta usando o grupo de consultas <code class="code">superuser</code> predefinido.</p>
+         </li><li class="listitem">
+            <p> <b>Uma fila de usuários padrão</b> </p>
+            <p>A fila padrão é configurada inicialmente para executar simultaneamente cinco consultas. Ao usar WLM manual, você pode alterar as propriedades de simultaneidade, tempo limite e alocação da memória da fila padrão, mas não pode especificar grupos de usuários ou consultas. A fila padrão deve ser a última na configuração do WLM. Algumas consultas que não são roteadas para outras filas são executadas na fila padrão. </p>
+         </li></ul></div><p>As filas de consultas são definidas na configuração do WLM. A configuração do WLM é um parâmetro editável (<code class="code">wlm_json_configuration</code>) em um parameter group, que pode ser associado a um ou mais clusters. Para obter mais informações, consulte “<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/workload-mgmt-config.html">Configurar o gerenciamento de workload</a>” no <em>Guia de gerenciamento de clusters do Amazon Redshift</em>. </p><p>Você pode adicionar filas de consultas adicionais à configuração do WLM padrão, até um total de oito filas de usuários. Você pode configurar o seguinte para cada fila de consultas: </p><div class="itemizedlist">
+          
+          
+          
+          
+          
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>Modo de escalabilidade da simultaneidade </p>
+         </li><li class="listitem">
+            <p>Nível de simultaneidade </p>
+         </li><li class="listitem">
+            <p>Grupos de usuários </p>
+         </li><li class="listitem">
+            <p>Grupos de consultas </p>
+         </li><li class="listitem">
+            <p>Porcentagem de memória do WLM a ser usada</p>
+         </li><li class="listitem">
+            <p>Tempo limite do WLM</p>
+         </li><li class="listitem">
+            <p>Salto na fila de consultas do WLM</p>
+         </li><li class="listitem">
+            <p>Regras de monitoramento de consulta</p>
+         </li></ul></div>
+         <h2 id="concurrency-scaling-mode">Modo de escalabilidade da simultaneidade</h2>
+         <p>Quando a escalabilidade de simultaneidade está habilitada, o Amazon Redshift adiciona automaticamente capacidade de cluster quando necessário para processar um aumento nas consultas de leitura e gravação simultâneas. Os usuários veem os dados mais recentes, sejam as consultas executadas no cluster principal ou em um cluster de escalabilidade da simultaneidade. </p>
+         <p>Gerencie quais consultas são enviadas para o cluster de escalabilidade da simultaneidade configurando filas do WLM. Ao habilitar a escalabilidade de simultaneidade para uma fila, as consultas qualificadas são enviadas ao cluster de escalabilidade de simultaneidade em vez de aguardar na fila. Para obter mais informações, consulte <a href="./concurrency-scaling.html">Trabalhar com a escalabilidade de simultaneidade</a>.</p>
+       
+         <h2 id="cm-c-defining-query-queues-concurrency-level">Nível de simultaneidade</h2>
+         <p>As consultas em uma fila são executadas simultaneamente até que atinjam o número de slots de consulta do WLM ou o nível de <em>simultaneidade</em>, definido para essa fila. Em seguida, as consultas subsequentes aguardam na fila.</p>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>O nível de simultaneidade do WLM é diferente do número de conexões de usuário simultâneas que podem ser estabelecidas com um cluster. Para obter mais informações, consulte “<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/connecting-to-cluster.html">Conectar-se a um cluster</a>” no <em>Guia de gerenciamento de clusters do Amazon Redshift</em>.</p></div></div>
+         <p>Em uma configuração de WLM automático (recomendada), o nível de simultaneidade é definido como <b>Automático</b>. O Amazon Redshift aloca memória dinamicamente para consultas, o que posteriormente determina quantas serão executadas simultaneamente. Isso se baseia nos recursos necessários para consultas em execução e consultas em fila. O WLM automático não é configurável. Para obter mais informações, consulte <a href="./automatic-wlm.html">Implementar o WLM automático</a>. </p>
+        
+         <p>Em uma configuração de WLM manual, o Amazon Redshift aloca estaticamente uma quantidade fixa de memória para cada fila. A memória da fila é dividida igualmente entre os slots de consulta. Para ilustrar, se uma fila receber 20% da memória de um cluster e tiver 10 slots, cada consulta receberá 2% da memória do cluster. A alocação de memória permanece fixa, independentemente do número de consultas em execução simultânea. Devido a essa alocação de memória fixa, consultas executadas inteiramente na memória quando o número de slots é 5 talvez gravem resultados intermediários em disco, caso o número de slots seja aumentado para 20. Nesse caso, a parte de cada consulta na memória da fila é reduzida de 1/5 para 1/20. A E/S de disco adicional pode afetar a performance. </p>
+         <p>O número máximo de slots para todas as filas definidas pelo usuário é 50. Isso limita o total de slots para todas as filas, incluindo a fila padrão. A única fila que não está sujeita ao limite é a fila reservada para superusuários.</p>
+      
+  
+         
+   
+         <p>Por padrão, as filas do WLM manuais têm um nível de simultaneidade de 5. O workload pode se beneficiar de um nível de simultaneidade superior em determinados casos, como o seguinte:</p>
+         <div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>Se muitas consultas pequenas forem forçadas a aguardar consultas demoradas, crie uma fila à parte com um número de slots superior e atribua as consultas menores a essa fila. Uma fila com um nível de simultaneidade superior tem menos memória alocada para cada slot de consulta, mas as consultas menores exigem menos memória.</p>
+               <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>Se você habilitar a aceleração de consultas breves (SQA), o WLM priorizará automaticamente as consultas breves sobre as consultas demoradas, para que você não precise de uma fila separada para consultas breves na maioria dos fluxos de trabalho. Para obter mais informações, consulte <a href="./wlm-short-query-acceleration.html">Trabalhar com a aceleração de consulta breve</a>. </p></div></div>
+            </li><li class="listitem">
+               <p>Se você tiver várias consultas que acessam dados individualmente em uma única fatia, configure uma fila do WLM à parte para executar essas consultas simultaneamente. O Amazon Redshift atribui consultas simultâneas a fatias separadas, o que permite executar várias consultas em paralelo em várias fatias. Por exemplo, se uma consulta for um agregado simples com um predicado na chave de distribuição, os dados da consulta estarão localizados em uma única fatia. </p>
+            </li></ul></div>
+    
+          
+            <h3 id="cm-c-defining-query-queues-concurrency-level-example">Um exemplo de WLM manual</h3>
+            <p> Este exemplo é um cenário simples de WLM manual para mostrar como os slots e a memória podem ser alocados. Implemente o WLM manual com três filas, que são as seguintes: </p>
+            <div class="itemizedlist">
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem"><p><em>fila de ingestão de dados</em>: configurada para ingerir dados. Recebe 20% da memória do cluster e tem 5 slots. Consequentemente, 5 consultas podem ser executadas simultaneamente na fila e cada uma recebe 4% da memória.</p></li><li class="listitem"><p><em>fila de cientistas de dados</em>: projetada para consultas que consomem muita memória. Recebe 40% da memória do cluster e tem 5 slots. Consequentemente, 5 consultas podem ser executadas simultaneamente e cada uma recebe 8% da memória.</p></li><li class="listitem"><p><em>fila padrão</em>: projetada para a maioria dos usuários na organização. Isso inclui grupos de vendas e contabilidade, que normalmente têm consultas de curta ou média duração que não são complicadas. Recebe 40% da memória do cluster e tem 40 slots. Essa fila pode executar 40 consultas simultaneamente, e cada consulta recebe 1% da memória. Esse é o número máximo de slots que essa fila pode ter, pois o limite total entre todas as filas é 50.</p></li></ul></div>
+  
+          
+         
+         <p>Se você estiver realizando WLM automático e sua workload exigir execução simultânea de mais de 15 consultas, recomendamos ativar a escalabilidade da simultaneidade. Isso ocorre porque o aumento da contagem de slots de consulta acima de 15 pode criar contenção de recursos do sistema e limitar a throughput geral de um único cluster. Com a escalabilidade da simultaneidade, você pode executar centenas de consultas simultâneas até um número configurado de clusters de escalabilidade da simultaneidade. O número de clusters de escalabilidade da simultaneidade é controlado por <a href="./r_max_concurrency_scaling_clusters.html">max_concurrency_scaling_clusters</a>. Para obter mais informações sobre a escalabilidade da simultaneidade, consulte <a href="./concurrency-scaling.html">Trabalhar com a escalabilidade de simultaneidade</a>. </p>
+            
+             
+         
+         
+         
+         
+   
+         <p>Para obter mais informações, consulte <a href="./query-performance-improvement-opportunities.html">Melhoria do performance de consultas do </a>. </p>
+       
+         <h2 id="cm-c-defining-query-queues-user-groups">Grupos de usuários</h2>
+         
+         
+         <p>Você pode atribuir um conjunto de grupos de usuários a uma fila especificando o nome de cada grupo de usuários ou usando curingas. Quando um membro de um grupo de usuários listado executa uma consulta, esta é executada na fila correspondente. Não há limite definido quanto ao número de grupos de usuários que podem ser atribuídos a uma fila. Para obter mais informações, consulte <a href="./cm-c-executing-queries.html#cm-c-executing-queries-assigning-queries-to-queues-based-on-user-groups">Atribuir consultas a filas com base em grupos de usuários</a>. </p>
+       
+         <h2 id="cm-c-defining-query-queues-query-groups">Grupos de consultas </h2>
+         
+         
+         <p>Você pode atribuir um conjunto de grupos de consultas a uma fila especificando o nome de cada grupo de consultas ou usando curingas. Um grupo de consultas é apenas um rótulo. No tempo de execução, é possível atribuir o rótulo do grupo de consultas a uma série de consultas. Todas as consultas atribuídas a um grupo de consultas listado são executadas na fila correspondente. Não há limite definido para o número de grupos de consultas que podem ser atribuídos a uma fila. Para obter mais informações, consulte <a href="./cm-c-executing-queries.html#cm-c-executing-queries-assigning-a-query-to-a-query-group">Atribuir uma consulta a um grupo de consultas</a>. </p>
+       
+         <h2 id="wlm-wildcards">Curingas</h2>
+         
+         <p>Se os curingas forem permitidos na configuração de fila do WLM, você poderá atribuir grupos de usuários e consultas a uma fila individualmente ou usando curingas em estilo shell do Unix. A comparação de padrões não diferencia maiúsculas de minúsculas. </p>
+         <p>Por exemplo, o caractere curinga “*” corresponde a qualquer número de caracteres. Portanto, se você adicionar <code class="code">dba_*</code> à lista de grupos de usuários para uma fila, qualquer consulta executada por usuário, que pertença a um grupo com um nome que começa com <code class="code">dba_</code>, será atribuída a essa fila. Os exemplos são <code class="code">dba_admin</code> ou <code class="code">DBA_primary</code>. O caractere curinga “?” corresponde a qualquer caractere único. Portanto, se a fila incluir o grupo de usuários <code class="code">dba?1</code>, os grupos de usuários chamados <code class="code">dba11</code> e <code class="code">dba21</code> corresponderão, mas <code class="code">dba12</code> não corresponderá. </p>
+         <p>Os curingas são desativados por padrão.</p>
+       
+         <h2 id="wlm-memory-percent">Porcentagem de memória do WLM a ser usada</h2>
+         <p>Em uma configuração de WLM automático, a porcentagem de memória é definida como <code class="userinput">auto</code>. Para obter mais informações, consulte <a href="./automatic-wlm.html">Implementar o WLM automático</a>. </p>
+         
+         <p>Em uma configuração de WLM manual, para especificar o valor de memória disponível alocado para uma consulta, você pode definir o parâmetro <code class="code">WLM Memory Percent to Use</code>. Por padrão, cada fila definida pelo usuário recebe uma parte igual da memória disponível para consultas definidas pelo usuário. Por exemplo, se você tiver quatro filas definidas pelo usuário, cada fila receberá 25 por cento da memória disponível. A fila de superusuários tem a própria memória alocada e não pode ser modificada. Para alterar a alocação, você atribui uma porcentagem de memória em inteiro a cada fila, até um total de 100 por cento. Qualquer memória não alocada é gerenciada pelo Amazon Redshift e pode ser temporariamente fornecida a uma fila se a fila solicitar memória adicional para processamento. </p>
+         <p>Por exemplo, se configurar quatro filas, você poderá alocar a memória da seguinte maneira: 20 por cento, 30 por cento, 15 por cento, 15 por cento. Os 20 por cento restantes permanecem desalocados e são gerenciados pelo serviço.</p>
+       
+         <h2 id="wlm-timeout">Tempo limite do WLM</h2>
+         <p>O tempo limite do WLM (<code class="code">max_execution_time</code>) está obsoleto. Em vez disso, crie uma regra de monitoramento de consulta (QMR) usando <code class="code">query_execution_time</code> para limitar o tempo de execução decorrido para uma consulta. Para obter mais informações, consulte <a href="./cm-c-wlm-query-monitoring-rules.html">Regras de monitoramento de consulta do WLM</a>. </p>
+         
+         <p>Para limitar o valor de tempo em que as consultas em uma determinada fila do WLM têm permissão para serem usadas, você pode definir o valor de tempo limite do WLM para cada fila. O parâmetro tempo limite especifica a quantidade de tempo, em milissegundos, durante o qual o Amazon Redshift aguarda a execução de uma consulta antes de cancelar ou ignorar a consulta. O tempo limite se baseia no tempo de execução da consulta e não inclui o tempo gasto esperando em uma fila. </p>
+         <p>O WLM tenta saltar as instruções <a href="./r_CREATE_TABLE_AS.html">CREATE TABLE AS</a> (CTAS) e as consultas somente leitura, como instruções SELECT. Consultas que não podem ser saltadas são canceladas. Para obter mais informações, consulte <a href="./wlm-queue-hopping.html">Salto na fila de consultas do WLM</a>.</p>
+         <p>O tempo limite do WLM não se aplica a uma consulta que tenha atingido o estado de retorno. Para exibir o estado de uma consulta, consulte a tabela de sistema <a href="./r_STV_WLM_QUERY_STATE.html">STV_WLM_QUERY_STATE</a>. As instruções COPY e as operações de manutenção, como ANALYZE e VACUUM, não estão sujeitas ao tempo limite do WLM.</p>
+         <p>A função de tempo limite do WLM é semelhante ao parâmetro de configuração <a href="./r_statement_timeout.html">statement_timeout</a>. A diferença é que, enquanto o parâmetro de configuração <code class="code">statement_timeout</code> se aplica a todo o cluster, o tempo limite do WLM é específico para uma única fila na configuração do WLM. </p>
+         <p>Se <a href="./r_statement_timeout.html">statement_timeout</a> também for especificado, o menor statement_timeout e tempo limite do WLM (max_execution_time) serão usados. </p>
+       
+         <h2 id="wlm-query-monitoring-rules">Regras de monitoramento de consulta</h2>
+         
+
+         <p>As regras de monitoramento de consultas definem limites de performance baseados em métricas para filas do WLM e especificam qual ação tomar quando uma consulta vai além desses limites. Por exemplo, para uma fila dedicada a consultas rápidas, convém criar uma regra que cancele consultas executadas por mais de 60 segundos. Para acompanhar consultas mal projetadas, convém ter outra regra que registre consultas que contenham loops aninhados. Para obter mais informações, consulte <a href="./cm-c-wlm-query-monitoring-rules.html">Regras de monitoramento de consulta do WLM</a>.</p>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Atenção" /> <strong>O Javascript está desativado ou não está disponível no seu navegador.</strong></p><p>Para usar a documentação da AWS, o Javascript deve estar ativado. Consulte as páginas de Ajuda do navegador para obter instruções.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenções do documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./query-priority.html">Prioridade da consulta</div><div id="next" class="next-link" accesskey="n" href="./wlm-queue-hopping.html">Salto na fila de consultas do WLM</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Essa página foi útil? - Sim</div><div class="content"><p>Obrigado por nos informar que estamos fazendo um bom trabalho!</p><p>Se tiver tempo, conte-nos sobre o que você gostou para que possamos melhorar ainda mais.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Essa página foi útil? - Não</div><div class="content"><p>Obrigado por nos informar que precisamos melhorar a página. Lamentamos ter decepcionado você.</p><p>Se tiver tempo, conte-nos como podemos melhorar a documentação.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Tutorial: Como criar modelos de classificação com aprendizado linear - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_linear_learner_multi-class_classification" /><meta name="default_state" content="tutorial_linear_learner_multi-class_classification" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" /><meta name="description" content="Use este tutorial para obter um exemplo completo de como criar um modelo de machine learning do Amazon Redshift e executar consultas de inferência." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guia do desenvolvedor de banco de dados" /><meta name="abstract" content="Crie e gerencie um data warehouse com o Amazon Redshift, um serviço de data warehouse totalmente gerenciado, em escala de petabyte e de nível empresarial." /><meta name="guide-locale" content="pt_br" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guia do desenvolvedor de banco de dados" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guia do desenvolvedor de banco de dados" /><meta id="panorama-serviceConsolePage" value="Tutorial: Como criar modelos de classificação com aprendizado linear" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Tutorial: Como criar modelos de classificação com aprendizado linear - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_linear_learner_multi-class_classification" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,desenvolvedor,dados de amostra,banco de dados,desenvolvedor do banco de dados,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guia do desenvolvedor de banco de dados",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Usar Machine Learning no Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Conceitos básicos do Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Tutoriais para o Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "Tutorial: Como criar modelos de classificação com aprendizado linear",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_linear_learner_multi-class_classification" target="_blank" rel="noopener noreferrer" title="Abrir em PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentação</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guia do desenvolvedor de banco de dados</a></div><div id="page-toc-src"><a href="#tutorial_linear_learner_multi-class_classification_tasks">Exemplos de casos de uso</a><a href="#tutorial_linear_learner_multi-class_classification_prereqs">Pré-requisitos</a><a href="#tutorial_linear_learner_multi-class_classification_step_load">Etapa 1: Carregar dados do Amazon S3 para o Amazon Redshift</a><a href="#tutorial_linear_learner_multi-class_classification_step_create_model">Etapa 2: Criar o modelo de machine learning</a><a href="#tutorial_linear_learner_multi-class_classification_step_validate">Etapa 3: Validar o modelo</a><a href="#tutorial_linear_learner_multi-class_classification_related_topics">Tópicos relacionados</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_linear_learner_multi-class_classification">Tutorial: Como criar modelos de classificação com aprendizado linear</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Neste tutorial, você cria um modelo de aprendizado linear com dados do Amazon S3 e executa consultas de previsão com o modelo usando o Amazon Redshift ML. O algoritmo de aprendizado linear do SageMaker resolve problemas de regressão ou de classificação. Para saber mais sobre problemas de regressão e de classificação multiclasse, consulte <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/algorithms-choose.html#basic-machine-learning-paradigms">Tipos de problemas para os paradigmas de aprendizado de máquina</a> no Guia do desenvolvedor do Amazon SageMaker. Neste tutorial, você resolve um problema de classificação multiclasse. O algoritmo de aprendizado linear treina muitos modelos em paralelo e determina automaticamente o modelo mais otimizado. Você usa a operação CREATE MODEL no Amazon Redshift, que cria o modelo de aprendizado linear utilizando o SageMaker e envia uma função de previsão ao Amazon Redshift. Para obter mais informações sobre o algoritmo de aprendizado linear, consulte <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/linear-learner.html">Linear Learner algorithm</a> (Algoritmo de aprendizado linear) no Guia do desenvolvedor do Amazon SageMaker.</p><p>Você pode usar um comando CREATE MODEL para exportar dados de treinamento, treinar um modelo, importar o modelo e preparar uma função de previsão do Amazon Redshift. Use a operação CREATE MODEL para especificar dados de treinamento como uma tabela ou instrução SELECT.</p><p>Os modelos de aprendizado linear otimizam objetivos contínuos ou objetivos discretos. Os objetivos contínuos são usados para regressão, enquanto as variáveis discretas são usadas para classificação. Alguns métodos fornecem uma solução apenas para objetivos contínuos, como o de regressão. O algoritmo de aprendizado linear possibilita um aumento de velocidade em relação às técnicas de otimização de hiperparâmetros nativas, como a técnica Naive Bayes. Uma técnica de otimização simples pressupõe que cada variável de entrada seja independente. O algoritmo de aprendizado linear treina muitos modelos em paralelo e seleciona o modelo mais otimizado. Um algoritmo semelhante é o XGBoost, que combina estimativas de um conjunto de modelos mais simples e mais fracos para fazer previsões. Para saber mais sobre o XGBoost, consulte <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/xgboost.html">Algoritmo XGBoost</a> no Guia do desenvolvedor do Amazon SageMaker.</p><p>Para usar o algoritmo de aprendizado linear, você deve fornecer colunas para representar as dimensões das entradas e linhas para representar as observações. Para obter mais informações sobre o algoritmo de aprendizado linear, consulte <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/linear-learner.html">Linear Learner algorithm</a> (Algoritmo de aprendizado linear) no Guia do desenvolvedor do Amazon SageMaker. </p><p>Neste tutorial, você cria um modelo de aprendizado linear que prevê os tipos de cobertura florestal de determinada área. Use o comando CREATE MODEL no <a href="https://archive.ics.uci.edu/ml/datasets/covertype" rel="noopener noreferrer" target="_blank"><span>conjunto de dados Covertype</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> do UCI Machine Learning Repository. Em seguida, você usa a função de previsão criada pelo comando para determinar os tipos de cobertura de uma área selvagem. Um tipo de cobertura florestal geralmente é um tipo de árvore. As entradas que o Redshift ML usará para criar o modelo incluem o tipo de solo, a distância das estradas e a designação da área selvagem. Para obter mais informações sobre o conjunto de dados, consulte <a href="https://archive.ics.uci.edu/ml/datasets/covertype" rel="noopener noreferrer" target="_blank"><span>Covertype Dataset</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> (Conjunto de dados sobre tipo de cobertura) no UCI Machine Learning Repository.</p>
+            <h2 id="tutorial_linear_learner_multi-class_classification_tasks">Exemplos de casos de uso</h2>
+            <p>Você pode resolver outros problemas de classificação multiclasse com aprendizado linear por meio do Amazon Redshift ML, como prever a espécie de uma planta com base em uma imagem. Você também pode prever a quantidade de um produto que um cliente comprará.</p>
+            <p><b>Tarefas</b></p><div class="itemizedlist">
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>Pré-requisitos</p>
+               </li><li class="listitem">
+                  <p>Etapa 1: Carregar dados do Amazon S3 para o Amazon Redshift</p>
+               </li><li class="listitem">
+                  <p>Etapa 2: Criar o modelo de machine learning</p>
+               </li><li class="listitem">
+                  <p>Etapa 3: Validar o modelo</p>
+               </li></ul></div>
+            <h2 id="tutorial_linear_learner_multi-class_classification_prereqs">Pré-requisitos</h2>
+               <p>Para finalizar este tutorial, você deve concluir a <a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">configuração administrativa</a> do Amazon Redshift ML.</p>
+             
+            <h2 id="tutorial_linear_learner_multi-class_classification_step_load">Etapa 1: Carregar dados do Amazon S3 para o Amazon Redshift</h2>
+               <p>Use o <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">editor de consultas v2 do Amazon Redshift</a> para executar as consultas a seguir. Essas consultas carregam os dados de exemplo no Redshift e os dividem em um conjunto de treinamento e um conjunto de validação.</p><div class="orderedlist">
+                      
+                      
+                      
+                  <ol><li>
+                        <p>A consulta a seguir cria a tabela <code class="code">covertype_data</code>.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE public.covertype_data (
+    elevation bigint ENCODE az64,
+    aspect bigint ENCODE az64,
+    slope bigint ENCODE az64,
+    horizontal_distance_to_hydrology bigint ENCODE az64,
+    vertical_distance_to_hydrology bigint ENCODE az64,
+    horizontal_distance_to_roadways bigint ENCODE az64,
+    hillshade_9am bigint ENCODE az64,
+    hillshade_noon bigint ENCODE az64,
+    hillshade_3pm bigint ENCODE az64,
+    horizontal_distance_to_fire_points bigint ENCODE az64,
+    wilderness_area1 bigint ENCODE az64,
+    wilderness_area2 bigint ENCODE az64,
+    wilderness_area3 bigint ENCODE az64,
+    wilderness_area4 bigint ENCODE az64,
+    soil_type1 bigint ENCODE az64,
+    soil_type2 bigint ENCODE az64,
+    soil_type3 bigint ENCODE az64,
+    soil_type4 bigint ENCODE az64,
+    soil_type5 bigint ENCODE az64,
+    soil_type6 bigint ENCODE az64,
+    soil_type7 bigint ENCODE az64,
+    soil_type8 bigint ENCODE az64,
+    soil_type9 bigint ENCODE az64,
+    soil_type10 bigint ENCODE az64,
+    soil_type11 bigint ENCODE az64,
+    soil_type12 bigint ENCODE az64,
+    soil_type13 bigint ENCODE az64,
+    soil_type14 bigint ENCODE az64,
+    soil_type15 bigint ENCODE az64,
+    soil_type16 bigint ENCODE az64,
+    soil_type17 bigint ENCODE az64,
+    soil_type18 bigint ENCODE az64,
+    soil_type19 bigint ENCODE az64,
+    soil_type20 bigint ENCODE az64,
+    soil_type21 bigint ENCODE az64,
+    soil_type22 bigint ENCODE az64,
+    soil_type23 bigint ENCODE az64,
+    soil_type24 bigint ENCODE az64,
+    soil_type25 bigint ENCODE az64,
+    soil_type26 bigint ENCODE az64,
+    soil_type27 bigint ENCODE az64,
+    soil_type28 bigint ENCODE az64,
+    soil_type29 bigint ENCODE az64,
+    soil_type30 bigint ENCODE az64,
+    soil_type31 bigint ENCODE az64,
+    soil_type32 bigint ENCODE az64,
+    soil_type33 bigint ENCODE az64,
+    soil_type34 bigint ENCODE az64,
+    soil_type35 bigint ENCODE az64,
+    soil_type36 bigint ENCODE az64,
+    soil_type37 bigint ENCODE az64,
+    soil_type38 bigint ENCODE az64,
+    soil_type39 bigint ENCODE az64,
+    soil_type40 bigint ENCODE az64,
+    cover_type bigint ENCODE az64
+) DISTSTYLE AUTO;</code></pre>
+                     </li><li>
+                        <p>A consulta a seguir copia os dados de exemplo do <a href="https://archive.ics.uci.edu/ml/datasets/covertype" rel="noopener noreferrer" target="_blank"><span>conjunto de dados Covertype</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> (Tipo de cobertura) no Amazon S3 para a tabela <code class="code">covertype_data</code> que você criou anteriormente no Amazon Redshift.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY public.covertype_data
+FROM
+    's3://redshift-ml-multiclass/covtype.data.gz' IAM_ROLE DEFAULT gzip DELIMITER ',' REGION 'us-east-1';</code></pre>
+                     </li><li>
+                        <p>Ao dividir manualmente os dados nesta etapa, você poderá verificar a precisão do modelo alocando um conjunto adicional de testes. A consulta a seguir divide os dados em três conjuntos. Você usará a tabela <code class="code">covertype_training</code> para treinamento, a tabela <code class="code">covertype_validation</code> para validação e a tabela <code class="code">covertype_test</code> para testar o modelo. Você usará o conjunto de treinamento para treinar o modelo e o conjunto de validação para validar o desenvolvimento do modelo. Em seguida, você usará o conjunto de testes para testar a performance do modelo e ver se o modelo está superajustando ou subajustando o conjunto de dados.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE public.covertype_data_prep AS
+SELECT
+    a.*,
+    CAST (random() * 100 AS int) AS data_group_id
+FROM
+    public.covertype_data a;
+
+--training dataset
+ CREATE TABLE public.covertype_training as
+SELECT
+    *
+FROM
+    public.covertype_data_prep
+WHERE
+    data_group_id &lt; 80;
+
+--validation dataset
+ CREATE TABLE public.covertype_validation AS
+SELECT
+    *
+FROM
+    public.covertype_data_prep
+WHERE
+    data_group_id BETWEEN 80
+    AND 89;
+
+--test dataset
+ CREATE TABLE public.covertype_test AS
+SELECT
+    *
+FROM
+    public.covertype_data_prep
+WHERE
+    data_group_id &gt; 89;</code></pre>
+                     </li></ol></div>
+             
+            <h2 id="tutorial_linear_learner_multi-class_classification_step_create_model">Etapa 2: Criar o modelo de machine learning</h2>
+               <p>Nesta etapa, você usa a instrução CREATE MODEL para criar o modelo de machine learning com o algoritmo de aprendizado linear. </p>
+               <p>A consulta a seguir cria o modelo de aprendizado linear com a operação CREATE MODEL usando seu bucket do S3. Substitua <code class="replaceable"><code class="code">DOC-EXAMPLE-BUCKET</code></code> pelo seu próprio bucket do S3.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE MODEL forest_cover_type_model
+FROM
+    (
+        SELECT
+            Elevation,
+            Aspect,
+            Slope,
+            Horizontal_distance_to_hydrology,
+            Vertical_distance_to_hydrology,
+            Horizontal_distance_to_roadways,
+            HIllshade_9am,
+            Hillshade_noon,
+            Hillshade_3pm,
+            Horizontal_Distance_To_Fire_Points,
+            Wilderness_Area1,
+            Wilderness_Area2,
+            Wilderness_Area3,
+            Wilderness_Area4,
+            soil_type1,
+            Soil_Type2,
+            Soil_Type3,
+            Soil_Type4,
+            Soil_Type5,
+            Soil_Type6,
+            Soil_Type7,
+            Soil_Type8,
+            Soil_Type9,
+            Soil_Type10,
+            Soil_Type11,
+            Soil_Type12,
+            Soil_Type13,
+            Soil_Type14,
+            Soil_Type15,
+            Soil_Type16,
+            Soil_Type17,
+            Soil_Type18,
+            Soil_Type19,
+            Soil_Type20,
+            Soil_Type21,
+            Soil_Type22,
+            Soil_Type23,
+            Soil_Type24,
+            Soil_Type25,
+            Soil_Type26,
+            Soil_Type27,
+            Soil_Type28,
+            Soil_Type29,
+            Soil_Type30,
+            Soil_Type31,
+            Soil_Type32,
+            Soil_Type33,
+            Soil_Type34,
+            Soil_Type36,
+            Soil_Type37,
+            Soil_Type38,
+            Soil_Type39,
+            Soil_Type40,
+            Cover_type
+        from
+            public.covertype_training
+    ) TARGET cover_type FUNCTION predict_cover_type IAM_ROLE default MODEL_TYPE LINEAR_LEARNER PROBLEM_TYPE MULTICLASS_CLASSIFICATION OBJECTIVE 'Accuracy' SETTINGS (
+        S3_BUCKET '&lt;DOC-EXAMPLE-BUCKET&gt;',
+        S3_GARBAGE_COLLECT OFF,
+        MAX_RUNTIME 15000
+    );</code></pre>
+             
+               <h3 id="tutorial_linear_learner_multi-class_classification_show_status">Mostrar o status do modelo de treinamento (opcional)</h3>
+                  <p>Você pode usar o comando SHOW MODEL para saber quando o modelo está pronto.</p><p>Use a consulta a seguir para monitorar o andamento do treinamento do modelo.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL forest_cover_type_model;</code></pre>
+               <p>Quando o modelo estiver pronto, a saída da operação anterior será semelhante à saída do exemplo a seguir. Observe que a saída fornece a métrica <code class="code">validation:multiclass_accuracy</code>, que você pode ver no lado direito do exemplo a seguir. A precisão multiclasse mede a porcentagem de pontos de dados que são classificados corretamente pelo modelo. Você usará a precisão multiclasse para validar a exatidão do modelo na próxima etapa.</p>
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|              Key               |                                                                                                                                                                                                                                                                                                                                                                                                             Value                                                                                                                                                                                                                                                                                                                                                                                                              |
++--------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Model Name                     | forest_cover_type_model                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Schema Name                    | public                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Owner                          | awsuser                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Creation Time                  | Tue, 12.07.2022 20:24:32                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Model State                    | READY                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| validation:multiclass_accuracy |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       0.724952 |
+| Estimated Cost                 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       5.341750 |
+|                                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| TRAINING DATA:                 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Query                          | SELECT ELEVATION, ASPECT, SLOPE, HORIZONTAL_DISTANCE_TO_HYDROLOGY, VERTICAL_DISTANCE_TO_HYDROLOGY, HORIZONTAL_DISTANCE_TO_ROADWAYS, HILLSHADE_9AM, HILLSHADE_NOON, HILLSHADE_3PM , HORIZONTAL_DISTANCE_TO_FIRE_POINTS, WILDERNESS_AREA1, WILDERNESS_AREA2, WILDERNESS_AREA3, WILDERNESS_AREA4, SOIL_TYPE1, SOIL_TYPE2, SOIL_TYPE3, SOIL_TYPE4, SOIL_TYPE5, SOIL_TYPE6, SOIL_TYPE7, SOIL_TYPE8, SOIL_TYPE9, SOIL_TYPE10 , SOIL_TYPE11, SOIL_TYPE12 , SOIL_TYPE13 , SOIL_TYPE14, SOIL_TYPE15, SOIL_TYPE16, SOIL_TYPE17, SOIL_TYPE18, SOIL_TYPE19, SOIL_TYPE20, SOIL_TYPE21, SOIL_TYPE22, SOIL_TYPE23, SOIL_TYPE24, SOIL_TYPE25, SOIL_TYPE26, SOIL_TYPE27, SOIL_TYPE28, SOIL_TYPE29, SOIL_TYPE30, SOIL_TYPE31, SOIL_TYPE32, SOIL_TYPE33, SOIL_TYPE34, SOIL_TYPE36, SOIL_TYPE37, SOIL_TYPE38, SOIL_TYPE39, SOIL_TYPE40, COVER_TYPE |
+|                                | FROM PUBLIC.COVERTYPE_TRAINING                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Target Column                  | COVER_TYPE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|                                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| PARAMETERS:                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Model Type                     | linear_learner                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Problem Type                   | MulticlassClassification                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Objective                      | Accuracy                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| AutoML Job Name                | redshiftml-20220712202432187659                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Function Name                  | predict_cover_type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Function Parameters            | elevation aspect slope horizontal_distance_to_hydrology vertical_distance_to_hydrology horizontal_distance_to_roadways hillshade_9am hillshade_noon hillshade_3pm horizontal_distance_to_fire_points wilderness_area1 wilderness_area2 wilderness_area3 wilderness_area4 soil_type1 soil_type2 soil_type3 soil_type4 soil_type5 soil_type6 soil_type7 soil_type8 soil_type9 soil_type10 soil_type11 soil_type12 soil_type13 soil_type14 soil_type15 soil_type16 soil_type17 soil_type18 soil_type19 soil_type20 soil_type21 soil_type22 soil_type23 soil_type24 soil_type25 soil_type26 soil_type27 soil_type28 soil_type29 soil_type30 soil_type31 soil_type32 soil_type33 soil_type34 soil_type36 soil_type37 soil_type38 soil_type39 soil_type40                                                                            |
+| Function Parameter Types       | int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| IAM Role                       | default-aws-iam-role                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| S3 Bucket                      | <code class="replaceable">DOC-EXAMPLE-BUCKET</code>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Max Runtime                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          15000 |
++--------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+         </code></pre>
+             
+            <h2 id="tutorial_linear_learner_multi-class_classification_step_validate">Etapa 3: Validar o modelo</h2>
+               <div class="orderedlist">
+                   
+                   
+                   
+               <ol><li>
+                     <p>A consulta de previsão a seguir valida a precisão do modelo no conjunto de dados <code class="code">covertype_validation</code> calculando a precisão multiclasse. A precisão multiclasse é a porcentagem das previsões do modelo que estão corretas.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    CAST(sum(t1.match) AS decimal(7, 2)) AS predicted_matches,
+    CAST(sum(t1.nonmatch) AS decimal(7, 2)) AS predicted_non_matches,
+    CAST(sum(t1.match + t1.nonmatch) AS decimal(7, 2)) AS total_predictions,
+    predicted_matches / total_predictions AS pct_accuracy
+FROM
+    (
+        SELECT
+            Elevation,
+            Aspect,
+            Slope,
+            Horizontal_distance_to_hydrology,
+            Vertical_distance_to_hydrology,
+            Horizontal_distance_to_roadways,
+            HIllshade_9am,
+            Hillshade_noon,
+            Hillshade_3pm,
+            Horizontal_Distance_To_Fire_Points,
+            Wilderness_Area1,
+            Wilderness_Area2,
+            Wilderness_Area3,
+            Wilderness_Area4,
+            soil_type1,
+            Soil_Type2,
+            Soil_Type3,
+            Soil_Type4,
+            Soil_Type5,
+            Soil_Type6,
+            Soil_Type7,
+            Soil_Type8,
+            Soil_Type9,
+            Soil_Type10,
+            Soil_Type11,
+            Soil_Type12,
+            Soil_Type13,
+            Soil_Type14,
+            Soil_Type15,
+            Soil_Type16,
+            Soil_Type17,
+            Soil_Type18,
+            Soil_Type19,
+            Soil_Type20,
+            Soil_Type21,
+            Soil_Type22,
+            Soil_Type23,
+            Soil_Type24,
+            Soil_Type25,
+            Soil_Type26,
+            Soil_Type27,
+            Soil_Type28,
+            Soil_Type29,
+            Soil_Type30,
+            Soil_Type31,
+            Soil_Type32,
+            Soil_Type33,
+            Soil_Type34,
+            Soil_Type36,
+            Soil_Type37,
+            Soil_Type38,
+            Soil_Type39,
+            Soil_Type40,
+            Cover_type AS actual_cover_type,
+            predict_cover_type(
+                Elevation,
+                Aspect,
+                Slope,
+                Horizontal_distance_to_hydrology,
+                Vertical_distance_to_hydrology,
+                Horizontal_distance_to_roadways,
+                HIllshade_9am,
+                Hillshade_noon,
+                Hillshade_3pm,
+                Horizontal_Distance_To_Fire_Points,
+                Wilderness_Area1,
+                Wilderness_Area2,
+                Wilderness_Area3,
+                Wilderness_Area4,
+                soil_type1,
+                Soil_Type2,
+                Soil_Type3,
+                Soil_Type4,
+                Soil_Type5,
+                Soil_Type6,
+                Soil_Type7,
+                Soil_Type8,
+                Soil_Type9,
+                Soil_Type10,
+                Soil_Type11,
+                Soil_Type12,
+                Soil_Type13,
+                Soil_Type14,
+                Soil_Type15,
+                Soil_Type16,
+                Soil_Type17,
+                Soil_Type18,
+                Soil_Type19,
+                Soil_Type20,
+                Soil_Type21,
+                Soil_Type22,
+                Soil_Type23,
+                Soil_Type24,
+                Soil_Type25,
+                Soil_Type26,
+                Soil_Type27,
+                Soil_Type28,
+                Soil_Type29,
+                Soil_Type30,
+                Soil_Type31,
+                Soil_Type32,
+                Soil_Type33,
+                Soil_Type34,
+                Soil_Type36,
+                Soil_Type37,
+                Soil_Type38,
+                Soil_Type39,
+                Soil_Type40
+            ) AS predicted_cover_type,
+            CASE
+                WHEN actual_cover_type = predicted_cover_type THEN 1
+                ELSE 0
+            END AS match,
+            CASE
+                WHEN actual_cover_type &lt;&gt; predicted_cover_type THEN 1
+                ELSE 0
+            END AS nonmatch
+        FROM
+            public.covertype_validation
+    ) t1;</code></pre>
+                     <p>A saída do comando será semelhante à do exemplo a seguir. O valor da métrica de precisão multiclasse deve ser semelhante ao da métrica <code class="code">validation:multiclass_accuracy</code> mostrada pela saída da operação SHOW MODEL.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">+-------------------+-----------------------+-------------------+--------------+
+| predicted_matches | predicted_non_matches | total_predictions | pct_accuracy |
++-------------------+-----------------------+-------------------+--------------+
+|             41211 |                 16324 |             57535 |   0.71627704 |
++-------------------+-----------------------+-------------------+--------------+</code></pre>
+                  </li><li>
+                     <p>A consulta a seguir prevê o tipo de cobertura mais comum para <code class="code">wilderness_area2</code>. Esse conjunto de dados inclui quatro áreas selvagens e sete tipos de cobertura. Uma área selvagem pode ter vários tipos de cobertura.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT t1. predicted_cover_type, COUNT(*) 
+FROM 
+(     
+SELECT 
+   Elevation, 
+   Aspect,  
+   Slope,  
+   Horizontal_distance_to_hydrology,  
+   Vertical_distance_to_hydrology,   
+   Horizontal_distance_to_roadways,  
+   HIllshade_9am,  
+   Hillshade_noon,  
+   Hillshade_3pm , 
+   Horizontal_Distance_To_Fire_Points,  
+   Wilderness_Area1,  
+   Wilderness_Area2,   
+   Wilderness_Area3,  
+   Wilderness_Area4,  
+   soil_type1,
+   Soil_Type2,
+   Soil_Type3, 
+   Soil_Type4, 
+   Soil_Type5,  
+   Soil_Type6, 
+   Soil_Type7,  
+   Soil_Type8, 
+   Soil_Type9, 
+   Soil_Type10 , 
+   Soil_Type11,  
+   Soil_Type12 , 
+   Soil_Type13 ,
+   Soil_Type14, 
+   Soil_Type15, 
+   Soil_Type16,  
+   Soil_Type17, 
+   Soil_Type18,  
+   Soil_Type19,  
+   Soil_Type20,  
+   Soil_Type21,  
+   Soil_Type22,  
+   Soil_Type23,  
+   Soil_Type24, 
+   Soil_Type25,  
+   Soil_Type26, 
+   Soil_Type27,  
+   Soil_Type28,  
+   Soil_Type29,  
+   Soil_Type30,  
+   Soil_Type31, 
+   Soil_Type32, 
+   Soil_Type33,  
+   Soil_Type34, 
+   Soil_Type36, 
+   Soil_Type37,  
+   Soil_Type38,  
+   Soil_Type39, 
+   Soil_Type40,
+   predict_cover_type( Elevation, 
+   Aspect,  
+   Slope,  
+   Horizontal_distance_to_hydrology,  
+   Vertical_distance_to_hydrology,   
+   Horizontal_distance_to_roadways,  
+   HIllshade_9am,  
+   Hillshade_noon,  
+   Hillshade_3pm , 
+   Horizontal_Distance_To_Fire_Points,  
+   Wilderness_Area1,  
+   Wilderness_Area2,   
+   Wilderness_Area3,  
+   Wilderness_Area4,  
+   soil_type1,
+   Soil_Type2,
+   Soil_Type3, 
+   Soil_Type4, 
+   Soil_Type5,  
+   Soil_Type6, 
+   Soil_Type7,  
+   Soil_Type8, 
+   Soil_Type9, 
+   Soil_Type10,
+   Soil_Type11,  
+   Soil_Type12, 
+   Soil_Type13,
+   Soil_Type14, 
+   Soil_Type15, 
+   Soil_Type16,  
+   Soil_Type17, 
+   Soil_Type18,  
+   Soil_Type19,  
+   Soil_Type20,  
+   Soil_Type21,  
+   Soil_Type22,  
+   Soil_Type23,  
+   Soil_Type24, 
+   Soil_Type25,  
+   Soil_Type26, 
+   Soil_Type27,  
+   Soil_Type28,  
+   Soil_Type29,  
+   Soil_Type30,  
+   Soil_Type31, 
+   Soil_Type32, 
+   Soil_Type33,  
+   Soil_Type34, 
+   Soil_Type36, 
+   Soil_Type37,  
+   Soil_Type38,  
+   Soil_Type39, 
+   Soil_Type40) AS predicted_cover_type 
+
+FROM public.covertype_test
+WHERE wilderness_area2 = 1)
+t1
+GROUP BY 1;</code></pre>
+                     <p>A saída da operação anterior será semelhante à saída do exemplo a seguir. Essa saída significa que o modelo previu que a maioria das coberturas é do tipo 1, e há alguns tipos de cobertura 2 e 7.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">+----------------------+-------+
+| predicted_cover_type | count |
++----------------------+-------+
+|                    2 |   564 |
+|                    7 |    97 |
+|                    1 |  2309 |
++----------------------+-------+</code></pre>
+                  </li><li>
+                     <p>A consulta a seguir mostra o tipo de cobertura mais comum em uma única área selvagem. A consulta exibe a quantidade desse tipo de cobertura e a respectiva área selvagem.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT t1. predicted_cover_type, COUNT(*), wilderness_area 
+FROM 
+(     
+SELECT 
+   Elevation, 
+   Aspect,  
+   Slope,  
+   Horizontal_distance_to_hydrology,  
+   Vertical_distance_to_hydrology,   
+   Horizontal_distance_to_roadways,  
+   HIllshade_9am,  
+   Hillshade_noon,  
+   Hillshade_3pm , 
+   Horizontal_Distance_To_Fire_Points,  
+   Wilderness_Area1,  
+   Wilderness_Area2,   
+   Wilderness_Area3,  
+   Wilderness_Area4,  
+   soil_type1,
+   Soil_Type2,
+   Soil_Type3, 
+   Soil_Type4, 
+   Soil_Type5,  
+   Soil_Type6, 
+   Soil_Type7,  
+   Soil_Type8, 
+   Soil_Type9, 
+   Soil_Type10 , 
+   Soil_Type11,  
+   Soil_Type12 , 
+   Soil_Type13 ,
+   Soil_Type14, 
+   Soil_Type15, 
+   Soil_Type16,  
+   Soil_Type17, 
+   Soil_Type18,  
+   Soil_Type19,  
+   Soil_Type20,  
+   Soil_Type21,  
+   Soil_Type22,  
+   Soil_Type23,  
+   Soil_Type24, 
+   Soil_Type25,  
+   Soil_Type26, 
+   Soil_Type27,  
+   Soil_Type28,  
+   Soil_Type29,  
+   Soil_Type30,  
+   Soil_Type31, 
+   Soil_Type32, 
+   Soil_Type33,  
+   Soil_Type34, 
+   Soil_Type36, 
+   Soil_Type37,  
+   Soil_Type38,  
+   Soil_Type39, 
+   Soil_Type40,
+   predict_cover_type( Elevation, 
+   Aspect,  
+   Slope,  
+   Horizontal_distance_to_hydrology,  
+   Vertical_distance_to_hydrology,   
+   Horizontal_distance_to_roadways,  
+   HIllshade_9am,  
+   Hillshade_noon,  
+   Hillshade_3pm , 
+   Horizontal_Distance_To_Fire_Points,  
+   Wilderness_Area1,  
+   Wilderness_Area2,   
+   Wilderness_Area3,  
+   Wilderness_Area4,  
+   soil_type1,
+   Soil_Type2,
+   Soil_Type3, 
+   Soil_Type4, 
+   Soil_Type5,  
+   Soil_Type6, 
+   Soil_Type7,  
+   Soil_Type8, 
+   Soil_Type9, 
+   Soil_Type10,
+   Soil_Type11,  
+   Soil_Type12, 
+   Soil_Type13,
+   Soil_Type14, 
+   Soil_Type15, 
+   Soil_Type16,  
+   Soil_Type17, 
+   Soil_Type18,  
+   Soil_Type19,  
+   Soil_Type20,  
+   Soil_Type21,  
+   Soil_Type22,  
+   Soil_Type23,  
+   Soil_Type24, 
+   Soil_Type25,  
+   Soil_Type26, 
+   Soil_Type27,  
+   Soil_Type28,  
+   Soil_Type29,  
+   Soil_Type30,  
+   Soil_Type31, 
+   Soil_Type32, 
+   Soil_Type33,  
+   Soil_Type34, 
+   Soil_Type36, 
+   Soil_Type37,  
+   Soil_Type38,  
+   Soil_Type39, 
+   Soil_Type40) AS predicted_cover_type,
+   CASE WHEN Wilderness_Area1 = 1 THEN 1
+        WHEN Wilderness_Area2 = 1 THEN 2
+        WHEN Wilderness_Area3 = 1 THEN 3
+        WHEN Wilderness_Area4 = 1 THEN 4
+        ELSE 0
+   END AS wilderness_area
+
+FROM public.covertype_test)
+t1
+GROUP BY 1, 3
+ORDER BY 2 DESC
+LIMIT 1;</code></pre>
+                     <p>A saída da operação anterior será semelhante à saída do exemplo a seguir.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">+----------------------+-------+-----------------+
+| predicted_cover_type | count | wilderness_area |
++----------------------+-------+-----------------+
+|                    2 | 15738 |               1 |
++----------------------+-------+-----------------+</code></pre>
+                  </li></ol></div>
+             
+            <h2 id="tutorial_linear_learner_multi-class_classification_related_topics">Tópicos relacionados</h2>
+               <p>Para obter mais informações sobre o Amazon Redshift ML, consulte a seguinte documentação:</p>
+                  <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">Custos para usar o Amazon Redshift ML</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">Operação CREATE MODEL</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">Função EXPLAIN_MODEL</a></p>
+                  </li></ul></div>
+               <p>Para obter mais informações sobre machine learning, consulte a seguinte documentação:</p>
+                  <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">Visão geral do Machine Learning</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">Machine Learning para iniciantes e especialistas</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">What Is Fairness and Model Explainability for Machine Learning Predictions?</a> (O que é equidade e explicabilidade de modelo para previsões de machine learning?)</p>
+                  </li></ul></div>
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Atenção" /> <strong>O Javascript está desativado ou não está disponível no seu navegador.</strong></p><p>Para usar a documentação da AWS, o Javascript deve estar ativado. Consulte as páginas de Ajuda do navegador para obter instruções.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenções do documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial_linear_learner_regression.html">Tutorial: Como construir modelos de regressão com o aprendizado linear</div><div id="next" class="next-link" accesskey="n" href="./c-optimizing-query-performance.html">Ajustar a performance da consulta</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Essa página foi útil? - Sim</div><div class="content"><p>Obrigado por nos informar que estamos fazendo um bom trabalho!</p><p>Se tiver tempo, conte-nos sobre o que você gostou para que possamos melhorar ainda mais.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Essa página foi útil? - Não</div><div class="content"><p>Obrigado por nos informar que precisamos melhorar a página. Lamentamos ter decepcionado você.</p><p>Se tiver tempo, conte-nos como podemos melhorar a documentação.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

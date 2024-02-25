@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Etapa 1. Criar uma função do IAM para o Amazon Redshift - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c-getting-started-using-spectrum-create-role" /><meta name="default_state" content="c-getting-started-using-spectrum-create-role" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" /><meta name="description" content="O cluster precisa de autorização para acessar o catálogo de dados externo no AWS Glue ou no Amazon Athena e os arquivos de dados no Amazon S3. Para fornecer essa autorização, referencie a função do AWS Identity and Access Management (IAM) que é associada ao cluster. Para obter mais informações sobre como usar funções com o Amazon Redshift, consulte" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guia do desenvolvedor de banco de dados" /><meta name="abstract" content="Crie e gerencie um data warehouse com o Amazon Redshift, um serviço de data warehouse totalmente gerenciado, em escala de petabyte e de nível empresarial." /><meta name="guide-locale" content="pt_br" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guia do desenvolvedor de banco de dados" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guia do desenvolvedor de banco de dados" /><meta id="panorama-serviceConsolePage" value="Etapa 1. Criar uma função do IAM para o Amazon Redshift" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Etapa 1. Criar uma função do IAM para o Amazon Redshift - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c-getting-started-using-spectrum-create-role" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,desenvolvedor,dados de amostra,banco de dados,desenvolvedor do banco de dados,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guia do desenvolvedor de banco de dados",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Consultar dados externos usando o Amazon Redshift Spectrum",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-using-spectrum.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Conceitos básicos do Amazon Redshift Spectrum",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-getting-started-using-spectrum.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Etapa 1. Criar uma função do IAM para o Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-getting-started-using-spectrum.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c-getting-started-using-spectrum-create-role" target="_blank" rel="noopener noreferrer" title="Abrir em PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentação</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guia do desenvolvedor de banco de dados</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="c-getting-started-using-spectrum-create-role">Etapa 1. Criar uma função do IAM para o Amazon Redshift</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>O cluster precisa de autorização para acessar o catálogo de dados externo no AWS Glue ou no Amazon Athena e os arquivos de dados no Amazon S3. Para fornecer essa autorização, referencie a função do AWS Identity and Access Management (IAM) que é associada ao cluster. Para obter mais informações sobre como usar funções com o Amazon Redshift, consulte <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/copy-unload-iam-role.html">Autorização das operações COPY e UNLOAD usando as funções do IAM</a>.</p><div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>Em determinados casos, é possível migrar o catálogo de dados do Athena para um catálogo de dados do AWS Glue. Isso poderá ser feito se o cluster estiver em uma região da AWS compatível com o AWS Glue e se você tiver tabelas externas do Redshift Spectrum no catálogo de dados do Athena. Para usar o catálogo de dados do AWS Glue com o Redshift Spectrum, talvez seja necessário alterar as políticas do IAM. Para obter mais informações, consulte <a href="https://docs.aws.amazon.com/athena/latest/ug/glue-athena.html#glue-upgrade">Atualizar para o catálogo de dados do AWS Glue</a> no <em>Manual do usuário do Athena</em>.</p></div></div><p>Ao criar uma função para o Amazon Redshift, escolha uma das seguintes abordagens:</p><div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem"><p>Se você estiver usando o Redshift Spectrum com um catálogo de dados do Athena ou um catálogo de dados do AWS Glue, siga as etapas descritas em <a href="#spectrum-get-started-create-role">Para criar uma função do IAM para o Amazon Redshift</a>. </p></li><li class="listitem"><p>Se você estiver usando o Redshift Spectrum com um AWS Glue Data Catalog habilitado para AWS Lake Formation, siga as etapas descritas nestes procedimentos:</p> 
+                  <div class="itemizedlist">
+                      
+                                           
+                  <ul class="itemizedlist"><li class="listitem">
+                        <p>
+                           <a href="#spectrum-get-started-create-role-lake-formation">Para criar uma função do IAM para o Amazon Redshift usando um AWS Glue Data Catalog habilitado para o AWS Lake Formation</a>
+                        </p>
+                     </li><li class="listitem">
+                        <p>
+                           <a href="#spectrum-get-started-grant-lake-formation-table">Para conceder permissões SELECT na tabela para consultar no banco de dados do Lake Formation</a>
+                        </p>
+                     </li></ul></div>
+                     </li></ul></div><div class="procedure" id="spectrum-get-started-create-role"><h6>Para criar uma função do IAM para o Amazon Redshift</h6><ol><li>
+               <p>Abra o <a href="https://console.aws.amazon.com/iam/home?#home" rel="noopener noreferrer" target="_blank"><span>console do IAM</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p>
+            </li><li>
+               <p>No painel de navegação, escolha <b>Roles</b>.</p>
+            </li><li>
+               <p>Escolha <b>Criar Perfil</b>.</p>
+            </li><li>
+               <p>Selecione <b>Serviço da AWS</b> como a entidade confiável e, depois, <b>Redshift</b> como caso de uso.</p>
+            </li><li>
+               <p>Em <b>Caso de uso para outros Serviços da AWS</b>, selecione <b>Redshift: personalizável</b> e <b>Próximo</b>.</p>
+            </li><li>
+               <p>A página <b>Add permissions policy</b> (Adicionar política de permissões) é exibida. Escolha <code class="code">AmazonS3ReadOnlyAccess</code> e <code class="code">AWSGlueConsoleFullAccess</code> se estiver usando o catálogo de dados do AWS Glue. Ou escolha <code class="code">AmazonAthenaFullAccess</code> se estiver usando o catálogo de dados do Athena. Escolha <b>Next</b> (Próximo).</p>
+               <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>A política <code class="code">AmazonS3ReadOnlyAccess</code> concede ao seu cluster acesso somente leitura a todos os buckets do Amazon S3. Para conceder acesso apenas ao bucket de dados de amostra da AWS, crie uma nova política e adicione as permissões a seguir.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+    "Version": "2012-10-17",
+    "Statement": [
+        <span>{</span>
+            "Effect": "Allow",
+            "Action": [
+                "s3:Get*",
+                "s3:List*"
+            ],
+            "Resource": "arn:aws:s3:::redshift-downloads/*"
+        }
+    ]
+}</code></pre></div></div>
+            </li><li>
+               <p>Para <b>Role name (Nome da função)</b>, digite um nome para sua função, por exemplo, <code class="userinput">myspectrum_role</code>.</p>
+            </li><li>
+               <p>Revise as informações e escolha <b>Create role</b>.</p>
+            </li><li>
+               <p>No painel de navegação, escolha <b>Roles</b>. Escolha o nome de sua nova função para visualizar o resumo e copie o <b>Nome de recurso da Amazon (ARN) da função</b> em sua área de transferência. Esse valor é o nome de recurso da Amazon (ARN) para a função que você acaba de criar. Esse valor é usado quando tabelas externas são criadas para referenciar os arquivos de dados no Amazon S3.</p>
+            </li></ol></div><div class="procedure" id="spectrum-get-started-create-role-lake-formation"><h6>Para criar uma função do IAM para o Amazon Redshift usando um AWS Glue Data Catalog habilitado para o AWS Lake Formation</h6><ol><li>
+               <p>Abra o console IAM em <a href="https://console.aws.amazon.com/iam/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/iam/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p>
+            </li><li>
+               <p>No painel de navegação, escolha <b>Policies</b>.</p>
+               <p>Se essa for a primeira vez que você escolhe <b>Políticas</b>, a página <b>Bem-vindo às políticas gerenciadas</b> será exibida. Escolha <b>Conceitos básicos</b>.</p>
+            </li><li>
+               <p>Escolha <b>Create policy (Criar política)</b>. </p>
+            </li><li>
+               <p>Opte por criar a política na guia <b>JSON</b>. </p>
+            </li><li>
+               <p>Cole no documento de política JSON a seguir, que concede acesso ao catálogo de dados, mas nega as permissões de administrador para o Lake Formation.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "Version": "2012-10-17",
+    "Statement": [
+        <span>{</span>
+            "Sid": "RedshiftPolicyForLF",
+            "Effect": "Allow",
+            "Action": [
+                "glue:*",
+                "lakeformation:GetDataAccess"
+            ],
+            "Resource": "*"
+        }
+    ]
+}</code></pre>
+               
+        
+               
+               
+               
+            </li><li>
+               <p>Ao terminar, escolha <b>Review (Revisar)</b> para revisar a política. O validador de política indica se há qualquer erro de sintaxe.</p>
+            </li><li>
+               <p>Na página <b>Review policy (Revisar política)</b>, em <b>Name (Nome)</b>, insira <code class="userinput">myspectrum_policy</code> para dar um nome à política que você está criando. Insira uma <b>Description (Descrição)</b> (opcional). Revise o <b>Resumo</b> da política para ver as permissões que são concedidas pela política. Em seguida, escolha <b>Criar política</b> para salvar seu trabalho.</p>
+               <p>Depois de criar uma política, você pode conceder acesso aos usuários.</p>
+            </li></ol></div><p>Para conceder acesso, adicione as permissões aos seus usuários, grupos ou perfis:</p><div class="itemizedlist">
+   
+   
+   
+  <ul class="itemizedlist"><li class="listitem">
+    <p>Usuários e grupos no AWS IAM Identity Center:</p>
+    <p>Crie um conjunto de permissões. Siga as instruções em <a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/howtocreatepermissionset.html">Create a permission set (Criação de um conjunto de permissões)</a> no <em>Guia do usuário do AWS IAM Identity Center</em>.</p>
+  </li><li class="listitem">
+    <p>Usuários gerenciados no IAM com provedor de identidades:</p>
+    <p>Crie um perfil para a federação de identidades. Siga as instruções em <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp.html">Criar um perfil para um provedor de identidades de terceiros (federação)</a> no <em>Guia do usuário do IAM</em>.</p>
+  </li><li class="listitem">
+    <p>Usuários do IAM:</p>
+     <div class="itemizedlist">
+        
+        
+     <ul class="itemizedlist"><li class="listitem">
+         <p>Crie um perfil que seu usuário possa assumir. Siga as instruções em <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user.html">Creating a role for an IAM user (Criação de um perfil para um usuário do IAM)</a> no <em>Guia do usuário do IAM</em>.</p>
+       </li><li class="listitem">
+         <p>(Não recomendado) Vincule uma política diretamente a um usuário ou adicione um usuário a um grupo de usuários. Siga as instruções em <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_change-permissions.html#users_change_permissions-add-console">Adição de permissões a um usuário (console)</a> no <em>Guia do usuário do IAM</em>.</p>
+       </li></ul></div>
+  </li></ul></div><div class="procedure" id="spectrum-get-started-grant-lake-formation-table"><h6>Para conceder permissões SELECT na tabela para consultar no banco de dados do Lake Formation</h6><ol><li>
+               <p>Abra o console do Lake Formation em <a href="https://console.aws.amazon.com/lakeformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/lakeformation/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p>
+               
+            </li><li>
+               <p>No painel de navegação, escolha <b>Permissões do data lake</b> e <b>Conceder</b>.</p>
+            </li><li>
+               
+               <p>Siga as instruções em <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/granting-table-permissions.html">Concessão das permissões da tabela usando o nome do recurso nomeado</a> no <em>Guia do desenvolvedor do AWS Lake Formation</em>. Forneça as informações a seguir:</p>
+               <div class="itemizedlist">
+                   
+                  
+               <ul class="itemizedlist"><li class="listitem">
+                     <p>Para a <b>Função do IAM</b>, selecione a função do IAM criada, <code class="code">myspectrum_role</code>. Ao executar o editor de consulta do Amazon Redshift, ele usa essa função do IAM para conceder permissão aos dados. </p>
+                     <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>Para conceder permissão SELECT na tabela em um catálogo de dados habilitado para o Lake Formation para consulta, faça o seguinte:</p><div class="itemizedlist">
+                         
+                         
+                         
+                     <ul class="itemizedlist"><li class="listitem"><p>Registre o caminho dos dados no Lake Formation. </p></li><li class="listitem"><p>Conceda aos usuários permissão para esse caminho no Lake Formation. </p></li><li class="listitem"><p>As tabelas criadas podem ser encontradas no caminho registrado no Lake Formation. </p></li></ul></div></div></div>
+                  </li></ul></div>
+            </li><li>
+               <p>Selecione <b>Conceder</b>.</p>
+            </li></ol></div><div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>Importante</h6></div><div class="awsdocs-note-text"><p>Como prática recomendada, permita o acesso somente aos objetos subjacentes do Amazon S3 por meio de permissões do Lake Formation. Para impedir o acesso não aprovado, remova qualquer permissão concedida aos objetos do Amazon S3 fora do Lake Formation. Se você já tiver acessado objetos do Amazon S3 antes de configurar o Lake Formation, remova políticas do IAM ou permissões de bucket que tenham sido configuradas anteriormente. Para obter mais informações, consulte <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/upgrade-glue-lake-formation.html">Atualizar permissões de dados do AWS Glue para o modelo do AWS Lake Formation</a> e <a href="https://docs.aws.amazon.com/lake-formation/latest/dg/lake-formation-permissions.html">Permissões do Lake Formation</a>. </p></div></div><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Atenção" /> <strong>O Javascript está desativado ou não está disponível no seu navegador.</strong></p><p>Para usar a documentação da AWS, o Javascript deve estar ativado. Consulte as páginas de Ajuda do navegador para obter instruções.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenções do documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c-getting-started-using-spectrum.html">Conceitos básicos do Amazon Redshift Spectrum</div><div id="next" class="next-link" accesskey="n" href="./c-getting-started-using-spectrum-add-role.html">Etapa 2: Associar uma função do IAM ao cluster</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Essa página foi útil? - Sim</div><div class="content"><p>Obrigado por nos informar que estamos fazendo um bom trabalho!</p><p>Se tiver tempo, conte-nos sobre o que você gostou para que possamos melhorar ainda mais.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Essa página foi útil? - Não</div><div class="content"><p>Obrigado por nos informar que precisamos melhorar a página. Lamentamos ter decepcionado você.</p><p>Se tiver tempo, conte-nos como podemos melhorar a documentação.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

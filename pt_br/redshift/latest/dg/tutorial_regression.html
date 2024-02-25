@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Tutorial: Como criar modelos de regressão - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_regression" /><meta name="default_state" content="tutorial_regression" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_regression.html" /><meta name="description" content="Use este tutorial para obter um exemplo completo de como criar um modelo de machine learning do Amazon Redshift e executar consultas de inferência." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guia do desenvolvedor de banco de dados" /><meta name="abstract" content="Crie e gerencie um data warehouse com o Amazon Redshift, um serviço de data warehouse totalmente gerenciado, em escala de petabyte e de nível empresarial." /><meta name="guide-locale" content="pt_br" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_regression.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_regression.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_regression.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_regression.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_regression.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_regression.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_regression.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_regression.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_regression.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_regression.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_regression.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_regression.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_regression.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_regression.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_regression.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_regression.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_regression.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_regression.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_regression.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_regression.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_regression.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_regression.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guia do desenvolvedor de banco de dados" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guia do desenvolvedor de banco de dados" /><meta id="panorama-serviceConsolePage" value="Tutorial: Como criar modelos de regressão" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Tutorial: Como criar modelos de regressão - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_regression" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_regression.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_regression.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_regression.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,desenvolvedor,dados de amostra,banco de dados,desenvolvedor do banco de dados,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guia do desenvolvedor de banco de dados",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Usar Machine Learning no Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Conceitos básicos do Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Tutoriais para o Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "Tutorial: Como criar modelos de regressão",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_regression" target="_blank" rel="noopener noreferrer" title="Abrir em PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentação</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guia do desenvolvedor de banco de dados</a></div><div id="page-toc-src"><a href="#tutorial_regression_tasks">Exemplos de casos de uso</a><a href="#tutorial_regression_prereqs">Pré-requisitos</a><a href="#tutorial_regression_step_load">Etapa 1: Carregar dados do Amazon S3 para o Amazon Redshift</a><a href="#tutorial_regression_create_model">Etapa 2: Criar o modelo de machine learning</a><a href="#tutorial_regression_step_validate">Etapa 3: Validar o modelo</a><a href="#tutorial_regression_related_topics">Tópicos relacionados</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_regression">Tutorial: Como criar modelos de regressão</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Neste tutorial, você usa o Amazon Redshift ML para criar um modelo de regressão de machine learning e executar consultas de previsão no modelo. Os modelos de regressão permitem prever resultados numéricos, como o preço de uma casa ou quantas pessoas usarão o serviço de aluguel de bicicletas em uma cidade. Você usa o comando CREATE MODEL no Amazon Redshift com os dados de treinamento. Em seguida, o Amazon Redshift ML compila o modelo, importa o modelo treinado para o Redshift e prepara uma função de previsão SQL. Você pode usar a função de previsão em consultas SQL no Amazon Redshift.</p><p>Neste tutorial, você usará o Amazon Redshift ML para criar um modelo de regressão que prevê o número de pessoas que usam o serviço de compartilhamento de bicicletas da cidade de Toronto a qualquer hora do dia. As entradas para o modelo incluem feriados e condições climáticas. Você usará um modelo de regressão porque deseja um resultado numérico para esse problema.</p><p>Você pode usar o comando CREATE MODEL para exportar dados de treinamento, treinar e importar o modelo e disponibilizá-lo no Amazon Redshift como uma função SQL. Use a operação CREATE MODEL para especificar dados de treinamento como uma tabela ou instrução SELECT.</p>
+               <h2 id="tutorial_regression_tasks">Exemplos de casos de uso</h2>
+               <p>Você pode resolver outros problemas de regressão com o Amazon Redshift ML, como prever o valor da vida útil de um cliente. Você também pode usar o Redshift ML para prever o preço mais lucrativo e a receita resultante de um produto.</p>
+            <p><b>Tarefas</b></p><div class="itemizedlist">
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>Pré-requisitos</p>
+               </li><li class="listitem">
+                  <p>Etapa 1: Carregar dados do Amazon S3 para o Amazon Redshift</p>
+               </li><li class="listitem">
+                  <p>Etapa 2: Criar o modelo de machine learning</p>
+               </li><li class="listitem">
+                  <p>Etapa 3: Validar o modelo</p>
+               </li></ul></div>
+               <h2 id="tutorial_regression_prereqs">Pré-requisitos</h2>
+               <p>Para finalizar este tutorial, você deve concluir a <a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">configuração administrativa</a> do Amazon Redshift ML.</p>
+             
+               <h2 id="tutorial_regression_step_load">Etapa 1: Carregar dados do Amazon S3 para o Amazon Redshift</h2>
+               <p>Use o <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">editor de consultas v2 do Amazon Redshift</a> para executar as consultas a seguir.</p>
+               <div class="orderedlist">
+                   
+                   
+                   
+                   
+               <ol><li>
+                     <p>Você deve criar três tabelas para carregar os três conjuntos de dados públicos no Amazon Redshift. Os conjuntos de dados são <a href="https://open.toronto.ca/dataset/bike-share-toronto-ridership-data/" rel="noopener noreferrer" target="_blank"><span>Toronto Bike Ridership Data</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> (Dados sobre usuários de bicicleta em Toronto), <a href="https://climate.weather.gc.ca/historical_data/search_historic_data_e.html" rel="noopener noreferrer" target="_blank"><span>historical weather data</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> (dados climáticos históricos) e <a href="https://github.com/uWaterloo/Datasets/blob/master/Holidays/holidays.csv" rel="noopener noreferrer" target="_blank"><span>historical holidays data</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> (dados históricos de feriados). Execute a consulta a seguir no editor de consultas do Amazon Redshift para criar tabelas com os nomes <code class="code">ridership</code>, <code class="code">weather</code> e <code class="code">holiday</code>.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE IF NOT EXISTS ridership (
+    trip_id INT,
+    trip_duration_seconds INT,
+    trip_start_time timestamp,
+    trip_stop_time timestamp,
+    from_station_name VARCHAR(50),
+    to_station_name VARCHAR(50),
+    from_station_id SMALLINT,
+    to_station_id SMALLINT,
+    user_type VARCHAR(20)
+);
+
+CREATE TABLE IF NOT EXISTS weather (
+    longitude_x DECIMAL(5, 2),
+    latitude_y DECIMAL(5, 2),
+    station_name VARCHAR(20),
+    climate_id BIGINT,
+    datetime_utc TIMESTAMP,
+    weather_year SMALLINT,
+    weather_month SMALLINT,
+    weather_day SMALLINT,
+    time_utc VARCHAR(5),
+    temp_c DECIMAL(5, 2),
+    temp_flag VARCHAR(1),
+    dew_point_temp_c DECIMAL(5, 2),
+    dew_point_temp_flag VARCHAR(1),
+    rel_hum SMALLINT,
+    rel_hum_flag VARCHAR(1),
+    precip_amount_mm DECIMAL(5, 2),
+    precip_amount_flag VARCHAR(1),
+    wind_dir_10s_deg VARCHAR(10),
+    wind_dir_flag VARCHAR(1),
+    wind_spd_kmh VARCHAR(10),
+    wind_spd_flag VARCHAR(1),
+    visibility_km VARCHAR(10),
+    visibility_flag VARCHAR(1),
+    stn_press_kpa DECIMAL(5, 2),
+    stn_press_flag VARCHAR(1),
+    hmdx SMALLINT,
+    hmdx_flag VARCHAR(1),
+    wind_chill VARCHAR(10),
+    wind_chill_flag VARCHAR(1),
+    weather VARCHAR(10)
+);
+
+CREATE TABLE IF NOT EXISTS holiday (holiday_date DATE, description VARCHAR(100));</code></pre>
+                  </li><li>
+                     <p>A consulta a seguir carrega os dados de exemplo nas tabelas que você criou na etapa anterior.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY ridership
+FROM
+    's3://redshift-ml-bikesharing-data/bike-sharing-data/ridership/' 
+    IAM_ROLE default 
+    FORMAT CSV 
+    IGNOREHEADER 1 
+    DATEFORMAT 'auto' 
+    TIMEFORMAT 'auto' 
+    REGION 'us-west-2' 
+    gzip;
+
+COPY weather
+FROM
+    's3://redshift-ml-bikesharing-data/bike-sharing-data/weather/' 
+    IAM_ROLE default 
+    FORMAT csv 
+    IGNOREHEADER 1 
+    DATEFORMAT 'auto' 
+    TIMEFORMAT 'auto' 
+    REGION 'us-west-2' 
+    gzip;
+
+COPY holiday
+FROM
+    's3://redshift-ml-bikesharing-data/bike-sharing-data/holiday/' 
+    IAM_ROLE default 
+    FORMAT csv 
+    IGNOREHEADER 1 
+    DATEFORMAT 'auto' 
+    TIMEFORMAT 'auto' 
+    REGION 'us-west-2' 
+    gzip;</code></pre>
+                  </li><li>
+                     <p>A consulta a seguir executa transformações nos conjuntos de dados <code class="code">ridership</code> e <code class="code">weather</code> para remover vieses ou anomalias. A remoção de vieses e anomalias resulta em melhor precisão do modelo. A consulta simplifica as tabelas criando duas novas visualizações chamadas <code class="code">ridership_view</code> e <code class="code">weather_view</code>.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE
+OR REPLACE VIEW ridership_view AS
+SELECT
+    trip_time,
+    trip_count,
+    TO_CHAR(trip_time, 'hh24') :: INT trip_hour,
+    TO_CHAR(trip_time, 'dd') :: INT trip_day,
+    TO_CHAR(trip_time, 'mm') :: INT trip_month,
+    TO_CHAR(trip_time, 'yy') :: INT trip_year,
+    TO_CHAR(trip_time, 'q') :: INT trip_quarter,
+    TO_CHAR(trip_time, 'w') :: INT trip_month_week,
+    TO_CHAR(trip_time, 'd') :: INT trip_week_day
+FROM
+    (
+        SELECT
+            CASE
+                WHEN TRUNC(r.trip_start_time) &lt; '2017-07-01' :: DATE THEN CONVERT_TIMEZONE(
+                    'US/Eastern',
+                    DATE_TRUNC('hour', r.trip_start_time)
+                )
+                ELSE DATE_TRUNC('hour', r.trip_start_time)
+            END trip_time,
+            COUNT(1) trip_count
+        FROM
+            ridership r
+        WHERE
+            r.trip_duration_seconds BETWEEN 60
+            AND 60 * 60 * 24
+        GROUP BY
+            1
+    );
+
+CREATE
+OR REPLACE VIEW weather_view AS
+SELECT
+    CONVERT_TIMEZONE(
+        'US/Eastern',
+        DATE_TRUNC('hour', datetime_utc)
+    ) daytime,
+    ROUND(AVG(temp_c)) temp_c,
+    ROUND(AVG(precip_amount_mm)) precip_amount_mm
+FROM
+    weather
+GROUP BY
+    1;</code></pre>
+                  </li><li>
+                     <p>A consulta a seguir cria uma tabela que combina todos os atributos de entrada relevantes de <code class="code">ridership_view</code> e de <code class="code">weather_view</code> na tabela <code class="code">trip_data</code>.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE trip_data AS
+SELECT
+    r.trip_time,
+    r.trip_count,
+    r.trip_hour,
+    r.trip_day,
+    r.trip_month,
+    r.trip_year,
+    r.trip_quarter,
+    r.trip_month_week,
+    r.trip_week_day,
+    w.temp_c,
+    w.precip_amount_mm,CASE
+        WHEN h.holiday_date IS NOT NULL THEN 1
+        WHEN TO_CHAR(r.trip_time, 'D') :: INT IN (1, 7) THEN 1
+        ELSE 0
+    END is_holiday,
+    ROW_NUMBER() OVER (
+        ORDER BY
+            RANDOM()
+    ) serial_number
+FROM
+    ridership_view r
+    JOIN weather_view w ON (r.trip_time = w.daytime)
+    LEFT OUTER JOIN holiday h ON (TRUNC(r.trip_time) = h.holiday_date);</code></pre>
+                  </li></ol></div>
+                
+                  <h3 id="tutorial_regression_view_data">Visualizar os dados de exemplo (opcional)</h3>
+                  <p>A consulta a seguir mostra as entradas da tabela. Você pode executar essa operação para garantir se a tabela foi feita corretamente.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">
+SELECT * 
+FROM trip_data 
+LIMIT 5;</code></pre>
+                  <p>Veja a seguir um exemplo de saída da operação anterior.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">+---------------------+------------+-----------+----------+------------+-----------+--------------+-----------------+---------------+--------+------------------+------------+---------------+
+|      trip_time      | trip_count | trip_hour | trip_day | trip_month | trip_year | trip_quarter | trip_month_week | trip_week_day | temp_c | precip_amount_mm | is_holiday | serial_number |
++---------------------+------------+-----------+----------+------------+-----------+--------------+-----------------+---------------+--------+------------------+------------+---------------+
+| 2017-03-21 22:00:00 |         47 |        22 |       21 |          3 |        17 |            1 |               3 |             3 |      1 |                0 |          0 |             1 |
+| 2018-05-04 01:00:00 |         19 |         1 |        4 |          5 |        18 |            2 |               1 |             6 |     12 |                0 |          0 |             3 |
+| 2018-01-11 10:00:00 |         93 |        10 |       11 |          1 |        18 |            1 |               2 |             5 |      9 |                0 |          0 |             5 |
+| 2017-10-28 04:00:00 |         20 |         4 |       28 |         10 |        17 |            4 |               4 |             7 |     11 |                0 |          1 |             7 |
+| 2017-12-31 21:00:00 |         11 |        21 |       31 |         12 |        17 |            4 |               5 |             1 |    -15 |                0 |          1 |             9 |
++---------------------+------------+-----------+----------+------------+-----------+--------------+-----------------+---------------+--------+------------------+------------+---------------+</code></pre>
+                
+                
+                  <h3 id="tutorial_regression_show_correlation">Mostrar a correlação entre atributos (opcional)</h3>
+                  <p>Determinar a correlação ajuda a medir a consistência da associação entre os atributos. O nível de associação pode ajudar você a determinar o que afeta o resultado pretendido. Neste tutorial, o resultado pretendido é <code class="code">trip_count</code>.</p><p>A consulta a seguir cria ou substitui o procedimento <code class="code">sp_correlation</code>. Use o procedimento armazenado, denominado <code class="code">sp_correlation</code>, para mostrar a correlação entre um atributo e outros atributos em uma tabela no Amazon Redshift.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE OR REPLACE PROCEDURE sp_correlation(source_schema_name in varchar(255), source_table_name in varchar(255), target_column_name in varchar(255), output_temp_table_name inout varchar(255)) AS $$
+DECLARE
+  v_sql varchar(max);
+  v_generated_sql varchar(max);
+  v_source_schema_name varchar(255)=lower(source_schema_name);
+  v_source_table_name varchar(255)=lower(source_table_name);
+  v_target_column_name varchar(255)=lower(target_column_name);
+BEGIN
+  EXECUTE 'DROP TABLE IF EXISTS ' || output_temp_table_name;
+  v_sql = '
+SELECT
+  ''CREATE temp table '|| output_temp_table_name||' AS SELECT ''|| outer_calculation||
+  '' FROM (SELECT COUNT(1) number_of_items, SUM('||v_target_column_name||') sum_target, SUM(POW('||v_target_column_name||',2)) sum_square_target, POW(SUM('||v_target_column_name||'),2) square_sum_target,''||
+  inner_calculation||
+  '' FROM (SELECT ''||
+  column_name||
+  '' FROM '||v_source_table_name||'))''
+FROM
+  (
+  SELECT
+    DISTINCT
+    LISTAGG(outer_calculation,'','') OVER () outer_calculation
+    ,LISTAGG(inner_calculation,'','') OVER () inner_calculation
+    ,LISTAGG(column_name,'','') OVER () column_name
+  FROM
+    (
+    SELECT
+      CASE WHEN atttypid=16 THEN ''DECODE(''||column_name||'',true,1,0)'' ELSE column_name END column_name
+      ,atttypid
+      ,''CAST(DECODE(number_of_items * sum_square_''||rn||'' - square_sum_''||rn||'',0,null,(number_of_items*sum_target_''||rn||'' - sum_target * sum_''||rn||
+        '')/SQRT((number_of_items * sum_square_target - square_sum_target) * (number_of_items * sum_square_''||rn||
+        '' - square_sum_''||rn||''))) AS numeric(5,2)) ''||column_name outer_calculation
+      ,''sum(''||column_name||'') sum_''||rn||'',''||
+            ''SUM(trip_count*''||column_name||'') sum_target_''||rn||'',''||
+            ''SUM(POW(''||column_name||'',2)) sum_square_''||rn||'',''||
+            ''POW(SUM(''||column_name||''),2) square_sum_''||rn inner_calculation
+    FROM
+      (
+      SELECT
+        row_number() OVER (order by a.attnum) rn
+        ,a.attname::VARCHAR column_name
+        ,a.atttypid
+      FROM pg_namespace AS n
+        INNER JOIN pg_class AS c ON n.oid = c.relnamespace
+        INNER JOIN pg_attribute AS a ON c.oid = a.attrelid
+      WHERE a.attnum &gt; 0
+        AND n.nspname = '''||v_source_schema_name||'''
+        AND c.relname = '''||v_source_table_name||'''
+        AND a.atttypid IN (16,20,21,23,700,701,1700)
+      )
+    )
+)';
+  EXECUTE v_sql INTO v_generated_sql;
+  EXECUTE  v_generated_sql;
+END;
+$$ LANGUAGE plpgsql;</code></pre><p>A consulta a seguir mostra a correlação entre a coluna de destino, <code class="code">trip_count</code>, e outros atributos numéricos em nosso conjunto de dados.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">call sp_correlation(
+    'public',
+    'trip_data',
+    'trip_count',
+    'tmp_corr_table'
+);
+
+SELECT
+    *
+FROM
+    tmp_corr_table;</code></pre><p>Veja a seguir um exemplo de saída da operação anterior <code class="code">sp_correlation</code>.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">+------------+-----------+----------+------------+-----------+--------------+-----------------+---------------+--------+------------------+------------+---------------+
+| trip_count | trip_hour | trip_day | trip_month | trip_year | trip_quarter | trip_month_week | trip_week_day | temp_c | precip_amount_mm | is_holiday | serial_number |
++------------+-----------+----------+------------+-----------+--------------+-----------------+---------------+--------+------------------+------------+---------------+
+|          1 |      0.32 |     0.01 |       0.18 |      0.12 |         0.18 |               0 |          0.02 |   0.53 |            -0.07 |      -0.13 |             0 |
++------------+-----------+----------+------------+-----------+--------------+-----------------+---------------+--------+------------------+------------+---------------+</code></pre>
+             
+               <h2 id="tutorial_regression_create_model">Etapa 2: Criar o modelo de machine learning</h2>
+               <div class="orderedlist">
+                   
+                   
+               <ol><li>
+                     <p>A consulta a seguir divide os dados em um conjunto de treinamento e um conjunto de validação, designando 80% do conjunto de dados para treinamento e 20% para validação. O conjunto de treinamento é a entrada para o modelo de ML que visa identificar o melhor algoritmo possível para o modelo. Depois que o modelo é criado, o conjunto de validação é usado para validar a precisão do modelo.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE training_data AS
+SELECT
+    trip_count,
+    trip_hour,
+    trip_day,
+    trip_month,
+    trip_year,
+    trip_quarter,
+    trip_month_week,
+    trip_week_day,
+    temp_c,
+    precip_amount_mm,
+    is_holiday
+FROM
+    trip_data
+WHERE
+    serial_number &gt; (
+        SELECT
+            COUNT(1) * 0.2
+        FROM
+            trip_data
+    );
+
+CREATE TABLE validation_data AS
+SELECT
+    trip_count,
+    trip_hour,
+    trip_day,
+    trip_month,
+    trip_year,
+    trip_quarter,
+    trip_month_week,
+    trip_week_day,
+    temp_c,
+    precip_amount_mm,
+    is_holiday,
+    trip_time
+FROM
+    trip_data
+WHERE
+    serial_number &lt;= (
+        SELECT
+            COUNT(1) * 0.2
+        FROM
+            trip_data
+    );</code></pre>
+                  </li><li>
+                     <p>A consulta a seguir cria um modelo de regressão para prever o valor <code class="code">trip_count</code> referente a qualquer data e hora de entrada. No exemplo a seguir, substitua <code class="replaceable"><code class="code">DOC-EXAMPLE-BUCKET</code></code> pelo bucket do S3.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL predict_rental_count
+FROM
+    training_data TARGET trip_count FUNCTION predict_rental_count 
+    IAM_ROLE default 
+    PROBLEM_TYPE regression 
+    OBJECTIVE 'mse' 
+    SETTINGS (
+        s3_bucket '<code class="replaceable">&lt;DOC-EXAMPLE-BUCKET&gt;</code>',
+        s3_garbage_collect off,
+        max_runtime 5000
+    );</code></pre>
+                  </li></ol></div>
+             
+               <h2 id="tutorial_regression_step_validate">Etapa 3: Validar o modelo</h2>
+               <div class="orderedlist">
+                   
+                   
+                   
+                   
+               <ol><li>
+                     <p>Use a consulta a seguir para gerar aspectos do modelo e encontrar a métrica de erro quadrático médio na saída. O erro quadrático médio é uma métrica de precisão típica para problemas de regressão.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">show model predict_rental_count;</code></pre>
+                  </li><li>
+                     <p>Execute as consultas de previsão a seguir em relação aos dados de validação para comparar a contagem prevista com a contagem real de viagens.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    trip_time,
+    actual_count,
+    predicted_count,
+    (actual_count - predicted_count) difference
+FROM
+    (
+        SELECT
+            trip_time,
+            trip_count AS actual_count,
+            PREDICT_RENTAL_COUNT (
+                trip_hour,
+                trip_day,
+                trip_month,
+                trip_year,
+                trip_quarter,
+                trip_month_week,
+                trip_week_day,
+                temp_c,
+                precip_amount_mm,
+                is_holiday
+            ) predicted_count
+        FROM
+            validation_data
+    )
+LIMIT
+    5;</code></pre>
+                  </li><li>
+                     <p>A consulta a seguir calcula o erro quadrático médio e o erro quadrático médio da raiz com base nos dados de validação. O erro quadrático médio e o erro quadrático médio da raiz são usados para medir a distância entre o destino numérico previsto e a resposta numérica real. Um bom modelo tem uma pontuação baixa em ambas as métricas. A consulta a seguir retorna o valor de ambas as métricas.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    ROUND(
+        AVG(POWER((actual_count - predicted_count), 2)),
+        2
+    ) mse,
+    ROUND(
+        SQRT(AVG(POWER((actual_count - predicted_count), 2))),
+        2
+    ) rmse
+FROM
+    (
+        SELECT
+            trip_time,
+            trip_count AS actual_count,
+            PREDICT_RENTAL_COUNT (
+                trip_hour,
+                trip_day,
+                trip_month,
+                trip_year,
+                trip_quarter,
+                trip_month_week,
+                trip_week_day,
+                temp_c,
+                precip_amount_mm,
+                is_holiday
+            ) predicted_count
+        FROM
+            validation_data
+    );</code></pre>
+                  </li><li>
+                     <p>A consulta a seguir calcula o erro percentual na contagem de viagens para cada tempo de viagem em 1.º/1/2017. A consulta ordena os tempos de viagem desde o momento com o menor erro percentual até o tempo com o erro percentual mais alto.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    trip_time,
+    CAST(ABS(((actual_count - predicted_count) / actual_count)) * 100 AS DECIMAL (7,2)) AS pct_error
+FROM
+    (
+        SELECT
+            trip_time,
+            trip_count AS actual_count,
+            PREDICT_RENTAL_COUNT (
+                trip_hour,
+                trip_day,
+                trip_month,
+                trip_year,
+                trip_quarter,
+                trip_month_week,
+                trip_week_day,
+                temp_c,
+                precip_amount_mm,
+                is_holiday
+            ) predicted_count
+        FROM
+            validation_data
+    )
+WHERE
+   trip_time LIKE '2017-01-01 %%:%%:%%'
+ORDER BY
+   2 ASC;</code></pre>
+                  </li></ol></div>
+             
+               <h2 id="tutorial_regression_related_topics">Tópicos relacionados</h2>
+               <p>Para obter mais informações sobre o Amazon Redshift ML, consulte a seguinte documentação:</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">Custos para usar o Amazon Redshift ML</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">Operação CREATE MODEL</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">Função EXPLAIN_MODEL</a></p>
+                  </li></ul></div>
+               <p>Para obter mais informações sobre machine learning, consulte a seguinte documentação:</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">Visão geral do Machine Learning</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">Machine Learning para iniciantes e especialistas</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">What Is Fairness and Model Explainability for Machine Learning Predictions?</a> (O que é equidade e explicabilidade de modelo para previsões de machine learning?)</p>
+                  </li></ul></div>
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Atenção" /> <strong>O Javascript está desativado ou não está disponível no seu navegador.</strong></p><p>Para usar a documentação da AWS, o Javascript deve estar ativado. Consulte as páginas de Ajuda do navegador para obter instruções.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenções do documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial_xgboost.html">Tutorial: Como construir modelos XGBoost</div><div id="next" class="next-link" accesskey="n" href="./tutorial_linear_learner_regression.html">Tutorial: Como construir modelos de regressão com o aprendizado linear</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Essa página foi útil? - Sim</div><div class="content"><p>Obrigado por nos informar que estamos fazendo um bom trabalho!</p><p>Se tiver tempo, conte-nos sobre o que você gostou para que possamos melhorar ainda mais.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_regression.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Essa página foi útil? - Não</div><div class="content"><p>Obrigado por nos informar que precisamos melhorar a página. Lamentamos ter decepcionado você.</p><p>Se tiver tempo, conte-nos como podemos melhorar a documentação.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_regression.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

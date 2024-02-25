@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Tutorial: Como criar modelos de classificação multiclasse - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_multi-class_classification" /><meta name="default_state" content="tutorial_multi-class_classification" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_multi-class_classification.html" /><meta name="description" content="Use este tutorial para obter um exemplo completo de como criar um modelo de machine learning do Amazon Redshift e executar consultas de inferência." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guia do desenvolvedor de banco de dados" /><meta name="abstract" content="Crie e gerencie um data warehouse com o Amazon Redshift, um serviço de data warehouse totalmente gerenciado, em escala de petabyte e de nível empresarial." /><meta name="guide-locale" content="pt_br" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_multi-class_classification.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_multi-class_classification.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guia do desenvolvedor de banco de dados" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guia do desenvolvedor de banco de dados" /><meta id="panorama-serviceConsolePage" value="Tutorial: Como criar modelos de classificação multiclasse" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Tutorial: Como criar modelos de classificação multiclasse - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_multi-class_classification" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_multi-class_classification.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_multi-class_classification.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_multi-class_classification.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,desenvolvedor,dados de amostra,banco de dados,desenvolvedor do banco de dados,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guia do desenvolvedor de banco de dados",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Usar Machine Learning no Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Conceitos básicos do Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Tutoriais para o Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "Tutorial: Como criar modelos de classificação multiclasse",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_multi-class_classification" target="_blank" rel="noopener noreferrer" title="Abrir em PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentação</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guia do desenvolvedor de banco de dados</a></div><div id="page-toc-src"><a href="#tutorial_multi-class_classification_tasks">Exemplos de casos de uso</a><a href="#tutorial_multi-class_classification_prereqs">Pré-requisitos</a><a href="#tutorial_multi-class_classification_step_load">Etapa 1: Carregar dados do Amazon S3 para o Amazon Redshift</a><a href="#tutorial_multi-class_classification_step_create_model">Etapa 2: Criar o modelo de machine learning</a><a href="#tutorial_multi-class_classification_step_perform_predictions">Etapa 3: Executar previsões com o modelo</a><a href="#tutorial_multi-class_classification_related_topics">Tópicos relacionados</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_multi-class_classification">Tutorial: Como criar modelos de classificação multiclasse</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Neste tutorial, você usa o Amazon Redshift ML para criar um modelo de machine learning que solucione problemas de classificação multiclasse. O algoritmo de classificação multiclasse enquadra os pontos de dados em uma das três ou mais classes. Em seguida, você implementa consultas usando a função SQL gerada pelo comando CREATE MODEL.</p><p>Você pode usar um comando CREATE MODEL para exportar dados de treinamento, treinar um modelo, importar o modelo e preparar uma função de previsão do Amazon Redshift. Use a operação CREATE MODEL para especificar dados de treinamento como uma tabela ou instrução SELECT.</p><p>Para acompanhar o tutorial, você usa o conjunto de dados público <a href="https://www.kaggle.com/allunia/e-commerce-sales-forecast" rel="noopener noreferrer" target="_blank"><span>E-Commerce Sales Forecast</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> (Previsão de vendas de comércio eletrônico), que inclui dados de vendas de um varejista on-line do Reino Unido. O modelo que você gerar terá como alvo os clientes mais ativos para um programa especial de fidelidade do cliente. Com a classificação multiclasse, você pode usar o modelo para prever por quantos meses um cliente ficará ativo em um período de 13 meses. A função de previsão designa clientes que devem estar ativos por sete ou mais meses para admissão no programa.</p>
+               <h2 id="tutorial_multi-class_classification_tasks">Exemplos de casos de uso</h2>
+               <p>Você pode resolver outros problemas de classificação multiclasse com o Amazon Redshift ML, como prever o produto mais vendido de uma linha de produtos. Você também pode prever quais frutas uma imagem contém, como selecionar maçãs, peras ou laranjas.</p>
+            <p><b>Tarefas</b></p><div class="itemizedlist">
+                   
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p>Pré-requisitos</p>
+                  </li><li class="listitem">
+                     <p>Etapa 1: Carregar dados do Amazon S3 para o Amazon Redshift</p>
+                  </li><li class="listitem">
+                     <p>Etapa 2: Criar o modelo de machine learning</p>
+                  </li><li class="listitem">
+                     <p>Etapa 3: Executar previsões com o modelo</p>
+                  </li></ul></div>
+               <h2 id="tutorial_multi-class_classification_prereqs">Pré-requisitos</h2>
+               <p>Para finalizar este tutorial, você deve concluir a <a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">configuração administrativa</a> do Amazon Redshift ML.</p>
+               <h2 id="tutorial_multi-class_classification_step_load">Etapa 1: Carregar dados do Amazon S3 para o Amazon Redshift</h2>
+               <p>Use o <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">editor de consultas v2 do Amazon Redshift</a> para executar as consultas a seguir. Estas consultas carregam os dados de exemplo no Amazon Redshift.</p>
+               <div class="orderedlist">
+                   
+                   
+               <ol><li>
+                     <p>A consulta a seguir cria uma tabela chamada <code class="code">ecommerce_sales</code>.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE IF NOT EXISTS ecommerce_sales (
+    invoiceno VARCHAR(30),
+    stockcode VARCHAR(30),
+    description VARCHAR(60),
+    quantity DOUBLE PRECISION,
+    invoicedate VARCHAR(30),
+    unitprice DOUBLE PRECISION,
+    customerid BIGINT,
+    country VARCHAR(25)
+);</code></pre>
+                  </li><li>
+                     <p>A consulta a seguir copia os dados de exemplo do <a href="https://www.kaggle.com/allunia/e-commerce-sales-forecast" rel="noopener noreferrer" target="_blank"><span>conjunto de dados E-Commerce Sales Forecast</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> para a tabela <code class="code">ecommerce_sales</code>.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY ecommerce_sales
+FROM
+    's3://redshift-ml-multiclass/ecommerce_data.txt' 
+IAM_ROLE default 
+DELIMITER '\t' 
+IGNOREHEADER 1 
+REGION 'us-east-1' 
+MAXERROR 100;</code></pre>
+                  </li></ol></div>
+                
+                  <h3 id="tutorial_multi-class_classification_split_data">Dividir os dados</h3>
+                  <p>Quando você cria um modelo no Amazon Redshift ML, o SageMaker divide automaticamente os dados em conjuntos de treinamento e teste, para que o SageMaker possa determinar a precisão do modelo. Ao dividir manualmente os dados nesta etapa, você poderá verificar a precisão do modelo alocando um conjunto de previsões adicional. </p><p>Use a instrução SQL a seguir para dividir os dados em três conjuntos para treinamento, validação e previsão.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">--creates table with all data
+CREATE TABLE ecommerce_sales_data AS (
+    SELECT
+        t1.stockcode,
+        t1.description,
+        t1.invoicedate,
+        t1.customerid,
+        t1.country,
+        t1.sales_amt,
+        CAST(RANDOM() * 100 AS INT) AS data_group_id
+    FROM
+        (
+            SELECT
+                stockcode,
+                description,
+                invoicedate,
+                customerid,
+                country,
+                SUM(quantity * unitprice) AS sales_amt
+            FROM
+                ecommerce_sales
+            GROUP BY
+                1,
+                2,
+                3,
+                4,
+                5
+        ) t1
+);
+
+--creates training set
+CREATE TABLE ecommerce_sales_training AS (
+    SELECT
+        a.customerid,
+        a.country,
+        a.stockcode,
+        a.description,
+        a.invoicedate,
+        a.sales_amt,
+        (b.nbr_months_active) AS nbr_months_active
+    FROM
+        ecommerce_sales_data a
+        INNER JOIN (
+            SELECT
+                customerid,
+                COUNT(
+                    DISTINCT(
+                        DATE_PART(y, CAST(invoicedate AS DATE)) || '-' || LPAD(
+                            DATE_PART(mon, CAST(invoicedate AS DATE)),
+                            2,
+                            '00'
+                        )
+                    )
+                ) AS nbr_months_active
+            FROM
+                ecommerce_sales_data
+            GROUP BY
+                1
+        ) b ON a.customerid = b.customerid
+    WHERE
+        a.data_group_id &lt; 80
+);
+
+--creates validation set
+CREATE TABLE ecommerce_sales_validation AS (
+    SELECT
+        a.customerid,
+        a.country,
+        a.stockcode,
+        a.description,
+        a.invoicedate,
+        a.sales_amt,
+        (b.nbr_months_active) AS nbr_months_active
+    FROM
+        ecommerce_sales_data a
+        INNER JOIN (
+            SELECT
+                customerid,
+                COUNT(
+                    DISTINCT(
+                        DATE_PART(y, CAST(invoicedate AS DATE)) || '-' || LPAD(
+                            DATE_PART(mon, CAST(invoicedate AS DATE)),
+                            2,
+                            '00'
+                        )
+                    )
+                ) AS nbr_months_active
+            FROM
+                ecommerce_sales_data
+            GROUP BY
+                1
+        ) b ON a.customerid = b.customerid
+    WHERE
+        a.data_group_id BETWEEN 80
+        AND 90
+);
+
+--creates prediction set
+CREATE TABLE ecommerce_sales_prediction AS (
+    SELECT
+        customerid,
+        country,
+        stockcode,
+        description,
+        invoicedate,
+        sales_amt
+    FROM
+        ecommerce_sales_data
+    WHERE
+        data_group_id &gt; 90);</code></pre>
+                
+             
+               <h2 id="tutorial_multi-class_classification_step_create_model">Etapa 2: Criar o modelo de machine learning</h2>
+               <p>Nesta etapa, você usa a instrução CREATE MODEL para criar seu modelo de machine learning usando a classificação multiclasse. </p>
+               <p>A consulta a seguir cria o modelo de classificação multiclasse com o conjunto de treinamento usando a operação CREATE MODEL. Substitua <code class="replaceable"><code class="code">DOC-EXAMPLE-BUCKET</code></code> pelo seu próprio bucket do Amazon S3.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL ecommerce_customer_activity
+FROM
+    (
+        SELECT
+            customerid,
+            country,
+            stockcode,
+            description,
+            invoicedate,
+            sales_amt,
+            nbr_months_active
+        FROM
+            ecommerce_sales_training
+    ) TARGET nbr_months_active FUNCTION predict_customer_activity IAM_ROLE default PROBLEM_TYPE MULTICLASS_CLASSIFICATION SETTINGS (
+        S3_BUCKET '<code class="replaceable">&lt;DOC-EXAMPLE-BUCKET&gt;</code>',
+        S3_GARBAGE_COLLECT OFF
+    );</code></pre>
+               <p>Nessa consulta, você especifica o tipo de problema como <code class="code">Multiclass_Classification</code>. O destino que você prevê para o modelo é <code class="code">nbr_months_active</code>. Quando o SageMaker termina de treinar o modelo, ele cria a função <code class="code">predict_customer_activity</code>, que você usará para fazer previsões no Amazon Redshift.</p>
+                
+                  <h3 id="tutorial_multi-class_classification_show_status">Mostrar o status do modelo de treinamento (opcional)</h3>
+                  <p>Você pode usar o comando SHOW MODEL para saber quando o modelo está pronto.</p>
+                  <p>Use a consulta a seguir para retornar várias métricas do modelo, incluindo o estado e a precisão.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL ecommerce_customer_activity;</code></pre>
+                  <p>Quando o modelo estiver pronto, a saída da operação anterior deverá mostrar que o <code class="code">Model State</code> é <code class="code">Ready</code>. Veja a seguir um exemplo de saída da operação anterior SHOW MODEL.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------+-----------------------------------------------------------------------------------------------+
+|        Model Name        |                                  ecommerce_customer_activity                                  |
++--------------------------+-----------------------------------------------------------------------------------------------+
+|       Schema Name        |                                            public                                             |
+|          Owner           |                                            awsuser                                            |
+|      Creation Time       |                                   Fri, 17.06.2022 19:02:15                                    |
+|       Model State        |                                             READY                                             |
+|   Training Job Status    |                                  MaxAutoMLJobRuntimeReached                                   |
+|   validation:accuracy    |                                           0.991280                                            |
+|      Estimated Cost      |                                           7.897689                                            |
+|                          |                                                                                               |
+|      TRAINING DATA:      |                                                                                               |
+|          Query           | SELECT CUSTOMERID, COUNTRY, STOCKCODE, DESCRIPTION, INVOICEDATE, SALES_AMT, NBR_MONTHS_ACTIVE |
+|                          |                                 FROM ECOMMERCE_SALES_TRAINING                                 |
+|      Target Column       |                                       NBR_MONTHS_ACTIVE                                       |
+|                          |                                                                                               |
+|       PARAMETERS:        |                                                                                               |
+|        Model Type        |                                            xgboost                                            |
+|       Problem Type       |                                   MulticlassClassification                                    |
+|        Objective         |                                           Accuracy                                            |
+|     AutoML Job Name      |                                redshiftml-20220617190215268770                                |
+|      Function Name       |                                   predict_customer_activity                                   |
+|   Function Parameters    |                customerid country stockcode description invoicedate sales_amt                 |
+| Function Parameter Types |                          int8 varchar varchar varchar varchar float8                          |
+|         IAM Role         |                                     default-aws-iam-role                                      |
+|        S3 Bucket         |                                         <code class="replaceable">DOC-EXAMPLE-BUCKET</code>                                    |
+|       Max Runtime        |                                             5400                                              |
++--------------------------+-----------------------------------------------------------------------------------------------+                                        </code></pre>
+                
+             
+               <h2 id="tutorial_multi-class_classification_step_perform_predictions">Etapa 3: Executar previsões com o modelo</h2>
+               <p>A consulta a seguir mostra quais clientes se qualificam para seu programa de fidelidade do cliente. Se o modelo previr que o cliente ficará ativo por pelo menos sete meses, então ele selecionará o cliente para o programa de fidelidade.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    customerid,
+    predict_customer_activity(
+        customerid,
+        country,
+        stockcode,
+        description,
+        invoicedate,
+        sales_amt
+    ) AS predicted_months_active
+FROM
+    ecommerce_sales_prediction
+WHERE
+    predicted_months_active &gt;= 7
+GROUP BY
+    1,
+    2
+LIMIT
+    10;</code></pre>
+                
+                  <h3 id="tutorial_multi-class_classification_run_validation_prediction"> Executar consultas de previsão nos dados de validação (opcional)</h3>
+                  <p>Execute as consultas de previsão a seguir nos dados de validação para ver o nível de precisão do modelo.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    CAST(SUM(t1.match) AS decimal(7, 2)) AS predicted_matches,
+    CAST(SUM(t1.nonmatch) AS decimal(7, 2)) AS predicted_non_matches,
+    CAST(SUM(t1.match + t1.nonmatch) AS decimal(7, 2)) AS total_predictions,
+    predicted_matches / total_predictions AS pct_accuracy
+FROM
+    (
+        SELECT
+            customerid,
+            country,
+            stockcode,
+            description,
+            invoicedate,
+            sales_amt,
+            nbr_months_active,
+            predict_customer_activity(
+                customerid,
+                country,
+                stockcode,
+                description,
+                invoicedate,
+                sales_amt
+            ) AS predicted_months_active,
+            CASE
+                WHEN nbr_months_active = predicted_months_active THEN 1
+                ELSE 0
+            END AS match,
+            CASE
+                WHEN nbr_months_active &lt;&gt; predicted_months_active THEN 1
+                ELSE 0
+            END AS nonmatch
+        FROM
+            ecommerce_sales_validation
+    )t1;</code></pre>
+                
+                
+                  <h3 id="tutorial_multi-class_classification_run_missed_entries">Prever quantos clientes perderam a entrada (opcional)</h3>
+                  <p>A consulta a seguir compara o número de clientes que, segundo a previsão, ficarão ativos por apenas cinco ou seis meses. O modelo prevê que esses clientes perderão a oportunidade de serem incluídos no programa de fidelidade. A consulta então compara o número de clientes que quase conseguiram entrar no programa com o número previsto dos que estarão qualificados para o programa de fidelidade. Essa consulta pode ser usada para fundamentar uma decisão sobre se o limite do programa de fidelidade deve ou não ser reduzido. Você também pode determinar se há uma quantidade significativa de clientes que quase vão conseguir entrar no programa. Você pode então incentivar esses clientes a aumentar suas atividades para obter uma associação ao programa de fidelidade.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    predict_customer_activity(
+        customerid,
+        country,
+        stockcode,
+        description,
+        invoicedate,
+        sales_amt
+    ) AS predicted_months_active,
+    COUNT(customerid)
+FROM
+    ecommerce_sales_prediction
+WHERE
+    predicted_months_active BETWEEN 5 AND 6
+GROUP BY
+    1
+ORDER BY
+    1 ASC
+LIMIT
+    10)
+UNION
+(SELECT
+      NULL AS predicted_months_active,
+    COUNT (customerid)
+FROM 
+    ecommerce_sales_prediction
+WHERE
+    predict_customer_activity(
+        customerid,
+        country,
+        stockcode,
+        description,
+        invoicedate,
+        sales_amt
+    ) &gt;=7);</code></pre>
+                
+             
+               <h2 id="tutorial_multi-class_classification_related_topics">Tópicos relacionados</h2>
+               <p>Para obter mais informações sobre o Amazon Redshift ML, consulte a seguinte documentação:</p>
+                  <div class="itemizedlist">
+                      
+                      
+                      
+                  <ul class="itemizedlist"><li class="listitem">
+                        <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">Custos para usar o Amazon Redshift ML</a></p>
+                     </li><li class="listitem">
+                        <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">Operação CREATE MODEL</a></p>
+                     </li><li class="listitem">
+                        <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">Função EXPLAIN_MODEL</a></p>
+                     </li></ul></div>
+               <p>Para obter mais informações sobre machine learning, consulte a seguinte documentação:</p>
+               <div class="itemizedlist">
+                      
+                      
+                      
+                  <ul class="itemizedlist"><li class="listitem">
+                        <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">Visão geral do Machine Learning</a></p>
+                     </li><li class="listitem">
+                        <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">Machine Learning para iniciantes e especialistas</a></p>
+                     </li><li class="listitem">
+                        <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">What Is Fairness and Model Explainability for Machine Learning Predictions?</a> (O que é equidade e explicabilidade de modelo para previsões de machine learning?)</p>
+                     </li></ul></div>
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Atenção" /> <strong>O Javascript está desativado ou não está disponível no seu navegador.</strong></p><p>Para usar a documentação da AWS, o Javascript deve estar ativado. Consulte as páginas de Ajuda do navegador para obter instruções.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenções do documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial_k-means_clustering.html">Tutorial: Como construir modelos de agrupamento K-means</div><div id="next" class="next-link" accesskey="n" href="./tutorial_xgboost.html">Tutorial: Como construir modelos XGBoost</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Essa página foi útil? - Sim</div><div class="content"><p>Obrigado por nos informar que estamos fazendo um bom trabalho!</p><p>Se tiver tempo, conte-nos sobre o que você gostou para que possamos melhorar ainda mais.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_multi-class_classification.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Essa página foi útil? - Não</div><div class="content"><p>Obrigado por nos informar que precisamos melhorar a página. Lamentamos ter decepcionado você.</p><p>Se tiver tempo, conte-nos como podemos melhorar a documentação.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_multi-class_classification.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

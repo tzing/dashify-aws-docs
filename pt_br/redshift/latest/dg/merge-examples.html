@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Exemplos de mesclagem - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="merge-examples" /><meta name="default_state" content="merge-examples" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/merge-examples.html" /><meta name="description" content="Os seguintes exemplos executam uma mesclarem para atualizar as tabela SALES. O primeiro exemplo usa o método mais simples de excluir a tabela de destino e depois inserir todas as linhas da tabela de preparação. O segundo exemplo exige a atualização de colunas selecionadas da tabela de destino, portanto ele inclui uma etapa de atualização adicional." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guia do desenvolvedor de banco de dados" /><meta name="abstract" content="Crie e gerencie um data warehouse com o Amazon Redshift, um serviço de data warehouse totalmente gerenciado, em escala de petabyte e de nível empresarial." /><meta name="guide-locale" content="pt_br" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/merge-examples.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/merge-examples.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/merge-examples.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/merge-examples.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/merge-examples.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/merge-examples.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/merge-examples.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/merge-examples.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/merge-examples.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/merge-examples.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/merge-examples.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/merge-examples.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/merge-examples.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/merge-examples.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/merge-examples.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/merge-examples.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/merge-examples.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/merge-examples.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/merge-examples.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/merge-examples.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/merge-examples.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/merge-examples.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guia do desenvolvedor de banco de dados" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guia do desenvolvedor de banco de dados" /><meta id="panorama-serviceConsolePage" value="Exemplos de mesclagem" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Exemplos de mesclagem - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#merge-examples" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/merge-examples.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/merge-examples.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/merge-examples.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,desenvolvedor,dados de amostra,banco de dados,desenvolvedor do banco de dados,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guia do desenvolvedor de banco de dados",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Carregamento de dados",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Atualização e inserção de novos dados",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Exemplos de mesclagem",
+        "item" : "https://docs.aws.amazon.com/pt_br/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#merge-examples" target="_blank" rel="noopener noreferrer" title="Abrir em PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentação</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guia do desenvolvedor de banco de dados</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="merge-examples">Exemplos de mesclagem</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Os seguintes exemplos executam uma mesclarem para atualizar as tabela SALES. O primeiro exemplo usa o método mais simples de excluir a tabela de destino e depois inserir todas as linhas da tabela de preparação. O segundo exemplo exige a atualização de colunas selecionadas da tabela de destino, portanto ele inclui uma etapa de atualização adicional. </p><p>O Exemplos de mesclagem usa um exemplo de conjunto de dados para o Amazon Redshift, chamado conjunto de dados TICKIT. Como pré-requisito, você pode configurar as tabelas e os dados do TICKIT seguindo as instruções disponíveis no guia <a href="https://docs.aws.amazon.com/redshift/latest/gsg/database-tasks.html">Conceitos básicos das tarefas comuns do banco de dados</a>. Informações mais detalhadas sobre o exemplo de conjunto de dados estão disponíveis em <a href="https://docs.aws.amazon.com/redshift/latest/dg/c_sampledb.html">Exemplo de banco de dados</a>. </p><p><b>Amostra de fonte de dados de mesclagem</b></p><p>Os exemplos nesta seção precisam de uma amostra de fonte de dados que inclua atualizações e inserções. Para os exemplos, criaremos uma tabela de amostra chamada SALES_UPDATE usando dados da tabela SALES. Preencheremos a nova tabela com dados aleatórios que representam novas atividades de vendas para dezembro. Usaremos a tabela de amostra SALES_UPDATE para criar a tabela de preparação nos exemplos a seguir. </p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">-- Create a sample table as a copy of the SALES table.
+
+create table tickit.sales_update as
+select * from tickit.sales;
+
+-- Change every fifth row to have updates.
+
+update tickit.sales_update
+set qtysold = qtysold*2,
+pricepaid = pricepaid*0.8,
+commission = commission*1.1
+where saletime &gt; '2008-11-30'
+and mod(sellerid, 5) = 0;
+
+-- Add some new rows to have inserts.
+-- This example creates a duplicate of every fourth row.
+
+insert into tickit.sales_update
+select (salesid + 172456) as salesid, listid, sellerid, buyerid, eventid, dateid, qtysold, pricepaid, commission, getdate() as saletime
+from tickit.sales_update
+where saletime &gt; '2008-11-30'
+and mod(sellerid, 4) = 0;</code></pre><p><b>Exemplo de uma mesclagem que substitui linhas com base em chaves correspondentes</b></p><p>O seguinte script usa a tabela SALES_UPDATE para executar uma operação de mesclagem na tabela SALES com novos dados para a atividade de vendas de dezembro. Este exemplo substitui as linhas na tabela SALES que têm atualizações. Para este exemplo, atualizaremos as colunas qtysold e pricepaid, deixando comission e saletime inalteradas.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">MERGE into tickit.sales 
+USING tickit.sales_update sales_update  
+on ( sales.salesid = sales_update.salesid
+and sales.listid = sales_update.listid
+and sales_update.saletime &gt; '2008-11-30'
+and (sales.qtysold != sales_update.qtysold 
+or sales.pricepaid != sales_update.pricepaid))
+WHEN MATCHED THEN
+update SET qtysold = sales_update.qtysold,
+pricepaid = sales_update.pricepaid
+WHEN NOT MATCHED THEN 
+INSERT (salesid, listid, sellerid, buyerid, eventid, dateid, qtysold , pricepaid, commission, saletime)
+values (sales_update.salesid, sales_update.listid, sales_update.sellerid, sales_update.buyerid, sales_update.eventid, 
+sales_update.dateid, sales_update.qtysold , sales_update.pricepaid, sales_update.commission, sales_update.saletime);
+
+-- Drop the staging table.
+drop table tickit.sales_update;
+
+-- Test to see that commission and salestime were not impacted.
+SELECT sales.salesid, sales.commission, sales.salestime, sales_update.commission, sales_update.salestime 
+FROM tickit.sales 
+INNER JOIN tickit.sales_update sales_update  
+ON 
+sales.salesid = sales_update.salesid
+AND sales.listid = sales_update.listid
+AND sales_update.saletime &gt; '2008-11-30'
+AND (sales.commission != sales_update.commission 
+OR sales.salestime != sales_update.salestime);</code></pre><p><b>Exemplo de uma mesclagem que especifica uma lista de colunas sem usar MERGE</b></p><p>O seguinte exemplo executa uma operação de mesclarem para atualizar SALES com novos dados para a atividade de vendas de dezembro. Precisamos de dados de amostra que incluam atualizações e inserções, assim como linhas que não alteraram. Para este exemplo, queremos atualizar as colunas QTYSOLD e PRICEPAID, deixando COMMISSION e SALETIME inalteradas. O seguinte script usa a tabela SALES_UPDATE para executar uma operação de mesclagem na tabela SALES. </p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">-- Create a staging table and populate it with rows from SALES_UPDATE for Dec
+create temp table stagesales as select * from sales_update
+where saletime &gt; '2008-11-30';
+
+-- Start a new transaction
+begin transaction;
+
+-- Update the target table using an inner join with the staging table
+-- The join includes a redundant predicate to collocate on the distribution key –- A filter on saletime enables a range-restricted scan on SALES
+
+update sales
+set qtysold = stagesales.qtysold,
+pricepaid = stagesales.pricepaid
+from stagesales
+where sales.salesid = stagesales.salesid
+and sales.listid = stagesales.listid
+and stagesales.saletime &gt; '2008-11-30'
+and (sales.qtysold != stagesales.qtysold 
+or sales.pricepaid != stagesales.pricepaid);
+ 
+-- Delete matching rows from the staging table 
+-- using an inner join with the target table
+
+delete from stagesales
+using sales
+where sales.salesid = stagesales.salesid
+and sales.listid = stagesales.listid;
+
+-- Insert the remaining rows from the staging table into the target table
+insert into sales
+select * from stagesales;
+
+-- End transaction and commit
+end transaction;
+
+-- Drop the staging table
+drop table stagesales;</code></pre><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Atenção" /> <strong>O Javascript está desativado ou não está disponível no seu navegador.</strong></p><p>Para usar a documentação da AWS, o Javascript deve estar ativado. Consulte as páginas de Ajuda do navegador para obter instruções.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenções do documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./merge-specify-a-column-list.html">Realizar uma operação de mesclagem especificando uma lista de colunas sem usar o comando MERGE</div><div id="next" class="next-link" accesskey="n" href="./performing-a-deep-copy.html">Execução de uma cópia profunda</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Essa página foi útil? - Sim</div><div class="content"><p>Obrigado por nos informar que estamos fazendo um bom trabalho!</p><p>Se tiver tempo, conte-nos sobre o que você gostou para que possamos melhorar ainda mais.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/merge-examples.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Essa página foi útil? - Não</div><div class="content"><p>Obrigado por nos informar que precisamos melhorar a página. Lamentamos ter decepcionado você.</p><p>Se tiver tempo, conte-nos como podemos melhorar a documentação.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/pt_br/redshift/latest/dg/merge-examples.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
