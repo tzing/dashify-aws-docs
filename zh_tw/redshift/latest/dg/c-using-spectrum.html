@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>使用 Amazon Redshift Spectrum 查詢外部資料 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c-using-spectrum" /><meta name="default_state" content="c-using-spectrum" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-using-spectrum.html" /><meta name="description" content="使用 Amazon Redshift Spectrum 查詢 Amazon S3 裡的檔案並擷取資料，無需將資料載入 Amazon Redshift 資料表。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="資料庫開發人員指南" /><meta name="abstract" content="使用 Amazon Redshift 這項 PB 級的完全受管企業等級資料倉儲服務，來建立和管理資料倉儲。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-using-spectrum.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-using-spectrum.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-using-spectrum.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-using-spectrum.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-using-spectrum.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-using-spectrum.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-using-spectrum.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-using-spectrum.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-using-spectrum.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-using-spectrum.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-using-spectrum.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-using-spectrum.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-using-spectrum.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-using-spectrum.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-using-spectrum.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-using-spectrum.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-using-spectrum.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-using-spectrum.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-using-spectrum.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="資料庫開發人員指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="資料庫開發人員指南" /><meta id="panorama-serviceConsolePage" value="使用 Amazon Redshift Spectrum 查詢外部資料" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>使用 Amazon Redshift Spectrum 查詢外部資料 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c-using-spectrum" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-using-spectrum.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-using-spectrum.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-using-spectrum.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,叢集,資料倉儲,開發人員,範例資料,database,資料庫開發人員,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "資料庫開發人員指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "使用 Amazon Redshift Spectrum 查詢外部資料",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-using-spectrum.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c-using-spectrum" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#c-spectrum-overview">Amazon Redshift Spectrum 概觀</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="c-using-spectrum">使用 Amazon Redshift Spectrum 查詢外部資料</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>使用 Amazon Redshift Spectrum，可以有效率地查詢 Amazon S3 裡的檔案並擷取結構化與半結構化的資料，無需將資料載入 Amazon Redshift 資料表。Redshift Spectrum 採用了大量的平行處理，以便非常快速的執行大型資料庫查詢。大部分的處理發生在 Redshift Spectrum 層，大部分資料則保留在 Amazon S3。可以多個叢集同時查詢 Amazon S3 上的相同資料集，無需為每個叢集複製資料副本。</p><div class="highlights"><h6>主題</h6><ul><li><a href="#c-spectrum-overview">Amazon Redshift Spectrum 概觀</a></li><li><a href="./c-getting-started-using-spectrum.html">開始使用 Amazon Redshift Spectrum</a></li><li><a href="./c-spectrum-iam-policies.html">Amazon Redshift Spectrum 的 IAM 政策</a></li><li><a href="./spectrum-lake-formation.html">使用 Redshift Spectrum 搭配 AWS Lake Formation</a></li><li><a href="./c-spectrum-data-files.html">在 Amazon Redshift Spectrum 為查詢建立資料檔案</a></li><li><a href="./c-spectrum-external-schemas.html">建立 Amazon Redshift Spectrum 外部結構描述</a></li><li><a href="./c-spectrum-external-tables.html">建立 Redshift Spectrum 外部資料表</a></li><li><a href="./querying-iceberg.html">搭配 Amazon Redshift 使用 Apache Iceberg 資料表</a></li><li><a href="./c-spectrum-external-performance.html">改善 Amazon Redshift Spectrum 查詢效能</a></li><li><a href="./t_setting-data-handling-options.html">設定資料處理選項</a></li><li><a href="./c_performing-correlated-subqueries-spectrum.html">範例：在 Redshift Spectrum 中執行相互關聯子查詢</a></li><li><a href="./c-spectrum-metrics.html">監控 Amazon Redshift Spectrum 中的指標</a></li><li><a href="./c-spectrum-troubleshooting.html">對 Amazon Redshift Spectrum 中的查詢進行疑難排解</a></li><li><a href="./tutorial-query-nested-data.html">教學課程：使用 Amazon Redshift Spectrum 查詢巢狀資料</a></li></ul></div>
+      <h2 id="c-spectrum-overview">Amazon Redshift Spectrum 概觀</h2>
+
+      <p>Amazon Redshift Spectrum 位於獨立於您叢集之外的專屬 Amazon Redshift 伺服器上。Amazon Redshift 會推送許多運算密集型任務 (例如述詞篩選和彙整) 到 Redshift Spectrum 層。因此，與其他查詢相比，Redshift Spectrum 查詢使用的叢集處理容量要低得多。Redshift Spectrum 也能聰明的擴展。根據您的查詢需求，Redshift Spectrum 可能會使用數千個執行個體來運用大規模平行處理。</p>
+      <p>您可以透過定義檔案結構，並將其做為資料表註冊到外部資料目錄中來建立 Redshift Spectrum 資料表。外部資料目錄可以是 AWS Glue、Amazon Athena 隨附的資料目錄，或您自己的 Apache Hive 中繼存放區。您可以使用資料定義語言 (DDL) 命令，或使用連接到外部資料目錄的任何其他工具，在 Amazon Redshift 建立和管理外部資料表。您的任何 Amazon Redshift 叢集都可以立即變更外部資料目錄。</p>
+      <p>您也可以選擇在一個或多個欄上對外部資料表進行分割。將分割區定義為外部資料表的一部分可以提高效能。這種改進的出現，是因為 Amazon Redshift 查詢最佳化工具會刪除不包含查詢資料的分割區。</p>
+      <p>在您定義 Redshift Spectrum 資料表後，您可以像任何其他 Amazon Redshift 資料表一樣查詢和聯結資料表。Redshift Spectrum 不支援外部資料表的更新操作。您可以將 Redshift Spectrum 資料表新增到多個 Amazon Redshift 叢集，並從相同 AWS 區域中的任何叢集查詢 Amazon S3 上的相同資料。當您更新 Amazon S3 資料檔案時，資料可立即從任何 Amazon Redshift 叢集進行查詢。</p>
+
+
+      <p>您存取的 AWS Glue Data Catalog 可能會加密，以增加安全性。如果 AWS Glue 目錄已加密，您需要 AWS Glue 的 AWS Key Management Service (AWS KMS) 金鑰，才能存取 AWS Glue 目錄。所有 AWS 區域都無法使用 AWS Glue 目錄加密。如需支援的 AWS 區域清單，請參閱《AWS Glue 開發人員指南》<a href="https://docs.aws.amazon.com/glue/latest/dg/">https://docs.aws.amazon.com/glue/latest/dg/</a><em></em>中的 <a href="https://docs.aws.amazon.com/glue/latest/dg/encryption-glue-resources.html">AWS Glue 的加密和安全存取</a>。如需 AWS Glue 資料目錄加密的詳細資訊，請參閱《AWS Glue 開發人員指南》<em></em>中的<a href="https://docs.aws.amazon.com/glue/latest/dg/encrypt-glue-data-catalog.html">加密您的 AWS Glue 資料目錄</a>。</p>
+
+
+      <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>您無法使用與標準 Amazon Redshift 資料表相同的資源來檢視 Redshift Spectrum 資料表的詳細資訊，例如 <a href="./r_PG_TABLE_DEF.html">PG_TABLE_DEF</a>、<a href="./r_STV_TBL_PERM.html">STV_TBL_PERM</a>、PG_CLASS，或 information_schema。如果您的商業智慧或分析工具無法識別 Redshift Spectrum 外部資料表，請將您的應用程式設定為查詢 <a href="./r_SVV_EXTERNAL_TABLES.html">SVV_EXTERNAL_TABLES</a> 與 <a href="./r_SVV_EXTERNAL_COLUMNS.html">SVV_EXTERNAL_COLUMNS</a>。</p></div></div>
+       
+         <h3 id="c-spectrum-regions">Amazon Redshift Spectrum 區域</h3>
+         
+         <p>除非區域特定文件中另有說明，否則提供 Amazon Redshift 的 AWS 區域均可使用 Amazon Redshift。如需商業區域的 AWS 區域可用性，請參閱<em>Amazon Web Services 一般參考</em>中 <b>Redshift API</b> 的<a href="https://docs.aws.amazon.com/general/latest/gr/redshift-service.html#redshift_region">服務端點</a>。</p>
+         
+         
+         
+         
+         
+       
+       
+         <h3 id="c-spectrum-considerations">Amazon Redshift Spectrum 考量事項</h3>
+
+         <p>當您使用 Amazon Redshift Spectrum 時，請注意以下考量事項：</p>
+         <div class="itemizedlist">
+             
+             
+             
+             
+            
+             
+             
+            
+             
+            
+             
+            
+            
+         <ul class="itemizedlist"><li class="listitem">
+               <p>Amazon Redshift 叢集和 Amazon S3 儲存貯體必須位於相同的 AWS 區域。</p>
+            </li><li class="listitem">
+               <p>Redshift Spectrum 不支援使用已佈建叢集的增強型 VPC 路由。若要存取您的 Amazon S3 資料，您可能需要執行額外的設定步驟。如需詳細資訊，請參閱《Amazon Redshift 管理指南》<em></em>中的 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/spectrum-enhanced-vpc.html">Redshift Spectrum 和增強型 VPC 路由</a>。</p>
+            </li><li class="listitem"><p>Redshift Spectrum 支援 Amazon S3 存取點別名。如需詳細資訊，請參閱《Amazon Simple Storage Service 使用者指南》<em></em>中的<a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-alias.html">為您的存取點使用儲存貯體型別名</a>。不過，Redshift Spectrum 不支援具有 Amazon S3 存取點別名的 VPC。如需詳細資訊，請參閱《Amazon Redshift 管理指南》<em></em>中的 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/spectrum-enhanced-vpc.html">Redshift Spectrum 和增強型 VPC 路由</a>。</p>
+            </li><li class="listitem">
+               <p>您不能在外部資料表上執行更新或刪除操作。若要在指定的結構描述中建立新外部資料表，您可以使用 CREATE EXTERNAL TABLE。如需 CREATE EXTERNAL TABLE 的詳細資訊，請參閱 <a href="./r_CREATE_EXTERNAL_TABLE.html">CREATE EXTERNAL TABLE</a>。若要將 SELECT 查詢結果插入外部目錄上的現有外部資料表，您可以使用 INSERT (外部資料表)。如需 INSERT (外部資料表) 的詳細資訊，請參閱 <a href="./r_INSERT_external_table.html">INSERT (外部資料表)</a>。</p>
+            </li><li class="listitem">
+               <p>除非您使用為 AWS Lake Formation 啟用的 AWS Glue Data Catalog，否則無法在外部資料表上控制使用者許可。但是，您可以在外部結構描述上授予和撤銷許可。如需有關使用 AWS Lake Formation 的詳細資訊，請參閱<a href="./spectrum-lake-formation.html">使用 Redshift Spectrum 搭配 AWS Lake Formation</a>。</p>
+            </li><li class="listitem">
+               <p>要執行 Redshift Spectrum 查詢，資料庫使用者必須具有在資料庫中建立臨時資料表的許可。下列範例可在資料庫 <code class="code">spectrumdb</code> 上授予臨時許可至 <code class="code">spectrumusers</code> 使用者群組。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">grant temp on database spectrumdb to group spectrumusers;</code></pre>
+               <p>如需詳細資訊，請參閱<a href="./r_GRANT.html">GRANT</a>。</p>
+            </li><li class="listitem">
+               <p>使用 Athena 資料目錄或 AWS Glue 資料目錄做為中繼資料存放區時，請參閱《Amazon Redshift 管理指南》<em></em>中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html">配額和限制</a>。</p>
+               
+            </li><li class="listitem">
+               <p>Redshift Spectrum 不支援使用 Kerberos 的 Amazon EMR。</p>
+            </li></ul></div>
+       
+   <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./federated-limitations.html">考量事項</div><div id="next" class="next-link" accesskey="n" href="./c-getting-started-using-spectrum.html">開始使用 Amazon Redshift Spectrum</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-using-spectrum.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-using-spectrum.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>管理合併資料列的數量 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="vacuum-managing-volume-of-unmerged-rows" /><meta name="default_state" content="vacuum-managing-volume-of-unmerged-rows" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" /><meta name="description" content="如果清空操作必須將新資料列合併至資料表的排序區域，清空所需的時間將隨著資料表變大而增加。您可以透過減少必須合併的資料列數量來改善清空效能。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="資料庫開發人員指南" /><meta name="abstract" content="使用 Amazon Redshift 這項 PB 級的完全受管企業等級資料倉儲服務，來建立和管理資料倉儲。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="資料庫開發人員指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="資料庫開發人員指南" /><meta id="panorama-serviceConsolePage" value="管理合併資料列的數量" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>管理合併資料列的數量 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#vacuum-managing-volume-of-unmerged-rows" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,叢集,資料倉儲,開發人員,範例資料,database,資料庫開發人員,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "資料庫開發人員指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "載入資料",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "清空資料表",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/t_Reclaiming_storage_space202.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "管理清空時間",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/vacuum-managing-vacuum-times.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "管理合併資料列的數量",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/vacuum-managing-vacuum-times.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#vacuum-managing-volume-of-unmerged-rows" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="vacuum-managing-volume-of-unmerged-rows">管理合併資料列的數量</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>如果清空操作必須將新資料列合併至資料表的排序區域，清空所需的時間將隨著資料表變大而增加。您可以透過減少必須合併的資料列數量來改善清空效能。</p><p>在清空之前，資料表在資料表的標頭中包含排序的區域，接著是未排序的區域，它會在資料列新增或更新時成長。透過 COPY 操作新增一組資料列時，在新增至資料表尾端的未排序區域時，新的一組資料列會依排序索引鍵排序。新資料列會在其自己的集合內排序，但不會在未排序的區域內排序。</p><p>下圖說明兩個後續的 COPY 操作之後的未排序區域，其中的排序索引鍵為 CUSTID。為求簡化，此範例顯示複合排序索引鍵，但相同的原則適用於交錯的排序索引鍵，除了未排序區域的影響大於交錯的資料表。</p><div class="mediaobject">
+                
+                  <img src="images/vacuum-unsorted-region.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                
+            </div><p>清空會以兩個階段還原資料表的排序順序：</p><div class="orderedlist">
+                
+                
+            <ol><li>
+                  <p>將未排序的區域排序為新排序的區域。</p>
+                  <p>第一個階段相當經濟實惠，因為只會重新寫入未排序的區域。如果新排序區域的排序索引鍵值的範圍高於現有範圍，則只需要重新寫入新資料列，清空即完成。例如，如果排序的區域包含 ID 值 1 到 500，而和後續的複製操作會新增大於 500 的索引鍵值，那麼只必須重新寫入未排序的區域。</p>
+               </li><li>
+                  <p>將新排序的區域與先前排序的區域合併。</p>
+                  <p>如果新排序區域中的索引鍵與排序的區域中的索引鍵重疊，那麼 VACUUM 必須合併資料列。從新排序區域 (最下方的排序索引鍵) 的開頭開始，清空會從將合併的資料列從先前排序的區域和新排序的區域寫入至新的一組區塊。</p>
+               </li></ol></div><p>新排序索引鍵範圍與現有排序索引鍵重疊的程度，決定需要重新寫入先前排序區域的程度。如果未排序的索引鍵分散在現有排序範圍中，清空可能需要重新寫入資料表的現有部分。</p><p>下表顯示清空如何排序和合併新增至 CUSTID 為排序索引鍵的資料表的資料列。因為每個複製操作會新增一組新資料列，其具有的索引鍵值與現有索引鍵重疊，幾乎必須重新寫入整個資料表。此表顯示單一的排序和合併，但在實務上，大型的清空包含一系列的遞增排序和合併步驟。</p><div class="mediaobject">
+                
+                  <img src="images/vacuum-unsorted-region-sort-merge.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                
+            </div><p>如果一組新資料列中排序索引鍵的範圍與現有索引鍵的範圍重疊，合併階段的成本會隨著資料表成長，繼續按比例成長至資料表大小，同時排序階段的成本會維持與未排序區域的大小成比例。在這類情況下，合併階段的成本會使得排序階段的成本相形見絀，如下表所示。</p><div class="mediaobject">
+                
+                  <img src="images/vacuum-example-merge-region-grows.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                
+            </div><p>若要判斷資料表重新合併的比例，請在清空操作完成之後查詢 SVV_VACUUM_SUMMARY。下列查詢顯示在 CUSTSALES 隨著時間變大時，六個後續清空的效果。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from svv_vacuum_summary
+where table_name = 'custsales';
+
+ table_name | xid  | sort_      | merge_     | elapsed_   | row_  | sortedrow_ | block_  | max_merge_
+            |      | partitions | increments | time       | delta | delta      | delta   | partitions
+ -----------+------+------------+------------+------------+-------+------------+---------+---------------
+  custsales | 7072 |          3 |          2 |  143918314 |     0 |   88297472 |   1524  |      47
+  custsales | 7122 |          3 |          3 |  164157882 |     0 |   88297472 |    772  |      47
+  custsales | 7212 |          3 |          4 |  187433171 |     0 |   88297472 |    767  |      47
+  custsales | 7289 |          3 |          4 |  255482945 |     0 |   88297472 |    770  |      47
+  custsales | 7420 |          3 |          5 |  316583833 |     0 |   88297472 |    769  |      47
+  custsales | 9007 |          3 |          6 |  306685472 |     0 |   88297472 |    772  |      47
+ (6 rows) 
+</code></pre><p>merge_increments 資料欄提供針對每個清空操作所合併資料量的指示。如果合併增量的數目超過資料表大小成長比例後續清空的增加，即表示因為現有和新排序的區域重疊，每個清空操作會重新合併資料表中增加數量的資料列。</p><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_vacuum_diskspacereqs.html">管理未排序的區域</div><div id="next" class="next-link" accesskey="n" href="./vacuum-load-in-sort-key-order.html">以排序索引鍵順序載入資料</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

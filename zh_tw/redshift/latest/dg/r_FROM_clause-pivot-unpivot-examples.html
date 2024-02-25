@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>PIVOT 和 UNPIVOT 範例 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="r_FROM_clause-pivot-unpivot-examples" /><meta name="default_state" content="r_FROM_clause-pivot-unpivot-examples" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" /><meta name="description" content="包含使用 PIVOT 將資料列輸出為資料欄，或使用 UNPIVOT 將資料欄輸出為資料列的範例。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="資料庫開發人員指南" /><meta name="abstract" content="使用 Amazon Redshift 這項 PB 級的完全受管企業等級資料倉儲服務，來建立和管理資料倉儲。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="資料庫開發人員指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="資料庫開發人員指南" /><meta id="panorama-serviceConsolePage" value="PIVOT 和 UNPIVOT 範例" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>PIVOT 和 UNPIVOT 範例 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#r_FROM_clause-pivot-unpivot-examples" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,叢集,資料倉儲,開發人員,範例資料,database,資料庫開發人員,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "資料庫開發人員指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "SQL 參考",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm_chap_SQLCommandRef.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "SQL 命令",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c_SQL_commands.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "SELECT",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_SELECT_synopsis.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "FROM 子句",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_FROM_clause30.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 8,
+        "name" : "PIVOT 和 UNPIVOT 範例",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_FROM_clause30.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#r_FROM_clause-pivot-unpivot-examples" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#r_FROM_clause-pivot-examples">PIVOT 範例</a><a href="#r_FROM_clause-unpivot-examples">UNPIVOT 範例</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="r_FROM_clause-pivot-unpivot-examples">PIVOT 和 UNPIVOT 範例</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>PIVOT 和 UNPIVOT 是 FROM 子句中的參數，這兩個參數會分別將查詢輸出從資料列旋轉為資料欄，以及將資料欄旋轉為資料列。這會以易於閱讀的格式呈現資料表式查詢結果。下列範例會使用測試資料和查詢來顯示如何使用這些參數。</p><p>如需這些參數與其他參數的詳細資訊，請參閱 <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_FROM_clause30.html">FROM 子句</a>。</p>
+               <h2 id="r_FROM_clause-pivot-examples">PIVOT 範例</h2>
+               <p>設定範例資料表和資料，並用其來執行後續的範例查詢。</p>
+
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE part (
+    partname varchar,
+    manufacturer varchar,
+    quality int,
+    price decimal(12, 2)
+);
+
+INSERT INTO part VALUES ('prop', 'local parts co', 2, 10.00);
+INSERT INTO part VALUES ('prop', 'big parts co', NULL, 9.00);
+INSERT INTO part VALUES ('prop', 'small parts co', 1, 12.00);
+
+INSERT INTO part VALUES ('rudder', 'local parts co', 1, 2.50);
+INSERT INTO part VALUES ('rudder', 'big parts co', 2, 3.75);
+INSERT INTO part VALUES ('rudder', 'small parts co', NULL, 1.90);
+
+INSERT INTO part VALUES ('wing', 'local parts co', NULL, 7.50);
+INSERT INTO part VALUES ('wing', 'big parts co', 1, 15.20);
+INSERT INTO part VALUES ('wing', 'small parts co', NULL, 11.80);</code></pre>
+
+               <p><code class="code">partname</code> 上的 PIVOT 搭配 <code class="code">price</code> 上的 <code class="code">AVG</code> 彙總。</p>
+   
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM (SELECT partname, price FROM part) PIVOT (
+    AVG(price) FOR partname IN ('prop', 'rudder', 'wing')
+);</code></pre>
+               <p>此查詢結果為下列輸出。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">  prop   |  rudder  |  wing
+---------+----------+---------
+ 10.33   | 2.71     | 11.50</code></pre>
+               <p>在上一個範例中，結果會轉換為資料欄。下列範例會顯示以資料列 (不是資料欄) 傳回平均價格的 <code class="code">GROUP BY</code> 查詢。</p>
+ 
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT partname, avg(price)
+FROM (SELECT partname, price FROM part)
+WHERE partname IN ('prop', 'rudder', 'wing')
+GROUP BY partname;</code></pre>
+               <p>此查詢結果為下列輸出。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> partname |  avg
+----------+-------
+ prop     | 10.33
+ rudder   |  2.71
+ wing     | 11.50</code></pre>
+               <p>以 <code class="code">manufacturer</code> 作為隱含資料欄的 <code class="code">PIVOT</code> 範例。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM (SELECT quality, manufacturer FROM part) PIVOT (
+    count(*) FOR quality IN (1, 2, NULL)
+);</code></pre>
+               <p>此查詢結果為下列輸出。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> manufacturer      | 1  | 2  | null
+-------------------+----+----+------
+ local parts co    | 1  | 1  |  1
+ big parts co      | 1  | 1  |  1
+ small parts co    | 1  | 0  |  2</code></pre>
+               <p> 未在 <code class="code">PIVOT</code> 定義中參考的輸入資料表資料欄會隱含地新增至結果資料表。上一個範例中的 <code class="code">manufacturer</code> 資料欄就是這種情況。此範例也會顯示 <code class="code">NULL</code> 是 <code class="code">IN</code> 運算子的有效值。</p>
+               <p><code class="code">PIVOT</code> 在上述範例中會傳回類似下列查詢的資訊，其中包括 <code class="code">GROUP BY</code>。不同之處在於 <code class="code">PIVOT</code> 傳回資料欄 <code class="code">2</code> 的值 <code class="code">0</code> 和製造商 <code class="code">small parts co</code>。<code class="code">GROUP BY</code> 查詢不包含對應的資料列。在大多數情況下，如果資料列沒有給定資料欄的輸入資料，<code class="code">PIVOT</code> 會插入 <code class="code">NULL</code>。但是，計數彙總不會傳回 <code class="code">NULL</code>，<code class="code">0</code> 是預設值。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT manufacturer, quality, count(*)
+FROM (SELECT quality, manufacturer FROM part)
+WHERE quality IN (1, 2) OR quality IS NULL
+GROUP BY manufacturer, quality
+ORDER BY manufacturer;</code></pre>
+               <p>此查詢結果為下列輸出。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> manufacturer        | quality | count
+---------------------+---------+-------
+ big parts co        |         |     1
+ big parts co        |       2 |     1
+ big parts co        |       1 |     1
+ local parts co      |       2 |     1
+ local parts co      |       1 |     1
+ local parts co      |         |     1
+ small parts co      |       1 |     1
+ small parts co      |         |     2</code></pre>
+               <p> PIVOT 運算子會接受彙總運算式上及 <code class="code">IN</code> 運算子每個值上的選用別名。使用別名來自訂資料欄名稱。如果沒有彙總別名，則只會使用 <code class="code">IN</code> 清單別名。否則，彙總別名會附加至資料欄名稱，並加上底線來分隔名稱。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM (SELECT quality, manufacturer FROM part) PIVOT (
+    count(*) AS count FOR quality IN (1 AS high, 2 AS low, NULL AS na)
+);</code></pre>
+               <p>此查詢結果為下列輸出。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> manufacturer      | high_count  | low_count | na_count
+-------------------+-------------+-----------+----------
+ local parts co    |           1 |         1 |        1
+ big parts co      |           1 |         1 |        1
+ small parts co    |           1 |         0 |        2</code></pre>
+               
+               
+               
+    <p>設定下列範例資料表和資料，並用其來執行後續的範例查詢。資料表示飯店集合的預訂日期。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE bookings (
+    booking_id int,
+    hotel_code char(8),
+    booking_date date,
+    price decimal(12, 2)
+);
+
+INSERT INTO bookings VALUES (1, 'FOREST_L', '02/01/2023', 75.12);
+INSERT INTO bookings VALUES (2, 'FOREST_L', '02/02/2023', 75.00);
+INSERT INTO bookings VALUES (3, 'FOREST_L', '02/04/2023', 85.54);
+
+INSERT INTO bookings VALUES (4, 'FOREST_L', '02/08/2023', 75.00);
+INSERT INTO bookings VALUES (5, 'FOREST_L', '02/11/2023', 75.00);
+INSERT INTO bookings VALUES (6, 'FOREST_L', '02/14/2023', 90.00);
+
+INSERT INTO bookings VALUES (7, 'FOREST_L', '02/21/2023', 60.00);
+INSERT INTO bookings VALUES (8, 'FOREST_L', '02/22/2023', 85.00);
+INSERT INTO bookings VALUES (9, 'FOREST_L', '02/27/2023', 90.00);
+
+INSERT INTO bookings VALUES (10, 'DESERT_S', '02/01/2023', 98.00);
+INSERT INTO bookings VALUES (11, 'DESERT_S', '02/02/2023', 75.00);
+INSERT INTO bookings VALUES (12, 'DESERT_S', '02/04/2023', 85.00);
+
+INSERT INTO bookings VALUES (13, 'DESERT_S', '02/05/2023', 75.00);
+INSERT INTO bookings VALUES (14, 'DESERT_S', '02/06/2023', 34.00);
+INSERT INTO bookings VALUES (15, 'DESERT_S', '02/09/2023', 85.00);
+
+INSERT INTO bookings VALUES (16, 'DESERT_S', '02/12/2023', 23.00);
+INSERT INTO bookings VALUES (17, 'DESERT_S', '02/13/2023', 76.00);
+INSERT INTO bookings VALUES (18, 'DESERT_S', '02/14/2023', 85.00);
+
+INSERT INTO bookings VALUES (19, 'OCEAN_WV', '02/01/2023', 98.00);
+INSERT INTO bookings VALUES (20, 'OCEAN_WV', '02/02/2023', 75.00);
+INSERT INTO bookings VALUES (21, 'OCEAN_WV', '02/04/2023', 85.00);
+
+INSERT INTO bookings VALUES (22, 'OCEAN_WV', '02/06/2023', 75.00);
+INSERT INTO bookings VALUES (23, 'OCEAN_WV', '02/09/2023', 34.00);
+INSERT INTO bookings VALUES (24, 'OCEAN_WV', '02/12/2023', 85.00);
+
+INSERT INTO bookings VALUES (25, 'OCEAN_WV', '02/13/2023', 23.00);
+INSERT INTO bookings VALUES (26, 'OCEAN_WV', '02/14/2023', 76.00);
+INSERT INTO bookings VALUES (27, 'OCEAN_WV', '02/16/2023', 85.00);
+
+INSERT INTO bookings VALUES (28, 'CITY_BLD', '02/01/2023', 98.00);
+INSERT INTO bookings VALUES (29, 'CITY_BLD', '02/02/2023', 75.00);
+INSERT INTO bookings VALUES (30, 'CITY_BLD', '02/04/2023', 85.00);
+
+INSERT INTO bookings VALUES (31, 'CITY_BLD', '02/12/2023', 75.00);
+INSERT INTO bookings VALUES (32, 'CITY_BLD', '02/13/2023', 34.00);
+INSERT INTO bookings VALUES (33, 'CITY_BLD', '02/17/2023', 85.00);
+
+INSERT INTO bookings VALUES (34, 'CITY_BLD', '02/22/2023', 23.00);
+INSERT INTO bookings VALUES (35, 'CITY_BLD', '02/23/2023', 76.00);
+INSERT INTO bookings VALUES (36, 'CITY_BLD', '02/24/2023', 85.00);</code></pre>       
+               
+               <p> 在此查詢範例中，預訂記錄會計算為每週的總數。每週的結束日期會變成資料欄名稱。</p>
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT * FROM
+    (SELECT
+       booking_id,
+       (date_trunc('week', booking_date::date) + '5 days'::interval)::date as enddate,
+       hotel_code AS "hotel code"
+FROM bookings
+) PIVOT (
+    count(booking_id) FOR enddate IN ('2023-02-04','2023-02-11','2023-02-18') 
+);</code></pre>
+               <p>此查詢結果為下列輸出。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> hotel code | 2023-02-04  | 2023-02-11 | 2023-02-18
+------------+-------------+------------+----------
+ FOREST_L   |           3 |          2 |        1
+ DESERT_S   |           4 |          3 |        2
+ OCEAN_WV   |           3 |          3 |        3
+ CITY_BLD   |           3 |          1 |        2</code></pre>
+               
+              
+              
+              
+               <p> Amazon Redshift 不支援使用 CROSSTAB 在多個資料欄上轉移。但是，您可以使用類似於 PIVOT 的彙總方式將資料列資料變更為資料欄，並使用類似於以下內容的查詢。這會使用與前一個範例相同的預訂範例資料。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT 
+  booking_date,
+  MAX(CASE WHEN hotel_code = 'FOREST_L' THEN 'forest is booked' ELSE '' END) AS FOREST_L,
+  MAX(CASE WHEN hotel_code = 'DESERT_S' THEN 'desert is booked' ELSE '' END) AS DESERT_S,
+  MAX(CASE WHEN hotel_code = 'OCEAN_WV' THEN 'ocean is booked' ELSE '' END)  AS OCEAN_WV
+FROM bookings
+GROUP BY booking_date
+ORDER BY booking_date asc;</code></pre>
+               <p>範例查詢結果會顯示預訂日期，並列在指出已預訂飯店的短語旁邊。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> booking_date  | forest_l         | desert_s         | ocean_wv
+---------------+------------------+------------------+--------------------
+ 2023-02-01    | forest is booked | desert is booked |  ocean is booked
+ 2023-02-02    | forest is booked | desert is booked |  ocean is booked
+ 2023-02-04    | forest is booked | desert is booked |  ocean is booked
+ 2023-02-05    |                  | desert is booked |        
+ 2023-02-06    |                  | desert is booked |         </code></pre>
+
+               <p>以下是 <code class="code">PIVOT</code> 的使用須知：</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem"><p><code class="code">PIVOT</code> 可套用至資料表、子查詢和通用資料表運算式 (CTE)。<code class="code">PIVOT</code> 無法套用至任何 <code class="code">JOIN</code> 運算式、遞迴 CTE、<code class="code">PIVOT</code> 或 <code class="code">UNPIVOT</code> 運算式。<code class="code">SUPER</code> 非巢狀運算式和 Redshift Spectrum 巢狀資料表也不支援。</p></li><li class="listitem"><p> <code class="code">PIVOT</code> 支援 <code class="code">COUNT</code>、<code class="code">SUM</code>、<code class="code">MIN</code>、<code class="code">MAX</code> 和 <code class="code">AVG</code> 彙總函數。</p></li><li class="listitem"><p><code class="code">PIVOT</code> 彙總運算式必須是受支援彙總函式的呼叫。不支援彙總頂端的複雜運算式。彙總引數不能包含對 <code class="code">PIVOT</code> 輸入資料表以外資料表的參考。也不支援父查詢的相關參考。彙總參數可以包含子查詢。這些可以在內部或 <code class="code">PIVOT</code> 輸入資料表上相互關聯。</p></li><li class="listitem"><p> <code class="code">PIVOT IN</code> 清單值不能是資料欄參考或子查詢。每個值必須是與 <code class="code">FOR</code> 資料欄參考相容的類型。</p></li><li class="listitem"><p> 如果 <code class="code">IN</code> 清單值沒有別名，則 <code class="code">PIVOT</code> 會產生預設資料欄名稱。對於常數 <code class="code">IN</code> 值，如 'abc' 或 5，預設資料欄名稱是常值本身。對於任何複雜的運算式，資料欄名稱都是標準的 Amazon Redshift 預設名稱，例如 <code class="code">?column?</code>.</p></li></ul></div>
+
+
+             
+               <h2 id="r_FROM_clause-unpivot-examples">UNPIVOT 範例</h2>
+               <p>設定範例資料，並用其來執行後續的範例。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE count_by_color (quality varchar, red int, green int, blue int);
+
+INSERT INTO count_by_color VALUES ('high', 15, 20, 7);
+INSERT INTO count_by_color VALUES ('normal', 35, NULL, 40);
+INSERT INTO count_by_color VALUES ('low', 10, 23, NULL);</code></pre>
+               <p><code class="code">UNPIVOT</code> 在輸入欄紅色、綠色和藍色上。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM (SELECT red, green, blue FROM count_by_color) UNPIVOT (
+    cnt FOR color IN (red, green, blue)
+);</code></pre>
+               <p>此查詢結果為下列輸出。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> color | cnt
+-------+-----
+ red   |  15
+ red   |  35
+ red   |  10
+ green |  20
+ green |  23
+ blue  |   7
+ blue  |  40</code></pre>
+               <p>依預設，輸入資料欄中的 <code class="code">NULL</code> 值會略過，且不會產生結果資料列。</p>
+               <p>下列範例會顯示包括 <code class="code">INCLUDE NULLS</code> 的 <code class="code">UNPIVOT</code>。</p>
+
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM (
+    SELECT red, green, blue
+    FROM count_by_color
+) UNPIVOT INCLUDE NULLS (
+    cnt FOR color IN (red, green, blue)
+);</code></pre>
+               <p>以下為其輸出。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> color | cnt
+-------+-----
+ red   |  15
+ red   |  35
+ red   |  10
+ green |  20
+ green |
+ green |  23
+ blue  |   7
+ blue  |  40
+ blue  |  </code></pre>
+               <p>如果設定 <code class="code">INCLUDING NULLS</code> 參數，<code class="code">NULL</code> 輸入值會產生結果列。</p>
+               <p>以 <code class="code">quality</code> 作為隱含資料欄的 <code class="code">The following query shows UNPIVOT</code>。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM count_by_color UNPIVOT (
+    cnt FOR color IN (red, green, blue)
+);</code></pre>
+               <p>此查詢結果為下列輸出。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> quality | color | cnt
+---------+-------+-----
+ high    | red   |  15
+ normal  | red   |  35
+ low     | red   |  10
+ high    | green |  20
+ low     | green |  23
+ high    | blue  |   7
+ normal  | blue  |  40</code></pre>
+               <p>未在 <code class="code">UNPIVOT</code> 定義中參考的輸入資料表資料欄會隱含地新增至結果資料表。在範例中，<code class="code">quality</code> 資料欄就是這種情況。</p>
+               <p>下列範例顯示 <code class="code">IN</code> 清單中具有值別名的 <code class="code">UNPIVOT</code>。</p>
+
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM count_by_color UNPIVOT (
+    cnt FOR color IN (red AS r, green AS g, blue AS b)
+);</code></pre>
+               <p>上述查詢結果為下列輸出。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> quality | color | cnt
+---------+-------+-----
+ high    | r     |  15
+ normal  | r     |  35
+ low     | r     |  10
+ high    | g     |  20
+ low     | g     |  23
+ high    | b     |   7
+ normal  | b     |  40</code></pre>
+               <p><code class="code">UNPIVOT</code> 運算仔會接受每個 <code class="code">IN</code> 清單值上的選用別名。每個別名都會提供每個 <code class="code">value</code> 資料欄中的資料定義。</p>
+               <p>以下是 <code class="code">UNPIVOT</code> 的使用須知。</p>
+
+               <div class="itemizedlist">
+                   
+
+                   
+
+                   
+
+               <ul class="itemizedlist"><li class="listitem"><p><code class="code">UNPIVOT</code> 可套用至資料表、子查詢和通用資料表運算式 (CTE)。<code class="code">UNPIVOT</code> 無法套用至任何 <code class="code">JOIN</code> 運算式、遞迴 CTE、<code class="code">PIVOT</code> 或 <code class="code">UNPIVOT</code> 運算式。<code class="code">SUPER</code> 非巢狀運算式和 Redshift Spectrum 巢狀資料表也不支援。</p></li><li class="listitem"><p><code class="code">UNPIVOT IN</code> 清單必須只包含輸入資料表資料欄參考。<code class="code">IN</code> 清單欄必須具有與之相容的通用類型。<code class="code">UNPIVOT</code> 值資料欄具有這種通用類型。<code class="code">UNPIVOT</code> 名稱資料欄的類型為 <code class="code">VARCHAR</code>。</p></li><li class="listitem"><p>如果 <code class="code">IN</code> 清單值沒有別名，<code class="code">UNPIVOT</code> 會使用資料欄名稱做為預設值。</p></li></ul></div>
+
+
+
+
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_FROM_clause30.html">FROM 子句</div><div id="next" class="next-link" accesskey="n" href="./r_Join_examples.html">JOIN 範例</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

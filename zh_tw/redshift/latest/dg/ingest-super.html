@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>將半結構化資料載入 Amazon Redshift - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="ingest-super" /><meta name="default_state" content="ingest-super" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/ingest-super.html" /><meta name="description" content="使用 SUPER 資料類型在 Amazon Redshift 中保留和查詢階層式和一般資料。Amazon Redshift 引入了以 JSON 格式剖析資料並將其轉換為 SUPER 表示的 json_parse 函數。Amazon Redshift 還支援使用 COPY 命令載入 SUPER 欄。支援的檔案格式包括 JSON、Avro、文字、逗號分隔值 (CSV) 格式、Parquet 和 ORC。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="資料庫開發人員指南" /><meta name="abstract" content="使用 Amazon Redshift 這項 PB 級的完全受管企業等級資料倉儲服務，來建立和管理資料倉儲。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/ingest-super.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/ingest-super.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/ingest-super.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/ingest-super.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/ingest-super.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/ingest-super.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/ingest-super.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/ingest-super.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/ingest-super.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/ingest-super.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/ingest-super.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/ingest-super.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/ingest-super.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/ingest-super.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/ingest-super.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/ingest-super.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/ingest-super.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/ingest-super.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/ingest-super.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/ingest-super.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/ingest-super.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/ingest-super.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="資料庫開發人員指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="資料庫開發人員指南" /><meta id="panorama-serviceConsolePage" value="將半結構化資料載入 Amazon Redshift" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>將半結構化資料載入 Amazon Redshift - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#ingest-super" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/ingest-super.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/ingest-super.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/ingest-super.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,叢集,資料倉儲,開發人員,範例資料,database,資料庫開發人員,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "資料庫開發人員指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "在 Amazon Redshift 中擷取和查詢半結構化資料",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/super-overview.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "將半結構化資料載入 Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/super-overview.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#ingest-super" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#parse_json">將 JSON 文件剖析為 SUPER 欄</a><a href="#copy_json">使用 COPY 在 Amazon Redshift 中載入 JSON 資料</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="ingest-super">將半結構化資料載入 Amazon Redshift</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>使用 SUPER 資料類型在 Amazon Redshift 中保留和查詢階層式和一般資料。Amazon Redshift 引入了以 JSON 格式剖析資料並將其轉換為 SUPER 表示的 <code class="code">json_parse</code> 函數。Amazon Redshift 還支援使用 COPY 命令載入 SUPER 欄。支援的檔案格式包括 JSON、Avro、文字、逗號分隔值 (CSV) 格式、Parquet 和 ORC。</p><p>如需下列範例中所用資料表的詳細資訊，請參閱<a href="./r_SUPER_sample_dataset.html">SUPER 範例資料集</a>。</p><p>如需 <code class="code">json_parse</code> 函數的詳細資訊，請參閱<a href="./JSON_PARSE.html">JSON_PARSE 函數</a>。</p><p>SUPER 資料類型的預設編碼是 ZSTD。</p>
+         <h2 id="parse_json">將 JSON 文件剖析為 SUPER 欄</h2>
+         <p>您可以使用 <code class="code">json_parse</code> 函數將 JSON 資料插入或更新到 SUPER 欄中。該函數剖析 JSON 格式的資料，並將其轉換為 SUPER 資料類型，您可以在 INSERT 或 UPDATE 陳述式中使用。</p>
+         <p>下列範例將 JSON 資料插入到 SUPER 欄。如果查詢中缺少 <code class="code">json_parse</code> 函數，Amazon Redshift 會將該值視為單一字串，而不是必須剖析的 JSON 格式字串。</p>
+         <p>如果您更新 SUPER 資料欄，Amazon Redshift 會要求將完整的文件傳遞至欄值。Amazon Redshift 不支援部分更新。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">INSERT INTO region_nations VALUES(0,
+   'lar deposits. blithely final packages cajole. regular waters are final requests. regular accounts are according to',
+   'AFRICA',
+   JSON_PARSE('<span>{</span>"r_nations":[
+      <span>{</span>"n_comment":" haggle. carefully final deposits detect slyly agai",
+         "n_nationkey":0,
+         "n_name":"ALGERIA"
+      },
+      <span>{</span>"n_comment":"ven packages wake quickly. regu",
+         "n_nationkey":5,
+         "n_name":"ETHIOPIA"
+      },
+      <span>{</span>"n_comment":" pending excuses haggle furiously deposits. pending, express pinto beans wake fluffily past t",
+         "n_nationkey":14,
+         "n_name":"KENYA"
+      },
+      <span>{</span>"n_comment":"rns. blithely bold courts among the closely regular packages use furiously bold platelets?",
+         "n_nationkey":15,
+         "n_name":"MOROCCO"
+      },
+      <span>{</span>"n_comment":"s. ironic, unusual asymptotes wake blithely r",
+         "n_nationkey":16,
+         "n_name":"MOZAMBIQUE"
+      }
+   ]
+}'));</code></pre>
+       
+         <h2 id="copy_json">使用 COPY 在 Amazon Redshift 中載入 SUPER 欄</h2>
+         
+         <p>在下列章節中，您可以了解如何使用 COPY 命令將 JSON 資料載入 Amazon Redshift 的不同方式。</p>
+         
+          
+            <h3 id="copy_json-from-JSON">從 JSON 和 Avro 複製資料</h3>
+         <p>透過在 Amazon Redshift 中使用半結構化資料支援，您可以載入 JSON 文件，而不必將其 JSON 結構的屬性分解成多個欄。</p>
+            <p>Amazon Redshift 提供了兩種方法來使用 COPY 擷取 JSON 文件，即使 JSON 結構完全或部分未知：</p>
+         <div class="orderedlist">
+            
+             
+             
+
+         <ol><li>
+               <p>使用 <code class="code">noshred</code> 選項將從 JSON 文件衍生的資料儲存到單一 SUPER 資料欄中。當結構描述不知道或預期會改變時，此方法非常有用。因此，這種方法可以更容易地將整個元組儲存在單一 SUPER 欄中。</p>
+            </li><li>
+               <p>使用 <code class="code">auto</code> 或 <code class="code">jsonpaths</code> 選項將 JSON 文件分解成多個 Amazon Redshift 欄。屬性可以是 Amazon Redshift 純量或 SUPER 值。</p>
+            </li></ol></div><p>您可以將這些選項與 JSON 或 Avro 格式搭配使用。</p>
+            <p>分解前的 JSON 物件大小上限為 4 MB。</p>
+          
+
+          
+            <h3 id="copy_json-one-column">將 JSON 文件複製到單一 SUPER 資料欄</h3>
+         <p>若要將 JSON 文件複製到單一 SUPER 資料欄中，請使用單一 SUPER 資料欄建立資料表。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE region_nations_noshred (rdata SUPER);</code></pre>
+         <p>將 Amazon S3 的資料複製到單一 SUPER 資料欄。若要將 JSON 來源資料內嵌到單一 SUPER 資料欄中，請在 FORMAT JSON 子句中指定 <code class="code">noshred</code> 選項。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations_noshred FROM 's3://redshift-downloads/semistructured/tpch-nested/data/json/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT JSON 'noshred';</code></pre>
+            
+         <p>COPY 成功擷取 JSON 之後，您的資料表會有一個 <code class="code">rdata</code> SUPER 資料欄，其中包含整個 JSON 物件的資料。擷取的資料會維護 JSON 階層的所有屬性。不過，分葉會轉換成 Amazon Redshift 純量類型，以便有效率地處理查詢。</p>
+         <p>使用下列查詢擷取原始 JSON 字串。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT rdata FROM region_nations_noshred;</code></pre>
+         <p>當 Amazon Redshift 產生 SUPER 資料欄時，它可以透過 JSON 序列化使用 JDBC 做為字串進行存取。如需詳細資訊，請參閱<a href="./serializing-complex-JSON.html">序列化複雜的巢狀 JSON</a>。</p>      
+                   
+         
+         
+          
+            <h3 id="copy_json-multiple-columns">將 JSON 文件複製到多個 SUPER 資料欄</h3>
+         <p>您可以將 JSON 文件分解為多個欄，這些欄可以是 SUPER 資料欄或 Amazon Redshift 純量類型。Amazon Redshift 傳播 JSON 物件的不同部分到不同的欄。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE region_nations
+(
+ r_regionkey smallint
+ ,r_name varchar
+ ,r_comment varchar
+ ,r_nations super
+ );</code></pre>
+            <p>若要將上一個範例的資料複製到資料表中，請在 FORMAT JSON 子句中指定 AUTO 選項，將 JSON 值分割為多個資料欄。COPY 將頂層 JSON 屬性與欄名稱比對，並允許以 SUPER 值的形式擷取巢狀值，例如 JSON 陣列和物件。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/json/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT JSON 'auto';</code></pre>
+            
+             
+            <p>當 JSON 屬性名稱混合使用大寫和小寫時，請在 FORMAT JSON 子句中指定 <code class="code">auto ignorecase</code> 選項。如需 COPY 命令的詳細資訊，請參閱<a href="./r_COPY_command_examples.html#copy-from-json-examples-using-auto-ignorecase">使用 'auto ignorecase' 選項從 JSON 資料載入</a>。</p>
+            
+            
+         <p>在某些情況下，欄名稱和 JSON 屬性不相符，或者要載入的屬性巢狀超過層級深度。如果是這樣，請使用 <code class="code">jsonpaths</code> 檔案手動將 JSON 屬性對應至 Amazon Redshift 欄。</p>
+            
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE nations
+(
+ regionkey smallint
+ ,name varchar
+ ,comment super
+ ,nations super
+ ); </code></pre>
+         <p>假設您要將資料載入到欄名不符合 JSON 屬性的表格中。在下列範例中的 <code class="code">nations</code> 表就是這種表格。您可以建立 <code class="code">jsonpaths</code> 檔案，依據屬性在 <code class="code">jsonpaths</code> 陣列中的位置，將屬性路徑對應至表格欄。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>"jsonpaths": [
+       "$.r_regionkey",
+       "$.r_name",
+       "$.r_comment",
+       "$.r_nations
+    ]
+}</code></pre>
+         <p><code class="code">jsonpaths</code> 檔案的位置被用作 FORMAT JSON 的引數。</p>
+            
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/json/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT JSON 's3://redshift-downloads/semistructured/tpch-nested/data/jsonpaths/nations_jsonpaths.json';</code></pre>
+         <p>使用下列查詢來存取顯示資料分佈到多個欄的資料表。SUPER 資料欄使用 JSON 格式進行列印。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT r_regionkey,r_name,r_comment,r_nations[0].n_nationkey FROM region_nations ORDER BY 1,2,3 LIMIT 1;</code></pre>
+            
+            <p>Jsonpath 黨案將 JSON 文件中的欄位映射到表格欄。您可以擷取其他欄，例如分散索引鍵和排序索引鍵，同時仍將完整的文件載入為 SUPER 欄。以下查詢將完整文件載入到 nations 欄。<code class="code">name</code> 欄是排序索引鍵，而 <code class="code">regionkey</code> 欄是分散索引鍵。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE nations_sorted (
+    regionkey smallint,
+    name varchar,
+    nations super
+) DISTKEY(regionkey) SORTKEY(name);</code></pre>
+            <p>根 jsonpath "$" 映射到文件的根目錄，如下所示：</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>"jsonpaths": [
+       "$.r_regionkey",
+       "$.r_name",
+       "$"
+    ]
+}</code></pre>
+            <p>jsonpaths 文件的位置被用作 FORMAT JSON 的引數。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY nations_sorted FROM 's3://redshift-downloads/semistructured/tpch-nested/data/json/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT JSON 's3://redshift-downloads/semistructured/tpch-nested/data/jsonpaths/nations_sorted_jsonpaths.json';</code></pre>
+            
+                   
+         
+          
+            <h3 id="copy_json-from-text-csv">從文字和 CSV 複製資料</h3>
+         
+            <p>Amazon Redshift 將文字和 CSV 格式的 SUPER 欄表示為序列化 JSON。SUPER 欄需要有效的 JSON 格式，才能以正確的類型資訊載入。取消物件、陣列、數字、布林值和 null 值的引號。將字串值換成雙引號。SUPER 資料欄會針對文字和 CSV 格式使用標準逸出規則。針對 CSV，會根據 CSV 標準逸出分隔符號。對於文字，如果選擇的分隔符號也可能出現在 SUPER 欄位中，請在 COPY 和 UNLOAD 期間使用 ESCAPE 選項。</p>
+            
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/csv/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT CSV;</code></pre>
+            
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/text/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+DELIMITER ','
+ESCAPE;</code></pre>
+       
+
+         
+          
+            <h3 id="copy_json-from-parquet-orc">從單欄式 Parquet 和 ORC 複製資料</h3>        
+         <p>如果您的半結構化或巢狀資料已以 Apache Parquet 或 Apache ORC 格式提供，您可以使用 COPY 命令將資料擷取到 Amazon Redshift 中。</p>
+            <p>Amazon Redshift 資料表結構應符合 Parquet 或 ORC 檔案的欄數和欄資料類型。藉由在 COPY 命令中指定 SERIALIZETOJSON，您可以將與資料表中的 SUPER 欄對齊的檔案中的任何欄類型載入為 SUPER。這包括結構和陣列類型。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/parquet/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT PARQUET SERIALIZETOJSON;</code></pre>
+         <p>以下範例使用 ORC 格式。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/orc/region_nation'
+IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT ORC SERIALIZETOJSON;</code></pre>
+            <p>當日期或時間資料類型的屬性在 ORC 中時，Amazon Redshift 在 SUPER 中對它們進行編碼時會將它們轉換為 varchar。</p>
+       
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_SUPER_sample_dataset.html">SUPER 範例資料集</div><div id="next" class="next-link" accesskey="n" href="./unload-super.html">卸載半結構化資料</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/ingest-super.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/ingest-super.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

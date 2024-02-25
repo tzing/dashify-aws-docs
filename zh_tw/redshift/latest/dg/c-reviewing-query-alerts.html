@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>檢閱查詢提醒 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c-reviewing-query-alerts" /><meta name="default_state" content="c-reviewing-query-alerts" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-reviewing-query-alerts.html" /><meta name="description" content="描述如何使用 STL_ALERT_EVENT_LOG 資料表來識別查詢效能問題。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="資料庫開發人員指南" /><meta name="abstract" content="使用 Amazon Redshift 這項 PB 級的完全受管企業等級資料倉儲服務，來建立和管理資料倉儲。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-reviewing-query-alerts.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-reviewing-query-alerts.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="資料庫開發人員指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="資料庫開發人員指南" /><meta id="panorama-serviceConsolePage" value="檢閱查詢提醒" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>檢閱查詢提醒 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c-reviewing-query-alerts" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-reviewing-query-alerts.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-reviewing-query-alerts.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-reviewing-query-alerts.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,叢集,資料倉儲,開發人員,範例資料,database,資料庫開發人員,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "資料庫開發人員指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "調校查詢效能",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-optimizing-query-performance.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "分析和改善查詢",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-query-tuning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "檢閱查詢提醒",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-query-tuning.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c-reviewing-query-alerts" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="c-reviewing-query-alerts">檢閱查詢提醒</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>若要使用<a href="./r_STL_ALERT_EVENT_LOG.html">STL_ALERT_EVENT_LOG</a>系統資料表來識別和更正您的查詢的潛在效能問題，請遵循這些步驟：</p><div class="orderedlist">
+             
+             
+             
+         <ol><li>
+               <p>執行下列動作來判斷您的查詢 ID：</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select query, elapsed, substring
+from svl_qlog
+order by query
+desc limit 5;               </code></pre>
+
+               <p>在 <code class="code">substring</code> 欄位中檢查截斷的查詢文字，判斷要選取的 <code class="code">query</code> 值。如果您已執行查詢超過一次，請使用來自具有較低 <code class="code">query</code> 值資料列的 <code class="code">elapsed</code> 值。那是編譯版本的資料列。如果您已執行許多查詢，您可以提升 LIMIT 子句使用的值，以確定您的查詢已包含在其中。</p>
+            </li><li>
+               <p>從 STL_ALERT_EVENT_LOG 中，為您的查詢選取資料列：</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">Select * from stl_alert_event_log where query = <em>MyQueryID</em>;               </code></pre>
+               <div class="mediaobject">
+                   
+                     <img src="images/stl_alert_event_log_results.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                   
+               </div>
+            </li><li>
+               <p>評估您的查詢的結果。使用下表來找出任何遇到問題的潛在解決方案。</p>
+               <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>STL_ALERT_EVENT_LOG 中不會有所有查詢的資料列，只有已發現問題的那些查詢。</p></div></div>
+               <div class="table-container"><div class="table-contents"><table id="w319aac41c15b9b5b5b5"><thead>
+                        <tr>
+                           <th>問題</th>
+                           <th>事件值</th>
+                           <th>解決方案值</th>
+                           <th>建議的解決方案</th>
+                        </tr>
+                     </thead>
+                        <tr>
+                           <td tabindex="-1">查詢中資料表的統計資料遺漏或過時。</td>
+                           <td tabindex="-1">遺漏查詢規劃器統計資料</td>
+                           <td tabindex="-1">執行 ANALYZE 命令 </td>
+                           <td tabindex="-1">請參閱 <a href="./query-performance-improvement-opportunities.html#table-statistics-missing-or-out-of-date">資料表統計資訊遺漏或過時</a>。</td>
+                        </tr>
+                        <tr>
+                           <td tabindex="-1">查詢計畫中有巢狀迴路聯結 (最差的最佳聯結)。</td>
+                           <td tabindex="-1">查詢計畫中的巢狀迴路聯結</td>
+                           <td tabindex="-1">檢閱聯結述詞以避免笛卡兒乘積 </td>
+                           <td tabindex="-1">請參閱 <a href="./query-performance-improvement-opportunities.html#nested-loop">巢狀迴圈</a>。</td>
+                        </tr>
+                        
+                        <tr>
+                           <td tabindex="-1">掃描已略過相當多標示為已刪除但未清空的資料列，或已插入但未遞交的資料列。</td>
+                           <td tabindex="-1">已掃描大量刪除的資料列</td>
+                           <td tabindex="-1">執行 VACUUM 命令來回收刪除的空間 </td>
+                           <td tabindex="-1"> 請參閱 <a href="./query-performance-improvement-opportunities.html#ghost-rows-or-uncommitted-rows">幽靈資料列或未遞交的資料列</a>。</td>
+                        </tr>
+                        <tr>
+                           <td tabindex="-1">已針對雜湊聯結或彙整重新配送超過 1,000,000 個資料列。</td>
+                           <td tabindex="-1">在網路上分散了大量的資RowCount 料列：資料列已分散以處理彙總</td>
+                           <td tabindex="-1">檢閱散發索引鍵的選擇以共置聯結或彙整 </td>
+                           <td tabindex="-1"> 請參閱 <a href="./query-performance-improvement-opportunities.html#suboptimal-data-distribution">次佳資料分佈</a>。</td>
+                        </tr>
+                        <tr>
+                           <td tabindex="-1">已針對雜湊聯結播送超過 1,000,000 個資料列。</td>
+                           <td tabindex="-1">在網路間播送大量資料列</td>
+                           <td tabindex="-1">檢閱散發索引鍵的選擇以共置聯結或並考慮使用配送資料表 </td>
+                           <td tabindex="-1"> 請參閱 <a href="./query-performance-improvement-opportunities.html#suboptimal-data-distribution">次佳資料分佈</a>。</td>
+                        </tr>
+                        <tr>
+                           <td tabindex="-1">已在查詢計劃中指出 DS_DIST_ALL_INNER 重新配送樣式，其會強制序列執行，因為整個內部資料表已重新配送至單一節點。</td>
+                           <td tabindex="-1">查詢計畫中用於雜湊聯結的 DS_DIST_ALL_INNER</td>
+                           <td tabindex="-1">檢閱配送策略的選擇，以配送內部而非外部資料表 </td>
+                           <td tabindex="-1"> 請參閱 <a href="./query-performance-improvement-opportunities.html#suboptimal-data-distribution">次佳資料分佈</a>。</td>
+                        </tr>
+                     </table></div></div>
+            </li></ol></div><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c-query-analysis-process.html">查詢分析工作流程</div><div id="next" class="next-link" accesskey="n" href="./c-analyzing-the-query-plan.html">分析查詢計劃</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-reviewing-query-alerts.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-reviewing-query-alerts.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>影響查詢效能的因素 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c-query-performance" /><meta name="default_state" content="c-query-performance" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-query-performance.html" /><meta name="description" content="描述如何解譯查詢計畫。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="資料庫開發人員指南" /><meta name="abstract" content="使用 Amazon Redshift 這項 PB 級的完全受管企業等級資料倉儲服務，來建立和管理資料倉儲。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-query-performance.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-query-performance.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-query-performance.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-query-performance.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-query-performance.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-query-performance.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-query-performance.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-query-performance.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-query-performance.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-query-performance.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-query-performance.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-query-performance.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-query-performance.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-query-performance.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-query-performance.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-performance.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-performance.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-query-performance.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-query-performance.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-performance.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-query-performance.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-query-performance.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="資料庫開發人員指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="資料庫開發人員指南" /><meta id="panorama-serviceConsolePage" value="影響查詢效能的因素" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>影響查詢效能的因素 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c-query-performance" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-query-performance.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-query-performance.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-query-performance.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,叢集,資料倉儲,開發人員,範例資料,database,資料庫開發人員,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "資料庫開發人員指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "調校查詢效能",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-optimizing-query-performance.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "查詢處理",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-query-processing.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "影響查詢效能的因素",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-query-processing.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c-query-performance" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="c-query-performance">影響查詢效能的因素</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>有一些因素會影響查詢效能。您的資料、叢集和資料庫操作的下列層面，都會影響處理查詢的速度。</p><div class="itemizedlist">
+             
+             
+             
+             
+             
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p><span class="topcom">節點、處理器或配量的數量</span> – 運算節點會分割為配量。更多節點表示更多處理器和更多配量，透過在配量間並行執行部分的查詢，可讓您的查詢處理得更快速。不過，更多節點也表示更大的開支，因此必須尋找適合您的系統的成本與效能的平衡點。如需 Amazon Redshift 叢集架構的詳細資訊，請參閱<a href="./c_high_level_system_architecture.html">資料倉儲系統架構</a>。</p>
+            </li><li class="listitem">
+               
+               <p><span class="topcom">節點類型</span> - Amazon Redshift 叢集可以使用數種節點類型之一。每個節點類型可提供不同的大小和限制，以幫助您適當地調整叢集的規模。節點大小會決定叢集中每個節點的儲存容量、記憶體、CPU 和價格。如需節點類型的詳細資訊，請參閱《Amazon Redshift 管理指南》<em></em>中的 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#working-with-clusters-overview">Amazon Redshift 叢集概觀</a>。</p>
+            </li><li class="listitem">
+               <p><span class="topcom">資料配送</span> – Amazon Redshift 會根據資料表的配送樣式，將資料表資料存放在運算節點。當您執行查詢時，查詢最佳化器會視需要將資料重新配送至運算節點，以執行任何聯結與彙整。選擇資料表的適當配送樣式，有助於降低重新配送步驟所帶來的影響，方法是在執行聯結之前，將資料放置在需要的位置。如需詳細資訊，請參閱<a href="./t_Distributing_data.html">使用資料分佈樣式</a>。</p>
+            </li><li class="listitem">
+               <p><span class="topcom">資料排序排列</span> – Amazon Redshift 會根據資料表的排序索引鍵，以排序的順序將資料表資料存放在磁碟上。查詢最佳化器和查詢處理器使用資料所在位置的資訊以減少必須掃描的區塊數量，藉以改善查詢速度。如需詳細資訊，請參閱<a href="./t_Sorting_data.html">使用排序索引鍵</a>。</p>
+            </li><li class="listitem">
+               <p><span class="topcom">資料集大小</span> – 由於需要掃描和重新配送更多資料列，因此叢集中較多的資料量可能拖慢查詢的查詢效能。您可以透過定期清空和封存資料，以及使用述詞來限制查詢資料集，藉以減緩此影響。</p>
+            </li><li class="listitem">
+               <p><span class="topcom">並行操作</span> – 一次執行多個操作可能影響查詢效能。每個操作會使用可用查詢佇列中的一或多個位置，並使用與那些位置關聯的記憶體。如果其他操作正在執行，則可能沒有足夠的查詢佇列位置可供使用。在此情況下，查詢必須等候位置開放之後才可以開始處理。如需建立和設定查詢佇列的詳細資訊，請參閱<a href="./cm-c-implementing-workload-management.html">實作工作負載管理</a>。</p>
+            </li><li class="listitem">
+               <p><span class="topcom">查詢結構</span> – 寫入查詢的方式會影響其效能。請對程序寫入盡可能多的查詢，並傳回符合您需求的最少資料。如需詳細資訊，請參閱<a href="./c_designing-queries-best-practices.html">設計查詢的 Amazon Redshift 最佳實務</a>。</p>
+            </li><li class="listitem">
+               <p><span class="topcom">程式碼編譯</span> – Amazon Redshift 會為每個查詢執行計畫產生和編譯程式碼。</p>
+               
+               <p>編譯的程式碼執行得更快速，因為它省去了使用解譯器的間接成本。第一次產生和編譯程式碼時，通常會有些間接成本。因此，第一次執行查詢的效能可能會有偏差。執行一次性查詢時的間接成本可能特別明顯。請進行第二次執行查詢，以便判斷其一般效能。Amazon Redshift 使用無伺服器編譯服務，將查詢編譯擴展到 Amazon Redshift 叢集的運算資源之外。編譯的程式碼區段會在叢集本機上快取，而且會在幾乎無限制的快取中快取。此快取會在叢集重新啟動後持續存在。相同查詢的後續執行可以加快執行速度，因為它可以略過編譯階段。</p><p>快取在 Amazon Redshift 版本之間不相容，因此會清除編譯快取，並在版本升級後執行查詢時重新編譯程式碼。如果您的查詢具有嚴格的 SLA，建議您預先執行查詢區段，以掃描叢集資料表中的資料。這可讓 Amazon Redshift 快取基礎資料表資料，減少版本升級後的查詢規劃時間。透過使用可擴展的編譯服務，Amazon Redshift 可以並行編譯程式碼以提供一致的快速效能。工作負載加速的程度取決於查詢的複雜性和並行性。</p>
+               
+               
+               
+               
+            </li></ul></div><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./reviewing-query-plan-steps.html">檢閱查詢計劃步驟</div><div id="next" class="next-link" accesskey="n" href="./c-query-tuning.html">分析和改善查詢</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-query-performance.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-query-performance.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

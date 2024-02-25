@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>步驟 5：執行 COPY 命令 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-loading-run-copy" /><meta name="default_state" content="tutorial-loading-run-copy" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="description" content="學習基本 COPY 命令語法，然後在 SQL 用戶端中搭配不同選項執行 COPY 命令，了解如何載入不同檔案格式的資料表。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="資料庫開發人員指南" /><meta name="abstract" content="使用 Amazon Redshift 這項 PB 級的完全受管企業等級資料倉儲服務，來建立和管理資料倉儲。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-loading-run-copy.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="資料庫開發人員指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="資料庫開發人員指南" /><meta id="panorama-serviceConsolePage" value="步驟 5：執行 COPY 命令" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>步驟 5：執行 COPY 命令 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-loading-run-copy" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,叢集,資料倉儲,開發人員,範例資料,database,資料庫開發人員,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "資料庫開發人員指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "載入資料",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "教學課程：從 Amazon S3 載入資料",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-loading-data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "步驟 5：執行 COPY 命令",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-loading-data.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-loading-run-copy" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#tutorial-loading-data-copy-syntax">COPY 命令語法</a><a href="#tutorial-loading-run-copy-load-tables">載入 SSB 資料表</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="tutorial-loading-run-copy">步驟 5：執行 COPY 命令</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>您會執行 COPY 命令載入 SSB 結構描述中的每個資料表。在 COPY 命令範例中，將示範使用 COPY 命令的幾個選項從不同檔案格式載入資料，以及進行載入錯誤的故障診斷。</p><div class="highlights" id="inline-topiclist"><h6>主題</h6><ul><li><a href="#tutorial-loading-data-copy-syntax">COPY 命令語法</a></li><li><a href="#tutorial-loading-run-copy-load-tables">載入 SSB 資料表</a></li></ul></div>
+            <h2 id="tutorial-loading-data-copy-syntax">COPY 命令語法</h2>
+
+
+            <p><a href="./r_COPY.html">COPY</a> 命令基本語法如下。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY table_name [ column_list ] FROM data_source CREDENTIALS access_credentials [options] </code></pre>
+            <p>執行 COPY 命令需提供下列值。</p>
+             
+                <h6>資料表名稱 </h6>
+                <p>COPY 命令的目標資料表。此資料表必須已存在於資料庫中。此資料表可以是暫時性或持久性。COPY 命令會將新的輸入資料附加到資料表中任何現有的資料列。</p>
+             
+             
+                <h6>資料欄清單</h6>
+                <p>根據預設，COPY 會按照順序從來源資料將欄位載入資料表的資料欄。您可以選擇指定<em>資料欄清單</em> (以逗號分隔資料欄名稱的清單)，以便將資料欄位映射到特定的資料欄。您在本教學中不會使用資料行清單。如需詳細資訊，請參閱 COPY 命令參考資料中的<a href="./copy-parameters-column-mapping.html#copy-column-list">Column List</a>。</p>
+             
+            <p><span class="topcon">資料來源</span></p>
+            <p>您可以使用 COPY 命令從 Amazon S3 儲存貯體、Amazon EMR 叢集、透過 SSH 連線的遠端主機、或 Amazon DynamoDB 資料表載入資料。在本教學中，您會從 Amazon S3 儲存貯體中的資料檔案載入資料。從 Amazon S3 進行載入時，您必須提供儲存貯體的名稱和資料檔案的位置。若要執行此作業，請提供資料檔案的物件路徑，或是明確列出每個資料檔案及其位置的資訊清單檔案位置。</p>
+            <div class="itemizedlist">
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem">
+                    <p>索引鍵字首 </p>
+                    <p>使用物件索引鍵可以唯一識別存放在 Amazon S3 中的物件。物件索引鍵包含儲存貯體名稱、資料夾名稱、物件名稱 (如果有)。<em>物件索引鍵字首</em>是指具有相同字首的多個物件。物件路徑就是一種索引鍵字首，COPY 命令用來用來載入具有該索引鍵字首的所有物件。例如，索引鍵字首 <code class="code">custdata.txt</code> 可以是指單一檔案或數個檔案，包括 <code class="code">custdata.txt.001</code>、<code class="code">custdata.txt.002</code> 等。</p>
+                </li><li class="listitem">
+                    <p>清單檔案</p>
+                    <p>在某些案例中，您可能需要載入具有不同字首的檔案，例如從多個儲存貯體或資料夾進行載入。在其他案例中，您可能需要排除具有特定字首的檔案。在這些案例中，您可以使用資訊清單檔案。<em>資訊清單檔案</em>會明確列出每個載入檔案及其唯一物件索引鍵。稍後在本教學中，您會使用資訊清單檔案載入 PART 資料表。</p>
+                </li></ul></div>
+             
+                <h6>登入資料</h6>
+                <p>如要存取包含欲載入資料的 AWS 資源，您必須為具有足夠權限的使用者提供 AWS 存取登入資料。這些登入資料包括 IAM 角色 Amazon Resource Name (ARN)。若要從 Amazon S3 載入資料，登入資料必須包含 ListBucket 和 GetObject許可。如果您的資料已加密，則需要其他登入資料。如需詳細資訊，請參閱 COPY 命令參考資料中的<a href="./copy-parameters-authorization.html">授權參數</a>。如需有關管理存取權的詳細資訊，請前往<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-access-control.html">管理對 Amazon S3 資源的存取許可</a>。</p>
+             
+            <p><span class="topcon">選項</span></p>
+            <p>您可以指定數個參數搭配 COPY 命令，藉此指定檔案格式、管理資料格式、管理錯誤、控制其他功能。在本教學中，您會使用下列 COPY 命令選項和功能：</p>
+            <div class="itemizedlist">
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem">
+                    <p>索引鍵字首</p>
+                    <p>如需如何透過指定金鑰前綴從多個檔案載入的相關資訊，請參閱<a href="#tutorial-loading-load-part">使用 NULL AS 載入 PART 資料表</a>。</p>
+                </li><li class="listitem">
+                    <p>CSV format (CSV 格式)</p>
+                    <p>如需如何載入 CSV 格式資料的相關資訊，請參閱<a href="#tutorial-loading-load-part">使用 NULL AS 載入 PART 資料表</a>。</p>
+                </li><li class="listitem">
+                    <p>NULL AS</p>
+                    <p>如需如何使用 NULL AS 選項載入 PART 的相關資訊，請參閱<a href="#tutorial-loading-load-part">使用 NULL AS 載入 PART 資料表</a>。</p>
+                </li><li class="listitem">
+                    <p>字元分隔的格式</p>
+                    <p>如需如何使用 DELIMITER 選項的相關資訊，請參閱<a href="#tutorial-loading-load-supplier">使用 REGION 載入 SUPPLIER 資料表</a>。</p>
+                </li><li class="listitem">
+                    <p>REGION</p>
+                    <p>如需如何使用 REGION 選項的相關資訊，請參閱<a href="#tutorial-loading-load-supplier">使用 REGION 載入 SUPPLIER 資料表</a>。</p>
+                </li><li class="listitem">
+                    <p>固定格式寬度</p>
+                    <p>如需如何從固定寬度資料載入 CUSTOMER 資料表的相關資訊，請參閱<a href="#tutorial-loading-load-customer">使用 MANIFEST 載入 CUSTOMER 資料表</a>。</p>
+                </li><li class="listitem">
+                    <p>MAXERROR</p>
+                    <p>如需如何使用 MAXERROR 選項的相關資訊，請參閱<a href="#tutorial-loading-load-customer">使用 MANIFEST 載入 CUSTOMER 資料表</a>。</p>
+                </li><li class="listitem">
+                    <p>ACCEPTINVCHARS</p>
+                    <p>如需如何使用 ACCEPTINVCHARS 選項的相關資訊，請參閱<a href="#tutorial-loading-load-customer">使用 MANIFEST 載入 CUSTOMER 資料表</a>。</p>
+                </li><li class="listitem">
+                    <p>MANIFEST</p>
+                    <p>如需如何使用 MANIFEST 選項的相關資訊，請參閱<a href="#tutorial-loading-load-customer">使用 MANIFEST 載入 CUSTOMER 資料表</a>。</p>
+                </li><li class="listitem">
+                    <p>DATEFORMAT</p>
+                    <p>如需如何使用 DATEFORMAT 選項的相關資訊，請參閱<a href="#tutorial-loading-load-dwdate">使用 DATEFORMAT 載入 DWDATE 資料表</a>。</p>
+                </li><li class="listitem">
+                    <p>GZIP、LZOP 與 BZIP2</p>
+                    <p>如需有關如何壓縮檔案的相關資訊，請參閱<a href="#tutorial-loading-load-lineorder">使用多個檔案載入 LINEORDER 資料表</a>。</p>
+                </li><li class="listitem">
+                    <p>COMPUPDATE</p>
+                    <p>如需如何使用 COMPUPDATE 選項的相關資訊，請參閱<a href="#tutorial-loading-load-lineorder">使用多個檔案載入 LINEORDER 資料表</a>。</p>
+                </li><li class="listitem">
+                    <p>多個檔案</p>
+                    <p>如需如何載入多個檔案的相關資訊，請參閱<a href="#tutorial-loading-load-lineorder">使用多個檔案載入 LINEORDER 資料表</a>。</p>
+                </li></ul></div>
+         
+            <h2 id="tutorial-loading-run-copy-load-tables">載入 SSB 資料表</h2>
+
+            <p>您會使用下列 COPY 命令載入 SSB 結構描述中的每個資料表。每個資料表的命令分別示範不同的 COPY 選項以及故障診斷技巧。</p>
+            <p>若要載入 SSB 資料表，請遵循以下步驟：</p>
+            <div class="orderedlist">
+                 
+                 
+                 
+                 
+                 
+                 
+            <ol><li>
+                    <p><a href="#tutorial-loading-run-copy-replaceables">取代儲存貯體名稱和 AWS 登入資料</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-part">使用 NULL AS 載入 PART 資料表</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-supplier">使用 REGION 載入 SUPPLIER 資料表</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-customer">使用 MANIFEST 載入 CUSTOMER 資料表</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-dwdate">使用 DATEFORMAT 載入 DWDATE 資料表</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-lineorder">使用多個檔案載入 LINEORDER 資料表</a></p>
+
+                </li></ol></div>
+             
+                <h3 id="tutorial-loading-run-copy-replaceables">取代儲存貯體名稱和 AWS 登入資料</h3>
+
+                <p>本教學課程中的 COPY 命令為以下格式。</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy table from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/<em>key_prefix</em>' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>'
+options;</code></pre>
+                
+                <p>針對所有 COPY 命令，執行下列操作：</p>
+                <div class="orderedlist">
+                     
+                     
+                <ol><li>
+                        <p>將 <code class="replaceable">&lt; your-bucket-name &gt;</code> 取代為叢集位於相同區域的值區名稱。</p>
+                        <p>本步驟假設儲存貯體與叢集位於同一區域。或者，您可以使用 <a href="./copy-parameters-data-source-s3.html#copy-region">REGION</a> 選項搭配 COPY 命令來指定區域。</p>
+                    </li><li>
+                        <p><code class="replaceable"></code>&lt;role-name&gt;以您自己和 IAM 角色取代 <code class="replaceable">&lt; aws-account-id &gt;</code> AWS 帳戶 和。以單引號括住的登入資料字串區段不可包含任何空格或分行符號。請注意，ARN 的格式可能與範例略有不同。最好從 IAM 主控台複製角色的 ARN，以確保在執行 COPY 命令時正確無誤。</p>
+                        
+                    </li></ol></div>
+             
+             
+                <h3 id="tutorial-loading-load-part">使用 NULL AS 載入 PART 資料表</h3>
+
+                <p>在此步驟中，您將使用 CSV 和 NULL AS 選項載入 PART 資料表。</p>
+                <p>COPY 命令可以從多個檔案平行載入資料，這比從單一檔案載入更快速。為了示範這個原則，本教學課程將每個資料表中的資料分成八個檔案，即使檔案很小。在稍後的步驟中，您會比較從單一檔案與從多個檔案載入之間的時間差異。如需詳細資訊，請參閱<a href="./c_best-practices-use-multiple-files.html">載入資料檔案</a>。</p>
+                 
+                    <h6>索引鍵字首</h6>
+                    <p>您可以透過為數個檔案指定索引鍵字首，或在資訊清單檔案中明確列出檔案，來從多個檔案載入資料。在此步驟中，您會使用金鑰前綴。在稍後的步驟中，您會使用資訊清單檔案。<code class="code">'s3://mybucket/load/part-csv.tbl'</code> 索引鍵字首會載入 <code class="code">load</code> 資料夾中的下列這些檔案。</p>
+                 
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">part-csv.tbl-000
+part-csv.tbl-001
+part-csv.tbl-002
+part-csv.tbl-003
+part-csv.tbl-004
+part-csv.tbl-005
+part-csv.tbl-006
+part-csv.tbl-007
+</code></pre>
+                 
+                    <h6>CSV format (CSV 格式)</h6>
+                    <p>CSV 意指以逗號分隔值，是用於匯入和匯出試算表資料的常見格式。CSV 比逗號分隔的格式更有彈性，因為它可讓您在欄位中包含引用字串。從 CSV 格式 COPY 的預設引號字元是雙引號 ( " )，但您可以使用 QUOTE AS 選項指定其他引號字元。在欄位內使用引號字元時，請多加一個引號字元來逸出此字元。</p>
+                 
+                <p>以下摘錄自 PART 資料表的 CSV 格式資料檔案，顯示以雙引號括起來的字串 (<code class="code">"LARGE ANODIZED
+                    BRASS"</code>)。其也顯示了引用字串中以兩個雙引號括起來的字串 (<code class="code">"MEDIUM ""BURNISHED"" TIN"</code>)。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">15,dark sky,MFGR#3,MFGR#47,MFGR#3438,indigo,"LARGE ANODIZED BRASS",45,LG CASE
+22,floral beige,MFGR#4,MFGR#44,MFGR#4421,medium,"PROMO, POLISHED BRASS",19,LG DRUM
+23,bisque slate,MFGR#4,MFGR#41,MFGR#4137,firebrick,"MEDIUM ""BURNISHED"" TIN",42,JUMBO JAR</code></pre>
+                <p>PART 資料表的資料包含會導致 COPY 失敗的字元。在此練習中，您會對錯誤進行故障診斷，並修正錯誤。</p>
+                <p>若要載入 CSV 格式的資料，請在 COPY 命令中加入 <code class="code">csv</code>。執行下列命令載入 PART 資料表。</p>
+                
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy part from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/part-csv.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>'
+csv;</code></pre>
+                
+                <p>您可能會看到類似下列的錯誤訊息。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">An error occurred when executing the SQL command:
+copy part from 's3://mybucket/load/part-csv.tbl' 
+credentials' ...
+
+ERROR: Load into table 'part' failed.  Check 'stl_load_errors' system table for details. [SQL State=XX000] 
+
+Execution time: 1.46s
+
+1 statement(s) failed.
+1 statement(s) failed.</code></pre>
+                <p>若要取得有關錯誤的詳細資訊，請查詢 STL_LOAD_ERRORS 資料表。下列查詢使用 SUBSTRING 函數縮短資料欄以利閱讀，並使用 LIMIT 10 減少傳回的資料列數。您可以調整 <code class="code">substring(filename,22,25)</code> 中的值，以符合您的儲存貯體名稱長度。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select query, substring(filename,22,25) as filename,line_number as line, 
+substring(colname,0,12) as column, type, position as pos, substring(raw_line,0,30) as line_text,
+substring(raw_field_value,0,15) as field_text, 
+substring(err_reason,0,45) as reason
+from stl_load_errors 
+order by query desc
+limit 10;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> query  |    filename      | line |  column   |    type    | pos |      
+--------+-------------------------+-----------+------------+------------+-----+----
+ 333765 | part-csv.tbl-000 |    1 |           |            |   0 |
+
+ line_text        | field_text |                    reason
+------------------+------------+----------------------------------------------
+ 15,NUL next,     |            | Missing newline: Unexpected character 0x2c f</code></pre>
+
+
+                 
+                    <h6>NULL AS</h6>
+                    <p><code class="code">part-csv.tbl</code> 資料檔案使用 NUL 結束字元 (<code class="code">\x000</code> 或 <code class="code">\x0</code>) 來指出 NULL 值。</p>
+                 
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>雖然看起來很像，但 NUL 和 NULL 大不相同。NUL 是有 <code class="code">x000</code> 字碼指標的 UTF-8 字元，通常用於表示記錄結束 (EOR)。NULL 是用來代表缺少某個值的 SQL 值。</p></div></div>
+                <p>根據預設，COPY 會將 NUL 結束字元視為 EOR 字元並終止記錄，而這常會造成未預期的結果或錯誤。指出文字資料中的 NULL 沒有任何單一的標準方法。因此，NULL AS COPY 命令選項可讓您指定在載入資料表時，要用哪個字元替換 NULL。在此範例中，要讓 COPY 將 NUL 結束字元當作 NULL 值。</p>
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>必須將要接收 NULL 值的資料表欄設為 <em>nullable</em>。也就是說，在 CREATE TABLE 規格中，它一定不能包含 NOT NULL 限制。</p></div></div>
+                <p>若要使用 NULL AS 選項載入 PART，請執行以下 COPY 命令。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy part from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/part-csv.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+csv
+null as '\000';</code></pre>
+                
+                <p>若要確認 COPY 已載入 NULL 值，執行下列命令可以僅選取包含 NULL 的資料列。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select p_partkey, p_name, p_mfgr, p_category from part where p_mfgr is null;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> p_partkey |  p_name  | p_mfgr | p_category
+-----------+----------+--------+------------
+        15 | NUL next |        | MFGR#47
+        81 | NUL next |        | MFGR#23
+       133 | NUL next |        | MFGR#44 
+(2 rows)</code></pre>
+             
+
+             
+                <h3 id="tutorial-loading-load-supplier">使用 REGION 載入 SUPPLIER 資料表</h3>
+
+                <p>在此步驟中，您會使用 DELIMITER 和 REGION 選項載入 SUPPLIER 資料表。</p>
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>在 AWS 範例儲存貯體中有提供用於載入 SUPPLIER 資料表的檔案。您不需要在這個步驟上傳檔案。</p></div></div>
+                 
+                    <h6>字元分隔的格式</h6>
+                    <p>字元分隔檔案中的欄位是以特殊字元隔開，例如縱線字元 ( | )、逗號 ( , ) 或 Tab 字元 ( \t )。字元分隔檔案可以使用任可單一 ASCII 字元做為分隔符號，包括其中一個非列印 ASCII 字元。請使用 DELIMITER 選項指定分隔符號。預設分隔符號是縱線字元 ( | )。</p>
+                 
+                <p>下列摘錄自 SUPPLIER 資料表的資料使用縱線分隔格式。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">1|1|257368|465569|41365|19950218|2-HIGH|0|17|2608718|9783671|4|2504369|92072|2|19950331|TRUCK
+1|2|257368|201928|8146|19950218|2-HIGH|0|36|6587676|9783671|9|5994785|109794|6|19950416|MAIL</code></pre>
+
+                
+                 
+                    <h6>REGION</h6>
+                    <p>只要可以，您應該將載入資料放在與您的 Amazon Redshift 叢集相同的 AWS 區域中。如果您的資料和叢集位於相同區域中，可以降低延遲，並且避免跨區域傳輸資料的成本。如需更多資訊，請參閱 <a href="./c_loading-data-best-practices.html">載入資料的 Amazon Redshift 最佳實務</a> </p>
+                 
+                <p>如果必須從不同 AWS 區域載入資料，請使用 REGION 選項來指定資料所在的 AWS 區域。如果指定區域，則所有載入資料 (包括資訊清單檔案) 都必須位於指定的區域。如需詳細資訊，請參閱<a href="./copy-parameters-data-source-s3.html#copy-region">REGION</a>。</p>
+                <p>如果您的叢集位於美國東部 (維吉尼亞北部)，執行以下命令從位於美國西部 (奧勒岡) 區域的 Amazon S3 儲存貯體上的縱線分隔資料載入 SUPPLIER 資料表。在這個範例中，請勿變更儲存貯體名稱。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy supplier from 's3://awssampledbuswest2/ssbgz/supplier.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+delimiter '|' 
+gzip
+region 'us-west-2';</code></pre>
+                
+                <p>如果您的叢集<em>不是</em>位於美國東部 (維吉尼亞北部)，請執行以下命令，從位於美國東部 (維吉尼亞北部) 區域的 Amazon S3 儲存貯體上的縱線分隔資料載入 SUPPLIER 資料表。在這個範例中，請勿變更儲存貯體名稱。</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy supplier from 's3://awssampledb/ssbgz/supplier.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+delimiter '|' 
+gzip
+region 'us-east-1';
+</code></pre>
+                
+             
+
+             
+                <h3 id="tutorial-loading-load-customer">使用 MANIFEST 載入 CUSTOMER 資料表</h3>
+
+                <p>在此步驟中，您會使用 FIXEDWIDTH、MAXERROR、ACCEPTINVCHARS 和 MANIFEST 選項載入 CUSTOMER 資料表。</p>
+                <p>此練習的範例資料包含 COPY 嘗試載入時會造成錯誤的字元。您會使用 MAXERRORS 選項和 STL_LOAD_ERRORS 系統資料表，針對載入錯誤進行故障診斷，然後使用 ACCEPTINVCHARS 和 MANIFEST 選項消除錯誤。</p>
+                 
+                    <h6>固定寬度格式</h6>
+                    <p>固定寬度格式將每個欄位定義為固定數量的字元，而不是使用分隔符號分隔欄位。下列摘錄自 CUSTOMER 資料表的資料使用固定寬度格式。</p>
+                 
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">1   Customer#000000001   IVhzIApeRb           MOROCCO  0MOROCCO  AFRICA      25-705 
+2   Customer#000000002   XSTf4,NCwDVaWNe6tE   JORDAN   6JORDAN   MIDDLE EAST 23-453
+3   Customer#000000003   MG9kdTD              ARGENTINA5ARGENTINAAMERICA     11-783</code></pre>
+
+                <p>標籤/寬度配對的順序必須完全符合資料表欄的順序。如需詳細資訊，請參閱<a href="./copy-parameters-data-format.html#copy-fixedwidth">FIXEDWIDTH</a>。</p>
+                <p>CUSTOMER 資料表固定寬度的規格字串如下。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, 
+c_region :12, c_phone:15,c_mktsegment:10'</code></pre>
+                <p>若要從固定寬度資料載入 CUSTOMER 資料表，執行下列命令。</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy customer
+from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, c_region :12, c_phone:15,c_mktsegment:10';</code></pre>
+                
+                <p>您應該會看到類似下列的錯誤訊息。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">An error occurred when executing the SQL command:
+copy customer
+from 's3://mybucket/load/customer-fw.tbl'
+credentials'...
+
+ERROR: Load into table 'customer' failed.  Check 'stl_load_errors' system table for details. [SQL State=XX000] 
+
+Execution time: 2.95s
+
+1 statement(s) failed.</code></pre>
+                 
+                    <h6>MAXERROR</h6>
+                    <p>根據預設，COPY 第一次遇到錯誤時，命令就會失敗並傳回錯誤訊息。若要在測試期間節省時間，您可以使用 MAXERROR 選項來指示 COPY 在失敗前可略過指定的錯誤數量。因為我們預料到第一次測試載入 CUSTOMER 資料表資料時會發生錯誤，請在 COPY 命令中加入 <code class="code">maxerror 10</code>。</p>
+                 
+                <p>若要使用 FIXEDWIDTH 和 MAXERROR 選項進行測試，執行下列命令。</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy customer
+from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, c_region :12, c_phone:15,c_mktsegment:10'
+maxerror 10;</code></pre>
+                
+                <p>這次，您不會看到錯誤訊息，而是得到類似下列的警示訊息。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Warnings:
+Load into table 'customer' completed, 112497 record(s) loaded successfully.
+Load into table 'customer' completed, 7 record(s) could not be loaded.  Check 'stl_load_errors' system table for details.</code></pre>
+                <p>警示表示 COPY 遇到 7 個錯誤。若要查看錯誤，請查詢 STL_LOAD_ERRORS 資料表，如以下範例所示。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select query, substring(filename,22,25) as filename,line_number as line, 
+substring(colname,0,12) as column, type, position as pos, substring(raw_line,0,30) as line_text,
+substring(raw_field_value,0,15) as field_text, 
+substring(err_reason,0,45) as error_reason
+from stl_load_errors 
+order by query desc, filename 
+limit 7;</code></pre>
+                <p>查詢 STL_LOAD_ERRORS 的結果應如下所示。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> query  |         filename          | line |  column   |    type    | pos |           line_text           | field_text |              error_reason
+--------+---------------------------+------+-----------+------------+-----+-------------------------------+------------+----------------------------------------------
+ 334489 | customer-fw.tbl.log       |    2 | c_custkey | int4       |  -1 | customer-fw.tbl               | customer-f | Invalid digit, Value 'c', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    6 | c_custkey | int4       |  -1 | Complete                      | Complete   | Invalid digit, Value 'C', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    3 | c_custkey | int4       |  -1 | #Total rows                   | #Total row | Invalid digit, Value '#', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    5 | c_custkey | int4       |  -1 | #Status                       | #Status    | Invalid digit, Value '#', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    1 | c_custkey | int4       |  -1 | #Load file                    | #Load file | Invalid digit, Value '#', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl000        |    1 | c_address | varchar    |  34 | 1         Customer#000000001  | .Mayag.ezR | String contains invalid or unsupported UTF8
+ 334489 | customer-fw.tbl000        |    1 | c_address | varchar    |  34 | 1         Customer#000000001  | .Mayag.ezR | String contains invalid or unsupported UTF8
+(7 rows)</code></pre>
+                <p>檢查結果時，您可以看到 <code class="code">error_reasons</code> 資料欄中有兩則訊息：</p>
+                <div class="itemizedlist">
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Invalid digit, Value '#', Pos 0, Type: Integ </code></pre>
+                        <p>這些錯誤是由 <code class="code">customer-fw.tbl.log</code> 檔案引起。問題在於，它是日誌檔案不是資料檔案，不應載入它。您可以使用資訊清單檔案來避免載入錯誤的檔案。</p>
+                    </li><li class="listitem">
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">String contains invalid or unsupported UTF8 </code></pre>
+                        <p>VARCHAR 資料類型支援最多 3 個位元組的 UTF-8 多位元組字元。如果載入資料包含不支援或無效的字元，您可以使用 ACCEPTINVCHARS 選項用指定的替代字元取代每個無效字元。</p>
+                    </li></ul></div>
+                <p>另一個載入的問題比較難偵測 — 載入產生非預期的結果。若要調查這個問題，執行下列命令查詢 CUSTOMER 資料表。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select c_custkey, c_name, c_address        
+from customer
+order by c_custkey
+limit 10;
+</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> c_custkey |          c_name           |         c_address
+-----------+---------------------------+---------------------------
+         2 | Customer#000000002        | XSTf4,NCwDVaWNe6tE
+         2 | Customer#000000002        | XSTf4,NCwDVaWNe6tE
+         3 | Customer#000000003        | MG9kdTD
+         3 | Customer#000000003        | MG9kdTD
+         4 | Customer#000000004        | XxVSJsL
+         4 | Customer#000000004        | XxVSJsL
+         5 | Customer#000000005        | KvpyuHCplrB84WgAi
+         5 | Customer#000000005        | KvpyuHCplrB84WgAi
+         6 | Customer#000000006        | sKZz0CsnMD7mp4Xd0YrBvx
+         6 | Customer#000000006        | sKZz0CsnMD7mp4Xd0YrBvx
+(10 rows)</code></pre>
+                <p>這些資料列應該是獨一無二的，但其中有重複。</p>
+                <p>另一個檢查非預期結果的方法，是去確有已載入的資料列數量。在我們的案例中，應該載入 100000 列資料，但載入訊息指出載入 112497 個記錄。會載入多的資料列，是因為 COPY 載入無關的檔案 <code class="code">customer-fw.tbl0000.bak</code>。</p>
+                <p>在這個練習中，您會使用資訊清單檔案來避免載入錯誤的檔案。</p>
+                 
+                    <h6>ACCEPTINVCHARS</h6>
+                    <p>根據預設，當 COPY 遇到欄位資料類型不支援的字元，會略過該資料列並傳回錯誤。如需無效 UTF-8 字元的相關資訊，請參閱<a href="./multi-byte-character-load-errors.html">多位元組字元載入錯誤</a>。</p>
+                 
+                <p>您可以使用 MAXERRORS 選項來略過錯誤並繼續載入，然後查詢 STL_LOAD_ERRORS 來找出無效字元，接著修正資料檔案。不過，MAXERRORS 最好用於進行載入問題的故障診斷，不應廣泛使用在生產環境中。</p>
+                <p>ACCEPTINVCHARS 選項通常是管理無效字元更好的選擇。ACCEPTINVCHARS 選項會指示 COPY 用指定的有效字元取代每個無效字元，並繼續載入操作。您可以指定 NULL 除外的任何 ASCII 字元做為替代字元。預設的替代字元是問號 ( ? )。COPY 會將多位元組字元取代為相等長度的替代字元。例如，4 個位元組的字元會被取代為 <code class="code">'????'</code>。</p>
+                <p>COPY 會傳回包含無效 UTF-8 字元的資料列數。其也會將項目新增至每個受影響資料列的 STL_REPLACEMENTS 系統資料表，每個節點分割最多 100 個資料列。也會取代其他無效 UTF-8 字元，但不會記錄那些取代事件。</p>
+                <p>ACCEPTINVCHARS 僅適用於 VARCHAR 欄。</p>
+                <p>您會在此步驟中使用替代字元 <code class="code">'^'</code> 新增 ACCEPTINVCHARS。</p>
+                 
+                    <h6>MANIFEST</h6>
+                    <p>當您使用金鑰前綴從 Amazon S3 COPY 時，其中一個風險是您可能會載入不必要的資料表。例如，<code class="code">'s3://mybucket/load/</code> 資料夾包含 8 個檔案，它們有相同的索引鍵字首 <code class="code">customer-fw.tbl</code>：<code class="code">customer-fw.tbl0000</code>、<code class="code">customer-fw.tbl0001</code> 等。然而，同一資料夾中也包含無關的檔案 <code class="code">customer-fw.tbl.log</code> 和 <code class="code">customer-fw.tbl-0001.bak</code>。</p>
+                 
+                <p>為了確保載入所有正確的檔案，且只有正確的檔案，請使用資訊清單檔案。資訊清單是 JSON 格式的文字檔案，其中明確列出要載入之每個來源檔案的唯一物件索引鍵。檔案物件可以位於不同的資料夾或儲存貯體，但必須在同一個區域中。如需詳細資訊，請參閱<a href="./copy-parameters-data-source-s3.html#copy-manifest">MANIFEST</a>。</p>
+                <p>以下顯示 <code class="code">customer-fw-manifest</code> 的文字。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight"><span>{</span>
+  "entries": [
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-000"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-001"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-002"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-003"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-004"},    
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-005"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-006"}, 
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-007"} 
+    ]
+}</code></pre>
+                <div class="procedure"><h6>使用資訊清單檔案從 CUSTOMER 資料表載入資料</h6><ol><li>
+                        <p>在文字編輯器中開啟 <code class="code">customer-fw-manifest</code> 檔案。</p>
+                    </li><li>
+                        <p>以儲存貯體的名稱取代 <code class="replaceable">&lt; your-bucket-name &gt;</code>。</p>
+                    </li><li>
+                        <p>儲存檔案。</p>
+                    </li><li>
+                        <p>將檔案上傳到儲存貯體上的 load 資料夾。</p>
+                    </li><li>
+                        <p>執行下列 COPY 命令。</p>
+                        
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy customer from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw-manifest'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, c_region :12, c_phone:15,c_mktsegment:10'
+maxerror 10 
+acceptinvchars as '^'
+manifest;</code></pre>
+                        
+                    </li></ol></div>
+             
+             
+                <h3 id="tutorial-loading-load-dwdate">使用 DATEFORMAT 載入 DWDATE 資料表</h3>
+
+                <p>在此步驟中，您會使用 DELIMITER 和 DATEFORMAT 選項載入 DWDATE 資料表。</p>
+                
+                <p>載入 DATE 和 TIMESTAMP 資料欄時，COPY 期望是預設格式：日期為 YYYY-MM-DD，時間戳記為 YYYY-MM-DD HH:MI:SS。如果載入的資料不是使用預設格式，您可以使用 DATEFORMAT 和 TIMEFORMAT 指定格式。</p>
+                <p>下列的摘錄顯示了 DWDATE 資料表中的日期格式。注意兩個資料欄的日期格式不一致。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">19920104	1992-01-04          Sunday		January	1992	199201	Jan1992	1	4	4	1...
+19920112	January 12, 1992	Monday		January	1992	199201	Jan1992	2	12	12	1...
+19920120	January 20, 1992	Tuesday	    January	1992	199201	Jan1992	3	20	20	1...</code></pre>
+                 
+                    <h6>DATEFORMAT</h6>
+                    <p>您只能指定一個日期格式。如果載入資料包含不一致的格式 (可能在不同資料欄中)，或是載入時格式未知，請使用 DATEFORMAT 與 <code class="code">'auto'</code> 引數。指定 <code class="code">'auto'</code> 時，COPY 會辨識所有有效的日期或時間格式，並將其轉換為預設格式。<code class="code">'auto'</code> 選項可以辨識使用 DATEFORMAT 和 TIMEFORMAT 字串時不支援的多種格式。如需詳細資訊，請參閱<a href="./automatic-recognition.html">對 DATEFORMAT 和 TIMEFORMAT 使用自動辨識</a>。</p>
+                 
+                <p>若要載入 DWDATE 資料表，執行下列 COPY 命令。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy dwdate from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/dwdate-tab.tbl'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+delimiter '\t' 
+dateformat 'auto';</code></pre>
+                
+             
+             
+                <h3 id="tutorial-loading-load-lineorder">使用多個檔案載入 LINEORDER 資料表</h3>
+
+                <p>此步驟使用 GZIP 和 COMPUPDATE 選項載入 LINEORDER 資料表。</p>
+                <p>在這個練習中，您會從單一資料檔案載入 LINEORDER 資料表，再從多個檔案再次載入。執行此作業可讓您比較兩個方法的載入時間。</p>
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>在 AWS 範例儲存貯體中有提供用於載入 LINEORDER 資料表的檔案。您不需要在這個步驟上傳檔案。</p></div></div>
+                 
+                    <h6>GZIP、LZOP 與 BZIP2</h6>
+                    <p>您可以使用 gzip、lzop 或 bzip2 壓縮格式來壓縮您的檔案。從解壓縮檔案載入時，COPY 會在載入程序中將檔案解壓縮。將檔案壓縮可以節省儲存空間及縮短載入時間。</p>
+                 
+                 
+                    <h6>COMPUPDATE</h6>
+                    <p>當 COPY 載入無壓縮編碼的空資料表時，會分析載入資料並決定最佳的編碼。接著它會將資料表修改為使用這些編碼，再開始載入。這個分析程序需要一點時間，但幾乎在每個資料表都會發生一次。若要節省時報，您可以關閉 COMPUPDATE 來略過這個步驟。為了準確評估 COPY 時間，您會在這個步驟中關閉 COMPUPDATE。</p>
+                 
+                 
+                    <h6>多個檔案</h6>
+                    <p>相較於從單一檔案載入資料，COPY 命令從多個檔案平行載入資料更有效率。您可以將您的資料分割為檔案，使得檔案的數量為您叢集中配量數量的倍數。若您執行此作業，Amazon Redshift 會分割工作負載，並在配量中平均分配資料。每一節點的配量數目取決於叢集的節點大小。如需每個節點大小有多少配量的詳細資訊，請移至《<em>Amazon Redshift 管理指南</em>》中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#rs-about-clusters-and-nodes">關於叢集和節點</a>。</p>
+                 
+                <p>例如，在本教學中使用的 dc2.large 運算節點有兩個配量，所以四個叢集總共有八個配量。先前的步驟將載入的資料分成八個檔案，即使檔案很小。在這個步驟中，您會比較從單一大檔案與從多個檔案載入之間的時間差異。</p>
+                <p>您用於本教學的檔案約有 1500 萬筆記錄，大小約 1.2 GB。以 Amazon Redshift 的規模來說這些檔案很小，但足以示範從多個檔案載入的效能優點。由於在本教學中這些檔案已夠大，載入這些檔案再將其上傳到 Amazon S3 所需的時間很長。因此，您會從 AWS 範例儲存貯體直接載入檔案。</p>
+                <p>以下螢幕擷取畫面顯示 LINEORDER 的資料檔案。</p>
+
+                <div class="mediaobject">
+                     
+                        <img src="images/tutorial-load-lineorder-files.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                     
+                </div>
+                <div class="procedure"><h6>評估 COPY 多個檔案的效能</h6><ol><li>
+                        <p>執行下列命令從單一檔案 COPY。請勿變更儲存貯體名稱。</p>
+                        
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy lineorder from 's3://awssampledb/load/lo/lineorder-single.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+gzip
+compupdate off
+region 'us-east-1';</code></pre>
+                        
+                    </li><li>
+                        <p>結果類似以下這樣。請注意執行時間。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Warnings:
+Load into table 'lineorder' completed, 14996734 record(s) loaded successfully.
+
+0 row(s) affected.
+copy executed successfully
+
+Execution time: 51.56s</code></pre>
+                    </li><li>
+                        <p>執行下列命令從多個檔案 COPY。請勿變更儲存貯體名稱。</p>
+                        
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy lineorder from 's3://awssampledb/load/lo/lineorder-multi.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+gzip
+compupdate off
+region 'us-east-1';
+</code></pre>
+                        
+                    </li><li>
+                        <p>結果類似以下這樣。請注意執行時間。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Warnings:
+Load into table 'lineorder' completed, 14996734 record(s) loaded successfully.
+
+0 row(s) affected.
+copy executed successfully
+
+Execution time: 17.7s</code></pre>
+                    </li><li>
+                        <p>比較執行時間。</p>
+                        <p>在我們的範例中，載入 1500 萬個記錄的時間從 51.56 秒降到 17.7 秒，減少了百分之 65.7。</p>
+                        <p>這些結果來自於使用具有四個節點的叢集。如果您的叢集有更多節點，節省的時間會加倍。典型的 Amazon Redshift 叢集有數十到數百個節點，差別更巨大。如果您的叢集只有單一節點，執行時間的差異很小。</p>
+                    </li></ol></div>
+             
+             
+                <h3 id="tutorial-loading-next-step6">下一步驟</h3>
+
+                <p><a href="./tutorial-loading-data-vacuum.html">步驟 6：清空及分析資料庫</a></p>
+             
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-loading-data-create-tables.html">步驟 4：建立範例資料表</div><div id="next" class="next-link" accesskey="n" href="./tutorial-loading-data-vacuum.html">步驟 6：清空及分析資料庫</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-loading-run-copy.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-loading-run-copy.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

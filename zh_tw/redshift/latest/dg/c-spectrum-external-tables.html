@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>建立 Redshift Spectrum 外部資料表 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c-spectrum-external-tables" /><meta name="default_state" content="c-spectrum-external-tables" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-external-tables.html" /><meta name="description" content="您會在外部結構描述中建立外部資料表。您必須為外部結構描述的擁有者或超級使用者，始可建立外部資料表。若要轉移外部結構描述的所有權，請使用 來變更擁有者。下列範例會將 spectrum_schema 結構描述的擁有者變更為 newowner 。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="資料庫開發人員指南" /><meta name="abstract" content="使用 Amazon Redshift 這項 PB 級的完全受管企業等級資料倉儲服務，來建立和管理資料倉儲。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-external-tables.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-external-tables.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="資料庫開發人員指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="資料庫開發人員指南" /><meta id="panorama-serviceConsolePage" value="建立 Redshift Spectrum 外部資料表" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>建立 Redshift Spectrum 外部資料表 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c-spectrum-external-tables" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-external-tables.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-external-tables.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-external-tables.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,叢集,資料倉儲,開發人員,範例資料,database,資料庫開發人員,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "資料庫開發人員指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "使用 Amazon Redshift Spectrum 查詢外部資料",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-using-spectrum.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "建立 Redshift Spectrum 外部資料表",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-using-spectrum.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c-spectrum-external-tables" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#c-spectrum-external-tables-pseudocolumns">虛擬資料欄</a><a href="#c-spectrum-external-tables-partitioning">分割 Redshift Spectrum 外部資料表</a><a href="#c-spectrum-column-mapping-orc">映射到 ORC 資料欄</a><a href="#c-spectrum-column-mapping-hudi">為 Hudi 管理的資料建立外部資料表</a><a href="#c-spectrum-column-mapping-delta">建立 Delta Lake 資料的外部資料表</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="c-spectrum-external-tables">建立 Redshift Spectrum 外部資料表</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p></p><p>您會在外部結構描述中建立外部資料表。您必須為外部結構描述的擁有者或超級使用者，始可建立外部資料表。若要轉移外部結構描述的所有權，請使用 <a href="./r_ALTER_SCHEMA.html">ALTER SCHEMA</a> 來變更擁有者。下列範例會將 <code class="code">spectrum_schema</code> 結構描述的擁有者變更為 <code class="code">newowner</code>。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">alter schema spectrum_schema owner to newowner;</code></pre><p>若要執行 Redshift Spectrum 查詢，您需要以下許可：</p><div class="itemizedlist">
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>結構描述使用許可 </p>
+         </li><li class="listitem">
+            <p>在目前資料庫建立暫時資料表的許可 </p>
+         </li></ul></div><p>下列範例可在結構描述 <code class="code">spectrum_schema</code> 上授予使用許可至 <code class="code">spectrumusers</code> 使用者群組。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">grant usage on schema spectrum_schema to group spectrumusers;</code></pre><p>下列範例可在資料庫 <code class="code">spectrumdb</code> 上授予臨時許可至 <code class="code">spectrumusers</code> 使用者群組。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">grant temp on database spectrumdb to group spectrumusers;</code></pre><p>您可以在 Amazon Redshift、AWS Glue、Amazon Athena 或 Apache Hive 中繼存放區中建立外部資料表。如需詳細資訊，請參閱《AWS Glue 開發人員指南》<em></em>中的 <a href="https://docs.aws.amazon.com/glue/latest/dg/getting-started.html">AWS Glue 使用入門</a>、《Amazon Athena 使用者指南》<em></em>中的 <a href="https://docs.aws.amazon.com/athena/latest/ug/getting-started.html">入門</a>，或《Amazon EMR 開發人員指南》<em></em>中的 <a href="https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-hive.html">Apache Hive</a>。</p><p>如果您的外部資料表已在 AWS Glue、Athena 或 Hive 中繼存放區中定義，您首先應建立參考外部資料庫的外部結構描述。然後，您可以透過在資料表名稱前加上結構描述名稱來參考 SELECT 陳述句中的外部資料表，且無需在 Amazon Redshift 中建立資料表。如需詳細資訊，請參閱<a href="./c-spectrum-external-schemas.html">建立 Amazon Redshift Spectrum 外部結構描述</a>。</p><p>若要允許 Amazon Redshift 查看 AWS Glue Data Catalog 中的資料表，請新增 <code class="code">glue:GetTable</code> 至 Amazon Redshift IAM 角色。否則，您可能會得到如下的錯誤：</p><pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">RedshiftIamRoleSession is not authorized to perform: glue:GetTable on resource: *;</code></pre><p>例如，假設您在 Athena 外部目錄中定義了名為 <code class="code">lineitem_athena</code> 的外部資料表。在此狀況中，您可定義一個名為 <code class="code">athena_schema</code> 的外部結構描述，然後使用下列 SELECT 陳述式來查詢資料表。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select count(*) from athena_schema.lineitem_athena;</code></pre><p>若要在 Amazon Redshift 中定義外部資料表，請使用 <a href="./r_CREATE_EXTERNAL_TABLE.html">CREATE EXTERNAL TABLE</a> 命令。外部資料表陳述句定義了資料表欄、資料檔案格式，以及 Amazon S3 中的資料位置。Redshift Spectrum 會掃描指定資料夾以及任何子資料夾裡的檔案。Redshift Spectrum 會忽略以句號、底線或井號 (.、_ 或 #) 開頭，或以波狀符號 (~) 結尾的檔案和隱藏檔案。</p><p>以下範例在名為 <code class="code">spectrum</code> 的 Amazon Redshift 外部結構描述中建立名為 SALES 的資料表。該資料位於 Tab 鍵分隔的文字檔案中。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create external table spectrum.sales(
+salesid integer,
+listid integer,
+sellerid integer,
+buyerid integer,
+eventid integer,
+dateid smallint,
+qtysold smallint,
+pricepaid decimal(8,2),
+commission decimal(8,2),
+saletime timestamp)
+row format delimited
+fields terminated by '\t'
+stored as textfile
+location 's3://redshift-downloads/tickit/spectrum/sales/'
+table properties ('numRows'='172000');</code></pre><p>若要檢視外部資料表，請查詢 <a href="./r_SVV_EXTERNAL_TABLES.html">SVV_EXTERNAL_TABLES</a> 系統畫面。</p>
+         <h2 id="c-spectrum-external-tables-pseudocolumns">虛擬資料欄</h2>
+
+         
+         <p>Amazon Redshift 預設會以虛擬資料欄 <code class="code">$path</code>、<code class="code">$size</code> 和 <code class="code">$spectrum_oid</code> 建立外部資料表。選擇 <code class="code">$path</code> 欄可檢視 Amazon S3 上資料檔案的路徑，選擇 <code class="code">$size</code> 欄可檢視查詢傳回的每列資料檔案大小。<code class="code">$spectrum_oid</code> 欄提供使用 Redshift Spectrum 執行關聯查詢的能力。如需範例，請參閱 <a href="./c_performing-correlated-subqueries-spectrum.html">範例：在 Redshift Spectrum 中執行相互關聯子查詢</a>。您必須以雙引號分隔 <code class="code">$path</code>、<code class="code">$size</code> 和 <code class="code">$spectrum_oid</code> 欄名稱。SELECT * 子句不會傳回虛擬資料欄。您必須在查詢中明確包含 <code class="code">$path</code>、<code class="code">$size</code> 和 <code class="code">$spectrum_oid</code> 欄名稱，如以下範例所示。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="SQL ">select "$path", "$size", "$spectrum_oid"
+from spectrum.sales_part where saledate = '2008-12-01';</code></pre>
+         
+         <p>您可以藉由將 <code class="code">spectrum_enable_pseudo_columns</code> 組態參數設定為 <code class="code">false</code>，以停用工作階段的虛擬資料欄建立。如需詳細資訊，請參閱<a href="./r_spectrum_enable_pseudo_columns.html">spectrum_enable_pseudo_columns</a>。您也可以將 <code class="code">enable_spectrum_oid</code> 設定為 <code class="code">false</code>，僅停用 <code class="code">$spectrum_oid</code> 虛擬資料欄。如需詳細資訊，請參閱<a href="./r_spectrum_enable_spectrum_oid.html">enable_spectrum_oid</a>。不過，停用 <code class="code">$spectrum_oid</code> 虛擬資料欄也會停用對 Redshift Spectrum 相關查詢的支援。</p>
+         <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>重要</h6></div><div class="awsdocs-note-text"><p>選擇 <code class="code">$size</code>、<code class="code">$path</code> 或 <code class="code">$spectrum_oid</code> 會產生費用，因為 Redshift Spectrum 會掃描 Amazon S3 上的資料檔案以判斷結果集的大小。如需詳細資訊，請參閱 <a href="https://aws.amazon.com/redshift/pricing/" rel="noopener noreferrer" target="_blank"><span>Amazon Redshift 定價</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p></div></div>
+          
+            <h3 id="c-spectrum-external-tables-pseudocolumns-example">虛擬資料欄範例</h3>
+
+            <p>下列範例會傳回外部資料表相關的資料檔案大小總和。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select distinct "$path", "$size"
+from spectrum.sales_part;
+
+ $path                                                                    | $size
+--------------------------------------------------------------------------+-------
+s3://redshift-downloads/tickit/spectrum/sales_partition/saledate=2008-01/ |  1616
+s3://redshift-downloads/tickit/spectrum/sales_partition/saledate=2008-02/ |  1444
+s3://redshift-downloads/tickit/spectrum/sales_partition/saledate=2008-03/ |  1644</code></pre>
+          
+       
+         <h2 id="c-spectrum-external-tables-partitioning">分割 Redshift Spectrum 外部資料表</h2>
+
+         <p>當您分割資料時，可以在分割區索引鍵上進行篩選來限制 Redshift Spectrum 掃描的資料量。您可透過任何索引鍵來分割您的資料。</p>
+         <p>常見做法是根據時間對資料進行分割。例如，您可以選擇依年、月、日和小時來進行分割。如果您有來自多個來源的資料，則可以按資料來源識別符和日期進行分割。</p>
+         <p>下列程序說明如何分割您的資料。</p>
+         <div class="procedure"><h6>分割您的資料</h6><ol><li>
+               <p>根據分割區索引鍵將資料存放在 Amazon S3 的資料夾中。</p>
+               <p>為每個分割區值建立一個資料夾，並使用分割區索引鍵和值命名該資料夾。例如，若您要依日期分割資料，您可能有名為 <code class="code">saledate=2017-04-01</code>、<code class="code">saledate=2017-04-02</code> 的資料夾，依此類推。Redshift Spectrum 會掃描分割區資料夾以及任何子資料夾裡的檔案。Redshift Spectrum 會忽略以句號、底線或井號 (.、_ 或 #) 開頭，或以波狀符號 (~) 結尾的檔案和隱藏檔案。</p>
+
+            </li><li>
+               <p>建立外部資料表，並在 PARTITIONED BY 子句中指定分割區索引鍵。</p>
+               <p>分割區索引鍵不得為資料表欄位的名稱。資料類型可能是 SMALLINT、INTEGER、BIGINT、DECIMAL、REAL、DOUBLE PRECISION、BOOLEAN、CHAR、VARCHAR、DATE、TIMESTAMP。</p>
+            </li><li>
+               <p>新增分割區。</p>
+               <p>使用 <a href="./r_ALTER_TABLE.html">ALTER TABLE</a> … ADD PARTITION，新增每個分割區，指定分割區欄與索引鍵值，以及 Amazon S3 中的分割區資料夾位置。您可以在單一 ALTER TABLE … ADD 陳述式中新增多個分割區。以下範例將為 <code class="code">'2008-01'</code> 與 <code class="code">'2008-03'</code> 新增分割區。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">alter table spectrum.sales_part add
+partition(saledate='2008-01-01') 
+location 's3://redshift-downloads/tickit/spectrum/sales_partition/saledate=2008-01/'
+partition(saledate='2008-03-01') 
+location 's3://redshift-downloads/tickit/spectrum/sales_partition/saledate=2008-03/';</code></pre>
+               <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>如果您使用 AWS Glue 目錄，則可以使用 ALTER TABLE 陳述式新增最多 100 個分割區。</p></div></div>
+            </li></ol></div>
+
+          
+            <h3 id="c-spectrum-external-tables-partitioning-example">分割資料範例</h3>
+
+
+            <p>在此範例中，您將建立一個由單一分割區索引鍵值分割的外部資料表，以及由兩個索引鍵值所分割的外部資料表。</p>
+
+            <p>此範例的範例資料位於 Amazon S3 儲存貯體中，該儲存貯體可為所有經過身分驗證的 AWS 使用者提供讀取權限。您的叢集與外部資料檔案必須在相同的 AWS 區域。範例資料儲存貯體位於美國東部 (維吉尼亞北部) 區域 (us-east-1)。若要使用 Redshift Spectrum 存取資料，您的叢集必須也在 us-east-1 中。若要列以列出 Amazon S3 中的資料夾，請執行下列命令。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">aws s3 ls s3://redshift-downloads/tickit/spectrum/sales_partition/</code></pre>
+            <pre class="screen">PRE saledate=2008-01/
+PRE saledate=2008-03/
+PRE saledate=2008-04/
+PRE saledate=2008-05/
+PRE saledate=2008-06/
+PRE saledate=2008-12/</pre>
+            <p>如果您沒有外部結構描述，請執行下列命令。將 Amazon Resource Name (ARN) 替代為您的 AWS Identity and Access Management (IAM) 角色。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create external schema spectrum
+from data catalog
+database 'spectrumdb'
+iam_role 'arn:aws:iam::123456789012:role/myspectrumrole'
+create external database if not exists;</code></pre>
+             
+               <h4 id="c-spectrum-external-tables-single-partition-example">範例 1：透過單一分割區索引鍵進行分割</h4>
+               <p>在下列範例中，您會建立以月份進行分割的外部資料表。</p>
+               <p>若要建立以月份分割的外部資料表，請執行以下命令。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create external table spectrum.sales_part(
+salesid integer,
+listid integer,
+sellerid integer,
+buyerid integer,
+eventid integer,
+dateid smallint,
+qtysold smallint,
+pricepaid decimal(8,2),
+commission decimal(8,2),
+saletime timestamp)
+partitioned by (saledate char(10))
+row format delimited
+fields terminated by '|'
+stored as textfile
+location 's3://redshift-downloads/tickit/spectrum/sales_partition/'
+table properties ('numRows'='172000');</code></pre>
+               <p>請執行下列 ALTER TABLE 命令以新增分割區。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">alter table spectrum.sales_part add
+partition(saledate='2008-01') 
+location 's3://redshift-downloads/tickit/spectrum/sales_partition/saledate=2008-01/'
+
+partition(saledate='2008-03') 
+location 's3://redshift-downloads/tickit/spectrum/sales_partition/saledate=2008-03/'
+
+partition(saledate='2008-04') 
+location 's3://redshift-downloads/tickit/spectrum/sales_partition/saledate=2008-04/';</code></pre>
+               <p>若要從分割資料表選取資料，請執行下列查詢。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select top 5 spectrum.sales_part.eventid, sum(spectrum.sales_part.pricepaid) 
+from spectrum.sales_part, event
+where spectrum.sales_part.eventid = event.eventid
+  and spectrum.sales_part.pricepaid &gt; 30
+  and saledate = '2008-01'
+group by spectrum.sales_part.eventid
+order by 2 desc;</code></pre>
+
+               <pre class="screen">eventid | sum     
+--------+---------
+   4124 | 21179.00
+   1924 | 20569.00
+   2294 | 18830.00
+   2260 | 17669.00
+   6032 | 17265.00</pre>
+               <p>若要檢視外部資料表分割區，請查詢 <a href="./r_SVV_EXTERNAL_PARTITIONS.html">SVV_EXTERNAL_PARTITIONS</a> 系統畫面。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select schemaname, tablename, values, location from svv_external_partitions
+where tablename = 'sales_part';</code></pre>
+
+               <pre class="screen">schemaname | tablename  | values      | location                                                                
+-----------+------------+-------------+-------------------------------------------------------------------------
+spectrum   | sales_part | ["2008-01"] | s3://redshift-downloads/tickit/spectrum/sales_partition/saledate=2008-01
+spectrum   | sales_part | ["2008-03"] | s3://redshift-downloads/tickit/spectrum/sales_partition/saledate=2008-03
+spectrum   | sales_part | ["2008-04"] | s3://redshift-downloads/tickit/spectrum/sales_partition/saledate=2008-04</pre>
+             
+             
+               <h4 id="c-spectrum-external-tables-multi-partition-example">範例 2：透過多個分割區索引鍵進行分割</h4>
+
+               <p>若要建立以 <code class="code">date</code> 與 <code class="code">eventid</code> 分割的外部資料表，請執行以下命令。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create external table spectrum.sales_event(
+salesid integer,
+listid integer,
+sellerid integer,
+buyerid integer,
+eventid integer,
+dateid smallint,
+qtysold smallint,
+pricepaid decimal(8,2),
+commission decimal(8,2),
+saletime timestamp)
+partitioned by (salesmonth char(10), event integer)
+row format delimited
+fields terminated by '|'
+stored as textfile
+location 's3://redshift-downloads/tickit/spectrum/salesevent/'
+table properties ('numRows'='172000');</code></pre>
+               <p>請執行下列 ALTER TABLE 命令以新增分割區。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">alter table spectrum.sales_event add
+partition(salesmonth='2008-01', event='101') 
+location 's3://redshift-downloads/tickit/spectrum/salesevent/salesmonth=2008-01/event=101/'
+
+partition(salesmonth='2008-01', event='102') 
+location 's3://redshift-downloads/tickit/spectrum/salesevent/salesmonth=2008-01/event=102/'
+
+partition(salesmonth='2008-01', event='103') 
+location 's3://redshift-downloads/tickit/spectrum/salesevent/salesmonth=2008-01/event=103/'
+
+partition(salesmonth='2008-02', event='101') 
+location 's3://redshift-downloads/tickit/spectrum/salesevent/salesmonth=2008-02/event=101/'
+
+partition(salesmonth='2008-02', event='102') 
+location 's3://redshift-downloads/tickit/spectrum/salesevent/salesmonth=2008-02/event=102/'
+
+partition(salesmonth='2008-02', event='103') 
+location 's3://redshift-downloads/tickit/spectrum/salesevent/salesmonth=2008-02/event=103/'
+
+partition(salesmonth='2008-03', event='101') 
+location 's3://redshift-downloads/tickit/spectrum/salesevent/salesmonth=2008-03/event=101/'
+
+partition(salesmonth='2008-03', event='102') 
+location 's3://redshift-downloads/tickit/spectrum/salesevent/salesmonth=2008-03/event=102/'
+
+partition(salesmonth='2008-03', event='103') 
+location 's3://redshift-downloads/tickit/spectrum/salesevent/salesmonth=2008-03/event=103/';</code></pre>
+               <p>執行下列查詢以從分割的資料表選擇資料。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select spectrum.sales_event.salesmonth, event.eventname, sum(spectrum.sales_event.pricepaid) 
+from spectrum.sales_event, event
+where spectrum.sales_event.eventid = event.eventid
+  and salesmonth = '2008-02'
+	and (event = '101'
+	or event = '102'
+	or event = '103')
+group by event.eventname, spectrum.sales_event.salesmonth
+order by 3 desc;</code></pre>
+               <pre class="screen">salesmonth | eventname       | sum    
+-----------+-----------------+--------
+2008-02    | The Magic Flute | 5062.00
+2008-02    | La Sonnambula   | 3498.00
+2008-02    | Die Walkure     |  534.00</pre>
+             
+          
+       
+         <h2 id="c-spectrum-column-mapping-orc">將外部資料表資料欄映射到 ORC 資料欄</h2>
+         <p>您會使用 Amazon Redshift Spectrum 外部資料表來查詢採用 ORC 格式的檔案中的資料。最佳化列單欄式 (ORC) 格式為單欄式儲存檔案格式，支援巢狀資料結構。如需關於查詢巢狀資料的詳細資訊，請參閱<a href="./tutorial-query-nested-data.html#tutorial-nested-data-overview">使用 Amazon Redshift Spectrum 查詢巢狀資料</a>。</p>
+         <p>當您建立參考 ORC 檔案中資料的外部資料表時，您會將外部資料表中的每個資料欄映射到 ORC 資料中的資料欄。若要這麼做，您會使用下列其中一個方法：</p>
+         <div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p><a href="#orc-mapping-by-position">依位置映射</a></p>
+            </li><li class="listitem">
+               <p><a href="#orc-mapping-by-name">依資料欄名稱映射</a> </p>
+            </li></ul></div>
+         <p>依資料欄名稱映射為預設值。</p>
+          
+            <h3 id="orc-mapping-by-position">依位置映射</h3>
+            <p>利用位置映射，外部資料表中定義的第一個資料欄會映射到 ORC 資料檔案中的第一個資料欄，第二個映射到第二個，依此類推。依位置映射要求外部資料表中資料欄的順序與 ORC 檔案中的相符。如果資料欄的順序不相符，則可以依名稱映射資料欄。</p>
+            <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>重要</h6></div><div class="awsdocs-note-text"><p>在舊版中，Redshift Spectrum 預設使用位置映射。如果您需要對現有資料表使用位置映射，請將資料表屬性 <code class="code">orc.schema.resolution</code> 設為 <code class="code">position</code>，如以下範例所示。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">alter table spectrum.orc_example 
+set table properties('orc.schema.resolution'='position'); </code></pre></div></div>
+            <p>例如，資料表 <code class="code">SPECTRUM.ORC_EXAMPLE</code> 的定義如下。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create external table spectrum.orc_example(
+int_col int,
+float_col float,
+nested_col struct&lt;
+  "int_col" : int,
+  "map_col" : map&lt;int, array&lt;float &gt;&gt;
+   &gt;
+) stored as orc
+location 's3://example/orc/files/';</code></pre>
+            <p>資料表結構的摘要如下。</p>
+            <pre class="screen">• 'int_col' : int
+• 'float_col' : float
+• 'nested_col' : struct
+   o 'int_col' : int
+   o 'map_col' : map
+      - key : int
+      - value : array
+         - value : float</pre>
+            <p>基礎 ORC 檔案具有下列檔案結構。</p>
+            <pre class="screen">• ORC file root(id = 0)
+   o 'int_col' : int (id = 1)
+   o 'float_col' : float (id = 2)
+   o 'nested_col' : struct (id = 3)
+      - 'int_col' : int (id = 4)
+      - 'map_col' : map (id = 5)
+         - key : int (id = 6)
+         - value : array (id = 7)
+            - value : float (id = 8)</pre>
+            <p>在此範例中，您可以嚴格依位置將外部資料表中的每個資料欄映射至 ORC 檔案中的資料欄。以下顯示映射。</p>
+
+            <div class="table-container"><div class="table-contents"><table id="w319aac29c19c45c11c21"><thead>
+                     <tr>
+                        <th>外部資料表資料欄名稱</th>
+                        <th>ORC 資料欄 ID</th>
+                        <th>ORC 資料欄名稱</th>
+                     </tr>
+                  </thead>
+                     <tr>
+                        <td tabindex="-1">int_col</td>
+                        <td tabindex="-1">1</td>
+                        <td tabindex="-1">int_col</td>
+                     </tr>
+                     <tr>
+                        <td tabindex="-1">float_col</td>
+                        <td tabindex="-1">2</td>
+                        <td tabindex="-1">float_col</td>
+                     </tr>
+                     <tr>
+                        <td tabindex="-1">nested_col</td>
+                        <td tabindex="-1">3</td>
+                        <td tabindex="-1">nested_col</td>
+                     </tr>
+                     <tr>
+                        <td tabindex="-1">nested_col.int_col</td>
+                        <td tabindex="-1">4</td>
+                        <td tabindex="-1">int_col</td>
+                     </tr>
+                     <tr>
+                        <td tabindex="-1">nested_col.map_col</td>
+                        <td tabindex="-1">5</td>
+                        <td tabindex="-1">map_col</td>
+                     </tr>
+                     <tr>
+                        <td tabindex="-1">nested_col.map_col.key</td>
+                        <td tabindex="-1">6</td>
+                        <td tabindex="-1">不適用</td>
+                     </tr>
+                     <tr>
+                        <td tabindex="-1">nested_col.map_col.value</td>
+                        <td tabindex="-1">7</td>
+                        <td tabindex="-1">不適用</td>
+                     </tr>
+                     <tr>
+                        <td tabindex="-1">nested_col.map_col.value.item</td>
+                        <td tabindex="-1">8</td>
+                        <td tabindex="-1">NA</td>
+                     </tr>
+                  </table></div></div>
+          
+          
+            <h3 id="orc-mapping-by-name">依資料欄名稱映射</h3>
+            <p>使用名稱映射，您可以將外部資料表中的資料欄映射至 ORC 檔案中相同層級、具有相同名稱的指定資料欄。</p>
+            <p>例如，假設您要將來自先前範例的資料表 <code class="code">SPECTRUM.ORC_EXAMPLE</code> 與使用下列檔案結構的 ORC 檔案映射。</p>
+            <pre class="screen">• ORC file root(id = 0)
+   o 'nested_col' : struct (id = 1)
+      - 'map_col' : map (id = 2)
+         - key : int (id = 3)
+         - value : array (id = 4)
+            - value : float (id = 5)
+      - 'int_col' : int (id = 6)
+   o 'int_col' : int (id = 7)
+   o 'float_col' : float (id = 8)</pre>
+
+            <p>使用位置映射，Redshift Spectrum 會嘗試進行下列映射。</p>
+            <div class="table-container"><div class="table-contents"><table id="w319aac29c19c45c13c11"><thead>
+                     <tr>
+                        <th>外部資料表資料欄名稱</th>
+                        <th>ORC 資料欄 ID</th>
+                        <th>ORC 資料欄名稱</th>
+                     </tr>
+                  </thead>
+                     <tr>
+                        <td tabindex="-1">int_col</td>
+                        <td tabindex="-1">1</td>
+                        <td tabindex="-1">struct</td>
+                     </tr>
+                     <tr>
+                        <td tabindex="-1">float_col</td>
+                        <td tabindex="-1">7</td>
+                        <td tabindex="-1">int_col</td>
+                     </tr>
+                     <tr>
+                        <td tabindex="-1">nested_col</td>
+                        <td tabindex="-1">8</td>
+                        <td tabindex="-1">float_col</td>
+                     </tr>
+                  </table></div></div>
+            <p>查詢具有前述位置映射的資料表時，SELECT 命令會在類型驗證時失敗，因為結構不同。</p>
+            <p>您可以使用資料欄名稱映射，將相同的外部資料表映射至先前範例中所示的檔案結構。資料表資料欄 <code class="code">int_col</code>、<code class="code">float_col</code> 和 <code class="code">nested_col</code> 會依資料欄名稱映射至 ORC 檔案中具有相同名稱的資料欄。外部資料表中名為 <code class="code">nested_col</code> 的資料欄為 <code class="code">struct</code> 資料欄，具有的子資料欄名為 <code class="code">map_col</code> 和 <code class="code">int_col</code>。子資料欄也會依資料欄名稱正確映射至 ORC 檔案中的對應資料欄。</p>
+
+          
+       
+      <h2 id="c-spectrum-column-mapping-hudi">為在 Apache Hudi 中管理的資料建立外部資料表</h2>
+      <p>若要查詢 Apache Hudi Copy On Write (CoW) 格式的資料，您可以使用 Amazon Redshift Spectrum 外部資料表。Hudi Copy On Write 資料表是存放在 Amazon S3 中的 Apache Parquet 檔案的集合。您可以讀取 Apache Hudi 版本 0.5.2、0.6.0、0.7.0、0.8.0、0.9.0、0.10.0、0.10.1、0.11.0 和 0.11.1 中的 Copy On Write (CoW) 資料表，這些表是透過插入、刪除和更新插入寫入操作來建立和修改的。例如，不支援 Bootstrap 資料表。如需詳細資訊，請參閱開放原始碼 Apache Hudi 文件中的 <a href="https://hudi.apache.org/docs/next/table_types#copy-on-write-table" rel="noopener noreferrer" target="_blank"><span>Copy On Write 資料表</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p>
+      <p>當您建立參考 Hudi CoW 格式之資料的外部資料表時，您會將外部資料表中的每個欄映射到 Hudi 資料中的欄。映射是透過欄完成的。</p>
+
+      <p>分割和未分割 Hudi 資料表的資料定義語言 (DDL) 陳述式類似於其他 Apache Parquet 檔案格式的 DDL 陳述式。對於 Hudi 資料表，您可以將 <code class="code">INPUTFORMAT</code> 定義為 <code class="code">org.apache.hudi.hadoop.HoodieParquetInputFormat</code>。<code class="code">LOCATION</code> 參數必須指向包含 <code class="code">.hoodie</code> 資料夾的 Hudi 資料表基底資料夾，這是建立 Hudi 提交時間表所必需的。在某些情況下，Hudi 資料表上的 SELECT 操作可能會失敗，並顯示<strong class="errortext"><code>找不到有效的 Hudi 提交時間表</code></strong>訊息。若是如此，請檢查 <code class="code">.hoodie</code> 資料夾是否位於正確的位置並包含有效的 Hudi 提交時間表。</p>
+      <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>只有在使用 AWS Glue Data Catalog 時才支援 Apache Hudi 格式。當您使用 Apache Hive 中繼存放區做為外部目錄時，不支援此功能。</p></div></div>
+      <p>定義未分割資料表的 DDL 具有下列格式。</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">CREATE EXTERNAL TABLE <em>tbl_name</em> (<em>columns</em>)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+STORED AS
+INPUTFORMAT 'org.apache.hudi.hadoop.HoodieParquetInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+LOCATION 's3://<em>s3-bucket</em>/<em>prefix</em>'</code></pre>
+      <p>定義分割資料表的 DDL 具有下列格式。</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">CREATE EXTERNAL TABLE <em>tbl_name</em> (<em>columns</em>)
+PARTITIONED BY(<em>pcolumn1</em> <em>pcolumn1-type</em>[,...])
+ROW FORMAT SERDE 'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+STORED AS
+INPUTFORMAT 'org.apache.hudi.hadoop.HoodieParquetInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+LOCATION 's3://<em>s3-bucket</em>/<em>prefix</em>'</code></pre>
+      <p>若要將分割區新增至分割的 Hudi 資料表，請執行 ALTER TABLE ADD PARTITION 命令，其中 <code class="code">LOCATION</code> 參數指向 Amazon S3 子資料夾，其中包含屬於該分割區的檔案。</p>
+      <p>新增分割區的 DDL 具有下列格式。</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">ALTER TABLE <em>tbl_name</em>
+ADD IF NOT EXISTS PARTITION(<em>pcolumn1</em>=<em>pvalue1</em>[,...])
+LOCATION 's3://<em>s3-bucket</em>/<em>prefix</em>/<em>partition-path</em>'</code></pre>
+    
+      <h2 id="c-spectrum-column-mapping-delta">為在 Delta Lake 中管理的資料建立外部資料表</h2>
+      <p>若要查詢 Delta Lake 資料表中的資料，您可以使用 Amazon Redshift Spectrum 外部資料表。</p>
+         <p>若要從 Redshift Spectrum 存取 Delta Lake 資料表，請在查詢前產生清單檔案。Delta Lake <em>清單檔案</em>包含構成 Delta Lake 資料表一致快照的檔案清單。在分割資料表中，每個分割區都有一個清單檔案。Delta Lake 資料表是存放在 Amazon S3 中的 Apache Parquet 檔案的集合。如需詳細資訊，請參閱開放原始碼 Delta Lake 文件中的 <a href="https://delta.io" rel="noopener noreferrer" target="_blank"><span>Delta Lake</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p>
+      <p>當您建立參考 Delta Lake 資料表中資料的外部資料表時，您會將外部資料表中的每個欄映射到 Delta Lake 資料表中的欄。映射是透過欄名稱完成的。</p>
+      
+      <p>分割和未分割 Delta Lake 資料表的 DDL 類似於其他 Apache Parquet 檔案格式的 DDL。對於 Delta Lake 資料表，您可以將 <code class="code">INPUTFORMAT</code> 定義為 <code class="code">org.apache.hadoop.hive.ql.io.SymlinkTextInputFormat</code>，以及將 <code class="code">OUTPUTFORMAT</code> 定義為 <code class="code">org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat</code>。<code class="code">LOCATION</code> 參數必須指向資料表基底資料夾中的清單檔案資料夾。如果 Delta Lake 資料表上的 SELECT 操作失敗，可能的原因請參閱<a href="#c-spectrum-column-mapping-delta-limitations">Delta Lake 資料表的限制和疑難排解</a>。</p>
+      <p>定義未分割資料表的 DDL 具有下列格式。</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">CREATE EXTERNAL TABLE <em>tbl_name</em> (<em>columns</em>)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+STORED AS
+INPUTFORMAT 'org.apache.hadoop.hive.ql.io.SymlinkTextInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION 's3://<em>s3-bucket</em>/<em>prefix</em>/_symlink_format_manifest'</code></pre>
+      <p>定義分割資料表的 DDL 具有下列格式。</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">CREATE EXTERNAL TABLE <em>tbl_name</em> (<em>columns</em>)
+PARTITIONED BY(<em>pcolumn1</em> <em>pcolumn1-type</em>[,...])
+ROW FORMAT SERDE 'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+STORED AS
+INPUTFORMAT 'org.apache.hadoop.hive.ql.io.SymlinkTextInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION 's3://<em>s3-bucket</em>&gt;/<em>prefix</em>/_symlink_format_manifest'</code></pre>
+      <p>若要將分割區新增至分割的 Delta Lake 資料表，請執行 ALTER TABLE ADD PARTITION 命令，其中 <code class="code">LOCATION</code> 參數指向包含分割區清單檔案的 Amazon S3 子資料夾。</p>
+      <p>新增分割區的 DDL 具有下列格式。</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">ALTER TABLE <em>tbl_name</em>
+ADD IF NOT EXISTS PARTITION(<em>pcolumn1</em>=<em>pvalue1</em>[,...])
+LOCATION
+'s3://<em>s3-bucket</em>/<em>prefix</em>/_symlink_format_manifest/<em>partition-path</em>'</code></pre>
+      <p>或者執行直接指向 Delta Lake 清單檔案的 DDL。</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">ALTER TABLE <em>tbl_name</em>
+ADD IF NOT EXISTS PARTITION(<em>pcolumn1</em>=<em>pvalue1</em>[,...])
+LOCATION
+'s3://<em>s3-bucket</em>/<em>prefix</em>/_symlink_format_manifest/<em>partition-path</em>/manifest'</code></pre>
+      
+       
+         <h3 id="c-spectrum-column-mapping-delta-limitations">Delta Lake 資料表的限制和疑難排解</h3>
+       
+      <p>從 Redshift Spectrum 查詢 Delta Lake 資料表時，請考慮下列事項：</p>
+      <div class="itemizedlist">
+          
+          
+      <ul class="itemizedlist"><li class="listitem"><p>如果清單檔案指向不再存在的快照集或分割區，則查詢會失敗，直到產生新的有效清單檔案為止。例如，這可能是基礎資料表上的 VACUUM 操作所導致的，</p></li><li class="listitem"><p>Delta Lake 清單檔案僅提供分割區層級一致性。</p></li></ul></div>
+      <p>下表說明查詢 Delta Lake 資料表時出現某些錯誤的一些潛在原因。</p>
+      <div class="table-container"><div class="table-contents"><table id="w319aac29c19c49c37"><thead>
+               <tr>
+                  <th>錯誤訊息</th>
+                  <th>可能原因</th>
+               </tr>
+            </thead>
+               
+               
+               <tr>
+                  <td tabindex="-1"><p><strong class="errortext"><code>儲存貯體 <em>s3-bucket-1</em> 中的 Delta Lake 清單檔案不能包含儲存貯體 <em>s3-bucket-2</em> 中的項目。</code></strong></p></td>
+                  <td tabindex="-1"><p>清單檔案項目指向與指定儲存貯體不同的 Amazon S3 儲存貯體中的檔案。</p></td>
+               </tr>
+               <tr>
+                  <td tabindex="-1"><p><strong class="errortext"><code>Delta Lake 檔案預計會位於相同的資料夾中。</code></strong></p></td>
+                  <td tabindex="-1"><p>清單檔案項目指向具有與指定字首不同的 Amazon S3 字首的檔案。</p></td>
+               </tr>
+               <tr>
+                  <td tabindex="-1"><p><strong class="errortext"><code>找不到 Delta Lake 清單檔案 <em>manifest-path</em> 中列出的檔案 <em>filename</em>。</code></strong></p></td>
+                  <td tabindex="-1"><p>在 Amazon S3 中找不到清單檔案中列出的檔案。</p></td>
+               </tr>
+               <tr>
+                  <td tabindex="-1"><p><strong class="errortext"><code>擷取 Delta Lake 清單檔案時發生錯誤。</code></strong></p></td>
+                  <td tabindex="-1"><p>在 Amazon S3 中找不到清單檔案。</p></td>
+               </tr>
+               <tr>
+                  <td tabindex="-1"><p><strong class="errortext"><code>無效的 S3 路徑。</code></strong></p></td>
+                  <td tabindex="-1"><p>清單檔案檔案中的項目不是有效的 Amazon S3 路徑，或清單檔案檔案已損毀。</p></td>
+               </tr>
+
+            </table></div></div>
+      
+   <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c-spectrum-external-schemas.html">建立外部結構描述</div><div id="next" class="next-link" accesskey="n" href="./querying-iceberg.html">使用 Apache Iceberg 資料表</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-external-tables.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-external-tables.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>實作手動 WLM - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="cm-c-defining-query-queues" /><meta name="default_state" content="cm-c-defining-query-queues" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="description" content="修改 Amazon Redshift 中叢集的手動 WLM 組態，除了超級使用者佇列，再定義最多八個查詢佇列，來定義查詢佇列。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="資料庫開發人員指南" /><meta name="abstract" content="使用 Amazon Redshift 這項 PB 級的完全受管企業等級資料倉儲服務，來建立和管理資料倉儲。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-defining-query-queues.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="資料庫開發人員指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="資料庫開發人員指南" /><meta id="panorama-serviceConsolePage" value="實作手動 WLM" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>實作手動 WLM - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#cm-c-defining-query-queues" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,叢集,資料倉儲,開發人員,範例資料,database,資料庫開發人員,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "資料庫開發人員指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "實作工作負載管理",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "實作手動 WLM",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#cm-c-defining-query-queues" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#concurrency-scaling-mode">並行擴展模式</a><a href="#cm-c-defining-query-queues-concurrency-level">並行層級</a><a href="#cm-c-defining-query-queues-user-groups">使用者群組</a><a href="#cm-c-defining-query-queues-query-groups">查詢群組</a><a href="#wlm-wildcards">萬用字元</a><a href="#wlm-memory-percent">要使用的 WLM 記憶體百分比</a><a href="#wlm-timeout">WLM 逾時</a><a href="#wlm-query-monitoring-rules">查詢監控規則</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="cm-c-defining-query-queues">實作手動 WLM</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>使用手動 WLM，您可以修改 WLM 組態來為長期執行的查詢和短期執行的查詢建立個別的佇列，以管理系統效能和改善使用者的感受。</p><p>當使用者在 Amazon Redshift 中執行查詢時，會將查詢路由至查詢佇列。每個查詢佇列包含一些查詢槽。每個佇列都配置有叢集的一部分可用的記憶體。佇列的記憶體再分配給佇列的查詢槽。您可讓 Amazon Redshift 以自動 WLM 來管理查詢並行。如需詳細資訊，請參閱<a href="./automatic-wlm.html">實作自動 WLM</a>。</p><p>或者，您可以設定每個查詢佇列的 WLM 屬性。這麼做可以指定各個槽分配記憶體的方式，以及在執行期將查詢路由至特定佇列的方式。您也可以設定 WLM 屬性來取消長時間執行的查詢。</p><p>根據預設，Amazon Redshift 會設定以下查詢佇列：</p><div class="itemizedlist">
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p> <b>一個超級使用者佇列</b> </p>
+            <p>超級使用者佇列會保留給超級使用者專用，因此無法進行設定。只有在需要執行會影響系統的查詢，或基於故障診斷目的，才應該使用此佇列。例如，當您需要取消使用者長期執行的查詢，或需要將使用者新增至資料庫時，請使用此佇列。請勿用來執行例行性查詢。此佇列不會出現主控台，而是在資料庫的系統資料表中以第五個佇列出現。若要在超級使用者佇列中執行查詢，使用者必須以超級使用者身分登入，且必須使用預先定義的 <code class="code">superuser</code> 查詢群組來執行查詢。</p>
+         </li><li class="listitem">
+            <p> <b>一個預設使用者佇列</b> </p>
+            <p>預設佇列最初會設定為同時執行五個查詢。當您使用手動 WLM 時，您可以變更預設佇列的並行、逾時和記憶體配置屬性，但無法指定使用者群組或查詢群組。預設佇列必須是 WLM 組態中的最後佇列。任何未路由至其他佇列的查詢會在預設佇列中執行。</p>
+         </li></ul></div><p>查詢佇列定義於 WLM 組態。在一或多個可以與叢集相關聯的參數群組中，WLM 組態是可編輯的參數 (<code class="code">wlm_json_configuration</code>)。如需詳細資訊，請參閱《Amazon Redshift 管理指南》<em></em>中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/workload-mgmt-config.html">設定工作負載管理</a>。</p><p>您可以將更多查詢佇列新增至預設 WLM 組態，最多總共八個使用者佇列。您可以為每個查詢佇列設定下列項目：</p><div class="itemizedlist">
+          
+          
+          
+          
+          
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>並行擴展模式 </p>
+         </li><li class="listitem">
+            <p>並行層級 </p>
+         </li><li class="listitem">
+            <p>使用者群組 </p>
+         </li><li class="listitem">
+            <p>查詢群組 </p>
+         </li><li class="listitem">
+            <p>要使用的 WLM 記憶體百分比</p>
+         </li><li class="listitem">
+            <p>WLM 逾時</p>
+         </li><li class="listitem">
+            <p>WLM 查詢佇列跳轉</p>
+         </li><li class="listitem">
+            <p>查詢監控規則</p>
+         </li></ul></div>
+         <h2 id="concurrency-scaling-mode">並行擴展模式</h2>
+         <p>當並行擴展啟用時，當您需要更多叢集容量以執行增加的並行讀取及寫入查詢時，Amazon Redshift 將會自動新增額外的叢集容量。使用者會看到最新資料，無論查詢是執行於主要叢集或並行擴展叢集。</p>
+         <p>您可藉由設定 (WLM) 佇列來管理要將哪些查詢傳送至並行擴展叢集。當您為佇列啟用並行擴展時，合格查詢將傳送到並行擴展叢集，而非在佇列中等待。如需詳細資訊，請參閱<a href="./concurrency-scaling.html">使用並行擴展</a>。</p>
+       
+         <h2 id="cm-c-defining-query-queues-concurrency-level">並行層級</h2>
+         <p>佇列中的查詢可以同時執行，直到達到該佇列已定義的 WLM 查詢槽計數 (或<em>並行</em>層級) 為止。後續的查詢需要在佇列中等待。</p>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>WLM 並行層級不同於可對叢集建立的並行使用者連線數。如需詳細資訊，請參閱《Amazon Redshift 管理指南》<em></em>中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/connecting-to-cluster.html">連線到叢集</a>。</p></div></div>
+         <p>在自動 WLM 組態中 (建議使用)，並行層級設為<b>自動</b>。Amazon Redshift 會動態地將記憶體配置給查詢，然後決定要同時執行多少個查詢。這是基於執行中和佇列查詢所需的資源。自動 WLM 無法設定。如需詳細資訊，請參閱<a href="./automatic-wlm.html">實作自動 WLM</a>。</p>
+        
+         <p>在手動 WLM 組態中，Amazon Redshift 會以靜態方式為每個佇列配置固定數量的記憶體。佇列的記憶體會在查詢插槽之間平均分割。說明如下，如果佇列分配到 20％ 的叢集記憶體，並且具有 10 個插槽，則每個查詢都會分配到 2％ 的叢集記憶體。無論同時執行的查詢數目為何，記憶體配置都會保持固定。因為此固定的記憶體配置，如果查詢在槽計數為 5 時可完全在記憶體中執行，當槽計數增加到 20 時，就可能將中間結果寫入磁碟。在這種情況下，每個查詢的佇列記憶體共用會從 1/5 減少到 1/20。增加的磁碟 I/O 會降低效能。</p>
+         <p>所有使用者定義佇列上的插槽計數上限為 50 個。這會限制所有佇列 (包括預設佇列) 的總插槽數。唯一不受限制限制的佇列是保留的超級使用者佇列。</p>
+      
+  
+         
+   
+         <p>根據預設，手動 WLM 佇列的並行層級為 5。在某些情況下，較高的並行層級可能有利於工作負載，例如：</p>
+         <div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>如果許多較小的查詢被迫等待長期執行的查詢，請建立槽計數較高的另一個佇列，並將較小的查詢指派至該佇列。並行層級較高的佇列配置給每個查詢槽的記憶體較少，但較小的查詢所需的記憶體不多。</p>
+               <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>如果您啟用短期查詢加速 (SQA)，WLM 會自動優先排定短期查詢，而長期執行查詢的優先順序會較低，所以您不需要為大部分工作流程的短期查詢準備另一個佇列。如需詳細資訊，請參閱<a href="./wlm-short-query-acceleration.html">使用短期查詢加速</a>。</p></div></div>
+            </li><li class="listitem">
+               <p>如果您有多個查詢，每一個都會存取單一配量上的資料，請設定個別的 WLM 佇列以同時執行這些查詢。Amazon Redshift 會將並行查詢指派給不同配量，以便在多個配量上平行執行多個查詢。例如，假設查詢是在散發索引鍵上搭配述詞執行的簡單彙總，則查詢的資料會位於單一配量上。</p>
+            </li></ul></div>
+    
+          
+            <h3 id="cm-c-defining-query-queues-concurrency-level-example">一個手動 WLM 範例</h3>
+            <p> 此範例是一個簡單的手動 WLM 案例，用來說明插槽和記憶體的配置方式。您可以使用三個佇列來實作手動 WLM，這些佇列如下：</p>
+            <div class="itemizedlist">
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem"><p><em>資料擷取佇列</em> – 這是針對擷取資料而設定的。這會分配 20％ 的叢集記憶體，並且具有 5 個插槽。隨後，5 個查詢可以在佇列中同時運行，並且每個查詢會分配到 4％ 的記憶體。</p></li><li class="listitem"><p><em>資料科學家佇列</em> - 這是專為記憶體密集型查詢而設計的。這會分配 40％ 的叢集記憶體，並且具有 5 個插槽。隨後，5 個查詢可以同時運行，並且每個查詢會分配到 8％ 的記憶體。</p></li><li class="listitem"><p><em>預設佇列</em> – 這是針對組織中大多數使用者所設計的。這包括銷售和會計群組，這些群組通常具有不複雜的簡短或中型執行查詢。它會分配到 40％ 的叢集記憶體，並且具有 40 個插槽。40 個查詢可以在此佇列中同時執行，而每個查詢會分配到 1％ 的記憶體。這是可配置給此佇列的插槽數目上限，因為所有佇列之間的限制為 50 個。</p></li></ul></div>
+  
+          
+         
+         <p>如果您正在執行自動 WLM，且工作負載需要並行執行 15 個以上的查詢，建議您開啟並行擴展。這是因為將查詢槽計數增加到 15 以上可能會導致系統資源爭用，並限制單一叢集的整體輸送量。使用並行擴展，您可以平行執行數百個查詢，最多可達設定的並行擴展叢集數目。並行擴展叢集數目由 <a href="./r_max_concurrency_scaling_clusters.html">max_concurrency_scaling_clusters</a> 控制。如需並行擴展的詳細資訊，請參閱 <a href="./concurrency-scaling.html">使用並行擴展</a>。</p>
+            
+             
+         
+         
+         
+         
+   
+         <p>如需詳細資訊，請參閱<a href="./query-performance-improvement-opportunities.html">改善  查詢效能</a>。</p>
+       
+         <h2 id="cm-c-defining-query-queues-user-groups">使用者群組</h2>
+         
+         
+         <p>您可以指定每一個使用者群組名稱或使用萬用字元，將一組使用者群組指派給佇列。當所列的使用者群組中有一個成員執行查詢時，該查詢會在相應佇列中執行。可指派給佇列的使用者群組數沒有固定的限制。如需詳細資訊，請參閱<a href="./cm-c-executing-queries.html#cm-c-executing-queries-assigning-queries-to-queues-based-on-user-groups">根據使用者群組將查詢指派給佇列</a>。</p>
+       
+         <h2 id="cm-c-defining-query-queues-query-groups">查詢群組 </h2>
+         
+         
+         <p>您可以指定每一個查詢群組名稱或使用萬用字元，將一組查詢群組指派給佇列。查詢群組只是一個標籤。在執行時間，您可以將查詢群組標籤指派給一系列查詢。指派給所列之查詢群組的任何查詢會在相應佇列中執行。可指派給佇列的查詢群組數沒有固定的限制。如需詳細資訊，請參閱<a href="./cm-c-executing-queries.html#cm-c-executing-queries-assigning-a-query-to-a-query-group">將查詢指派給查詢群組</a>。</p>
+       
+         <h2 id="wlm-wildcards">萬用字元</h2>
+         
+         <p>如果 WLM 佇列組態中啟用萬用字元，您可以個別地或利用 Unix shell 樣式的萬用字元，將使用者群組和查詢群組指派給佇列。模式比對不區分大小寫。</p>
+         <p>例如，'*' 萬用字元符合任意數目的字元。因此，如果您將 <code class="code">dba_*</code> 新增至佇列的使用者群組清單，任何使用者執行查詢只要是屬於以 <code class="code">dba_</code> 為名稱開頭的群組，都指派到該佇列。例如 <code class="code">dba_admin</code> 或 <code class="code">DBA_primary</code>。'?' 萬用字元符合任何單一字元。因此，如果佇列包含使用者群組 <code class="code">dba?1</code>，則名為 <code class="code">dba11</code> 和 <code class="code">dba21</code> 的使用者群組符合，但 <code class="code">dba12</code> 不符。</p>
+         <p>依預設，萬用字元處於關閉狀態。</p>
+       
+         <h2 id="wlm-memory-percent">要使用的 WLM 記憶體百分比</h2>
+         <p>在自動 WLM 組態中，記憶體百分比設為 <code class="userinput">auto</code>。如需詳細資訊，請參閱<a href="./automatic-wlm.html">實作自動 WLM</a>。</p>
+         
+         <p>在手動 WLM 組態中，若要指定配置給查詢的可用記憶體數量，您可以設定 <code class="code">WLM Memory Percent to Use</code> 參數。根據預設，每個使用者定義佇列都配置有相等份額的記憶體，可供使用者定義的查詢使用。例如，假設您有四個使用者定義佇列，則會配置可用記憶體的 25% 給每一個佇列。超級使用者佇列有其自己配置的記憶體，無法修改。若要變更配置，請將記憶體的整數百分比指派給每個佇列，總計最多 100%。任何未配置的記憶體由 Amazon Redshift 管理並可暫時提供給佇列 (如果佇列要求更多記憶體來進行處理)。</p>
+         <p>例如，假設您設定四個佇列，則可以如下配置記憶體：20%、30%、15%、15%。剩餘 20% 未配置，由服務管理。</p>
+       
+         <h2 id="wlm-timeout">WLM 逾時</h2>
+         <p>WLM 逾時 (<code class="code">max_execution_time</code>) 已作廢。這時請改成使用 <code class="code">query_execution_time</code> 建立查詢監控規則 (QMR)，以限制查詢的經歷執行時間。如需詳細資訊，請參閱<a href="./cm-c-wlm-query-monitoring-rules.html">WLM 查詢監控規則</a>。</p>
+         
+         <p>若要限制給定的 WLM 佇列中允許查詢使用的時間，您可以設定每個佇列的 WLM 逾時值。逾時參數指定 Amazon Redshift 在取消或轉跳查詢之前，等待查詢開始執行的時間量 (以毫秒為單位)。逾時以查詢執行時間為基礎，不包括在佇列中等待所花的時間。</p>
+         <p>WLM 會嘗試轉跳 <a href="./r_CREATE_TABLE_AS.html">CREATE TABLE AS</a> (CTAS) 陳述式和唯讀查詢，例如 SELECT 陳述式。無法轉跳的查詢會取消。如需詳細資訊，請參閱<a href="./wlm-queue-hopping.html">WLM 查詢佇列跳轉</a>。</p>
+         <p>WLM 逾時不適用於已達到傳回狀態的查詢。若要檢視查詢的狀態，請參閱 <a href="./r_STV_WLM_QUERY_STATE.html">STV_WLM_QUERY_STATE</a> 系統資料表。COPY 陳述式和維護操作 (例如 ANALYZE 和 VACUUM) 不受制於 WLM 逾時。</p>
+         <p>WLM 逾時的功能類似於 <a href="./r_statement_timeout.html">statement_timeout</a> 組態參數。差別在於 <code class="code">statement_timeout</code> 組態參數適用於整個叢集，而 WLM 逾時是針對 WLM 組態中的單一佇列。</p>
+         <p>如果也指定 <a href="./r_statement_timeout.html">statement_timeout</a>，則會使用 statement_timeout 和 WLM timeout (max_execution_time) 之中較小者。</p>
+       
+         <h2 id="wlm-query-monitoring-rules">查詢監控規則</h2>
+         
+
+         <p>查詢監控規則會為 WLM 佇列定義以指標為基礎的效能邊界，並指定當查詢超出這些邊界時採取的動作。例如，對於短期執行查詢專用的佇列，您可以建立規則，以將執行時間超過 60 秒的查詢取消。若要追蹤設計不良的查詢，您可以使用另一個規則來記錄含有巢狀迴圈的查詢。如需詳細資訊，請參閱<a href="./cm-c-wlm-query-monitoring-rules.html">WLM 查詢監控規則</a>。</p>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./query-priority.html">查詢優先順序</div><div id="next" class="next-link" accesskey="n" href="./wlm-queue-hopping.html">WLM 查詢佇列跳轉</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-defining-query-queues.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-defining-query-queues.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

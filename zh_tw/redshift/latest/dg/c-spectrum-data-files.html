@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>在 Amazon Redshift Spectrum 為查詢建立資料檔案 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c-spectrum-data-files" /><meta name="default_state" content="c-spectrum-data-files" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-data-files.html" /><meta name="description" content="您在 Amazon Redshift Spectrum 中用於查詢的資料檔案，通常與您用於其他應用程式的檔案為相同類型。例如，與 Amazon 雅典娜，Amazon EMR 和亞馬遜一起使用相同類型的文件。 QuickSight您可以直接從 Amazon S3 查詢原始格式的資料。若要執行此作業，資料檔案的格式必須是 Redshift Spectrum 支援的格式，且位於您叢集可存取的 Amazon S3 儲存貯體中。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="資料庫開發人員指南" /><meta name="abstract" content="使用 Amazon Redshift 這項 PB 級的完全受管企業等級資料倉儲服務，來建立和管理資料倉儲。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-data-files.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-spectrum-data-files.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-spectrum-data-files.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-spectrum-data-files.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-spectrum-data-files.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-data-files.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-data-files.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-data-files.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-data-files.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-spectrum-data-files.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-spectrum-data-files.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-spectrum-data-files.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-spectrum-data-files.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-data-files.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-data-files.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-spectrum-data-files.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-spectrum-data-files.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-spectrum-data-files.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-spectrum-data-files.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-spectrum-data-files.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-data-files.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-data-files.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="資料庫開發人員指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="資料庫開發人員指南" /><meta id="panorama-serviceConsolePage" value="在 Amazon Redshift Spectrum 為查詢建立資料檔案" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>在 Amazon Redshift Spectrum 為查詢建立資料檔案 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c-spectrum-data-files" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-data-files.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-data-files.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-data-files.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,叢集,資料倉儲,開發人員,範例資料,database,資料庫開發人員,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "資料庫開發人員指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "使用 Amazon Redshift Spectrum 查詢外部資料",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-using-spectrum.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "在 Amazon Redshift Spectrum 為查詢建立資料檔案",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-using-spectrum.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c-spectrum-data-files" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#c-spectrum-data-files-formats">Redshift Spectrum 的資料格式 </a><a href="#c-spectrum-data-files-compression">Redshift Spectrum 的壓縮類型 </a><a href="#c-spectrum-data-files-encryption">Redshift Spectrum 的加密 </a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="c-spectrum-data-files">在 Amazon Redshift Spectrum 為查詢建立資料檔案</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>您在 Amazon Redshift Spectrum 中用於查詢的資料檔案，通常與您用於其他應用程式的檔案為相同類型。例如，與 Amazon 雅典娜，Amazon EMR 和亞馬遜一起使用相同類型的文件。 QuickSight您可以直接從 Amazon S3 查詢原始格式的資料。若要執行此作業，資料檔案的格式必須是 Redshift Spectrum 支援的格式，且位於您叢集可存取的 Amazon S3 儲存貯體中。</p><p>包含資料檔案的 Amazon S3 儲存貯體和 Amazon Redshift 叢集必須位於相同 AWS 區域。如需有關支援的 AWS 區域資訊，請參閱<a href="./c-using-spectrum.html#c-spectrum-regions">Amazon Redshift Spectrum 區域</a>。</p>
+         <h2 id="c-spectrum-data-files-formats">Redshift Spectrum 的資料格式 </h2>
+      <p>Redshift Spectrum 支援下列結構化與半結構化的資料格式。</p>
+
+      <div class="table-container"><div class="table-contents"><table id="w319aac29c15b7b5"><thead>
+               <tr>
+                  <th>檔案格式</th>
+                  <th>單欄式</th>
+                  <th>支援平行讀取</th>
+                  <th>分割單位</th>
+               </tr>
+            </thead>
+               <tr>
+                  <td tabindex="-1">Parquet</td>
+                  <td tabindex="-1">是 </td>
+                  <td tabindex="-1">是</td>
+                  <td tabindex="-1">資料列群組</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">ORC</td>
+                  <td tabindex="-1">是 </td>
+                  <td tabindex="-1">是</td>
+                  <td tabindex="-1">Stripe</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">RCFile</td>
+                  <td tabindex="-1">是 </td>
+                  <td tabindex="-1">是</td>
+                  <td tabindex="-1">資料列群組</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">TextFile</td>
+                  <td tabindex="-1">否</td>
+                  <td tabindex="-1">是</td>
+                  <td tabindex="-1">Row</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">SequenceFile</td>
+                  <td tabindex="-1">否</td>
+                  <td tabindex="-1">是</td>
+                  <td tabindex="-1">資料列或區塊</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">RegexSerde</td>
+                  <td tabindex="-1">否</td>
+                  <td tabindex="-1">是</td>
+                  <td tabindex="-1">Row</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">OpenCSV</td>
+                  <td tabindex="-1">否</td>
+                  <td tabindex="-1">是</td>
+                  <td tabindex="-1">Row</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">AVRO</td>
+                  <td tabindex="-1">否</td>
+                  <td tabindex="-1">是</td>
+                  <td tabindex="-1">區塊</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">Ion</td>
+                  <td tabindex="-1">否</td>
+                  <td tabindex="-1">否</td>
+                  <td tabindex="-1">N/A</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">JSON</td>
+                  <td tabindex="-1">否</td>
+                  <td tabindex="-1">否</td>
+                  <td tabindex="-1">N/A</td>
+               </tr>
+            </table></div></div>
+
+      <p>在上表中，標題指出下列項目：</p>
+      <div class="itemizedlist">
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+                     <p><b>單欄式</b> – 檔案格式是否實體上以資料欄導向的結構存放資料，而不是以資料列導向的結構。</p>
+
+         </li><li class="listitem">
+            <p><b>支援平行讀取</b> – 檔案格式是否支援讀取檔案內的個別區塊。讀取個別區塊可以跨多個獨立 Redshift Spectrum 請求分配檔案的處理，而不必在單一請求中讀取完整檔案。</p>
+         </li><li class="listitem">
+            <p><b>分割單位</b> – 對於可平行讀取的檔案格式，分割單位是單一 Redshift Spectrum 請求可處理的最小資料區塊。</p>
+      
+               <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>文字檔案中的時間戳記值格式必須為 <code class="code">yyyy-MM-dd HH:mm:ss.SSSSSS</code>，如以下的時間戳記值所示：<code class="code">2017-05-01 11:30:59.000000</code>。</p></div></div>
+      <p>我們建議使用例如 Apache Parquet 的單欄式儲存檔案格式。使用單欄式儲存檔案格式，您只需選擇所需的資料欄，即可最大幅度地減少 Amazon S3 中的資料傳輸。</p></li></ul></div>
+       
+         <h2 id="c-spectrum-data-files-compression">Redshift Spectrum 的壓縮類型 </h2>
+
+                  <p>為減少儲存空間，提高效能並降低成本，我們強烈建議您壓縮您的資料檔案。Redshift Spectrum 會根據副檔名識別檔案壓縮類型。</p>
+      
+      <p>Redshift Spectrum 支援下列壓縮類型與副檔名。</p>
+      <div class="table-container"><div class="table-contents"><table id="w319aac29c15b9b7"><thead>
+               <tr>
+                  <th>壓縮演算法</th>
+                  <th>副檔名</th>
+                  <th>支援平行讀取</th>
+               </tr>
+            </thead>
+               <tr>
+                  <td tabindex="-1">Gzip</td>
+                  <td tabindex="-1">.gz</td>
+                  <td tabindex="-1">否</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">Bzip2</td>
+                  <td tabindex="-1">.bz2</td>
+                  <td tabindex="-1">是</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">Snappy</td>
+                  <td tabindex="-1">.snappy</td>
+                  <td tabindex="-1">否</td>
+               </tr>
+            </table></div></div>
+      
+  
+      <p>您可以套用不同層級的壓縮。最常見的是，您可以壓縮整個檔案或壓縮檔案中的個別區塊。在檔案層級壓縮單欄式格式不會產生效能優勢。</p>
+         
+      <p>為了使 Redshift Spectrum 能夠平行讀取檔案，下列條件必須成立：</p>
+         <div class="itemizedlist">
+          
+          
+         <ul class="itemizedlist"><li class="listitem">
+            <p>檔案格式支援平行讀取。</p>
+         </li><li class="listitem">
+         <p>檔案層級壓縮 (如果有的話) 支援平行讀取。</p>
+         </li></ul></div>
+
+      <p>檔案內的個別分割單位是否使用可平行讀取的壓縮演算法進行壓縮並不重要，因為每個分割單位都是由單一 Redshift Spectrum 請求處理。此情況的範例是 Snappy 壓縮的 Parquet 檔案。Parquet 檔案中的個別資料列群組會使用 Snappy 進行壓縮，但檔案的頂層結構仍會保持未壓縮狀態。在此情況下，可以平行讀取檔案，因為每個 Redshift Spectrum 請求都可以從 Amazon S3 中讀取和處理個別列群組。</p>
+
+       
+         <h2 id="c-spectrum-data-files-encryption">Redshift Spectrum 的加密 </h2>
+
+      <p>Redshift Spectrum 可透明的解密使用以下加密選項加密的資料檔案：</p>
+      <div class="itemizedlist">
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>使用由 Amazon S3 管理的 AES-256 加密金鑰的伺服器端加密 (SSE-S3)。</p>
+         </li><li class="listitem">
+            <p>以 AWS Key Management Service (SSE-KMS) 管理的金鑰為伺服器端加密。</p>
+         </li></ul></div>
+         <p>Redshift Spectrum 不支援 Amazon S3 用戶端加密。如需伺服器端加密的詳細資訊，請參閱《Amazon Simple Storage Service 使用者指南》<em></em>中的<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/serv-side-encryption.html">使用伺服器端加密保護資料</a>。</p>
+      <p>Amazon Redshift 使用大量平行處理 (MPP) 來達成在大量資料上操作複雜查詢的快速執行。Redshift Spectrum 擴展了相同的原則來查詢外部資料，並依需要使用多個 Redshift Spectrum 執行個體來掃描檔案。將檔案放在每個資料表的單獨資料夾中。</p>
+      <p>您可以透過執行下列動作來最佳化資料以進行平行處理：</p>
+      <div class="itemizedlist">
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>如果您的檔案格式或壓縮不支援平行讀取，請將大型檔案分成許多較小的檔案。建議您使用介於 64 MB 與 1 GB 之間的檔案大小。</p>
+         </li><li class="listitem">
+            <p>將所有檔案維持相同大小。如果某些檔案比其他檔案大得多，則 Redshift Spectrum 無法平均分配工作負載。</p>
+         </li></ul></div>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./spectrum-lake-formation.html">使用 Redshift Spectrum 搭配 Lake Formation</div><div id="next" class="next-link" accesskey="n" href="./c-spectrum-external-schemas.html">建立外部結構描述</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-data-files.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-data-files.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

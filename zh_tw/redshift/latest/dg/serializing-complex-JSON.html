@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>序列化複雜的巢狀 JSON - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="serializing-complex-JSON" /><meta name="default_state" content="serializing-complex-JSON" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/serializing-complex-JSON.html" /><meta name="description" content="本教學課程中示範方法的替代方法是以序列化 JSON 形式查詢頂層巢狀集合欄。您可以透過 Redshift Spectrum 使用序列化來檢查、轉換巢狀資料並將其提取為 JSON。ORC、JSON、Ion 和 Parquet 格式支援此方法。使用工作階段組態參數 json_serialization_enable 來設定序列化行為。設定時，複雜的 JSON 資料類型會序列化為 VARCHAR(65535)。您可以使用 存取巢狀 JSON。如需詳細資訊，請參閱 。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="資料庫開發人員指南" /><meta name="abstract" content="使用 Amazon Redshift 這項 PB 級的完全受管企業等級資料倉儲服務，來建立和管理資料倉儲。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/serializing-complex-JSON.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/serializing-complex-JSON.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/serializing-complex-JSON.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/serializing-complex-JSON.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/serializing-complex-JSON.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/serializing-complex-JSON.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/serializing-complex-JSON.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/serializing-complex-JSON.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/serializing-complex-JSON.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/serializing-complex-JSON.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/serializing-complex-JSON.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/serializing-complex-JSON.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/serializing-complex-JSON.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/serializing-complex-JSON.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/serializing-complex-JSON.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/serializing-complex-JSON.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/serializing-complex-JSON.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/serializing-complex-JSON.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/serializing-complex-JSON.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/serializing-complex-JSON.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/serializing-complex-JSON.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/serializing-complex-JSON.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="資料庫開發人員指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="資料庫開發人員指南" /><meta id="panorama-serviceConsolePage" value="序列化複雜的巢狀 JSON" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>序列化複雜的巢狀 JSON - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#serializing-complex-JSON" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/serializing-complex-JSON.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/serializing-complex-JSON.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/serializing-complex-JSON.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,叢集,資料倉儲,開發人員,範例資料,database,資料庫開發人員,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "資料庫開發人員指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "使用 Amazon Redshift Spectrum 查詢外部資料",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-using-spectrum.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "教學課程：使用 Amazon Redshift Spectrum 查詢巢狀資料",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-query-nested-data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "序列化複雜的巢狀 JSON",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-query-nested-data.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#serializing-complex-JSON" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#serializing-complex-JSON-strings">序列化包含 JSON 字串的複雜類型</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="serializing-complex-JSON">序列化複雜的巢狀 JSON</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>本教學課程中示範方法的替代方法是以序列化 JSON 形式查詢頂層巢狀集合欄。您可以透過 Redshift Spectrum 使用序列化來檢查、轉換巢狀資料並將其提取為 JSON。ORC、JSON、Ion 和 Parquet 格式支援此方法。使用工作階段組態參數 <code class="code">json_serialization_enable</code> 來設定序列化行為。設定時，複雜的 JSON 資料類型會序列化為 VARCHAR(65535)。您可以使用 <a href="./json-functions.html">JSON 函數</a> 存取巢狀 JSON。如需詳細資訊，請參閱<a href="./r_json_serialization_enable.html">json_serialization_enable</a>。</p><p>例如，如果沒有設定 <code class="code">json_serialization_enable</code>，下列直接存取巢狀欄的查詢會失敗。</p><pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">SELECT * FROM spectrum.customers LIMIT 1;
+
+=&gt; ERROR:  Nested tables do not support '*' in the SELECT clause.
+
+SELECT name FROM spectrum.customers LIMIT 1;
+
+=&gt; ERROR:  column "name" does not exist in customers</code></pre><p>設定 <code class="code">json_serialization_enable</code> 可讓您直接查詢頂層集合。</p><pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">SET json_serialization_enable TO true;
+
+SELECT * FROM spectrum.customers order by id LIMIT 1;
+
+id | name                                 | phones         | orders
+---+--------------------------------------+----------------+----------------------------------------------------------------------------------------------------------------------
+1  | <span>{</span>"given": "John", "family": "Smith"} | ["123-457789"] | [<span>{</span>"shipdate": "2018-03-01T11:59:59.000Z", "price": 100.50}, <span>{</span>"shipdate": "2018-03-01T09:10:00.000Z", "price": 99.12}]          
+ 
+SELECT name FROM spectrum.customers order by id LIMIT 1;
+
+name
+---------
+<span>{</span>"given": "John", "family": "Smith"}  </code></pre><p>序列化巢狀 JSON 時，請考慮下列項目。</p><div class="itemizedlist">
+             
+             
+             
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem"><p>當集合欄序列化為 VARCHAR(65535) 時，無法直接存取其巢狀子欄位做為查詢語法的一部分 (例如，在篩選條件子句中)。但是，JSON 函數可用於存取巢狀 JSON。</p></li><li class="listitem"><p>不支援下列特殊表示法：</p>
+                <div class="itemizedlist">
+                     
+                     
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem"><p>ORC 聯集</p></li><li class="listitem"><p>具有複雜類型鍵的 ORC 映射</p></li><li class="listitem"><p>Ion 資料包</p></li><li class="listitem"><p>Ion SEXP</p></li></ul></div></li><li class="listitem"><p>時間戳記會傳回為 ISO 序列化字串。</p></li><li class="listitem"><p>原始映射鍵被提升為字串 (例如，<code class="code">1</code> 到 <code class="code">"1"</code>)。</p></li><li class="listitem"><p>頂層 null 值會序列化為 NULL。</p></li><li class="listitem"><p>如果序列化超出最大 VARCHAR 的大小 65535，則儲存格將設為 NULL。</p></li></ul></div>
+            <h2 id="serializing-complex-JSON-strings">序列化包含 JSON 字串的複雜類型</h2>
+            <p>預設情況下，巢狀集合中包含的字串值將序列化為逸出的 JSON 字串。當字串是有效的 JSON 時，逸出可能是不可取的。相反，您可能希望將 VARCHAR 的巢狀子元素或欄位直接編寫為 JSON。使用 <code class="code">json_serialization_parse_nested_strings</code> 工作階段層級組態啟用此行為。同時設定 <code class="code">json_serialization_enable</code> 和 <code class="code">json_serialization_parse_nested_strings</code> 時，有效的 JSON 值會以內嵌方式序列化，不含逸出字元。當值不是有效的 JSON 時，會將其逸出，就好像未設定 <code class="code">json_serialization_parse_nested_strings</code> 組態值一樣。如需詳細資訊，請參閱<a href="./r_json_serialization_parse_nested_strings.html">json_serialization_parse_nested_strings</a>。</p>  
+            <p>例如，假設上一個範例中的資料在 <code class="code">name</code> VARCHAR(20) 欄位中包含 JSON 作為 <code class="code">structs</code> 複雜類型：</p>
+            <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">name
+---------
+<span>{</span>"given": "<span>{</span>\"first\":\"John\",\"middle\":\"James\"}", "family": "Smith"}</code></pre>
+            <p>設定 <code class="code">json_serialization_parse_nested_strings</code> 時，<code class="code">name</code> 欄會依照下列方式序列化：</p>
+            
+            <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">SET json_serialization_enable TO true;
+SET json_serialization_parse_nested_strings TO true;
+SELECT name FROM spectrum.customers order by id LIMIT 1;
+
+name
+---------
+<span>{</span>"given": <span>{</span>"first":"John","middle":"James"}, "family": "Smith"}</code></pre>
+            <p>而不是這樣逸出：</p>
+            <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">SET json_serialization_enable TO true;
+SELECT name FROM spectrum.customers order by id LIMIT 1;
+
+name
+---------
+<span>{</span>"given": "<span>{</span>\"first\":\"John\",\"middle\":\"James\"}", "family": "Smith"}</code></pre>
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./nested-data-restrictions.html">巢狀資料限制 (預覽)</div><div id="next" class="next-link" accesskey="n" href="./hyperloglog-overview.html">在 Amazon Redshift 中使用 HyperLogLog 草圖</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/serializing-complex-JSON.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/serializing-complex-JSON.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

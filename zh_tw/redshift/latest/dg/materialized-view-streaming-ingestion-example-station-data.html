@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>電動汽車站的資料串流擷取教學 (使用 Kinesis) - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="materialized-view-streaming-ingestion-example-station-data" /><meta name="default_state" content="materialized-view-streaming-ingestion-example-station-data" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" /><meta name="description" content="了解示範串流擷取實用性的案例。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="資料庫開發人員指南" /><meta name="abstract" content="使用 Amazon Redshift 這項 PB 級的完全受管企業等級資料倉儲服務，來建立和管理資料倉儲。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="資料庫開發人員指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="資料庫開發人員指南" /><meta id="panorama-serviceConsolePage" value="電動汽車站的資料串流擷取教學 (使用 Kinesis)" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>電動汽車站的資料串流擷取教學 (使用 Kinesis) - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#materialized-view-streaming-ingestion-example-station-data" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,叢集,資料倉儲,開發人員,範例資料,database,資料庫開發人員,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "資料庫開發人員指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "在 Amazon Redshift 中建立具體化視觀表",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/materialized-view-overview.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "串流擷取",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/materialized-view-streaming-ingestion.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "電動汽車站的資料串流擷取教學 (使用 Kinesis)",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/materialized-view-streaming-ingestion.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#materialized-view-streaming-ingestion-example-station-data" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="materialized-view-streaming-ingestion-example-station-data">電動汽車站的資料串流擷取教學 (使用 Kinesis)</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>此程序會示範如何從名為 <em>ev_station_data</em> 的 Kinesis 串流中擷取資料，該串流包含來自不同 EV 充電站的取用資料 (採用 JSON 格式)。該結構描述是明確定義的。此範例會示範如何將資料儲存為原始 JSON，以及如何在擷取資料時將 JSON 資料轉換為 Amazon Redshift 資料類型。</p><p><b>生產者設定</b></p><div class="procedure"><ol><li><p>使用 Amazon Kinesis Data Streams，按照以下步驟建立名為 <code class="code">ev_station_data</code> 的串流。選擇<b>隨需</b>做為<b>容量模式</b>。如需詳細資訊，請參閱<a href="https://docs.aws.amazon.com/streams/latest/dev/how-do-i-create-a-stream.html">透過 AWS 管理主控台建立串流</a>。</p></li><li><p><a href="https://awslabs.github.io/amazon-kinesis-data-generator/web/producer.html?" rel="noopener noreferrer" target="_blank"><span>Amazon Kinesis 資料產生器</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>可協助您產生用於串流的測試資料。請依照工具中的詳細步驟來開始使用，並使用下列資料範本來產生資料：</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+    
+   "_id" : "<span>{</span><span>{</span>random.uuid}}",
+   "clusterID": "<span>{</span><span>{</span>random.number(
+        <span>{</span>   "min":1,
+            "max":50
+        }
+    )}}", 
+    "connectionTime": "<span>{</span><span>{</span>date.now("YYYY-MM-DD HH:mm:ss")}}",
+    "kWhDelivered": "<span>{</span><span>{</span>commerce.price}}",
+    "stationID": "<span>{</span><span>{</span>random.number(
+        <span>{</span>   "min":1,
+            "max":467
+        }
+    )}}",
+      "spaceID": "<span>{</span><span>{</span>random.word}}-<span>{</span><span>{</span>random.number(
+        <span>{</span>   "min":1,
+            "max":20
+        }
+    )}}",
+ 
+   "timezone": "America/Los_Angeles",
+   "userID": "<span>{</span><span>{</span>random.number(
+        <span>{</span>   "min":1000,
+            "max":500000
+        }
+    )}}"
+}</code></pre><p> 串流資料中的每個 JSON 物件都包含下列屬性：</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+    "_id": "12084f2f-fc41-41fb-a218-8cc1ac6146eb",
+    "clusterID": "49",
+    "connectionTime": "2022-01-31 13:17:15",
+    "kWhDelivered": "74.00",
+    "stationID": "421",
+    "spaceID": "technologies-2",
+    "timezone": "America/Los_Angeles",
+    "userID": "482329"
+}</code></pre></li></ol></div><p><b>Amazon Redshift 設定</b></p><p>這些步驟會說明如何設定具體化視觀表以擷取資料。</p><div class="procedure"><ol><li><p>建立外部結構描述以將 Kinesis 中的資料對應至 Redshift 物件。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE EXTERNAL SCHEMA evdata FROM KINESIS
+IAM_ROLE 'arn:aws:iam::0123456789:role/redshift-streaming-role';</code></pre>
+                    <p>如需如何設定 IAM 角色的詳細資訊，請參閱 <a href="./materialized-view-streaming-ingestion-getting-started.html">開始使用 Amazon Kinesis Data Streams 中的串流擷取</a>。</p></li><li><p>建立具體化視觀表以取用串流資料。下列範例說明兩種定義具體化視觀表以擷取 JSON 來源資料的方法。</p>
+                    <p>首先，以半結構化 SUPER 格式儲存串流記錄。在此範例中，JSON 來源會儲存在 Redshift 中，而不會轉換為 Redshift 類型。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE MATERIALIZED VIEW ev_station_data AS
+    SELECT approximate_arrival_timestamp,
+    partition_key,
+    shard_id,
+    sequence_number,
+    json_parse(kinesis_data) as payload
+    FROM evdata."ev_station_data" WHERE can_json_parse(kinesis_data);</code></pre>
+                    <p> 相反地，在下列具體化視觀表定義中，具體化視觀表在 Redshift 中有定義的結構描述。具體化視觀表會分散在串流中的 UUID 值上，並依 <code class="code">approximatearrivaltimestamp</code> 值排序。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE MATERIALIZED VIEW ev_station_data_extract DISTKEY(6) sortkey(1) AUTO REFRESH YES AS
+    SELECT refresh_time,
+    approximate_arrival_timestamp,
+    partition_key,
+    shard_id,
+    sequence_number,
+    json_extract_path_text(from_varbyte(kinesis_data,'utf-8'),'_id',true)::character(36) as ID,
+    json_extract_path_text(from_varbyte(kinesis_data,'utf-8'),'clusterID',true)::varchar(30) as clusterID,
+    json_extract_path_text(from_varbyte(kinesis_data,'utf-8'),'connectionTime',true)::varchar(20) as connectionTime,
+    json_extract_path_text(from_varbyte(kinesis_data,'utf-8'),'kWhDelivered',true)::DECIMAL(10,2) as kWhDelivered,
+    json_extract_path_text(from_varbyte(kinesis_data,'utf-8'),'stationID',true)::DECIMAL(10,2) as stationID,
+    json_extract_path_text(from_varbyte(kinesis_data,'utf-8'),'spaceID',true)::varchar(100) as spaceID,
+    json_extract_path_text(from_varbyte(kinesis_data, 'utf-8'),'timezone',true)::varchar(30)as timezone,
+    json_extract_path_text(from_varbyte(kinesis_data,'utf-8'),'userID',true)::varchar(30) as userID
+    FROM evdata."ev_station_data"
+    WHERE LENGTH(kinesis_data) &lt; 65355;</code></pre></li></ol></div><p><b>查詢串流</b></p><div class="procedure"><ol><li><p>查詢重新整理的具體化視觀表以取得使用狀況統計資料。</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT to_timestamp(connectionTime, 'YYYY-MM-DD HH24:MI:SS') as connectiontime
+,SUM(kWhDelivered) AS Energy_Consumed 
+,count(distinct userID) AS #Users
+from ev_station_data_extract
+group by  to_timestamp(connectionTime, 'YYYY-MM-DD HH24:MI:SS')
+order by 1 desc;</code></pre>
+                    </li><li><p>檢視結果。</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">connectiontime	        energy_consumed	#users
+2022-02-08 16:07:21+00	  4139	        10
+2022-02-08 16:07:20+00	  5571	        10
+2022-02-08 16:07:19+00	  8697	        20
+2022-02-08 16:07:18+00	  4408	        10
+2022-02-08 16:07:17+00	  4257	        10
+2022-02-08 16:07:16+00	  6861	        10
+2022-02-08 16:07:15+00	  5643	        10
+2022-02-08 16:07:14+00	  3677	        10
+2022-02-08 16:07:13+00	  4673	        10
+2022-02-08 16:07:11+00	  9689	        20
+</code></pre></li></ol></div><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./materialized-view-streaming-ingestion-getting-started-MSK.html">開始使用 Amazon Managed Streaming for Apache Kafka 中的串流擷取</div><div id="next" class="next-link" accesskey="n" href="./data-catalog-views-overview.html">在 Data Catalog 中建立檢視 (預覽)</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/materialized-view-streaming-ingestion-example-station-data.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

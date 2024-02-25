@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>WLM 查詢佇列跳轉 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="wlm-queue-hopping" /><meta name="default_state" content="wlm-queue-hopping" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/wlm-queue-hopping.html" /><meta name="description" content="查詢可能因為 WLM 逾時 或 查詢監控規則 (QMR) 跳轉動作 而跳轉。您只能在手動 WLM 配置中跳轉查詢。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="資料庫開發人員指南" /><meta name="abstract" content="使用 Amazon Redshift 這項 PB 級的完全受管企業等級資料倉儲服務，來建立和管理資料倉儲。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/wlm-queue-hopping.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/wlm-queue-hopping.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/wlm-queue-hopping.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/wlm-queue-hopping.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/wlm-queue-hopping.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/wlm-queue-hopping.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/wlm-queue-hopping.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/wlm-queue-hopping.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/wlm-queue-hopping.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/wlm-queue-hopping.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/wlm-queue-hopping.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/wlm-queue-hopping.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/wlm-queue-hopping.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/wlm-queue-hopping.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/wlm-queue-hopping.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/wlm-queue-hopping.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/wlm-queue-hopping.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/wlm-queue-hopping.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/wlm-queue-hopping.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/wlm-queue-hopping.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/wlm-queue-hopping.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/wlm-queue-hopping.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="資料庫開發人員指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="資料庫開發人員指南" /><meta id="panorama-serviceConsolePage" value="WLM 查詢佇列跳轉" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>WLM 查詢佇列跳轉 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#wlm-queue-hopping" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/wlm-queue-hopping.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/wlm-queue-hopping.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/wlm-queue-hopping.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,叢集,資料倉儲,開發人員,範例資料,database,資料庫開發人員,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "資料庫開發人員指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "實作工作負載管理",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "實作手動 WLM",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-defining-query-queues.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "WLM 查詢佇列跳轉",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-defining-query-queues.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#wlm-queue-hopping" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#wlm-queue-hopping-summary">WLM 逾時動作</a><a href="#wlm-timeout-queue-hopping">WLM 逾時佇列跳轉</a><a href="#wlm-timeout-reassigned-and-restarted-queries">WLM 逾時重新指派和重新啟動的查詢</a><a href="#qmr-hop-action-queue-hopping">QMR 跳轉動作</a><a href="#qmr-hop-action-reassigned-and-restarted-queries">QMR 跳轉動作重新指派和重新啟動的查詢</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="wlm-queue-hopping">WLM 查詢佇列跳轉</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>查詢可能因為 <a href="./cm-c-defining-query-queues.html#wlm-timeout">WLM 逾時</a>或<a href="./cm-c-wlm-query-monitoring-rules.html#cm-c-wlm-defining-query-monitoring-rules">查詢監控規則 (QMR) 跳轉動作</a>而跳轉。您只能在手動 WLM 配置中跳轉查詢。</p><p>當查詢跳轉時，WLM 會嘗試根據 <a href="./cm-c-wlm-queue-assignment-rules.html">WLM 佇列指派規則</a>，將查詢路由至下一個相符的佇列。如果查詢不符合其他任何佇列定義，則會取消此查詢。不會指派給預設佇列。</p>
+         <h2 id="wlm-queue-hopping-summary">WLM 逾時動作</h2>
+         <p>下表摘要說明不同類型的查詢因為 WLM 逾時的行為。</p>
+         <div class="table-container"><div class="table-contents"><table id="w319aac43c45c35b7b5"><thead>
+                  <tr>
+                     <th>查詢類型</th>
+                     <th>動作</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">INSERT、UPDATE 和 DELETE</td>
+                     <td tabindex="-1">取消</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">使用者定義的函數 (UDF)</td>
+                     <td tabindex="-1">取消</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">UNLOAD</td>
+                     <td tabindex="-1">取消</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">COPY</td>
+                     <td tabindex="-1">繼續執行</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">維護操作</td>
+                     <td tabindex="-1">繼續執行</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">處於 <code class="code">returning</code> 狀態的唯讀查詢</td>
+                     <td tabindex="-1">繼續執行</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">處於 <code class="code">running</code> 狀態的唯讀查詢</td>
+                     <td tabindex="-1">重新指派或重新啟動</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">CREATE TABLE AS (CTAS)、SELECT INTO</td>
+                     <td tabindex="-1">重新指派或重新啟動</td>
+                  </tr>
+               </table></div></div>
+         
+       
+         <h2 id="wlm-timeout-queue-hopping">WLM 逾時佇列跳轉</h2>
+         <p>WLM 會跳轉下列類型的查詢 (如果逾時)：</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>WLM 狀態為 <code class="code">running</code> 的唯讀查詢，例如 SELECT 陳述式。若要尋找查詢的 WLM 狀態，請檢視 <a href="./r_STV_WLM_QUERY_STATE.html">STV_WLM_QUERY_STATE</a> 系統資料表的 STATE 欄。</p>
+            </li><li class="listitem">
+               <p>CREATE TABLE AS (CTAS) 陳述式。WLM 佇列跳轉同時支援使用者定義和系統產生的 CTAS 陳述式。</p>
+            </li><li class="listitem">
+               <p>SELECT INTO 陳述式。</p>
+            </li></ul></div>
+         <p>不受制於 WLM 逾時的查詢會繼續在原始佇列中執行，直到完成。下列類型的查詢不受制於 WLM 逾時：</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>COPY 陳述式</p>
+            </li><li class="listitem">
+               <p>維護操作，例如 ANALYZE 和 VACUUM</p>
+            </li><li class="listitem">
+               <p>WLM 狀態已達到 <code class="code">returning</code> 的唯讀查詢，例如 SELECT 陳述式。若要尋找查詢的 WLM 狀態，請檢視 <a href="./r_STV_WLM_QUERY_STATE.html">STV_WLM_QUERY_STATE</a> 系統資料表的 STATE 欄。</p>
+            </li></ul></div>
+         <p>不符合因 WLM 逾時而跳轉之資格的查詢，一旦逾時就會取消。下列類型的查詢不符合因 WLM 逾時而跳轉的資格：</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>INSERT、UPDATE 和 DELETE 陳述式</p>
+            </li><li class="listitem">
+               <p>UNLOAD 陳述式</p>
+            </li><li class="listitem">
+               <p>使用者定義的函數 (UDF)</p>
+            </li></ul></div>
+
+       
+         <h2 id="wlm-timeout-reassigned-and-restarted-queries">WLM 逾時重新指派和重新啟動的查詢</h2>
+         <p>當查詢跳轉且找不到相符的佇列時，就會取消此查詢。</p>
+         <p>當查詢跳轉且找到相符的佇列時，WLM 會嘗試將查詢重新指派給新佇列。如果無法重新指派查詢，則會在新佇列中重新啟動此查詢，如下所述。</p>
+         <p>只有在下列所有條件成立時，才會重新指派查詢：</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>找到相符的查詢。</p>
+            </li><li class="listitem">
+               <p>新佇列有足夠可用的槽可執行查詢。如果 <a href="./r_wlm_query_slot_count.html">wlm_query_slot_count</a> 參數設定的值大於 1，查詢可能需要多個槽。</p>
+            </li><li class="listitem">
+               <p>新佇列可用的記憶體至少與查詢目前使用的記憶體一樣多。</p>
+            </li></ul></div>
+         <p>如果重新指派查詢，此查詢會在新佇列中繼續執行。中間結果會保留下來，因此對於總執行時間影響極小。</p>
+         <p>如果無法重新指派查詢，則會取消查詢，並於新佇列中重新啟動查詢。將會刪除中間結果。查詢會在佇列中等待，然後在有足夠的槽可用時開始執行。</p>
+
+       
+         <h2 id="qmr-hop-action-queue-hopping">QMR 跳轉動作</h2>
+         
+         <p>下表摘要說明不同類型的查詢因為 QMR 跳轉動作的行為。</p>
+         <div class="table-container"><div class="table-contents"><table id="w319aac43c45c35c13b5"><thead>
+                  <tr>
+                     <th>查詢類型</th>
+                     <th>動作</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">COPY</td>
+                     <td tabindex="-1">繼續執行</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">維護操作</td>
+                     <td tabindex="-1">繼續執行</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">使用者定義的函數 (UDF)</td>
+                     <td tabindex="-1">繼續執行</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">UNLOAD</td>
+                     <td tabindex="-1">重新指派或繼續執行</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">INSERT、UPDATE 和 DELETE</td>
+                     <td tabindex="-1">重新指派或繼續執行</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">處於 <code class="code">returning</code> 狀態的唯讀查詢</td>
+                     <td tabindex="-1">重新指派或繼續執行</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">處於 <code class="code">running</code> 狀態的唯讀查詢</td>
+                     <td tabindex="-1">重新指派或重新啟動</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">CREATE TABLE AS (CTAS)、SELECT INTO</td>
+                     <td tabindex="-1">重新指派或重新啟動</td>
+                  </tr>
+               </table></div></div>
+         
+         <p>若要查明由 QMR 跳轉的查詢是否已重新指派、重新啟動或取消，請查詢 <a href="./r_STL_WLM_RULE_ACTION.html">STL_WLM_RULE_ACTION</a> 系統日誌資料表。</p>
+  
+         
+
+       
+         <h2 id="qmr-hop-action-reassigned-and-restarted-queries">QMR 跳轉動作重新指派和重新啟動的查詢</h2>
+         <p>當查詢跳轉且找不到相符的佇列時，就會取消此查詢。</p>
+         <p>當查詢跳轉且找到相符的佇列時，WLM 會嘗試將查詢重新指派給新佇列。如果無法重新指派查詢，此查詢會在新佇列中重新啟動，或在原始佇列中繼續執行，如下所述。</p>
+         <p>只有在下列所有條件成立時，才會重新指派查詢：</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>找到相符的查詢。</p>
+            </li><li class="listitem">
+               <p>新佇列有足夠可用的槽可執行查詢。如果 <a href="./r_wlm_query_slot_count.html">wlm_query_slot_count</a> 參數設定的值大於 1，查詢可能需要多個槽。</p>
+            </li><li class="listitem">
+               <p>新佇列可用的記憶體至少與查詢目前使用的記憶體一樣多。</p>
+            </li></ul></div>
+         <p>如果重新指派查詢，此查詢會在新佇列中繼續執行。中間結果會保留下來，因此對於總執行時間影響極小。</p>
+         <p>如果無法重新指派查詢，此查詢會重新啟動或在原始佇列中繼續執行。如果重新啟動查詢，則會取消查詢，並於新佇列中重新啟動查詢。將會刪除中間結果。查詢會在佇列中等待，然後在有足夠的槽可用時開始執行。</p>
+            
+          
+         
+
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./cm-c-defining-query-queues.html">手動 WLM</div><div id="next" class="next-link" accesskey="n" href="./tutorial-configuring-workload-management.html">教學：設定手動 WLM 佇列</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/wlm-queue-hopping.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/wlm-queue-hopping.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

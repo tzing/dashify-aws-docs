@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>教學課程：建置遠端推論模型 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_remote_inference" /><meta name="default_state" content="tutorial_remote_inference" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_remote_inference.html" /><meta name="description" content="使用本教學課程以取得建立 Amazon Redshift 機器學習模型和執行推論查詢的端對端範例。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="資料庫開發人員指南" /><meta name="abstract" content="使用 Amazon Redshift 這項 PB 級的完全受管企業等級資料倉儲服務，來建立和管理資料倉儲。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_remote_inference.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_remote_inference.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_remote_inference.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_remote_inference.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_remote_inference.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_remote_inference.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_remote_inference.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_remote_inference.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_remote_inference.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_remote_inference.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_remote_inference.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_remote_inference.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_remote_inference.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_remote_inference.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_remote_inference.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_remote_inference.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_remote_inference.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_remote_inference.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_remote_inference.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_remote_inference.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_remote_inference.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_remote_inference.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="資料庫開發人員指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="資料庫開發人員指南" /><meta id="panorama-serviceConsolePage" value="教學課程：建置遠端推論模型" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>教學課程：建置遠端推論模型 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_remote_inference" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_remote_inference.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_remote_inference.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_remote_inference.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,叢集,資料倉儲,開發人員,範例資料,database,資料庫開發人員,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "資料庫開發人員指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "在 Amazon Redshift 中使用機器學習",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "開始使用 Amazon RedShift ML",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Amazon Redshift ML 的教學課程",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "教學課程：建置遠端推論模型",
+        "item" : "https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_remote_inference" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#tutorial_remote_inference_tasks">使用案例範例</a><a href="#tutorial_remote_inference_prereqs">先決條件</a><a href="#tutorial_remote_inference_step_deploy">步驟 1：部署 Amazon SageMaker 模型</a><a href="#tutorial_remote_inference_step_endpoint">步驟 2：取得 SageMaker 模型端點</a><a href="#tutorial_remote_inference_step_load">步驟 3：將資料從 Amazon S3 載入到 Amazon Redshift</a><a href="#tutorial_remote_inference_step_create_model">步驟 4：建立 Amazon Redshift ML 的模型</a><a href="#tutorial_remote_inference_step_perform_predictions">步驟 5：執行模型的預測</a><a href="#tutorial_remote_inference_related_topics">相關主題</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="tutorial_remote_inference">教學課程：建置遠端推論模型</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>以下教學課程將介紹如何建立 <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/randomcutforest.html">Random Cut Forest 模型</a> (隨機分割森林模型) 的步驟，該模型先前已在 Amazon SageMaker 中 (Amazon Redshift 之外) 訓練並部署。隨機分割森林演算法會偵測資料集中的異常資料點。使用遠端推論建立模型可讓您將隨機分割森林 SageMaker 模型帶入 Amazon Redshift。然後，在 Amazon Redshift 中，您可以使用 SQL 在遠端 SageMaker 端點上執行預測。</p><p>您可以使用 CREATE MODEL 命令從 Amazon SageMaker 端點匯入機器學習模型，並準備 Amazon Redshift 預測函數。使用 CREATE MODEL 操作時，您需要提供 SageMaker 機器學習模型的端點名稱。</p><p>在本教學中，您會使用 SageMaker 模型端點建立 Amazon Redshift 機器學習模型。一旦您的機器學習模型準備就緒，您就可以使用它在 Amazon Redshift 中執行預測。首先，您會在 Amazon SageMaker 中訓練和建立端點，然後取得端點名稱。然後，您可以使用 CREATE MODEL 命令建立具有 Amazon Redshift ML 的模型。最後，您可以使用 CREATE MODEL 指令產生的預測函數對模型執行預測。</p>
+            <h2 id="tutorial_remote_inference_tasks">使用案例範例</h2>
+            <p>您可以使用隨機分割森林模型和遠端推論來偵測其他資料集中的異常狀況，例如預測電子商務交易的快速增加或減少。您還可以預測天氣或地震活動的顯著變化。</p>
+         <p><b>工作</b></p>
+            <div class="itemizedlist">
+                
+                
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>先決條件</p>
+               </li><li class="listitem">
+                  <p>步驟 1：部署 Amazon SageMaker 模型</p>
+               </li><li class="listitem">
+                  <p>步驟 2：取得 SageMaker 模型端點</p>
+               </li><li class="listitem">
+                  <p>步驟 3：將資料從 Amazon S3 載入到 Amazon Redshift</p>
+               </li><li class="listitem">
+                  <p>步驟 4：建立 Amazon Redshift ML 的模型</p>
+               </li><li class="listitem">
+                  <p>步驟 5：執行模型的預測</p>
+               </li></ul></div>
+          
+            <h2 id="tutorial_remote_inference_prereqs">先決條件</h2>
+            <p>若要完成本教學課程，您需要以下先決條件：</p>
+            <div class="itemizedlist">
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>您已完成 Amazon Redshift ML 的<a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">管理設定</a>。</p>
+               </li><li class="listitem">
+                  <p>您已下載<a href="https://s3.amazonaws.com/sagemaker-sample-files/datasets/tabular/anomaly_benchmark_taxi/NAB_nyc_taxi.csv" rel="noopener noreferrer" target="_blank"><span>紐約市計程車資料集</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>、<a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html">建立 Amazon S3 儲存貯體</a>，然後<a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html">將資料上傳到 Amazon S3 儲存貯體</a>。</p>
+               </li><li class="listitem">
+                  <p>您必須訓練、部署 SageMaker 模型和端點，並取得 SageMaker 端點的名稱。使用<a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=RedshiftBYOM&amp;templateURL=https://redshift-ml-multiclass.s3.amazonaws.com/redshift-byom-blog.yaml" rel="noopener noreferrer" target="_blank"><span>此 AWS CloudFormation 範本</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>可自動佈建 AWS 帳戶中的所有 SageMaker 資源。</p>
+               </li></ul></div>
+          
+            <h2 id="tutorial_remote_inference_step_deploy">步驟 1：部署 Amazon SageMaker 模型</h2>
+            <div class="orderedlist">
+                
+                
+                
+                
+                
+            <ol><li>
+                  <p>若要部署模型，請移至 Amazon SageMaker 主控台，在導覽窗格中的<b>筆記本</b>下選擇<b>筆記本執行個體</b>。</p>
+               </li><li>
+                  <p> 針對由 CloudFormation 範本建立的 Jupyter 筆記本選擇<b>開啟 Jupyter</b>。</p>
+               </li><li>
+                  <p>選擇 <code class="code">bring-your-own-model-remote-inference.ipynb</code>。</p>
+               </li><li>
+                  <p>將以下幾行取代為 Amazon S3 儲存貯體和字首，設定參數來將訓練輸入和輸出儲存在 Amazon S3 中。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">data_location=f"s3://<code class="replaceable"><span>{</span>bucket}/<span>{</span>prefix}/</code>",
+output_path=f"s3://<code class="replaceable"><span>{</span>bucket}/<span>{</span>prefix}/</code>output",</code></pre>
+               </li><li>
+                  <p>選擇<b>快轉</b>按鈕以執行所有儲存格。</p>
+               </li></ol></div>
+          
+            <h2 id="tutorial_remote_inference_step_endpoint">步驟 2：取得 SageMaker 模型端點</h2>
+            <p>在 Amazon SageMaker 主控台導覽窗格的<b>推論</b>下，選擇<b>端點</b>，然後尋找您的模型名稱。在 Amazon Redshift 中建立遠端推論模型時，必須複製模型的端點名稱。</p>
+          
+            <h2 id="tutorial_remote_inference_step_load">步驟 3：將資料從 Amazon S3 載入到 Amazon Redshift</h2>
+            <p>使用 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">Amazon Redshift 查詢編輯器 v2</a> 在 Amazon Redshift 中執行以下 SQL 命令。如果 <code class="code">rcf_taxi_data</code> 資料表存在，這些命令會捨棄資料表、建立相同名稱的資料表，然後將範例資料集載入資料表中。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">DROP TABLE IF EXISTS public.rcf_taxi_data CASCADE;
+
+CREATE TABLE public.rcf_taxi_data (ride_timestamp timestamp, nbr_passengers int);
+
+COPY public.rcf_taxi_data
+FROM
+    's3://sagemaker-sample-files/datasets/tabular/anomaly_benchmark_taxi/NAB_nyc_taxi.csv'
+    IAM_ROLE default
+    IGNOREHEADER 1
+    FORMAT AS CSV;</code></pre>
+          
+            <h2 id="tutorial_remote_inference_step_create_model">步驟 4：建立 Amazon Redshift ML 的模型</h2>
+            <p>執行下列查詢，以使用您在上一個步驟中取得的 SageMaker 模型端點在 Amazon Redshift ML 中建立模型。將 <code class="replaceable"><code class="code">randomcutforest-xxxxxxxxx</code></code> 取代為您自己的 SageMaker 端點名稱。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL public.remote_random_cut_forest
+FUNCTION remote_fn_rcf(int)
+RETURNS decimal(10, 6) SAGEMAKER '<code class="replaceable">&lt;randomcutforest-xxxxxxxxx&gt;</code>' IAM_ROLE default;</code></pre>
+             
+               <h3 id="tutorial_remote_inference_check_status">檢查模型狀態 (選擇性)</h3>
+               <p>您可以使用 SHOW MODEL 命令來知道模型何時準備就緒。</p>
+                  <p>使用 SHOW MODEL 來檢查模型的狀態。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL public.remote_random_cut_forest</code></pre>
+               <p>輸出會顯示 SageMaker 端點和函數名稱。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------+-----------------------------------------+
+|        Model Name        |        remote_random_cut_forest         |
++--------------------------+-----------------------------------------+
+|       Schema Name        |                 public                  |
+|          Owner           |                 awsuser                 |
+|      Creation Time       |        Wed, 15.06.2022 17:58:21         |
+|       Model State        |                  READY                  |
+|                          |                                         |
+|       PARAMETERS:        |                                         |
+|         Endpoint         |      <code class="replaceable">&lt;randomcutforest-xxxxxxxxx&gt;</code>        |
+|      Function Name       |              remote_fn_rcf              |
+|      Inference Type      |                 Remote                  |
+| Function Parameter Types |                  int4                   |
+|         IAM Role         |          default-aws-iam-role           |
++--------------------------+-----------------------------------------+</code></pre>
+             
+          
+            <h2 id="tutorial_remote_inference_step_perform_predictions">步驟 5：執行模型的預測</h2>
+            <p>Amazon SageMaker 隨機分割森林演算法會設計為可偵測資料集中的異常資料點。在此範例中，您的模型旨在偵測由於重要事件而導致的計程車乘車尖峰。您可以透過為每個資料點產生異常分數，使用模型來預測異常事件。</p>
+            <p>使用下列查詢來計算整個計程車資料集的異常分數。請注意，您會參考上一個步驟中在 CREATE MODEL 陳述式中使用的函數。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    ride_timestamp,
+    nbr_passengers,
+    public.remote_fn_rcf(nbr_passengers) AS score
+FROM
+    public.rcf_taxi_data;</code></pre>
+             
+               <h3 id="tutorial_remote_inference_anomalies">檢查是高分和低分的異常 (選擇性)</h3>
+               <p>執行下列查詢，以尋找分數大於平均分數三個標準差的任何資料點。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">WITH score_cutoff AS (
+    SELECT
+        STDDEV(public.remote_fn_rcf(nbr_passengers)) AS std,
+        AVG(public.remote_fn_rcf(nbr_passengers)) AS mean,
+        (mean + 3 * std) AS score_cutoff_value
+    FROM
+        public.rcf_taxi_data
+)
+SELECT
+    ride_timestamp,
+    nbr_passengers,
+    public.remote_fn_rcf(nbr_passengers) AS score
+FROM
+    public.rcf_taxi_data
+WHERE
+    score &gt; (
+        SELECT
+            score_cutoff_value
+        FROM
+            score_cutoff
+    )
+ORDER BY
+    2 DESC;</code></pre>
+               <p>執行下列查詢，以尋找分數大於平均分數三個標準差的任何資料點。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">WITH score_cutoff AS (
+    SELECT
+        STDDEV(public.remote_fn_rcf(nbr_passengers)) AS std,
+        AVG(public.remote_fn_rcf(nbr_passengers)) AS mean,
+        (mean - 3 * std) AS score_cutoff_value
+    FROM
+        public.rcf_taxi_data
+)
+SELECT
+    ride_timestamp,
+    nbr_passengers,
+    public.remote_fn_rcf(nbr_passengers) AS score
+FROM
+    public.rcf_taxi_data
+WHERE
+    score &lt; (
+        SELECT
+            score_cutoff_value
+        FROM
+            score_cutoff
+    )
+ORDER BY
+    2 DESC;</code></pre>
+             
+          
+            <h2 id="tutorial_remote_inference_related_topics">相關主題</h2>
+            <p>如需 Amazon Redshift ML 的詳細資訊，請參閱下列文件：</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem"> 
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">使用 Amazon Redshift ML 的成本</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">CREATE MODEL 操作</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">EXPLAIN_MODEL 函數</a></p>
+                  </li></ul></div>
+            <p>如需有關機器學習的詳細資訊，請參閱下列文件：</p>
+            <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">機器學習概述</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">適用於新手和專家的機器學習</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">什麼是機器學習預測的公平性和模型解釋性？</a></p>
+                  </li></ul></div>
+         <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial_customer_churn.html">教學課程：建置客戶流失模型</div><div id="next" class="next-link" accesskey="n" href="./tutorial_k-means_clustering.html">教學課程：建置 K 平均值叢集模型</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_remote_inference.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_remote_inference.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
