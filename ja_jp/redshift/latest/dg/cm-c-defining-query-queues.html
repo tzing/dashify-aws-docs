@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>手動 WLM を実装する - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="cm-c-defining-query-queues" /><meta name="default_state" content="cm-c-defining-query-queues" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="description" content="クエリキューを定義するには、クラスターの Amazon Redshift で手動 WLM 設定を変更します。スーパーユーザーキューに加えて最大 8 個までのクエリキューを定義します。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-defining-query-queues.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="手動 WLM を実装する" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>手動 WLM を実装する - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#cm-c-defining-query-queues" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "ワークロード管理の実装",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "手動 WLM を実装する",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#cm-c-defining-query-queues" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#concurrency-scaling-mode">同時実行スケーリングモード</a><a href="#cm-c-defining-query-queues-concurrency-level">同時実行レベル</a><a href="#cm-c-defining-query-queues-user-groups">ユーザーグループ</a><a href="#cm-c-defining-query-queues-query-groups">クエリグループ</a><a href="#wlm-wildcards">ワイルドカード</a><a href="#wlm-memory-percent">使用する WLM メモリの割合</a><a href="#wlm-timeout">WLM タイムアウト</a><a href="#wlm-query-monitoring-rules">クエリのモニタリングルール</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="cm-c-defining-query-queues">手動 WLM を実装する</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>手動 WLM では、WLM 設定を変更して、実行時間が長いクエリと短いクエリ用に異なるキューを作成することによって、システムパフォーマンスとユーザーエクスペリエンスを管理できます。</p><p>ユーザーが Amazon Redshift でクエリを実行すると、クエリはクエリキューにルーティングされます。各クエリキューには、いくつかのクエリスロットが含まれています。各キューには、クラスターの使用可能なメモリの一部が割り当てられます。キューのメモリは、キューのクエリスロットに分けられます。Amazon Redshift では、自動 WLM を使用してクエリの同時実行数を管理できます。詳細については、「<a href="./automatic-wlm.html">自動 WLM の実装</a>」を参照してください。</p><p>または、クエリキューごとに WLM プロパティを設定できます。このようにして、メモリをスロット間に割り当てる方法と、ランタイムに特定のキューにクエリをルーティングする方法を指定します。実行時間の長いクエリをキャンセルするように WLM プロパティを設定することもできます。</p><p>デフォルトでは、Amazon Redshift は次のクエリキューを設定します。</p><div class="itemizedlist">
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p> <b>1 つのスーパーユーザーキュー</b> </p>
+            <p>スーパーユーザーキューは、スーパーユーザー専用に予約されており、設定することはできません。このキューを使用するのは、システムに影響を与えるクエリを実行したり、トラブルシューティング目的でクエリを実行したりする場合に限ります。例えば、ユーザーの実行時間が長いクエリをキャンセルしたり、ユーザーをデータベースに追加したりする必要がある場合にこのキューを使用します。これを使用してルーチンクエリを実行しないでください。このキューはコンソールには表示されませんが、データベースのシステムテーブルに 5 番目のキューとして表示されます。スーパーユーザーキューでクエリを実行するには、ユーザーはスーパーユーザーとしてログインし、事前定義された <code class="code">superuser</code> クエリグループを使用してクエリを実行する必要があります。</p>
+         </li><li class="listitem">
+            <p> <b>1 つのデフォルトのユーザーキュー</b> </p>
+            <p>デフォルトキューは、最初は 5 つのクエリを同時に実行するように設定されています。手動 WLM を使用するときには、デフォルトキューの同時実行数、タイムアウト、メモリ割り当ての各プロパティを変更することはできますが、ユーザーグループまたはクエリグループを指定することはできません。デフォルトキューは、WLM 設定の最後のキューにする必要があります。他のキューにルーティングされないクエリはすべて、デフォルトキューで実行されます。</p>
+         </li></ul></div><p>クエリキューは WLM 設定で定義されます。WLM 設定はパラメータグループの編集可能なパラメータ（<code class="code">wlm_json_configuration</code>）であり、1 つ以上のクラスターと関連付けることができます。詳細については、「<em>Amazon Redshift 管理ガイド</em>」の「<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/workload-mgmt-config.html">ワークロード管理の設定</a>」を参照してください。</p><p>デフォルトの WLM 設定にクエリキューを追加することができます (最大合計 8 つのユーザーキュー)。クエリキューごとに以下を設定できます。</p><div class="itemizedlist">
+          
+          
+          
+          
+          
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>同時実行スケーリングモード </p>
+         </li><li class="listitem">
+            <p>同時実行レベル </p>
+         </li><li class="listitem">
+            <p>ユーザーグループ </p>
+         </li><li class="listitem">
+            <p>クエリグループ </p>
+         </li><li class="listitem">
+            <p>使用する WLM メモリの割合</p>
+         </li><li class="listitem">
+            <p>WLM タイムアウト</p>
+         </li><li class="listitem">
+            <p>WLM クエリキューのホッピング</p>
+         </li><li class="listitem">
+            <p>クエリのモニタリングルール</p>
+         </li></ul></div>
+         <h2 id="concurrency-scaling-mode">同時実行スケーリングモード</h2>
+         <p>同時実行スケーリングが有効化された状態で、読み取りと書き込みクエリの同時実行の増加に対応する必要がある場合、Amazon Redshift は新たなクラスター容量を自動的に追加します。クエリをメインクラスターと同時実行スケーリングクラスターのどちらで実行しても、ユーザーには最新のデータが表示されます。</p>
+         <p>WLM キューを設定することで、どのクエリを同時実行スケーリングクラスターに送信するかを管理します。キューに対して同時実行スケーリングを有効にすると、対象クエリは待機することなく同時実行クラスターに送信されます。詳細については、「<a href="./concurrency-scaling.html">同時実行スケーリングを使用する</a>」を参照してください。</p>
+       
+         <h2 id="cm-c-defining-query-queues-concurrency-level">同時実行レベル</h2>
+         <p>キューのクエリは、キューに対して定義された WLM クエリスロットの数または<em>同時実行</em>レベルに達するまで、同時に実行されます。その後、以降のキューはキューで待機します。</p>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>WLM の同時実行レベルは、クラスターに対して同時実行可能なユーザー接続の数とは異なります。詳細については、「<em>Amazon Redshift 管理ガイド</em>」の「<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/connecting-to-cluster.html">クラスターへの接続</a>」を参照してください。</p></div></div>
+         <p>自動 WLM 設定 (推奨) では、同時実行レベルは <b>[自動]</b> に設定されます。Amazon Redshift はメモリをクエリに動的に割り当てます。その後、同時実行数が決まります。これは、実行中のクエリとキューに登録されたクエリの両方に必要なリソースに基づきます。自動 WLM は設定できません。詳細については、「<a href="./automatic-wlm.html">自動 WLM の実装</a>」を参照してください。</p>
+        
+         <p>手動 WLM 設定では、Amazon Redshift は各キューに固定量のメモリを静的に割り当てます。キューのメモリは、クエリスロットに均等に分割されます。例として、キューにクラスターのメモリの 20% が割り当てられ、スロットが 10 個ある場合、各クエリにはクラスターのメモリの 2% が割り当てられます。メモリ割り当ては、同時実行されるクエリの数とは関係なく、固定量のままです。このようにメモリ割り当てが固定されているため、スロット数が 5 のときにメモリ内で全体を実行できるクエリは、スロット数が 20 に引き上げられると、中間結果をディスクに書き込むことが必要になる場合があります。この場合、キューのメモリにおける各クエリのシェアは、5 分の 1 から 20 分の 1 に減少します。ディスク I/O が余分に発生すると、パフォーマンスが低下する可能性があります。</p>
+         <p>すべてのユーザー定義キューの最大スロット数は 50 です。このため、デフォルトキューを含むすべてのキューの合計スロット数が制限されます。制限の対象とならない唯一のキューは、予約済みのスーパーユーザーキューです。</p>
+      
+  
+         
+   
+         <p>デフォルトでは、手動 WLM キューの同時実行レベルは 5 です。次のような場合は、同時実行レベルを引き上げるとワークロードに良い影響があることがあります。</p>
+         <div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>多数の小さいクエリが長時間実行クエリを強制的に待機させられている場合は、より多いスロット数のキューを別に作成し、小さいクエリをそのキューに割り当てます。キューの同時実行レベルが高いと各クエリスロットに割り当てられるメモリは少なくなるものの、クエリが小さい方が必要なメモリが少なくなります。</p>
+               <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>ショートクエリアクセラレーション (SQA) を有効にすると、WLM によって実行時間が短いクエリが実行時間が長いクエリよりも優先されます。このため、ショートクエリ用の個別のキューは、大部分のワークフローで不要になります。詳細については、「<a href="./wlm-short-query-acceleration.html">ショートクエリアクセラレーションを使用する</a>」を参照してください。</p></div></div>
+            </li><li class="listitem">
+               <p>それぞれが単一のスライス上のデータにアクセスする複数のクエリがある場合は、それらのクエリを同時に実行するように個別の WLM キューを設定します。Amazon Redshift は、同時実行クエリを別々のスライスに割り当てます。これにより、複数のクエリを複数のスライスで並行して実行できます。例えば、クエリが分散キーに関する述語を持つ単純な集計である場合、クエリのデータは単一のスライスに配置されます。</p>
+            </li></ul></div>
+    
+          
+            <h3 id="cm-c-defining-query-queues-concurrency-level-example">手動 WLM の例</h3>
+            <p> この例は、スロットとメモリの割り当て方法を示す簡単な手動 WLM シナリオです。手動 WLM は、次の 3 つのキューを使用して実装します。</p>
+            <div class="itemizedlist">
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem"><p><em>データインジェストキュー</em> - これは、データを取り込むために設定されます。クラスターのメモリの 20% が割り当てられ、5 つのスロットがあります。その後、キュー内で 5 つのクエリを同時に実行でき、それぞれにメモリの 4% が割り当てられます。</p></li><li class="listitem"><p><em>データサイエンティストキュー</em> - これは、メモリを大量に消費するクエリ用に設計されています。クラスターのメモリの 20% が割り当てられ、5 つのスロットがあります。その後、キュー内で 5 つのクエリを同時に実行でき、それぞれにメモリの 8% が割り当てられます。</p></li><li class="listitem"><p><em>デフォルトキュー</em> - これは組織内のほとんどのユーザー向けに設計されています。これには、一般にクエリの実行時間が短いか中程度であり、複雑ではない営業グループや経理グループも含まれます。クラスターのメモリの 40% が割り当てられ、40 のスロットがあります。このキューでは 40 のクエリを同時に実行でき、各クエリにはメモリの 1% が割り当てられます。すべてのキューの制限は 50 であるため、これは、このキューに割り当てることができる最大スロット数です。</p></li></ul></div>
+  
+          
+         
+         <p>自動 WLM を実行し、15 を超えるクエリを並列実行する必要があるワークロードの場合は、同時実行スケーリングを有効にすることをお勧めします。これは、クエリスロット数を 15 より大きくすると、システムリソースの競合が発生し、単一クラスターの全体的なスループットが制限される可能性があるためです。同時実行スケーリングでは、設定された数の同時実行スケーリングクラスターまで数百のクエリを並列実行できます。同時実行スケーリングクラスターの数は、<a href="./r_max_concurrency_scaling_clusters.html">max_concurrency_scaling_clusters</a> によって制御されます。同時実行スケーリングの詳細については、「<a href="./concurrency-scaling.html">同時実行スケーリングを使用する</a>」を参照してください。</p>
+            
+             
+         
+         
+         
+         
+   
+         <p>詳細については、「<a href="./query-performance-improvement-opportunities.html"> クエリパフォーマンスの向上</a>」を参照してください。</p>
+       
+         <h2 id="cm-c-defining-query-queues-user-groups">ユーザーグループ</h2>
+         
+         
+         <p>各ユーザーグループ名を指定するか、ワイルドカードを使用して、一連のユーザーグループをキューに割り当てることができます。リストされたユーザーグループのメンバーがクエリを実行すると、そのクエリは対応するキューで実行されます。キューに割り当てることができるユーザーグループの数に設定された制限はありません。詳細については、「<a href="./cm-c-executing-queries.html#cm-c-executing-queries-assigning-queries-to-queues-based-on-user-groups">ユーザーグループに基づくクエリのキューへの割り当て</a>」を参照してください。</p>
+       
+         <h2 id="cm-c-defining-query-queues-query-groups">クエリグループ </h2>
+         
+         
+         <p>各クエリグループ名を指定するか、ワイルドカードを使用して、一連のクエリグループをキューに割り当てることができます。クエリグループはラベルにすぎません。実行時に、一連のクエリにクエリグループラベルを割り当てることができます。一覧表示されたクエリグループに割り当てられたクエリは、対応するキューで実行されます。キューに割り当てることができるクエリグループの数に設定された制限はありません。詳細については、「<a href="./cm-c-executing-queries.html#cm-c-executing-queries-assigning-a-query-to-a-query-group">クエリグループへのクエリの割り当て</a>」を参照してください。</p>
+       
+         <h2 id="wlm-wildcards">ワイルドカード</h2>
+         
+         <p>WLM キュー設定でワイルドカードを有効にした場合は、ユーザーグループやクエリグループをキューに個別に割り当てるか、Unix シェル形式のワイルドカードを使用して割り当てることができます。パターンマッチングでは大文字と小文字が区別されません。</p>
+         <p>例えば、ワイルドカード文字「*」は任意の文字数に一致します。たとえば、キューのユーザーグループのリストに <code class="code">dba_*</code> を追加すると、<code class="code">dba_</code> で始まる名前を持つグループに属する、ユーザーが実行するすべてのクエリは、そのキューに割り当てられます。例は、<code class="code">dba_admin</code> や <code class="code">DBA_primary</code> です。ワイルドカード文字「?」は、任意の 1 文字に一致します。したがって、キューにユーザーグループ <code class="code">dba?1</code> が含まれている場合、<code class="code">dba11</code> と <code class="code">dba21</code> は一致しますが、<code class="code">dba12</code> は一致しません。</p>
+         <p>ワイルドカードはデフォルトでオフになっています。</p>
+       
+         <h2 id="wlm-memory-percent">使用する WLM メモリの割合</h2>
+         <p>自動 WLM 設定の場合、メモリの割合は <code class="userinput">auto</code> に設定されます。詳細については、「<a href="./automatic-wlm.html">自動 WLM の実装</a>」を参照してください。</p>
+         
+         <p>手動 WLM 設定の場合、クエリに割り当てる使用可能なメモリの量を指定するには、<code class="code">WLM Memory Percent to Use</code> パラメータを設定できます。デフォルトでは、各ユーザー定義キューには、ユーザー定義クエリで使用可能なメモリが均等に割り当てられます。例えば、4 つのユーザー定義キューがある場合、各キューには使用可能なメモリの 25 パーセントが割り当てられます。Superuser キューには、独自に割り当てられているメモリがあり、変更できません。割り当て量を変更するには、各キューのメモリの割合を整数で割り当てます (最大で合計 100 パーセント)。未割り当てのメモリは Amazon Redshift によって管理され、処理用に追加メモリをリクエストするキューに一時的に付与できます。</p>
+         <p>例えば、4 つのキューを設定する場合、20 パーセント、30 パーセント、15 パーセント、15 パーセントのようにメモリを割り当てることができます。残りの 20 パーセントは未割り当てになり、サービスによって管理されます。</p>
+       
+         <h2 id="wlm-timeout">WLM タイムアウト</h2>
+         <p>WLM タイムアウト (<code class="code">max_execution_time</code>) は廃止されました。代わりに、<code class="code">query_execution_time</code> を使用してクエリモニタリングルール (QMR) を作成して、経過したクエリ実行時間を制限します。詳細については、「<a href="./cm-c-wlm-query-monitoring-rules.html">WLM クエリモニタリングルール</a>」を参照してください。</p>
+         
+         <p>各キューについて WLM タイムアウト値を設定することで、特定の WLM キュー内でクエリが使用できる時間を制限することができます。タイムアウトパラメータは、クエリをキャンセルまたはホップする前に Amazon Redshift がクエリの実行を待機する時間を、ミリ秒単位で指定します。タイムアウトはクエリの実行時間に基づいていて、キューでの待機時間は含まれません。</p>
+         <p>WLM は、<a href="./r_CREATE_TABLE_AS.html">CREATE TABLE AS</a> (CTAS) ステートメントと読み取り専用クエリ (SELECT ステートメントなど) のホップを試みます。ホップできないクエリはキャンセルされます。詳細については、「<a href="./wlm-queue-hopping.html">WLM クエリキューのホッピング</a>」を参照してください。</p>
+         <p>WLM タイムアウトは returning 状態に達したクエリには適用されません。クエリの状態を表示するには、<a href="./r_STV_WLM_QUERY_STATE.html">STV_WLM_QUERY_STATE</a> システムテーブルを参照してください。COPY ステートメントと、ANALYZE や VACUUM などのメンテナンスオペレーションは、WLM タイムアウトの対象ではありません。</p>
+         <p>WLM タイムアウトの機能は、<a href="./r_statement_timeout.html">statement_timeout</a> 設定パラメータと似ています。相違点は、<code class="code">statement_timeout</code> 設定パラメータがクラスター全体に適用されるのに対して、WLM タイムアウトは WLM 設定の単一のキューに固有であることです。</p>
+         <p><a href="./r_statement_timeout.html">statement_timeout</a> も指定されている場合、statement_timeout および WLM タイムアウト (max_execution_time) の低い方が使用されます。</p>
+       
+         <h2 id="wlm-query-monitoring-rules">クエリのモニタリングルール</h2>
+         
+
+         <p>クエリモニタリングルールは、WLM キューのメトリクスベースのパフォーマンスの境界を定義し、クエリがこれらの境界を超えた場合のアクションを指定します。例えば、実行時間の短いクエリ専用のキューには、60 秒以上実行されるクエリをキャンセルするルールを作成できます。デザインの不十分なクエリを追跡する目的で、ネステッドループを含むクエリを記録する別のルールを設定することができます。詳細については、「<a href="./cm-c-wlm-query-monitoring-rules.html">WLM クエリモニタリングルール</a>」を参照してください。</p>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./query-priority.html">クエリ優先度</div><div id="next" class="next-link" accesskey="n" href="./wlm-queue-hopping.html">WLM クエリキューのホッピング</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

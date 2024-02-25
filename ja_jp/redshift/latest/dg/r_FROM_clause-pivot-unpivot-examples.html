@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>PIVOT と UNPIVOT の例 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="r_FROM_clause-pivot-unpivot-examples" /><meta name="default_state" content="r_FROM_clause-pivot-unpivot-examples" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" /><meta name="description" content="PIVOT を使用して行を列として出力したり、UNPIVOT を使用して列を行として出力する例を示します。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="PIVOT と UNPIVOT の例" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>PIVOT と UNPIVOT の例 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#r_FROM_clause-pivot-unpivot-examples" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "SQL リファレンス",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm_chap_SQLCommandRef.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "SQL コマンド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_SQL_commands.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "SELECT",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_SELECT_synopsis.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "FROM 句",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_FROM_clause30.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 8,
+        "name" : "PIVOT と UNPIVOT の例",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_FROM_clause30.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#r_FROM_clause-pivot-unpivot-examples" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#r_FROM_clause-pivot-examples">PIVOT の例</a><a href="#r_FROM_clause-unpivot-examples">UNPIVOT の例</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="r_FROM_clause-pivot-unpivot-examples">PIVOT と UNPIVOT の例</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>PIVOT と UNPIVOT は FROM 句のパラメータで、クエリ出力をそれぞれ行から列、列から行にローテーションします。クエリ結果は読みやすい表形式で示されます。次の例では、テストデータとクエリを使用してその使用方法を示します。</p><p>これらのパラメータおよび他のパラメータの詳細については、「<a href="https://docs.aws.amazon.com/redshift/latest/dg/r_FROM_clause30.html">FROM 句</a>」を参照してください。</p>
+               <h2 id="r_FROM_clause-pivot-examples">PIVOT の例</h2>
+               <p>サンプルテーブルとデータをセットアップし、それを使用して後続のサンプルクエリを実行します。</p>
+
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE part (
+    partname varchar,
+    manufacturer varchar,
+    quality int,
+    price decimal(12, 2)
+);
+
+INSERT INTO part VALUES ('prop', 'local parts co', 2, 10.00);
+INSERT INTO part VALUES ('prop', 'big parts co', NULL, 9.00);
+INSERT INTO part VALUES ('prop', 'small parts co', 1, 12.00);
+
+INSERT INTO part VALUES ('rudder', 'local parts co', 1, 2.50);
+INSERT INTO part VALUES ('rudder', 'big parts co', 2, 3.75);
+INSERT INTO part VALUES ('rudder', 'small parts co', NULL, 1.90);
+
+INSERT INTO part VALUES ('wing', 'local parts co', NULL, 7.50);
+INSERT INTO part VALUES ('wing', 'big parts co', 1, 15.20);
+INSERT INTO part VALUES ('wing', 'small parts co', NULL, 11.80);</code></pre>
+
+               <p><code class="code">price</code> で <code class="code">AVG</code> を集計した <code class="code">partname</code> の PIVOT。</p>
+   
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM (SELECT partname, price FROM part) PIVOT (
+    AVG(price) FOR partname IN ('prop', 'rudder', 'wing')
+);</code></pre>
+               <p>このクエリでは次の出力が生成されます。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">  prop   |  rudder  |  wing
+---------+----------+---------
+ 10.33   | 2.71     | 11.50</code></pre>
+               <p>前の例では、結果が列に変換されています。次の例は、平均価格を列ではなく行で返す <code class="code">GROUP BY</code> クエリを示しています。</p>
+ 
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT partname, avg(price)
+FROM (SELECT partname, price FROM part)
+WHERE partname IN ('prop', 'rudder', 'wing')
+GROUP BY partname;</code></pre>
+               <p>このクエリでは次の出力が生成されます。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> partname |  avg
+----------+-------
+ prop     | 10.33
+ rudder   |  2.71
+ wing     | 11.50</code></pre>
+               <p><code class="code">manufacturer</code> を暗黙の列として扱う <code class="code">PIVOT</code> の例。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM (SELECT quality, manufacturer FROM part) PIVOT (
+    count(*) FOR quality IN (1, 2, NULL)
+);</code></pre>
+               <p>このクエリでは次の出力が生成されます。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> manufacturer      | 1  | 2  | null
+-------------------+----+----+------
+ local parts co    | 1  | 1  |  1
+ big parts co      | 1  | 1  |  1
+ small parts co    | 1  | 0  |  2</code></pre>
+               <p> <code class="code">PIVOT</code> 定義で参照されていない入力テーブルの列は、結果テーブルに暗黙的に追加されます。前出の例での <code class="code">manufacturer</code> 列が、これに当てはまります。またこの例からは、<code class="code">NULL</code>が <code class="code">IN</code> 演算子で有効な値であることもわかります。</p>
+               <p>上記の例の <code class="code">PIVOT</code> では、<code class="code">GROUP BY</code>を含む下記のクエリと同様の情報を返します。相違点は、列 <code class="code">2</code> と manufacturer <code class="code">small parts co</code> に対し、<code class="code">PIVOT</code> が値 <code class="code">0</code> を返していることです。<code class="code">GROUP BY</code> クエリには対応する行が含まれていません。行が特定の列に入力するデータを持たない場合、ほとんどのケースで <code class="code">PIVOT</code> は <code class="code">NULL</code> を挿入します。ただし、カウント集計は <code class="code">NULL</code> を返さないので、<code class="code">0</code> がデフォルト値として使用されます。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT manufacturer, quality, count(*)
+FROM (SELECT quality, manufacturer FROM part)
+WHERE quality IN (1, 2) OR quality IS NULL
+GROUP BY manufacturer, quality
+ORDER BY manufacturer;</code></pre>
+               <p>このクエリでは次の出力が生成されます。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> manufacturer        | quality | count
+---------------------+---------+-------
+ big parts co        |         |     1
+ big parts co        |       2 |     1
+ big parts co        |       1 |     1
+ local parts co      |       2 |     1
+ local parts co      |       1 |     1
+ local parts co      |         |     1
+ small parts co      |       1 |     1
+ small parts co      |         |     2</code></pre>
+               <p> PIVOT 演算子は、集計式および <code class="code">IN</code> 演算子の各値に関して、オプションのエイリアスを受け入れます。エイリアスは、列名をカスタマイズするために使用されます。集計のエイリアスがない場合は、<code class="code">IN</code>リストのエイリアスのみが使用されます。それ以外の場合は、集計のエイリアスが列名に (名前を区切るために) アンダースコアとともに追加されます。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM (SELECT quality, manufacturer FROM part) PIVOT (
+    count(*) AS count FOR quality IN (1 AS high, 2 AS low, NULL AS na)
+);</code></pre>
+               <p>このクエリでは次の出力が生成されます。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> manufacturer      | high_count  | low_count | na_count
+-------------------+-------------+-----------+----------
+ local parts co    |           1 |         1 |        1
+ big parts co      |           1 |         1 |        1
+ small parts co    |           1 |         0 |        2</code></pre>
+               
+               
+               
+    <p>次のサンプルテーブルとデータを設定し、これらを使用して後続のサンプルクエリを実行します。データは、複数のホテルの予約日を表しています。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE bookings (
+    booking_id int,
+    hotel_code char(8),
+    booking_date date,
+    price decimal(12, 2)
+);
+
+INSERT INTO bookings VALUES (1, 'FOREST_L', '02/01/2023', 75.12);
+INSERT INTO bookings VALUES (2, 'FOREST_L', '02/02/2023', 75.00);
+INSERT INTO bookings VALUES (3, 'FOREST_L', '02/04/2023', 85.54);
+
+INSERT INTO bookings VALUES (4, 'FOREST_L', '02/08/2023', 75.00);
+INSERT INTO bookings VALUES (5, 'FOREST_L', '02/11/2023', 75.00);
+INSERT INTO bookings VALUES (6, 'FOREST_L', '02/14/2023', 90.00);
+
+INSERT INTO bookings VALUES (7, 'FOREST_L', '02/21/2023', 60.00);
+INSERT INTO bookings VALUES (8, 'FOREST_L', '02/22/2023', 85.00);
+INSERT INTO bookings VALUES (9, 'FOREST_L', '02/27/2023', 90.00);
+
+INSERT INTO bookings VALUES (10, 'DESERT_S', '02/01/2023', 98.00);
+INSERT INTO bookings VALUES (11, 'DESERT_S', '02/02/2023', 75.00);
+INSERT INTO bookings VALUES (12, 'DESERT_S', '02/04/2023', 85.00);
+
+INSERT INTO bookings VALUES (13, 'DESERT_S', '02/05/2023', 75.00);
+INSERT INTO bookings VALUES (14, 'DESERT_S', '02/06/2023', 34.00);
+INSERT INTO bookings VALUES (15, 'DESERT_S', '02/09/2023', 85.00);
+
+INSERT INTO bookings VALUES (16, 'DESERT_S', '02/12/2023', 23.00);
+INSERT INTO bookings VALUES (17, 'DESERT_S', '02/13/2023', 76.00);
+INSERT INTO bookings VALUES (18, 'DESERT_S', '02/14/2023', 85.00);
+
+INSERT INTO bookings VALUES (19, 'OCEAN_WV', '02/01/2023', 98.00);
+INSERT INTO bookings VALUES (20, 'OCEAN_WV', '02/02/2023', 75.00);
+INSERT INTO bookings VALUES (21, 'OCEAN_WV', '02/04/2023', 85.00);
+
+INSERT INTO bookings VALUES (22, 'OCEAN_WV', '02/06/2023', 75.00);
+INSERT INTO bookings VALUES (23, 'OCEAN_WV', '02/09/2023', 34.00);
+INSERT INTO bookings VALUES (24, 'OCEAN_WV', '02/12/2023', 85.00);
+
+INSERT INTO bookings VALUES (25, 'OCEAN_WV', '02/13/2023', 23.00);
+INSERT INTO bookings VALUES (26, 'OCEAN_WV', '02/14/2023', 76.00);
+INSERT INTO bookings VALUES (27, 'OCEAN_WV', '02/16/2023', 85.00);
+
+INSERT INTO bookings VALUES (28, 'CITY_BLD', '02/01/2023', 98.00);
+INSERT INTO bookings VALUES (29, 'CITY_BLD', '02/02/2023', 75.00);
+INSERT INTO bookings VALUES (30, 'CITY_BLD', '02/04/2023', 85.00);
+
+INSERT INTO bookings VALUES (31, 'CITY_BLD', '02/12/2023', 75.00);
+INSERT INTO bookings VALUES (32, 'CITY_BLD', '02/13/2023', 34.00);
+INSERT INTO bookings VALUES (33, 'CITY_BLD', '02/17/2023', 85.00);
+
+INSERT INTO bookings VALUES (34, 'CITY_BLD', '02/22/2023', 23.00);
+INSERT INTO bookings VALUES (35, 'CITY_BLD', '02/23/2023', 76.00);
+INSERT INTO bookings VALUES (36, 'CITY_BLD', '02/24/2023', 85.00);</code></pre>       
+               
+               <p> このサンプルクエリでは、予約レコードを集計し、週ごとの合計を示します。各週の終了日が列名になります。</p>
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT * FROM
+    (SELECT
+       booking_id,
+       (date_trunc('week', booking_date::date) + '5 days'::interval)::date as enddate,
+       hotel_code AS "hotel code"
+FROM bookings
+) PIVOT (
+    count(booking_id) FOR enddate IN ('2023-02-04','2023-02-11','2023-02-18') 
+);</code></pre>
+               <p>このクエリでは次の出力が生成されます。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> hotel code | 2023-02-04  | 2023-02-11 | 2023-02-18
+------------+-------------+------------+----------
+ FOREST_L   |           3 |          2 |        1
+ DESERT_S   |           4 |          3 |        2
+ OCEAN_WV   |           3 |          3 |        3
+ CITY_BLD   |           3 |          1 |        2</code></pre>
+               
+              
+              
+              
+               <p> Amazon Redshift は、複数の列を組み合わせたクロス集計をサポートしていません。ただし、次のようなクエリを使用して、PIVOT による集計と同様に、行データを列に変換できます。ここでは、前の例と同じ予約サンプルデータを使用します。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT 
+  booking_date,
+  MAX(CASE WHEN hotel_code = 'FOREST_L' THEN 'forest is booked' ELSE '' END) AS FOREST_L,
+  MAX(CASE WHEN hotel_code = 'DESERT_S' THEN 'desert is booked' ELSE '' END) AS DESERT_S,
+  MAX(CASE WHEN hotel_code = 'OCEAN_WV' THEN 'ocean is booked' ELSE '' END)  AS OCEAN_WV
+FROM bookings
+GROUP BY booking_date
+ORDER BY booking_date asc;</code></pre>
+               <p>サンプルクエリを実行すると、予約されたホテルを示す短いフレーズの横に予約日が表示されます。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> booking_date  | forest_l         | desert_s         | ocean_wv
+---------------+------------------+------------------+--------------------
+ 2023-02-01    | forest is booked | desert is booked |  ocean is booked
+ 2023-02-02    | forest is booked | desert is booked |  ocean is booked
+ 2023-02-04    | forest is booked | desert is booked |  ocean is booked
+ 2023-02-05    |                  | desert is booked |        
+ 2023-02-06    |                  | desert is booked |         </code></pre>
+
+               <p><code class="code">PIVOT</code> の使用に関する注意事項を以下に示します。</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem"><p><code class="code">PIVOT</code> を適用可能なのはテーブル、サブクエリ、および共通テーブル式 (CTE) です。<code class="code">JOIN</code> 式、再帰的CTE、<code class="code">PIVOT</code>、および <code class="code">UNPIVOT</code> 式のいずれにも <code class="code">PIVOT</code> を適用することはできません。さらに、ネストされていない <code class="code">SUPER</code> 式、ならびに Redshift Spectrum のネストされたテーブルもサポートされません。</p></li><li class="listitem"><p> <code class="code">PIVOT</code> では <code class="code">COUNT</code>、<code class="code">SUM</code>、<code class="code">MIN</code>、<code class="code">MAX</code>、および <code class="code">AVG</code> 集計関数がサポートされています。</p></li><li class="listitem"><p><code class="code">PIVOT</code> 集計式は、サポートされた集計関数に対する呼び出しである必要があります。集計の上位にある複雑な式はサポートされていません。集計引数には、<code class="code">PIVOT</code>入力テーブル以外のテーブルへの参照を含めることはできません。親クエリに対する相関参照もサポートされません。集計引数にはサブクエリを含めることができます。これらは内部的に相関させることも、<code class="code">PIVOT</code> 入力テーブル上で相関させることもできます。</p></li><li class="listitem"><p> <code class="code">PIVOT IN</code> リスト値は、列参照またはサブクエリにすることはできません。各値は、<code class="code">FOR</code>列参照と型互換である必要があります。</p></li><li class="listitem"><p> <code class="code">IN</code> リスト値にエイリアスがない場合には、<code class="code">PIVOT</code> によりデフォルトの列名が生成されます。<code class="code">IN</code> 値が 'abc' や 5 などの定数の場合、デフォルトの列名自体も定数となります。いずれの複雑な式でも、列名は Amazon Redshift で標準のデフォルト名 (<code class="code">?column?</code> など) になります。</p></li></ul></div>
+
+
+             
+               <h2 id="r_FROM_clause-unpivot-examples">UNPIVOT の例</h2>
+               <p>サンプルデータを設定し、それを使用して後続の例を実行します。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE count_by_color (quality varchar, red int, green int, blue int);
+
+INSERT INTO count_by_color VALUES ('high', 15, 20, 7);
+INSERT INTO count_by_color VALUES ('normal', 35, NULL, 40);
+INSERT INTO count_by_color VALUES ('low', 10, 23, NULL);</code></pre>
+               <p>red、green、blue の入力列で <code class="code">UNPIVOT</code> を実行します。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM (SELECT red, green, blue FROM count_by_color) UNPIVOT (
+    cnt FOR color IN (red, green, blue)
+);</code></pre>
+               <p>このクエリでは次の出力が生成されます。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> color | cnt
+-------+-----
+ red   |  15
+ red   |  35
+ red   |  10
+ green |  20
+ green |  23
+ blue  |   7
+ blue  |  40</code></pre>
+               <p>デフォルトでは、入力列の <code class="code">NULL</code> 値はスキップされ、これに対する結果行は生成されません。</p>
+               <p>次に、<code class="code">INCLUDE NULLS</code>を含む <code class="code">UNPIVOT</code> の例を示します。</p>
+
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM (
+    SELECT red, green, blue
+    FROM count_by_color
+) UNPIVOT INCLUDE NULLS (
+    cnt FOR color IN (red, green, blue)
+);</code></pre>
+               <p>その出力を次に示します。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> color | cnt
+-------+-----
+ red   |  15
+ red   |  35
+ red   |  10
+ green |  20
+ green |
+ green |  23
+ blue  |   7
+ blue  |  40
+ blue  |  </code></pre>
+               <p><code class="code">INCLUDING NULLS</code> パラメータが設定されている場合には、<code class="code">NULL</code>入力値は結果行を生成します。</p>
+               <p>暗黙の列として <code class="code">quality</code> を含む <code class="code">The following query shows UNPIVOT</code>。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM count_by_color UNPIVOT (
+    cnt FOR color IN (red, green, blue)
+);</code></pre>
+               <p>このクエリでは次の出力が生成されます。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> quality | color | cnt
+---------+-------+-----
+ high    | red   |  15
+ normal  | red   |  35
+ low     | red   |  10
+ high    | green |  20
+ low     | green |  23
+ high    | blue  |   7
+ normal  | blue  |  40</code></pre>
+               <p><code class="code">UNPIVOT</code> 定義で参照されていない入力テーブルの列は、結果テーブルに暗黙的に追加されます。この例での <code class="code">quality</code> 列が、これに当てはまります。</p>
+               <p>次に、<code class="code">IN</code>リスト内の値のためのエイリアスを含む <code class="code">UNPIVOT</code> の例を示します。</p>
+
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM count_by_color UNPIVOT (
+    cnt FOR color IN (red AS r, green AS g, blue AS b)
+);</code></pre>
+               <p>前述のクエリでは、次の出力が生成されます。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> quality | color | cnt
+---------+-------+-----
+ high    | r     |  15
+ normal  | r     |  35
+ low     | r     |  10
+ high    | g     |  20
+ low     | g     |  23
+ high    | b     |   7
+ normal  | b     |  40</code></pre>
+               <p><code class="code">UNPIVOT</code> 演算子は、<code class="code">IN</code>リストの各値に関するオプションのエイリアスを受け入れます。各エイリアスでは、それぞれの <code class="code">value</code> 列にあるデータをカスタマイズできますます。</p>
+               <p>以下に、<code class="code">UNPIVOT</code>の使用に関する注意事項を示します。</p>
+
+               <div class="itemizedlist">
+                   
+
+                   
+
+                   
+
+               <ul class="itemizedlist"><li class="listitem"><p><code class="code">UNPIVOT</code> を適用可能なのはテーブル、サブクエリ、および共通テーブル式 (CTE) です。<code class="code">JOIN</code>式、再帰的CTE、<code class="code">PIVOT</code>、および <code class="code">UNPIVOT</code> 式のいずれにも <code class="code">UNPIVOT</code> を適用することはできません。さらに、ネストされていない <code class="code">SUPER</code> 式、ならびに Redshift Spectrum のネストされたテーブルもサポートされません。</p></li><li class="listitem"><p><code class="code">UNPIVOT IN</code> リストには、入力テーブルの列への参照のみを含める必要があります。<code class="code">IN</code> リスト列には、その全体との互換性がある共通の型が必要です。<code class="code">UNPIVOT</code> 値列には、下記の共通の型があります。<code class="code">UNPIVOT</code> 名前列の型は <code class="code">VARCHAR</code> です。</p></li><li class="listitem"><p><code class="code">IN</code> リストの値がエイリアスを持たない場合、<code class="code">UNPIVOT</code>では、デフォルト値として列名が使用されます。</p></li></ul></div>
+
+
+
+
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_FROM_clause30.html">FROM 句</div><div id="next" class="next-link" accesskey="n" href="./r_Join_examples.html">JOIN 句の例</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

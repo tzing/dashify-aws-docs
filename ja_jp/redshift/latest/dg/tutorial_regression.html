@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>チュートリアル: リグレッションモデルの構築 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_regression" /><meta name="default_state" content="tutorial_regression" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_regression.html" /><meta name="description" content="このチュートリアルでは、Amazon Redshift の機械学習モデルを作成し、推論クエリを実行するエンドツーエンドの例を示します。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_regression.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_regression.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_regression.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_regression.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_regression.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_regression.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_regression.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_regression.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_regression.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_regression.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_regression.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_regression.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_regression.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_regression.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_regression.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_regression.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_regression.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_regression.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_regression.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_regression.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_regression.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_regression.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="チュートリアル: リグレッションモデルの構築" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>チュートリアル: リグレッションモデルの構築 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_regression" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_regression.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_regression.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_regression.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Amazon Redshift での機械学習の使用",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Amazon Redshift 機械学習の開始方法",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Amazon Redshift ML のチュートリアル",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "チュートリアル: リグレッションモデルの構築",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_regression" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#tutorial_regression_tasks">ユースケースの例</a><a href="#tutorial_regression_prereqs">前提条件</a><a href="#tutorial_regression_step_load">ステップ 1: Amazon S3 から Amazon Redshift にデータをロードする</a><a href="#tutorial_regression_create_model">ステップ 2: 機械学習モデルを作成する</a><a href="#tutorial_regression_step_validate">ステップ 3: モデルを検証する</a><a href="#tutorial_regression_related_topics">関連トピック</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_regression">チュートリアル: リグレッションモデルの構築</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>このチュートリアルでは、Amazon Redshift ML を使用して機械学習リグレッションモデルを作成し、そのモデルに対して予測クエリを実行します。リグレッションモデルを使用すると、住宅の価格や、都市の自転車レンタルサービスを利用する人数など、数値的な結果を予測できます。Amazon Redshift で CREATE MODEL コマンドをトレーニングデータと共に使用します。次に、Amazon Redshift ML はモデルをコンパイルし、トレーニング済みのモデルを Redshift にインポートして、SQL 予測関数を準備します。予測関数は、Amazon Redshift の SQL クエリで使用できます。</p><p>このチュートリアルでは、Amazon Redshift ML を使用して、1 日の任意の時間にトロント市の自転車シェアサービスを利用する人の数を予測するリグレッションモデルを構築します。モデルの入力には、祝日と気象条件が含まれます。この問題には数値的な結果が必要なため、リグレッションモデルを使用します。</p><p>CREATE MODEL コマンドを使用して、トレーニングデータをエクスポートし、モデルをトレーニングし、Amazon Redshift で SQL 関数として使用できるようにします。トレーニングデータをテーブルまたは SELECT ステートメントとして指定するには、CREATE MODEL オペレーションを使用します。</p>
+               <h2 id="tutorial_regression_tasks">ユースケースの例</h2>
+               <p>Amazon Redshift ML では、カスタマーの生涯価値を予測するなど、その他のリグレッションの問題を解決できます。また、Redshift ML を使用して、最も収益性の高い価格と製品の売上を予測することもできます。</p>
+            <p><b>[Tasks]</b> (タスク)</p><div class="itemizedlist">
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>前提条件</p>
+               </li><li class="listitem">
+                  <p>ステップ 1: Amazon S3 から Amazon Redshift にデータをロードする</p>
+               </li><li class="listitem">
+                  <p>ステップ 2: 機械学習モデルを作成する</p>
+               </li><li class="listitem">
+                  <p>ステップ 3: モデルを検証する</p>
+               </li></ul></div>
+               <h2 id="tutorial_regression_prereqs">前提条件</h2>
+               <p>このチュートリアルを完了するには、Amazon Redshift ML の「<a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">管理の設定</a>」を完了している必要があります。</p>
+             
+               <h2 id="tutorial_regression_step_load">ステップ 1: Amazon S3 から Amazon Redshift にデータをロードする</h2>
+               <p><a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">Amazon Redshift クエリエディタv2</a> を使用する次のクエリを実行します。</p>
+               <div class="orderedlist">
+                   
+                   
+                   
+                   
+               <ol><li>
+                     <p>3 つのパブリックデータセットを Amazon Redshift に読み込むには、3 つのテーブルを作成する必要があります。データセットは<a href="https://open.toronto.ca/dataset/bike-share-toronto-ridership-data/" rel="noopener noreferrer" target="_blank"><span>トロントバイクライダーシップデータ</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>、<a href="https://climate.weather.gc.ca/historical_data/search_historic_data_e.html" rel="noopener noreferrer" target="_blank"><span>履歴気象データ</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>、および<a href="https://github.com/uWaterloo/Datasets/blob/master/Holidays/holidays.csv" rel="noopener noreferrer" target="_blank"><span>履歴的な休日データ</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>を使用します。Amazon Redshift クエリエディタで次のクエリを実行し、<code class="code">ridership</code>、<code class="code">weather</code>、および <code class="code">holiday</code> という名前のテーブルを作成します。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE IF NOT EXISTS ridership (
+    trip_id INT,
+    trip_duration_seconds INT,
+    trip_start_time timestamp,
+    trip_stop_time timestamp,
+    from_station_name VARCHAR(50),
+    to_station_name VARCHAR(50),
+    from_station_id SMALLINT,
+    to_station_id SMALLINT,
+    user_type VARCHAR(20)
+);
+
+CREATE TABLE IF NOT EXISTS weather (
+    longitude_x DECIMAL(5, 2),
+    latitude_y DECIMAL(5, 2),
+    station_name VARCHAR(20),
+    climate_id BIGINT,
+    datetime_utc TIMESTAMP,
+    weather_year SMALLINT,
+    weather_month SMALLINT,
+    weather_day SMALLINT,
+    time_utc VARCHAR(5),
+    temp_c DECIMAL(5, 2),
+    temp_flag VARCHAR(1),
+    dew_point_temp_c DECIMAL(5, 2),
+    dew_point_temp_flag VARCHAR(1),
+    rel_hum SMALLINT,
+    rel_hum_flag VARCHAR(1),
+    precip_amount_mm DECIMAL(5, 2),
+    precip_amount_flag VARCHAR(1),
+    wind_dir_10s_deg VARCHAR(10),
+    wind_dir_flag VARCHAR(1),
+    wind_spd_kmh VARCHAR(10),
+    wind_spd_flag VARCHAR(1),
+    visibility_km VARCHAR(10),
+    visibility_flag VARCHAR(1),
+    stn_press_kpa DECIMAL(5, 2),
+    stn_press_flag VARCHAR(1),
+    hmdx SMALLINT,
+    hmdx_flag VARCHAR(1),
+    wind_chill VARCHAR(10),
+    wind_chill_flag VARCHAR(1),
+    weather VARCHAR(10)
+);
+
+CREATE TABLE IF NOT EXISTS holiday (holiday_date DATE, description VARCHAR(100));</code></pre>
+                  </li><li>
+                     <p>次のクエリは、前のステップで作成したテーブルにサンプルデータをロードします。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY ridership
+FROM
+    's3://redshift-ml-bikesharing-data/bike-sharing-data/ridership/' 
+    IAM_ROLE default 
+    FORMAT CSV 
+    IGNOREHEADER 1 
+    DATEFORMAT 'auto' 
+    TIMEFORMAT 'auto' 
+    REGION 'us-west-2' 
+    gzip;
+
+COPY weather
+FROM
+    's3://redshift-ml-bikesharing-data/bike-sharing-data/weather/' 
+    IAM_ROLE default 
+    FORMAT csv 
+    IGNOREHEADER 1 
+    DATEFORMAT 'auto' 
+    TIMEFORMAT 'auto' 
+    REGION 'us-west-2' 
+    gzip;
+
+COPY holiday
+FROM
+    's3://redshift-ml-bikesharing-data/bike-sharing-data/holiday/' 
+    IAM_ROLE default 
+    FORMAT csv 
+    IGNOREHEADER 1 
+    DATEFORMAT 'auto' 
+    TIMEFORMAT 'auto' 
+    REGION 'us-west-2' 
+    gzip;</code></pre>
+                  </li><li>
+                     <p>次のクエリは、<code class="code">ridership</code> および <code class="code">weather</code> データセットで変換を実行して、バイアスや異常を除去します。バイアスおよび異常を除去すると、モデルの精度が向上します。このクエリは、<code class="code">ridership_view</code> および <code class="code">weather_view</code> という名前の 2 つの新しいビューを作成することによってテーブルを単純化します。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE
+OR REPLACE VIEW ridership_view AS
+SELECT
+    trip_time,
+    trip_count,
+    TO_CHAR(trip_time, 'hh24') :: INT trip_hour,
+    TO_CHAR(trip_time, 'dd') :: INT trip_day,
+    TO_CHAR(trip_time, 'mm') :: INT trip_month,
+    TO_CHAR(trip_time, 'yy') :: INT trip_year,
+    TO_CHAR(trip_time, 'q') :: INT trip_quarter,
+    TO_CHAR(trip_time, 'w') :: INT trip_month_week,
+    TO_CHAR(trip_time, 'd') :: INT trip_week_day
+FROM
+    (
+        SELECT
+            CASE
+                WHEN TRUNC(r.trip_start_time) &lt; '2017-07-01' :: DATE THEN CONVERT_TIMEZONE(
+                    'US/Eastern',
+                    DATE_TRUNC('hour', r.trip_start_time)
+                )
+                ELSE DATE_TRUNC('hour', r.trip_start_time)
+            END trip_time,
+            COUNT(1) trip_count
+        FROM
+            ridership r
+        WHERE
+            r.trip_duration_seconds BETWEEN 60
+            AND 60 * 60 * 24
+        GROUP BY
+            1
+    );
+
+CREATE
+OR REPLACE VIEW weather_view AS
+SELECT
+    CONVERT_TIMEZONE(
+        'US/Eastern',
+        DATE_TRUNC('hour', datetime_utc)
+    ) daytime,
+    ROUND(AVG(temp_c)) temp_c,
+    ROUND(AVG(precip_amount_mm)) precip_amount_mm
+FROM
+    weather
+GROUP BY
+    1;</code></pre>
+                  </li><li>
+                     <p>次のクエリは、<code class="code">ridership_view</code> および <code class="code">weather_view</code> からの関連するすべての入力属性を <code class="code">trip_data</code> テーブル組み合わせたテーブルを作成します。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE trip_data AS
+SELECT
+    r.trip_time,
+    r.trip_count,
+    r.trip_hour,
+    r.trip_day,
+    r.trip_month,
+    r.trip_year,
+    r.trip_quarter,
+    r.trip_month_week,
+    r.trip_week_day,
+    w.temp_c,
+    w.precip_amount_mm,CASE
+        WHEN h.holiday_date IS NOT NULL THEN 1
+        WHEN TO_CHAR(r.trip_time, 'D') :: INT IN (1, 7) THEN 1
+        ELSE 0
+    END is_holiday,
+    ROW_NUMBER() OVER (
+        ORDER BY
+            RANDOM()
+    ) serial_number
+FROM
+    ridership_view r
+    JOIN weather_view w ON (r.trip_time = w.daytime)
+    LEFT OUTER JOIN holiday h ON (TRUNC(r.trip_time) = h.holiday_date);</code></pre>
+                  </li></ol></div>
+                
+                  <h3 id="tutorial_regression_view_data">サンプルデータを表示する (オプション)</h3>
+                  <p>次のクエリはテーブルのエントリを示しています。このオペレーションを実行すると、テーブルが正しく作成されたことを確認できます。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">
+SELECT * 
+FROM trip_data 
+LIMIT 5;</code></pre>
+                  <p>次は先ほどのオペレーションの出力例です。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">+---------------------+------------+-----------+----------+------------+-----------+--------------+-----------------+---------------+--------+------------------+------------+---------------+
+|      trip_time      | trip_count | trip_hour | trip_day | trip_month | trip_year | trip_quarter | trip_month_week | trip_week_day | temp_c | precip_amount_mm | is_holiday | serial_number |
++---------------------+------------+-----------+----------+------------+-----------+--------------+-----------------+---------------+--------+------------------+------------+---------------+
+| 2017-03-21 22:00:00 |         47 |        22 |       21 |          3 |        17 |            1 |               3 |             3 |      1 |                0 |          0 |             1 |
+| 2018-05-04 01:00:00 |         19 |         1 |        4 |          5 |        18 |            2 |               1 |             6 |     12 |                0 |          0 |             3 |
+| 2018-01-11 10:00:00 |         93 |        10 |       11 |          1 |        18 |            1 |               2 |             5 |      9 |                0 |          0 |             5 |
+| 2017-10-28 04:00:00 |         20 |         4 |       28 |         10 |        17 |            4 |               4 |             7 |     11 |                0 |          1 |             7 |
+| 2017-12-31 21:00:00 |         11 |        21 |       31 |         12 |        17 |            4 |               5 |             1 |    -15 |                0 |          1 |             9 |
++---------------------+------------+-----------+----------+------------+-----------+--------------+-----------------+---------------+--------+------------------+------------+---------------+</code></pre>
+                
+                
+                  <h3 id="tutorial_regression_show_correlation">属性間の相関関係を表示する (オプション)</h3>
+                  <p>相関関係の決定は、属性間の関連性の強度を測定するのに役立ちます。関連性のレベルは、ターゲット出力に何が影響するかを判断するのに役立ちます。このチュートリアルでは、ターゲット出力は <code class="code">trip_count</code> です。</p><p>次のクエリは、<code class="code">sp_correlation</code> プロシージャを作成するか、または置き換えます。<code class="code">sp_correlation</code> というストアドプロシージャを使用すると、Amazon Redshift のテーブルのある属性と他の属性の相関関係を示すことができます。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE OR REPLACE PROCEDURE sp_correlation(source_schema_name in varchar(255), source_table_name in varchar(255), target_column_name in varchar(255), output_temp_table_name inout varchar(255)) AS $$
+DECLARE
+  v_sql varchar(max);
+  v_generated_sql varchar(max);
+  v_source_schema_name varchar(255)=lower(source_schema_name);
+  v_source_table_name varchar(255)=lower(source_table_name);
+  v_target_column_name varchar(255)=lower(target_column_name);
+BEGIN
+  EXECUTE 'DROP TABLE IF EXISTS ' || output_temp_table_name;
+  v_sql = '
+SELECT
+  ''CREATE temp table '|| output_temp_table_name||' AS SELECT ''|| outer_calculation||
+  '' FROM (SELECT COUNT(1) number_of_items, SUM('||v_target_column_name||') sum_target, SUM(POW('||v_target_column_name||',2)) sum_square_target, POW(SUM('||v_target_column_name||'),2) square_sum_target,''||
+  inner_calculation||
+  '' FROM (SELECT ''||
+  column_name||
+  '' FROM '||v_source_table_name||'))''
+FROM
+  (
+  SELECT
+    DISTINCT
+    LISTAGG(outer_calculation,'','') OVER () outer_calculation
+    ,LISTAGG(inner_calculation,'','') OVER () inner_calculation
+    ,LISTAGG(column_name,'','') OVER () column_name
+  FROM
+    (
+    SELECT
+      CASE WHEN atttypid=16 THEN ''DECODE(''||column_name||'',true,1,0)'' ELSE column_name END column_name
+      ,atttypid
+      ,''CAST(DECODE(number_of_items * sum_square_''||rn||'' - square_sum_''||rn||'',0,null,(number_of_items*sum_target_''||rn||'' - sum_target * sum_''||rn||
+        '')/SQRT((number_of_items * sum_square_target - square_sum_target) * (number_of_items * sum_square_''||rn||
+        '' - square_sum_''||rn||''))) AS numeric(5,2)) ''||column_name outer_calculation
+      ,''sum(''||column_name||'') sum_''||rn||'',''||
+            ''SUM(trip_count*''||column_name||'') sum_target_''||rn||'',''||
+            ''SUM(POW(''||column_name||'',2)) sum_square_''||rn||'',''||
+            ''POW(SUM(''||column_name||''),2) square_sum_''||rn inner_calculation
+    FROM
+      (
+      SELECT
+        row_number() OVER (order by a.attnum) rn
+        ,a.attname::VARCHAR column_name
+        ,a.atttypid
+      FROM pg_namespace AS n
+        INNER JOIN pg_class AS c ON n.oid = c.relnamespace
+        INNER JOIN pg_attribute AS a ON c.oid = a.attrelid
+      WHERE a.attnum &gt; 0
+        AND n.nspname = '''||v_source_schema_name||'''
+        AND c.relname = '''||v_source_table_name||'''
+        AND a.atttypid IN (16,20,21,23,700,701,1700)
+      )
+    )
+)';
+  EXECUTE v_sql INTO v_generated_sql;
+  EXECUTE  v_generated_sql;
+END;
+$$ LANGUAGE plpgsql;</code></pre><p>次のクエリはターゲットカラム、<code class="code">trip_count</code>、およびデータセット内のその他の数値属性の相関関係を示します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">call sp_correlation(
+    'public',
+    'trip_data',
+    'trip_count',
+    'tmp_corr_table'
+);
+
+SELECT
+    *
+FROM
+    tmp_corr_table;</code></pre><p>次は先の <code class="code">sp_correlation</code> オペレーションの出力例です。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">+------------+-----------+----------+------------+-----------+--------------+-----------------+---------------+--------+------------------+------------+---------------+
+| trip_count | trip_hour | trip_day | trip_month | trip_year | trip_quarter | trip_month_week | trip_week_day | temp_c | precip_amount_mm | is_holiday | serial_number |
++------------+-----------+----------+------------+-----------+--------------+-----------------+---------------+--------+------------------+------------+---------------+
+|          1 |      0.32 |     0.01 |       0.18 |      0.12 |         0.18 |               0 |          0.02 |   0.53 |            -0.07 |      -0.13 |             0 |
++------------+-----------+----------+------------+-----------+--------------+-----------------+---------------+--------+------------------+------------+---------------+</code></pre>
+             
+               <h2 id="tutorial_regression_create_model">ステップ 2: 機械学習モデルを作成する</h2>
+               <div class="orderedlist">
+                   
+                   
+               <ol><li>
+                     <p>次のクエリは、データセットの 80% をトレーニング用に、20% を検証用に指定して、データをトレーニングセットと検証セットに分割します。トレーニングセットとは、モデルに最適なアルゴリズムを特定するための ML モデルの入力です。モデルを作成したら、検証セットを使用してモデルの精度を検証します。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE training_data AS
+SELECT
+    trip_count,
+    trip_hour,
+    trip_day,
+    trip_month,
+    trip_year,
+    trip_quarter,
+    trip_month_week,
+    trip_week_day,
+    temp_c,
+    precip_amount_mm,
+    is_holiday
+FROM
+    trip_data
+WHERE
+    serial_number &gt; (
+        SELECT
+            COUNT(1) * 0.2
+        FROM
+            trip_data
+    );
+
+CREATE TABLE validation_data AS
+SELECT
+    trip_count,
+    trip_hour,
+    trip_day,
+    trip_month,
+    trip_year,
+    trip_quarter,
+    trip_month_week,
+    trip_week_day,
+    temp_c,
+    precip_amount_mm,
+    is_holiday,
+    trip_time
+FROM
+    trip_data
+WHERE
+    serial_number &lt;= (
+        SELECT
+            COUNT(1) * 0.2
+        FROM
+            trip_data
+    );</code></pre>
+                  </li><li>
+                     <p>次のクエリは、リグレッションモデルを作成し、任意の入力日時の <code class="code">trip_count</code> 値を予測します。次の例では、<code class="replaceable"><code class="code">DOC-EXAMPLE-BUCKET</code></code> を ユーザーの S3 バケットと置換します。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL predict_rental_count
+FROM
+    training_data TARGET trip_count FUNCTION predict_rental_count 
+    IAM_ROLE default 
+    PROBLEM_TYPE regression 
+    OBJECTIVE 'mse' 
+    SETTINGS (
+        s3_bucket '<code class="replaceable">&lt;DOC-EXAMPLE-BUCKET&gt;</code>',
+        s3_garbage_collect off,
+        max_runtime 5000
+    );</code></pre>
+                  </li></ol></div>
+             
+               <h2 id="tutorial_regression_step_validate">ステップ 3: モデルを検証する</h2>
+               <div class="orderedlist">
+                   
+                   
+                   
+                   
+               <ol><li>
+                     <p>次のクエリを使用してモデルの側面を出力し、出力で平均二乗誤差メトリクスを見つけます。平均二乗誤差は、リグレッション問題の典型的な精度指標です。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">show model predict_rental_count;</code></pre>
+                  </li><li>
+                     <p>検証データに対して次の予測クエリを実行し、予測されるトリップ数と実際のトリップ数を比較します。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    trip_time,
+    actual_count,
+    predicted_count,
+    (actual_count - predicted_count) difference
+FROM
+    (
+        SELECT
+            trip_time,
+            trip_count AS actual_count,
+            PREDICT_RENTAL_COUNT (
+                trip_hour,
+                trip_day,
+                trip_month,
+                trip_year,
+                trip_quarter,
+                trip_month_week,
+                trip_week_day,
+                temp_c,
+                precip_amount_mm,
+                is_holiday
+            ) predicted_count
+        FROM
+            validation_data
+    )
+LIMIT
+    5;</code></pre>
+                  </li><li>
+                     <p>次のクエリは、検証データに基づいて平均二乗誤差と二乗平均平方根誤差を計算します。平均二乗誤差と二乗平均平方根誤差を使用して、予測された数値ターゲットと実際の数値解の間の距離を測定します。優れたモデルは、両方の指標で低いスコアになります。両方のメトリクスは、次のクエリの値を返します。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    ROUND(
+        AVG(POWER((actual_count - predicted_count), 2)),
+        2
+    ) mse,
+    ROUND(
+        SQRT(AVG(POWER((actual_count - predicted_count), 2))),
+        2
+    ) rmse
+FROM
+    (
+        SELECT
+            trip_time,
+            trip_count AS actual_count,
+            PREDICT_RENTAL_COUNT (
+                trip_hour,
+                trip_day,
+                trip_month,
+                trip_year,
+                trip_quarter,
+                trip_month_week,
+                trip_week_day,
+                temp_c,
+                precip_amount_mm,
+                is_holiday
+            ) predicted_count
+        FROM
+            validation_data
+    );</code></pre>
+                  </li><li>
+                     <p>次のクエリは、2017 年 1 月 1 日の各トリップ時間に対するトリップ数の誤差率を計算します。このクエリは、誤差率が最も低い時間から誤差率が最も高い時間にトリップ時間を並べ替えます。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    trip_time,
+    CAST(ABS(((actual_count - predicted_count) / actual_count)) * 100 AS DECIMAL (7,2)) AS pct_error
+FROM
+    (
+        SELECT
+            trip_time,
+            trip_count AS actual_count,
+            PREDICT_RENTAL_COUNT (
+                trip_hour,
+                trip_day,
+                trip_month,
+                trip_year,
+                trip_quarter,
+                trip_month_week,
+                trip_week_day,
+                temp_c,
+                precip_amount_mm,
+                is_holiday
+            ) predicted_count
+        FROM
+            validation_data
+    )
+WHERE
+   trip_time LIKE '2017-01-01 %%:%%:%%'
+ORDER BY
+   2 ASC;</code></pre>
+                  </li></ol></div>
+             
+               <h2 id="tutorial_regression_related_topics">関連トピック</h2>
+               <p>Amazon Redshift ML の詳細については、次のドキュメントを参照してください。</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">Amazon Redshift 機械学習を使用するためのコスト</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">CREATE MODEL オペレーション</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">EXPLAIN_MODEL 関数</a></p>
+                  </li></ul></div>
+               <p>機械学習の詳細については、以下のドキュメントを参照してください。</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">機械学習の概要</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">初心者やエキスパート向けの機械学習</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">機械学習予測の公平性とモデルの説明可能性とは</a></p>
+                  </li></ul></div>
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial_xgboost.html">チュートリアル: XGBoost モデルの構築</div><div id="next" class="next-link" accesskey="n" href="./tutorial_linear_learner_regression.html">チュートリアル: 線形学習によるリグレッションモデルの構築</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_regression.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_regression.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

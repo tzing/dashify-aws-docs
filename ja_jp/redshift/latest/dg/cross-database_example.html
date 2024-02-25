@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>クロスデータベースクエリの使用例 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="cross-database_example" /><meta name="default_state" content="cross-database_example" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cross-database_example.html" /><meta name="description" content="Amazon Redshift のクロスデータベースクエリの実行方法を示す例を使用します。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cross-database_example.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cross-database_example.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cross-database_example.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cross-database_example.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cross-database_example.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cross-database_example.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cross-database_example.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cross-database_example.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cross-database_example.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cross-database_example.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cross-database_example.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cross-database_example.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cross-database_example.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cross-database_example.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cross-database_example.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cross-database_example.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cross-database_example.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cross-database_example.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cross-database_example.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cross-database_example.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cross-database_example.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cross-database_example.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="クロスデータベースクエリの使用例" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>クロスデータベースクエリの使用例 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#cross-database_example" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cross-database_example.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cross-database_example.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cross-database_example.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "データベース間でのデータのクエリ",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cross-database-overview.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "クロスデータベースクエリの使用例",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cross-database-overview.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#cross-database_example" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="cross-database_example">クロスデータベースクエリの使用例</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>次の例を使用して、Amazon Redshift データベースを参照するクロスデータベースクエリの設定方法をご覧ください。</p><p>まず、Amazon Redshift クラスターにデータベース <code class="code">db1</code> と <code class="code">db2</code> およびユーザー <code class="code">user1</code> と <code class="code">user2</code> を作成します。詳細については、<a href="./r_CREATE_DATABASE.html">CREATE DATABASE</a> および <a href="./r_CREATE_USER.html">CREATE USER</a> を参照してください。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">--As user1 on db1
+CREATE DATABASE db1;
+
+CREATE DATABASE db2;
+
+CREATE USER user1 PASSWORD 'Redshift01';
+
+CREATE USER user2 PASSWORD 'Redshift01';</code></pre><p><code class="code">db1</code> の <code class="code">user1</code> として、テーブルを作成し、<code class="code">user2</code> にアクセス権限を付与し、<code class="code">table1</code> に値を挿入します。詳細については、<a href="./r_GRANT.html">GRANT</a> および <a href="./r_INSERT_30.html">INSERT</a> を参照してください。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">--As user1 on db1
+CREATE TABLE table1 (c1 int, c2 int, c3 int);
+
+GRANT SELECT ON table1 TO user2;
+
+INSERT INTO table1 VALUES (1,2,3),(4,5,6),(7,8,9);</code></pre><p><code class="code">db2</code> の <code class="code">user2</code> として、3 つの部分からなる表記を使用して <code class="code">db2</code> でデータベース間でクエリを実行します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">--As user2 on db2
+SELECT * from db1.public.table1 ORDER BY c1;
+c1 | c2  | c3
+---+-----+----
+1  |  2  | 3
+4  |  5  | 6
+7  |  8  | 9
+(3 rows)</code></pre><p><code class="code">user2</code> の <code class="code"><code class="code">db2</code></code> として、外部スキーマを作成し、外部スキーマ表記を使用して <code class="code">db2</code> でデータベース間でクエリを実行します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">--As user2 on db2
+CREATE EXTERNAL SCHEMA db1_public_sch
+FROM REDSHIFT DATABASE 'db1' SCHEMA 'public';
+
+SELECT * FROM db1_public_sch.table1 ORDER BY c1;
+
+c1  | c2 | c3
+----+----+----
+1   | 2  | 3
+4   | 5  | 6
+7   | 8  | 9
+(3 rows)</code></pre><p>さまざまなビューを作成し、それらのビューに許可を付与するには、<code class="code">db1</code> の <code class="code">user1</code> のように、次の手順を実行します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">--As user1 on db1
+CREATE VIEW regular_view AS SELECT c1 FROM table1;
+
+GRANT SELECT ON regular_view TO user2;
+
+
+CREATE MATERIALIZED VIEW mat_view AS SELECT c2 FROM table1;
+
+GRANT SELECT ON mat_view TO user2;
+
+
+CREATE VIEW late_bind_view AS SELECT c3 FROM public.table1 WITH NO SCHEMA BINDING;
+
+GRANT SELECT ON late_bind_view TO user2;</code></pre><p><code class="code">db2</code> の <code class="code">user2</code> として、3 つの部分からなる表記を使用して、次のデータベース間でクエリを実行し、特定のビューを表示します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">--As user2 on db2
+SELECT * FROM db1.public.regular_view;
+c1
+----
+1
+4
+7
+(3 rows)
+
+SELECT * FROM db1.public.mat_view;
+c2
+----
+8
+5
+2
+(3 rows)
+
+SELECT * FROM db1.public.late_bind_view;
+c3
+----
+3
+6 
+9
+(3 rows)</code></pre><p><code class="code">db2</code> の <code class="code">user2</code> として、外部スキーマ表記を使用して次のデータベース間でクエリを実行し、遅延バインディングビューをクエリします。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">--As user2 on db2
+SELECT * FROM db1_public_sch.late_bind_view;
+c3
+----
+3
+6
+9
+(3 rows)</code></pre><p><code class="code">db2</code> の <code class="code">user2</code> として、単一のクエリで接続されたテーブルを使用して次のコマンドを実行します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">--As user2 on db2
+CREATE TABLE table1 (a int, b int, c int);
+
+INSERT INTO table1 VALUES (1,2,3), (4,5,6), (7,8,9);
+
+SELECT a AS col_1, (db1.public.table1.c2 + b) AS sum_col2, (db1.public.table1.c3 + c) AS sum_col3 FROM db1.public.table1, table1 WHERE db1.public.table1.c1 = a;
+col_1 | sum_col2 | sum_col3
+------+----------+----------
+1     | 4        | 6
+4     | 10       | 12
+7     | 16       | 18
+(3 rows)</code></pre><p>次の例では、クラスター上のすべてのデータベースを一覧表示します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select database_name, database_owner, database_type 
+from svv_redshift_databases 
+where database_name in ('db1', 'db2');
+
+ database_name | database_owner | database_type 
+---------------+----------------+---------------
+ db1           |            100 | local
+ db2           |            100 | local
+(2 rows)</code></pre><p>次の例では、クラスター上のすべてのデータベースのすべての Amazon Redshift スキーマを一覧表示します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select database_name, schema_name, schema_owner, schema_type 
+from svv_redshift_schemas 
+where database_name in ('db1', 'db2');
+
+ database_name |    schema_name     | schema_owner | schema_type 
+---------------+--------------------+--------------+-------------
+ db1           | pg_catalog         |            1 | local
+ db1           | public             |            1 | local
+ db1           | information_schema |            1 | local
+ db2           | pg_catalog         |            1 | local
+ db2           | public             |            1 | local
+ db2           | information_schema |            1 | local
+(6 rows)</code></pre><p>次の例では、クラスター上のすべての Amazon Redshift テーブルまたはすべてのデータベースのビューを一覧表示します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select database_name, schema_name, table_name, table_type 
+from svv_redshift_tables 
+where database_name in ('db1', 'db2') and schema_name in ('public');
+
+ database_name | schema_name |     table_name      | table_type 
+---------------+-------------+---------------------+------------
+ db1           | public      | late_bind_view      | VIEW
+ db1           | public      | mat_view            | VIEW
+ db1           | public      | mv_tbl__mat_view__0 | TABLE
+ db1           | public      | regular_view        | VIEW
+ db1           | public      | table1              | TABLE
+ db2           | public      | table2              | TABLE
+(6 rows)</code></pre><p>次の例では、クラスター上のすべてのデータベースのすべての Amazon Redshift と外部スキーマを一覧表示します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select database_name, schema_name, schema_owner, schema_type 
+from svv_all_schemas where database_name in ('db1', 'db2') ;
+
+ database_name |    schema_name     | schema_owner | schema_type 
+---------------+--------------------+--------------+-------------
+ db1           | pg_catalog         |            1 | local
+ db1           | public             |            1 | local
+ db1           | information_schema |            1 | local
+ db2           | pg_catalog         |            1 | local
+ db2           | public             |            1 | local
+ db2           | information_schema |            1 | local
+ db2           | db1_public_sch     |            1 | external
+(7 rows)</code></pre><p>次の例では、クラスター上のすべてのデータベースのすべての Amazon Redshift と外部テーブルを一覧表示します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select database_name, schema_name, table_name, table_type 
+from svv_all_tables 
+where database_name in ('db1', 'db2') and schema_name in ('public');
+
+ database_name | schema_name |     table_name      | table_type 
+---------------+-------------+---------------------+------------
+ db1           | public      | regular_view        | VIEW
+ db1           | public      | mv_tbl__mat_view__0 | TABLE
+ db1           | public      | mat_view            | VIEW
+ db1           | public      | late_bind_view      | VIEW
+ db1           | public      | table1              | TABLE
+ db2           | public      | table2              | TABLE
+(6 rows)</code></pre><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./cross-database_usage.html">考慮事項</div><div id="next" class="next-link" accesskey="n" href="./cross-database_console.html">クエリエディタでのクロスデータベースクエリの使用</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cross-database_example.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cross-database_example.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

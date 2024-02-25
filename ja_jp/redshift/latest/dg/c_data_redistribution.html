@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>クエリプランの評価 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c_data_redistribution" /><meta name="default_state" content="c_data_redistribution" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_data_redistribution.html" /><meta name="description" content="クエリプランを評価して、データベースの分散スタイルを最適化する候補を特定します。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_data_redistribution.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c_data_redistribution.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c_data_redistribution.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c_data_redistribution.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c_data_redistribution.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c_data_redistribution.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c_data_redistribution.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c_data_redistribution.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c_data_redistribution.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c_data_redistribution.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c_data_redistribution.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_data_redistribution.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_data_redistribution.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_data_redistribution.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_data_redistribution.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c_data_redistribution.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c_data_redistribution.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c_data_redistribution.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c_data_redistribution.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_data_redistribution.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c_data_redistribution.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c_data_redistribution.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="クエリプランの評価" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>クエリプランの評価 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c_data_redistribution" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_data_redistribution.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_data_redistribution.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_data_redistribution.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "自動テーブル最適化の使用",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/t_Creating_tables.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "データディストリビューションスタイルの操作",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/t_Distributing_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "クエリプランの評価",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/t_Distributing_data.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c_data_redistribution" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="c_data_redistribution">クエリプランの評価</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p> クエリプランを使用すると、分散スタイル最適化の候補を特定できます。</p><p>初期設計の決定を行った後で、テーブルを作成し、テーブルにデータをロードして、テーブルをテストします。実際のデータにできるだけ近いテストデータセットを使用します。比較のベースラインとして使用するロード時間を測定します。</p><p> 実行する予定のクエリのうち、典型的な高コストクエリ、つまり結合と集計を使用するクエリを評価します。さまざまな設計オプションの実行時間を比較します。実行時間を比較する際は、最初のランタイムにはコンパイル時間が含まれるため、最初の時間はカウントしないでください。</p><div class="variablelist">
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+            <dl>
+                    <dt><span class="term"><b>DS_DIST_NONE</b></span></dt>
+                    <dd>
+                        <p> 対応するスライスはコンピューティングノードにコロケーションされているため、再分散は必要となりません。通常は、DS_DIST_NONE ステップ (ファクトテーブルと単一のディメンションテーブル間の結合) が 1 つあるだけです。</p>
+                    </dd>
+                 
+                    <dt><span class="term"><b>DS_DIST_ALL_NONE</b></span></dt>
+                    <dd>
+                        <p> 内部結合テーブルで DISTSTYLE ALL が使用されているため、再分散は必要となりません。テーブル全体が各ノードに配置されます。</p>
+                    </dd>
+                 
+                    <dt><span class="term"><b>DS_DIST_INNER</b></span></dt>
+                    <dd>
+                        <p> 内部テーブルが再分散されます。</p>
+                    </dd>
+                 
+                    <dt><span class="term"><b>DS_DIST_OUTER</b></span></dt>
+                    <dd>
+                        <p> 外部テーブルが再分散されます。</p>
+                    </dd>
+                 
+                    <dt><span class="term"><b>DS_BCAST_INNER</b></span></dt>
+                    <dd>
+                        <p> 内部テーブル全体のコピーがすべてのコンピューティングノードにブロードキャストされます。</p>
+                    </dd>
+                 
+                    <dt><span class="term"><b>DS_DIST_ALL_INNER</b></span></dt>
+                    <dd>
+                        <p>外部テーブルで DISTSTYLE ALL が使用されるため、内部テーブル全体が単一スライスに再分散されます。</p>
+                    </dd>
+                 
+                    <dt><span class="term"><b>DS_DIST_BOTH</b></span></dt>
+                    <dd>
+                        <p> 両方のテーブルが再分散されます。</p>
+                    </dd>
+                </dl></div><p>DS_DIST_NONE と DS_DIST_ALL_NONE が好適です。この 2 つは、すべての結合がコロケーションされているため、そのステップで分散が必要とならなかったことを示します。</p><p>DS_DIST_INNER は、内部テーブルがノードに再分散されているため、ステップのコストが比較的高くなる可能性があることを意味します。DS_DIST_INNER は、外部テーブルが結合キーを使用してすでに正しく分散されていることを示します。これを DS_DIST_NONE に変換するには、内部テーブルの分散キーを結合キーに設定します。場合によっては、外部テーブルが結合キーを使用して配信されていないため、結合キーを使用して内部テーブルを配信できないことがあります。この場合、内部テーブルに ALL ディストリビューションを使用するかどうかを評価します。テーブルの更新頻度が低いか、更新範囲が広くない場合で、高い再ディストリビューションコストに対応できるだけの十分なテーブルサイズの場合は、ディストリビューションスタイルを ALL に変更してから、再びテストします。ALL 分散はロード時間の長期化を招くため、再テストする場合は、評価要因にロード時間を含めてください。</p><p>DS_DIST_ALL_INNER は好適ではありません。これは、外部テーブルで DISTSTYLE ALL が使用されているため、外部テーブル全体のコピーが各ノードに配置されるよう、内部テーブル全体が単一スライスに再分散されることを意味します。その結果、全ノードを使用した並列ランタイムのメリットを生かせず、単一ノードで結合が直列ランタイムになるという非効率が生じます。DISTSTYLE ALL は、内部結合テーブルでのみ使用するよう設計されています。代わりに、外部テーブルの分散キーを指定するか、EVEN 分散を使用してください。</p><p>DS_BCAST_INNER と DS_DIST_BOTH は好適ではありません。通常、これらの再分散は、再分散キーを使用してテーブルが結合されないために行われます。ファクトテーブルにまだ分散キーが指定されていない場合は、両方のテーブルの分散キーとして結合列を指定します。ファクトテーブルの別の列にディストリビューションキーがすでに指定されている場合は、この結合をコロケーションするためにディストリビューションキーを変更することが全般的なパフォーマンスの向上につながるかどうかを評価します。外部テーブルのディストリビューションキーを変更することが最適な選択肢でない場合は、内部テーブルに DISTSTYLE ALL を指定することによってコロケーションを実現できます。</p><p> 次の例は、DS_BCAST_INNER ラベルと DS_DIST_NONE ラベルを持つクエリプランの一部を示しています。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">-&gt;  XN Hash Join DS_BCAST_INNER  (cost=112.50..3272334142.59 rows=170771 width=84)
+        Hash Cond: ("outer".venueid = "inner".venueid)
+        -&gt;  XN Hash Join DS_BCAST_INNER  (cost=109.98..3167290276.71 rows=172456 width=47)
+              Hash Cond: ("outer".eventid = "inner".eventid)
+              -&gt;  XN Merge Join DS_DIST_NONE  (cost=0.00..6286.47 rows=172456 width=30)
+                    Merge Cond: ("outer".listid = "inner".listid)
+                    -&gt;  XN Seq Scan on listing  (cost=0.00..1924.97 rows=192497 width=14)
+                    -&gt;  XN Seq Scan on sales  (cost=0.00..1724.56 rows=172456 width=24)</code></pre><p>DISTSTYLE ALL を使用するようディメンションテーブルに変更を加えると、同じクエリのクエリプランに DS_BCAST_INNER ではなく DS_DIST_ALL_NONE が表示されるようになります。また、結合ステップの相対的なコストも大幅に変化します。合計コストは前のクエリの <code class="code">3272334142.59</code> と比べて <code class="code">14142.59</code> です。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">-&gt;  XN Hash Join DS_DIST_ALL_NONE  (cost=112.50..14142.59 rows=170771 width=84)
+        Hash Cond: ("outer".venueid = "inner".venueid)
+        -&gt;  XN Hash Join DS_DIST_ALL_NONE  (cost=109.98..10276.71 rows=172456 width=47)
+              Hash Cond: ("outer".eventid = "inner".eventid)
+              -&gt;  XN Merge Join DS_DIST_NONE  (cost=0.00..6286.47 rows=172456 width=30)
+                    Merge Cond: ("outer".listid = "inner".listid)
+                    -&gt;  XN Seq Scan on listing  (cost=0.00..1924.97 rows=192497 width=14)
+                    -&gt;  XN Seq Scan on sales  (cost=0.00..1724.56 rows=172456 width=24)            </code></pre><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./t_designating_distribution_styles.html">分散スタイルの指定</div><div id="next" class="next-link" accesskey="n" href="./t_explain_plan_example.html">クエリプランの例</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_data_redistribution.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_data_redistribution.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

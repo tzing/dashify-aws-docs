@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>半構造化データを Amazon Redshift にロードする - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="ingest-super" /><meta name="default_state" content="ingest-super" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/ingest-super.html" /><meta name="description" content="SUPER データ型を使用して、Amazon Redshift の階層データと汎用データを永続化およびクエリします。Amazon Redshift は JSON 形式のデータを解析して SUPER 表現に変換する json_parse 関数が導入されています。Amazon Redshift は COPY コマンドを使用した SUPER 列のロードもサポートしています。サポートされているファイル形式は、JSON、Avro、テキスト、コンマ区切り値 (CSV) 形式、Parquet、および ORC 形式です。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/ingest-super.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/ingest-super.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/ingest-super.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/ingest-super.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/ingest-super.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/ingest-super.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/ingest-super.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/ingest-super.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/ingest-super.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/ingest-super.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/ingest-super.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/ingest-super.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/ingest-super.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/ingest-super.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/ingest-super.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/ingest-super.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/ingest-super.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/ingest-super.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/ingest-super.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/ingest-super.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/ingest-super.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/ingest-super.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="半構造化データを Amazon Redshift にロードする" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>半構造化データを Amazon Redshift にロードする - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#ingest-super" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/ingest-super.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/ingest-super.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/ingest-super.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Amazon Redshift 半構造化データの取り込みとクエリ",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/super-overview.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "半構造化データを Amazon Redshift にロードする",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/super-overview.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#ingest-super" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#parse_json">JSON ドキュメントを SUPER 列で解析する</a><a href="#copy_json">COPY を使用して Amazon Redshift に JSON データをロードする</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="ingest-super">半構造化データを Amazon Redshift にロードする</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>SUPER データ型を使用して、Amazon Redshift の階層データと汎用データを永続化およびクエリします。Amazon Redshift は JSON 形式のデータを解析して SUPER 表現に変換する <code class="code">json_parse</code> 関数が導入されています。Amazon Redshift は COPY コマンドを使用した SUPER 列のロードもサポートしています。サポートされているファイル形式は、JSON、Avro、テキスト、コンマ区切り値 (CSV) 形式、Parquet、および ORC 形式です。</p><p>次の例で使用されるテーブルの詳細については、「<a href="./r_SUPER_sample_dataset.html">SUPER サンプルデータセット</a>」を参照してください。</p><p><code class="code">json_parse</code> 関数の詳細については、「<a href="./JSON_PARSE.html">JSON_PARSE 関数</a>」を参照してください。</p><p>SUPER データ型のデフォルトのエンコードは ZSTD です。</p>
+         <h2 id="parse_json">JSON ドキュメントを SUPER 列で解析する</h2>
+         <p><code class="code">json_parse</code> 関数を使用すると、SUPER 列に JSON データを挿入または更新できます。この関数は、データを JSON 形式で解析し、SUPER データ型に変換します。SUPER データ型は INSERT ステートメントまたは UPDATE ステートメントで使用できます。</p>
+         <p>次の例では、JSON データを SUPER 列に挿入します。<code class="code">json_parse</code> 関数がクエリに含まれていない場合、Amazon Redshift は関連する値を、解析する必要がある JSON 形式の文字列ではなく単一の文字列として扱います。</p>
+         <p>SUPER データ列を更新する場合、Amazon Redshift では、ドキュメント全体を列の値に渡す必要があります。Amazon Redshift は、部分的な更新をサポートしていません。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">INSERT INTO region_nations VALUES(0,
+   'lar deposits. blithely final packages cajole. regular waters are final requests. regular accounts are according to',
+   'AFRICA',
+   JSON_PARSE('<span>{</span>"r_nations":[
+      <span>{</span>"n_comment":" haggle. carefully final deposits detect slyly agai",
+         "n_nationkey":0,
+         "n_name":"ALGERIA"
+      },
+      <span>{</span>"n_comment":"ven packages wake quickly. regu",
+         "n_nationkey":5,
+         "n_name":"ETHIOPIA"
+      },
+      <span>{</span>"n_comment":" pending excuses haggle furiously deposits. pending, express pinto beans wake fluffily past t",
+         "n_nationkey":14,
+         "n_name":"KENYA"
+      },
+      <span>{</span>"n_comment":"rns. blithely bold courts among the closely regular packages use furiously bold platelets?",
+         "n_nationkey":15,
+         "n_name":"MOROCCO"
+      },
+      <span>{</span>"n_comment":"s. ironic, unusual asymptotes wake blithely r",
+         "n_nationkey":16,
+         "n_name":"MOZAMBIQUE"
+      }
+   ]
+}'));</code></pre>
+       
+         <h2 id="copy_json">COPY を使用して Amazon Redshift で SUPER 列をロードする</h2>
+         
+         <p>以下のセクションでは、COPY コマンドを使用して JSON データを Amazon Redshift にロードするさまざまな方法について説明します。</p>
+         
+          
+            <h3 id="copy_json-from-JSON">JSON および Avro からのデータのコピー</h3>
+         <p>Amazon Redshift で半構造化データサポートを使用すると、JSON 構造の属性を複数の列にシュレッダー処理することなく JSON ドキュメントをロードできます。</p>
+            <p>Amazon Redshift には、完全にまたは部分的に不明な JSON 構造であっても、COPY を使用して JSON ドキュメントを取り込むための方法が 2 つあります。</p>
+         <div class="orderedlist">
+            
+             
+             
+
+         <ol><li>
+               <p><code class="code">noshred</code> オプションを使用して、JSON ドキュメントから派生したデータを単一の SUPER データ列に保存します。この方法は、スキーマが不明であるか、変更が予想される場合に便利です。したがって、このメソッドを使用すると、単一の SUPER 列にタプル全体を容易に保存することができます。</p>
+            </li><li>
+               <p><code class="code">auto</code> または <code class="code">jsonpaths</code> オプションを使用して、JSON ドキュメントを複数の Amazon Redshift 列にシュレッダー処理します。属性には、Amazon Redshift スカラーまたは SUPER 値を指定できます。</p>
+            </li></ol></div><p>これらのオプションは、JSON 形式または Avro 形式で使用できます。</p>
+            <p>シュレッダー処理前の JSON オブジェクトの最大サイズは 4 MB です。</p>
+          
+
+          
+            <h3 id="copy_json-one-column">JSON ドキュメントを単一の SUPER データ列にコピーする</h3>
+         <p>JSON ドキュメントを単一の SUPER データ列にコピーするには、単一の SUPER データ列を持つテーブルを作成します。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE region_nations_noshred (rdata SUPER);</code></pre>
+         <p>Amazon S3 から単一の SUPER データ列にデータをコピーします。JSON ソースデータを単一の SUPER データ列に取り込むには、FORMAT JSON 句で <code class="code">noshred</code> オプションを指定します。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations_noshred FROM 's3://redshift-downloads/semistructured/tpch-nested/data/json/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT JSON 'noshred';</code></pre>
+            
+         <p>COPY が JSON を正常に取り込んだ後のテーブルには、JSON オブジェクト全体のデータを含む <code class="code">rdata</code> SUPER データ列があります。取り込まれたデータは、JSON 階層のすべてのプロパティを保持します。ただし、効率的なクエリ処理のために、リーフは Amazon Redshift スカラー型に変換されます。</p>
+         <p>次のクエリを使用して、元の JSON 文字列を取得します。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT rdata FROM region_nations_noshred;</code></pre>
+         <p>Amazon Redshift が SUPER データ列を生成すると、JSON シリアル化によって JDBC を文字列として使用してアクセスできるようになります。詳細については、「<a href="./serializing-complex-JSON.html">複雑なネストされた JSON のシリアル化</a>」を参照してください。</p>      
+                   
+         
+         
+          
+            <h3 id="copy_json-multiple-columns">JSON ドキュメントを複数の SUPER データ列にコピーする</h3>
+         <p>JSON ドキュメントは、SUPER データ列または Amazon Redshift スカラー型のいずれかである複数の列に細分家できます。Amazon Redshift は、JSON オブジェクトのさまざまな部分を異なる列に分散します。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE region_nations
+(
+ r_regionkey smallint
+ ,r_name varchar
+ ,r_comment varchar
+ ,r_nations super
+ );</code></pre>
+            <p>前の例のデータをテーブルにコピーするには、FORMAT JSON 句で AUTO オプションを指定して、JSON 値を複数の列に分割します。COPY は、最上位の JSON 属性を列名と照合し、ネストされた値を JSON 配列やオブジェクトなどの SUPER 値として取り込むことができます。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/json/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT JSON 'auto';</code></pre>
+            
+             
+            <p>JSON 属性名が大文字と小文字が混在する場合は、FORMAT JSON 句の中で <code class="code">auto ignorecase</code> オプションを指定します。COPY コマンドの詳細については、「<a href="./r_COPY_command_examples.html#copy-from-json-examples-using-auto-ignorecase">'auto ignorecase' オプションを使用した JSON データからのロード</a>」を参照してください。</p>
+            
+            
+         <p>場合によっては、列名と JSON 属性の間に不一致があるか、ロードする属性がレベルより深くネストされていることがあります。その場合は、<code class="code">jsonpaths</code> ファイルを使用して JSON 属性を Amazon Redshift 列に手動でマッピングします。</p>
+            
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE nations
+(
+ regionkey smallint
+ ,name varchar
+ ,comment super
+ ,nations super
+ ); </code></pre>
+         <p>列名が JSON 属性と一致しないテーブルにデータをロードするとします。次の例では、<code class="code">nations</code> テーブルがそのようなテーブルです。<code class="code">jsonpaths</code> 配列内の位置によってテーブル列に属性のパスをマップする <code class="code">jsonpaths</code> ファイルを作成できます。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>"jsonpaths": [
+       "$.r_regionkey",
+       "$.r_name",
+       "$.r_comment",
+       "$.r_nations
+    ]
+}</code></pre>
+         <p><code class="code">jsonpaths</code> ファイルの場所は、FORMAT JSON の引数として使用されます。</p>
+            
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/json/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT JSON 's3://redshift-downloads/semistructured/tpch-nested/data/jsonpaths/nations_jsonpaths.json';</code></pre>
+         <p>次のクエリを使用して、複数の列に分散されたデータを表示するテーブルにアクセスします。SUPER データ列は、JSON 形式を使用して印刷されます。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT r_regionkey,r_name,r_comment,r_nations[0].n_nationkey FROM region_nations ORDER BY 1,2,3 LIMIT 1;</code></pre>
+            
+            <p>Jsonpaths ファイルは、JSON ドキュメント内のフィールドをテーブル列にマップします。SUPER 列として完全なドキュメントをロードしながら、分散キーおよびソートキーなどの追加の列を抽出できます。以下のクエリは、完全なドキュメントを nations 列にロードします。<code class="code">name</code> 列はソートキーで、<code class="code">regionkey</code> 列は分散キーです。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE nations_sorted (
+    regionkey smallint,
+    name varchar,
+    nations super
+) DISTKEY(regionkey) SORTKEY(name);</code></pre>
+            <p>ルート jsonpath「$」は、以下のようにドキュメントのルートにマップされます。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>"jsonpaths": [
+       "$.r_regionkey",
+       "$.r_name",
+       "$"
+    ]
+}</code></pre>
+            <p>jsonpaths ファイルの場所は、FORMAT JSON の引数として使用されます。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY nations_sorted FROM 's3://redshift-downloads/semistructured/tpch-nested/data/json/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT JSON 's3://redshift-downloads/semistructured/tpch-nested/data/jsonpaths/nations_sorted_jsonpaths.json';</code></pre>
+            
+                   
+         
+          
+            <h3 id="copy_json-from-text-csv">テキストおよび CSV からのデータのコピー</h3>
+         
+            <p>Amazon Redshift は、シリアルナンバーが付けられた JSON として、テキスト形式および CSV 形式の SUPER 列を表します。SUPER 列が正しい型情報をロードするには、有効な JSON フォーマットが必要です。オブジェクト、配列、数値、ブール値、およびNULL値の引用符を外します。文字列値を二重引用符で囲みます。SUPER 列は、テキストおよび CSV 形式に標準のエスケープ規則を使用します。CSV の場合、区切り文字は CSV 標準に従ってエスケープされます。テキスト形式の場合、選択した区切り文字が SUPER フィールドにも表示される可能性がある場合は、COPY および UNLOAD 中に ESCAPE オプションを使用します。</p>
+            
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/csv/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT CSV;</code></pre>
+            
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/text/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+DELIMITER ','
+ESCAPE;</code></pre>
+       
+
+         
+          
+            <h3 id="copy_json-from-parquet-orc">列形式の Parquet および ORC からのデータのコピー</h3>        
+         <p>半構造化データまたはネストされたデータが Apache Parquet または Apache ORC 形式で既に使用可能な場合は、COPY コマンドを使用して Amazon Redshift にデータを取り込むことができます。</p>
+            <p>Amazon Redshift テーブル構造は、Parquet ファイルまたは ORC ファイルの列数と列データ型と一致する必要があります。COPY コマンドで SERIALIZETOJSON を指定することにより、テーブルの SUPER 列と整列するファイル内の任意の列タイプを SUPER としてロードできます。これには、構造体型と配列型が含まれます。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/parquet/region_nation'
+REGION 'us-east-1' IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT PARQUET SERIALIZETOJSON;</code></pre>
+         <p>次の例では、ORC 形式を使用します。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY region_nations FROM 's3://redshift-downloads/semistructured/tpch-nested/data/orc/region_nation'
+IAM_ROLE 'arn:aws:iam::xxxxxxxxxxxx:role/Redshift-S3'
+FORMAT ORC SERIALIZETOJSON;</code></pre>
+            <p>日付または時刻のデータ型の属性が ORC の場合、Amazon Redshift はそれらを SUPER でエンコードするときに varchar に変換します。</p>
+       
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_SUPER_sample_dataset.html">SUPER サンプルデータセット</div><div id="next" class="next-link" accesskey="n" href="./unload-super.html">半構造化データのアンロード</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/ingest-super.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/ingest-super.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Amazon Redshift Spectrum でクエリ用のデータファイルを作成する - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c-spectrum-data-files" /><meta name="default_state" content="c-spectrum-data-files" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-data-files.html" /><meta name="description" content="Amazon Redshift Spectrum のクエリに使用するデータファイルは通常、他のアプリケーションで使用するものと同じタイプのファイルです。例えば、Amazon Athena、Amazon EMR、および Amazon QuickSight で同じ種類のファイルが使用されます。Amazon S3 から直接元の形式でデータをクエリすることができます。これを実行するには、データファイルは、Redshift Spectrum がサポートしている形式で、クラスターがアクセスできる Amazon S3 バケットに存在している必要があります。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-data-files.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-spectrum-data-files.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-spectrum-data-files.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-spectrum-data-files.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-spectrum-data-files.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-data-files.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-data-files.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-data-files.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-data-files.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-spectrum-data-files.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-spectrum-data-files.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-spectrum-data-files.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-spectrum-data-files.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-data-files.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-data-files.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-spectrum-data-files.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-spectrum-data-files.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-spectrum-data-files.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-spectrum-data-files.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-spectrum-data-files.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-data-files.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-data-files.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="Amazon Redshift Spectrum でクエリ用のデータファイルを作成する" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Amazon Redshift Spectrum でクエリ用のデータファイルを作成する - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c-spectrum-data-files" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-data-files.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-data-files.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-data-files.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Amazon Redshift Spectrum を使用した外部データのクエリ",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-using-spectrum.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Amazon Redshift Spectrum でクエリ用のデータファイルを作成する",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-using-spectrum.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c-spectrum-data-files" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#c-spectrum-data-files-formats">Redshift Spectrum のデータ形式 </a><a href="#c-spectrum-data-files-compression">Redshift Spectrum の圧縮タイプ </a><a href="#c-spectrum-data-files-encryption">Redshift Spectrum の暗号化 </a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="c-spectrum-data-files">Amazon Redshift Spectrum でクエリ用のデータファイルを作成する</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Amazon Redshift Spectrum のクエリに使用するデータファイルは通常、他のアプリケーションで使用するものと同じタイプのファイルです。例えば、Amazon Athena、Amazon EMR、および Amazon QuickSight で同じ種類のファイルが使用されます。Amazon S3 から直接元の形式でデータをクエリすることができます。これを実行するには、データファイルは、Redshift Spectrum がサポートしている形式で、クラスターがアクセスできる Amazon S3 バケットに存在している必要があります。</p><p>データファイルを含む Amazon S3 バケットと Amazon Redshift クラスターは、同じ AWS リージョンに存在する必要があります。サポートされる AWS リージョンの詳細については、「<a href="./c-using-spectrum.html#c-spectrum-regions">Amazon Redshift Spectrum リージョン</a>」を参照してください。</p>
+         <h2 id="c-spectrum-data-files-formats">Redshift Spectrum のデータ形式 </h2>
+      <p>Redshift Spectrum は次の構造化されたデータ形式および半構造化されたデータ形式をサポートします。</p>
+
+      <div class="table-container"><div class="table-contents"><table id="w319aac29c15b7b5"><thead>
+               <tr>
+                  <th>ファイル形式</th>
+                  <th>列指向</th>
+                  <th>並列読み取りをサポート</th>
+                  <th>分割単位</th>
+               </tr>
+            </thead>
+               <tr>
+                  <td tabindex="-1">Parquet</td>
+                  <td tabindex="-1">はい</td>
+                  <td tabindex="-1">はい</td>
+                  <td tabindex="-1">[行] グループ</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">ORC</td>
+                  <td tabindex="-1">はい</td>
+                  <td tabindex="-1">はい</td>
+                  <td tabindex="-1">Stripe</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">RCFile</td>
+                  <td tabindex="-1">はい</td>
+                  <td tabindex="-1">はい</td>
+                  <td tabindex="-1">[行] グループ</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">TextFile</td>
+                  <td tabindex="-1">いいえ</td>
+                  <td tabindex="-1">はい</td>
+                  <td tabindex="-1">行</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">SequenceFile</td>
+                  <td tabindex="-1">いいえ</td>
+                  <td tabindex="-1">はい</td>
+                  <td tabindex="-1">行またはブロック</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">RegexSerde</td>
+                  <td tabindex="-1">いいえ</td>
+                  <td tabindex="-1">はい</td>
+                  <td tabindex="-1">行</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">OpenCSV</td>
+                  <td tabindex="-1">いいえ</td>
+                  <td tabindex="-1">はい</td>
+                  <td tabindex="-1">行</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">AVRO</td>
+                  <td tabindex="-1">いいえ</td>
+                  <td tabindex="-1">はい</td>
+                  <td tabindex="-1">ブロック</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">Ion</td>
+                  <td tabindex="-1">いいえ</td>
+                  <td tabindex="-1">いいえ</td>
+                  <td tabindex="-1">該当なし</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">JSON</td>
+                  <td tabindex="-1">いいえ</td>
+                  <td tabindex="-1">いいえ</td>
+                  <td tabindex="-1">該当なし</td>
+               </tr>
+            </table></div></div>
+
+      <p>前述の表の見出しは、次のことを示しています。</p>
+      <div class="itemizedlist">
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+                     <p><b>列指向</b> – ファイル形式が、行指向の構造ではなく、列指向の構造でデータを物理的に保存するかどうかを指定します。</p>
+
+         </li><li class="listitem">
+            <p><b>並列読み込みをサポート</b> – ファイル形式でファイル内の個々のブロックの読み込みをサポートするかどうかを指定します。個々のブロックを読み込むと、単一のリクエストで完全なファイルを読み込む代わりに、複数の独立した Redshift Spectrum リクエストにまたがってファイルを分散処理できます。</p>
+         </li><li class="listitem">
+            <p><b>分割単位</b> – 並列に読み込むことができるファイル形式の場合、分割単位は 1 つの Redshift Spectrum リクエストで処理できるデータの最小チャンクです。</p>
+      
+               <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>テキストファイルのタイムスタンプ値は、<code class="code">yyyy-MM-dd HH:mm:ss.SSSSSS</code>形式であることが必要です。次のタイムスタンプ値は、<code class="code">2017-05-01 11:30:59.000000</code>となっています。</p></div></div>
+      <p>Apache Parquet など、列指向ストレージファイル形式を使用することをお勧めします。列指向ストレージファイル形式により、必要な列のみを選択し、Amazon S3 からのデータ転送を最小限に抑えることができます。</p></li></ul></div>
+       
+         <h2 id="c-spectrum-data-files-compression">Redshift Spectrum の圧縮タイプ </h2>
+
+                  <p>ストレージスペースの縮小、パフォーマンスの向上、コストの最小化を行うため、データファイルを圧縮することを強くおすすめします。Redshift Spectrum は、ファイル拡張子に基づいてファイル圧縮のタイプを認識します。</p>
+      
+      <p>Redshift Spectrum は、次の圧縮タイプと拡張子をサポートしています。</p>
+      <div class="table-container"><div class="table-contents"><table id="w319aac29c15b9b7"><thead>
+               <tr>
+                  <th>圧縮アルゴリズム</th>
+                  <th>ファイル拡張子</th>
+                  <th>並列読み取りをサポート</th>
+               </tr>
+            </thead>
+               <tr>
+                  <td tabindex="-1">Gzip</td>
+                  <td tabindex="-1">.gz</td>
+                  <td tabindex="-1">いいえ</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">Bzip2</td>
+                  <td tabindex="-1">.bz2</td>
+                  <td tabindex="-1">はい</td>
+               </tr>
+               <tr>
+                  <td tabindex="-1">Snappy</td>
+                  <td tabindex="-1">.snappy</td>
+                  <td tabindex="-1">いいえ</td>
+               </tr>
+            </table></div></div>
+      
+  
+      <p>さまざまなレベルで圧縮を適用できます。通常、ファイル全体を圧縮するか、ファイル内の個々のブロックを圧縮します。ファイルレベルで列形式を圧縮しても、パフォーマンス上の利点はありません。</p>
+         
+      <p>Redshift Spectrum がファイルを並行して読み込めるようにするには、次の条件を満たす必要があります。</p>
+         <div class="itemizedlist">
+          
+          
+         <ul class="itemizedlist"><li class="listitem">
+            <p>ファイル形式は、並列読み取りをサポートしています。</p>
+         </li><li class="listitem">
+         <p>ファイルレベルの圧縮があれば、並列読み込みがサポートされます。</p>
+         </li></ul></div>
+
+      <p>ファイル内の各分割ユニットが 1 つの Redshift Spectrum リクエストによって処理されるため、並列に読み込むことができる圧縮アルゴリズムを使用して圧縮されているかどうかは関係ありません。例えば、Snappy 圧縮の Parquet ファイルです。Parquet ファイル内の個々の行グループは Snappy を使用して圧縮されますが、ファイルの最上位構造は圧縮されていないままです。この場合、各 Redshift Spectrum リクエストは Amazon S3 から個々の行グループを読み込み、処理できるため、ファイルを並列に読み込むことができます。</p>
+
+       
+         <h2 id="c-spectrum-data-files-encryption">Redshift Spectrum の暗号化 </h2>
+
+      <p>Redshift Spectrum は、次の暗号化オプションを使用して暗号化されたデータファイルを透過的に複号化します。</p>
+      <div class="itemizedlist">
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>Amazon S3 によって管理される AES-256 暗号化キーを使用したサーバー側暗号化 (SSE-S3)。</p>
+         </li><li class="listitem">
+            <p>AWS Key Management Service で管理されたキーによるサーバー側の暗号化 (SSE-KMS)。</p>
+         </li></ul></div>
+         <p>Redshift Spectrum は、Amazon S3 クライアント側暗号化をサポートしていません。サーバー側の暗号化の詳細については、<em>Amazon Simple Storage Service ユーザーガイド</em>の<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/serv-side-encryption.html">サーバー側の暗号化を使用したデータの保護</a>を参照してください。</p>
+      <p>Amazon Redshift は、超並列処理 (MPP) により、大量のデータに対して非常に複雑なクエリを高速で実行できます。Redshift Spectrum は、ファイルのスキャンで必要な複数の Redshift Spectrum インスタンスを使用して、同じ原理を外部データに拡張します。テーブルごとにファイルを個別のフォルダに置きます。</p>
+      <p>次のことを実行してデータを並列処理用に最適化できます。</p>
+      <div class="itemizedlist">
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>ファイル形式または圧縮で並列読み取りがサポートされていない場合は、大きなファイルを多数の小さなファイルに分割します。ファイルサイズは 64 MB～1 GBをお勧めします。</p>
+         </li><li class="listitem">
+            <p>ファイルはすべてほぼ同じサイズで保存します。一部のファイルのサイズが他のファイルを大きく上回ると、Redshift Spectrum はワークロードを均等に分散できません。</p>
+         </li></ul></div>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./spectrum-lake-formation.html">Lake Formation での Redshift Spectrum の使用</div><div id="next" class="next-link" accesskey="n" href="./c-spectrum-external-schemas.html">外部スキーマの作成</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-data-files.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-data-files.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

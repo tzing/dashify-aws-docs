@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>マージの例 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="merge-examples" /><meta name="default_state" content="merge-examples" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/merge-examples.html" /><meta name="description" content="以下の例では、マージを実行して SALES テーブルを更新します。最初の例では、ターゲットテーブルから削除した後でステージングテーブルからすべての行を挿入する、よりシンプルな方法を使用しています。2 番めの例では、ターゲットテーブル内の選択した列の更新が必要であるため、追加の更新ステップが含まれています。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/merge-examples.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/merge-examples.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/merge-examples.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/merge-examples.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/merge-examples.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/merge-examples.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/merge-examples.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/merge-examples.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/merge-examples.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/merge-examples.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/merge-examples.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/merge-examples.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/merge-examples.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/merge-examples.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/merge-examples.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/merge-examples.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/merge-examples.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/merge-examples.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/merge-examples.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/merge-examples.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/merge-examples.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/merge-examples.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="マージの例" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>マージの例 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#merge-examples" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/merge-examples.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/merge-examples.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/merge-examples.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "データのロード",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "新しいデータの更新と挿入",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "マージの例",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#merge-examples" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="merge-examples">マージの例</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>以下の例では、マージを実行して SALES テーブルを更新します。最初の例では、ターゲットテーブルから削除した後でステージングテーブルからすべての行を挿入する、よりシンプルな方法を使用しています。2 番めの例では、ターゲットテーブル内の選択した列の更新が必要であるため、追加の更新ステップが含まれています。</p><p>マージの例 は、Amazon Redshift 用のサンプルデータセット (TICKIT データセット) を使用します。前提条件として、「<a href="https://docs.aws.amazon.com/redshift/latest/gsg/database-tasks.html">一般的なデータベースタスクの開始方法</a>」ガイドの手順に従って、TICKIT テーブルとデータを設定できます。サンプルデータセットの詳細については、「<a href="https://docs.aws.amazon.com/redshift/latest/dg/c_sampledb.html">サンプルデータベース</a>」を参照してください。</p><p><b>マージデータソースのサンプル</b></p><p>このセクションの例では、更新と挿入を両方とも含んでいるサンプル データソースが必要です。これらの例では、SALES テーブルからのデータを使用する SALES_UPDATE というサンプルテーブルを作成します。12 月の新しい販売アクティビティを表すランダムデータを新しいテーブルに入力します。SALES_UPDATE サンプルテーブルを使用して、ステージングテーブルを以下の例で作成します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">-- Create a sample table as a copy of the SALES table.
+
+create table tickit.sales_update as
+select * from tickit.sales;
+
+-- Change every fifth row to have updates.
+
+update tickit.sales_update
+set qtysold = qtysold*2,
+pricepaid = pricepaid*0.8,
+commission = commission*1.1
+where saletime &gt; '2008-11-30'
+and mod(sellerid, 5) = 0;
+
+-- Add some new rows to have inserts.
+-- This example creates a duplicate of every fourth row.
+
+insert into tickit.sales_update
+select (salesid + 172456) as salesid, listid, sellerid, buyerid, eventid, dateid, qtysold, pricepaid, commission, getdate() as saletime
+from tickit.sales_update
+where saletime &gt; '2008-11-30'
+and mod(sellerid, 4) = 0;</code></pre><p><b>マッチングキーに基づいて既存の行を置き換えるマージの例</b></p><p>以下のスクリプトでは、SALES_UPDATE テーブルを使用して、12 月の販売アクティビティの新しいデータによる SALES テーブルでのマージ操作を実行します。この例では、SALES テーブルの更新がある行を置き換えます。この例では、qtysold 列と pricepaid 列を更新しますが、commission と saletime は変更しません。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">MERGE into tickit.sales 
+USING tickit.sales_update sales_update  
+on ( sales.salesid = sales_update.salesid
+and sales.listid = sales_update.listid
+and sales_update.saletime &gt; '2008-11-30'
+and (sales.qtysold != sales_update.qtysold 
+or sales.pricepaid != sales_update.pricepaid))
+WHEN MATCHED THEN
+update SET qtysold = sales_update.qtysold,
+pricepaid = sales_update.pricepaid
+WHEN NOT MATCHED THEN 
+INSERT (salesid, listid, sellerid, buyerid, eventid, dateid, qtysold , pricepaid, commission, saletime)
+values (sales_update.salesid, sales_update.listid, sales_update.sellerid, sales_update.buyerid, sales_update.eventid, 
+sales_update.dateid, sales_update.qtysold , sales_update.pricepaid, sales_update.commission, sales_update.saletime);
+
+-- Drop the staging table.
+drop table tickit.sales_update;
+
+-- Test to see that commission and salestime were not impacted.
+SELECT sales.salesid, sales.commission, sales.salestime, sales_update.commission, sales_update.salestime 
+FROM tickit.sales 
+INNER JOIN tickit.sales_update sales_update  
+ON 
+sales.salesid = sales_update.salesid
+AND sales.listid = sales_update.listid
+AND sales_update.saletime &gt; '2008-11-30'
+AND (sales.commission != sales_update.commission 
+OR sales.salestime != sales_update.salestime);</code></pre><p><b>MERGE を使用せずに列リストを指定するマージの例</b></p><p>以下の例では、12 月の販売アクティビティの新しいデータで SALES を更新するマージ操作を実行します。更新と挿入の両方を含み、変更されていない行を含む、サンプルデータが必要です。この例では、QTYSOLD および PRICEPAID 列を更新し、COMMISSION および SALETIME は変更しません。以下のスクリプトでは、SALES_UPDATE テーブルを使用して、SALES テーブルでのマージ操作を実行しています。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">-- Create a staging table and populate it with rows from SALES_UPDATE for Dec
+create temp table stagesales as select * from sales_update
+where saletime &gt; '2008-11-30';
+
+-- Start a new transaction
+begin transaction;
+
+-- Update the target table using an inner join with the staging table
+-- The join includes a redundant predicate to collocate on the distribution key –- A filter on saletime enables a range-restricted scan on SALES
+
+update sales
+set qtysold = stagesales.qtysold,
+pricepaid = stagesales.pricepaid
+from stagesales
+where sales.salesid = stagesales.salesid
+and sales.listid = stagesales.listid
+and stagesales.saletime &gt; '2008-11-30'
+and (sales.qtysold != stagesales.qtysold 
+or sales.pricepaid != stagesales.pricepaid);
+ 
+-- Delete matching rows from the staging table 
+-- using an inner join with the target table
+
+delete from stagesales
+using sales
+where sales.salesid = stagesales.salesid
+and sales.listid = stagesales.listid;
+
+-- Insert the remaining rows from the staging table into the target table
+insert into sales
+select * from stagesales;
+
+-- End transaction and commit
+end transaction;
+
+-- Drop the staging table
+drop table stagesales;</code></pre><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./merge-specify-a-column-list.html">MERGE コマンドを使用せずに列リストを指定してマージ操作を実行する</div><div id="next" class="next-link" accesskey="n" href="./performing-a-deep-copy.html">ディープコピーを実行する</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/merge-examples.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/merge-examples.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

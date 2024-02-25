@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>クエリプラン - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c-the-query-plan" /><meta name="default_state" content="c-the-query-plan" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-the-query-plan.html" /><meta name="description" content="クエリプランを解釈する方法について説明します。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-the-query-plan.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-the-query-plan.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-the-query-plan.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-the-query-plan.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-the-query-plan.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-the-query-plan.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-the-query-plan.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-the-query-plan.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-the-query-plan.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-the-query-plan.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-the-query-plan.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-the-query-plan.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-the-query-plan.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-the-query-plan.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-the-query-plan.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-the-query-plan.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-the-query-plan.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-the-query-plan.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-the-query-plan.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-the-query-plan.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-the-query-plan.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-the-query-plan.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="クエリプラン" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>クエリプラン - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c-the-query-plan" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-the-query-plan.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-the-query-plan.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-the-query-plan.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "クエリパフォーマンスのチューニング",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-optimizing-query-performance.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "クエリ処理",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-query-processing.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "クエリプラン",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-query-processing.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c-the-query-plan" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#EXPLAIN-operators">EXPLAIN の演算子</a><a href="#joins-in-EXPLAIN">EXPLAIN での結合</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="c-the-query-plan">クエリプラン</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>クエリプランを使用して、クエリを実行するために必要な個々のオペレーションに関する情報を取得することができます。クエリプランを操作する前に、まず Amazon Redshift がクエリの処理とクエリプランの作成を扱う方法を理解することをお勧めします。詳細については、「<a href="./c-query-planning.html">クエリプランと実行ワークフロー</a>」を参照してください。</p><p>クエリプランを作成するには、<a href="./r_EXPLAIN.html">EXPLAIN</a>コマンドに続いて実際のクエリテキストを指定します。クエリプランから、次の情報が提供されます。</p><div class="itemizedlist">
+             
+             
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>実行エンジンが実行する操作 (下から順に結果を読み取る)。</p>
+            </li><li class="listitem">
+               <p>各操作で実行されるステップの種類。</p>
+            </li><li class="listitem">
+               <p>各操作で使用されるテーブルと列。</p>
+            </li><li class="listitem">
+               <p>各操作で処理されるデータの量 (行数とバイト単位のデータの幅)</p>
+            </li><li class="listitem">
+               <p>操作の相対的なコスト。<em>コスト</em>は、プラン内のステップの相対的な実行回数を比較する評価基準です。コストは、実際の実行回数やメモリの消費に関する正確な情報を提供したり、実行プラン間の意味のある比較を提供したりするわけではありません。ほとんどのリソースを消費しているクエリ内の操作を示しています。</p>
+            </li></ul></div><p>EXPLAIN コマンドは実際にクエリを実行しません。クエリが現在の操作条件の下で実行される場合に Amazon Redshift が実行するプランが表示されるだけです。テーブルのスキーマまたはデータを変更し、<a href="./r_ANALYZE.html">ANALYZE</a>をもう一度実行して統計メタデータを更新した場合、クエリプランが異なる可能性があります。</p><p>EXPLAIN によるクエリプラン出力は簡略化され、クエリ実行の概要になっています。並行クエリ処理の詳細を示すわけではありません。詳細な情報を表示するには、クエリ自体を実行した後、SVL_QUERY_SUMMARY ビューまたは SVL_QUERY_REPORT ビューからクエリの概要情報を取得します。これらのビューの使用の詳細については、「<a href="./c-analyzing-the-query-summary.html">クエリの概要の分析</a>」を参照してください。</p><p>次の例に、EVENT テーブルでの簡単な GROUP BY クエリの EXPLAIN 出力を示します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">explain select eventname, count(*) from event group by eventname;
+
+                            QUERY PLAN
+-------------------------------------------------------------------
+XN HashAggregate  (cost=131.97..133.41 rows=576 width=17)
+  -&gt;  XN Seq Scan on event  (cost=0.00..87.98 rows=8798 width=17)</code></pre><p>EXPLAIN は、操作ごとに次のメトリクスを返します。</p><div class="variablelist">
+             
+             
+             
+         <dl>
+               <dt><b><span class="term">Cost</span></b></dt>
+               <dd>
+                  <p>プラン内で操作を比較する際に役立つ相対的な値。コストは、2 つのピリオドで区切られた 2 つの小数点値で構成されます (<code class="code">cost=131.97..133.41</code> など)。最初の値 (この場合は 131.97) は、この操作の最初の行を返す相対コストを示します。2 番目の値 (この場合は 133.41) は、操作を完了する相対コストを示します。クエリプランのコストはプランを調べる際に累積されるので、この例の HashAggregate コスト (131.97..133.41) には、その下の Seq Scan コスト (0.00..87.98) が含まれます。</p>
+               </dd>
+            
+               <dt><b><span class="term">Rows</span></b></dt>
+               <dd>
+                  <p>返される行数の推定値。この例では、スキャンにより 8798 行が返されることが予期されます。HashAggregate 演算子自体は、576 行 (重複したイベント名より後は結果セットから破棄されます) を返すことが予期されます。</p>
+                  <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>行の予測は、ANALYZE コマンドによって生成された、利用可能な統計情報に基づいています。ANALYZE が最近実行されていない場合、予測の信頼性は下がります。</p></div></div>
+               </dd>
+            
+               <dt><b><span class="term">Width</span></b></dt>
+               <dd>
+                  <p>バイト単位の、予測される平均的な行の幅。この例では、平均的な行の幅は 17 バイトであると予期されます。</p>
+               </dd>
+            </dl></div><h2 id="EXPLAIN-operators">EXPLAIN の演算子</h2>
+            
+            <p>このセクションでは、EXPLAIN 出力で最もよく使用される演算子を簡単に示します。演算子の詳細なリストについては、SQL コマンドセクションの「<a href="./r_EXPLAIN.html">EXPLAIN</a>」を参照してください。</p>
+            <h3 id="scan-operator">Sequential Scan 演算子</h3>
+               
+               <p>Sequential Scan 演算子 (Seq Scan) は、テーブルスキャンを示します。Seq Scan はテーブル内の各列を最初から最後まで連続的にスキャンし、各行のクエリ制約を (WHERE 句で) 評価します。</p>
+             
+            <h3 id="join-operators">Join 演算子</h3>
+               
+               <p>Amazon Redshift は、結合されるテーブルの物理的な設計、結合に必要なデータの場所、クエリ固有の要件に基づいて、結合演算子を選択します。</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><span class="topcom">Nested Loop</span></p>
+                     <p>最適性が最も低いネステッドループは、主にクロス結合 (デカルト積) および一部の不等結合に使用されます。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">Hash Join および Hash</span></p>
+                     <p>ハッシュ結合およびハッシュは、通常はネステッドループ結合よりも高速で、内部結合および左右の外部結合に使用されます。これらの演算子は、結合列が分散キー<em>でも</em>ソートキーでもないテーブルを結合するときに使用されます。ハッシュ演算子は結合の内部テーブルのハッシュテーブルを作成します。ハッシュ結合演算子は外部テーブルを読み取り、結合列をハッシュし、内部ハッシュテーブルで一致を検索します。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">Merge Join</span></p>
+                     <p>通常、結合が高速であれば、内部結合と外部結合にマージ結合が使用されます。マージ結合は完全結合には使用されません。この演算子は、結合列が分散キー<em>と</em>ソートキーの両方である結合テーブルで、結合テーブルの 20 % 未満がソートされていない場合に使用されます。また、ソートされた 2 つのテーブルを順に読み取り、一致する行を検索します。ソートされていない列の割合を表示するには、<a href="./r_SVV_TABLE_INFO.html">SVV_TABLE_INFO</a>システムテーブルをクエリします。</p>
+                  </li><li class="listitem"> 
+                     <p><span class="topcom">空間結合</span></p>
+                     <p>通常、空間データの近接性に基づく高速結合であり、<code class="code">GEOMETRY</code> と <code class="code">GEOGRAPHY</code> のデータ型に使用されます。</p>
+                  </li></ul></div>
+             
+            <h3 id="aggregate-operators">Aggregate 演算子</h3>
+               
+               <p>クエリプランは、集計関数および GROUP BY 操作を含むクエリで次の演算子を使用します。</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><span class="topcom">Aggregate</span></p>
+                     <p>AVG や SUM などのスカラー集計関数の演算子。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">HashAggregate</span></p>
+                     <p>未ソートのグループ化された集計関数の演算子。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">GroupAggregate</span></p>
+                     <p>ソート済みのグループ化された集計関数の演算子。</p>
+                  </li></ul></div>
+             
+            <h3 id="sort-operators">ソート演算子</h3>
+               
+               <p>クエリプランは、クエリで結果セットをソートまたは結合する必要があるときに次の演算子を使用します。</p>
+               <div class="itemizedlist">
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p>並べ替え</p>
+                     <p>ORDER BY 句およびその他のソート操作 (UNION クエリや結合、SELECT DISTINCT クエリ、ウィンドウ関数で必要となるソートなど) を評価します。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">Merge</span></p>
+                     <p>並行操作から導出される、ソートされた中間結果に従って最終的なソート結果を作成します。</p>
+                  </li></ul></div>
+             
+            <h3 id="UNION-INTERSECT-and-EXCEPT-operators">UNION、INTERSECT、および EXCEPT 演算子</h3>
+               
+               <p>クエリプランは、UNION, INTERSECT、および EXCEPT を使用したセット操作を含むクエリに次の演算子を使用します。</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><span class="topcom">サブクエリ</span></p>
+                     <p>UNION クエリを実行するのに使用されます。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">Hash Intersect [Distinct] </span></p>
+                     <p>INTERSECT  クエリを実行するために使用されます。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">SetOp Except</span></p>
+                     <p>EXCEPT (または MINUS) クエリの実行に使用されます。</p>
+                  </li></ul></div>
+             
+            <h3 id="other-operators">その他の演算子</h3>
+               
+               <p>次の演算子は、ルーチンクエリの EXPLAIN 出力にも頻繁に出現します。</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+                   
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><span class="topcom">Unique</span></p>
+                     <p>SELECT DISTINCT クエリと UNION クエリの重複を削除します。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">制限</span></p>
+                     <p>LIMIT 句を処理します。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">Window</span></p>
+                     <p>ウィンドウ関数を実行します。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">結果</span></p>
+                     <p>テーブルアクセスを伴わないスカラー関数を実行します。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">Subplan</span></p>
+                     <p>特定のサブクエリに使用されます。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">ネットワーク</span></p>
+                     <p>さらに処理するために中間結果をリーダーノードに送ります。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">Materialize</span></p>
+                     <p>ネストループ結合および一部のマージ結合への入力のために行を保存します。</p>
+                  </li></ul></div>
+             
+         <h2 id="joins-in-EXPLAIN">EXPLAIN での結合</h2>
+            
+            <p>クエリオプティマイザは、クエリと基礎となるテーブルの構造に応じて、異なる結合の種類を使用してテーブルデータを取得します。EXPLAIN 出力は、結合の種類、使用するテーブル、およびクラスター全体にテーブルデータが分散される方法を参照して、クエリの処理方法を説明します。</p>
+
+            <h3 id="join-types">結合の種類の例</h3>
+               
+               <p>次の例は、クエリオプティマイザが使用できるさまざまな結合の種類を示しています。クエリプランに使用される結合の種類は、関係するテーブルの物理的な設計によって異なります。</p>
+               <h4 id="hash-join-two-tables">例: 2 つのテーブルのハッシュ結合</h4>
+                  
+                  <p>次のクエリは、CATID 列で EVENT と CATEGORY を結合します。CATID は CATEGORY の分散キーおよびソートキーですが、EVENT の分散キーおよびソートキーではありません。ハッシュ結合は、EVENT を外部テーブルとして、CATEGORY を内部テーブルとして実行されます。CATEGORY は小さいテーブルであるため、プランナーは DS_BCAST_INNER を使用してクエリ処理中にそのコピーをコンピューティングノードにブロードキャストします。この例の結合コストは、プランの累積コストのほとんどを占めます。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">explain select * from category, event where category.catid=event.catid;
+
+                               QUERY PLAN
+-------------------------------------------------------------------------
+ XN Hash Join DS_BCAST_INNER  (cost=0.14..6600286.07 rows=8798 width=84)
+   Hash Cond: ("outer".catid = "inner".catid)
+   -&gt;  XN Seq Scan on event  (cost=0.00..87.98 rows=8798 width=35)
+   -&gt;  XN Hash  (cost=0.11..0.11 rows=11 width=49)
+         -&gt;  XN Seq Scan on category  (cost=0.00..0.11 rows=11 width=49)</code></pre>
+                  <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>EXPLAIN 出力の演算子が揃ってインデントされていることは、それらの操作が相互に依存せず、並行して開始できることを示している場合があります。前の例では、EVENT テーブルおよびハッシュ操作のスキャンは揃っていませんが、EVENT スキャンはハッシュ操作が完全に完了するまで待機する必要があります。</p></div></div>
+                
+               <h4 id="merge-join-two-tables">例: 2 つのテーブルのマージ結合</h4>
+                  
+                  <p>次のクエリでも SELECT * が使用されますが、LISTID が両方のテーブルの分散キーおよびソートキーとして設定されている LISTID 列の SALES と LISTING が結合されます。マージ結合が選択され、結合にデータの再分散は必要ありません (DS_DIST_NONE)。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">explain select * from sales, listing where sales.listid = listing.listid;
+QUERY PLAN
+-----------------------------------------------------------------------------
+XN Merge Join DS_DIST_NONE  (cost=0.00..6285.93 rows=172456 width=97)
+  Merge Cond: ("outer".listid = "inner".listid)
+  -&gt;  XN Seq Scan on listing  (cost=0.00..1924.97 rows=192497 width=44)
+  -&gt;  XN Seq Scan on sales  (cost=0.00..1724.56 rows=172456 width=53)</code></pre>
+                  <p>次の例では、同じクエリ内の異なる種類の結合を示します。前の例と同じように、SALES と LISTING はマージ結合されますが、3 番目のテーブルである EVENT は、マージ結合の結果とハッシュ結合される必要があります。ハッシュ結合は、ここでもブロードキャストのコストを発生させます。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">explain select * from sales, listing, event
+where sales.listid = listing.listid and sales.eventid = event.eventid;
+                                  QUERY PLAN
+----------------------------------------------------------------------------
+XN Hash Join DS_BCAST_INNER  (cost=109.98..3871130276.17 rows=172456 width=132)
+  Hash Cond: ("outer".eventid = "inner".eventid)
+  -&gt;  XN Merge Join DS_DIST_NONE  (cost=0.00..6285.93 rows=172456 width=97)
+        Merge Cond: ("outer".listid = "inner".listid)
+        -&gt;  XN Seq Scan on listing  (cost=0.00..1924.97 rows=192497 width=44)
+        -&gt;  XN Seq Scan on sales  (cost=0.00..1724.56 rows=172456 width=53)
+  -&gt;  XN Hash  (cost=87.98..87.98 rows=8798 width=35)
+        -&gt;  XN Seq Scan on event  (cost=0.00..87.98 rows=8798 width=35)</code></pre>
+                
+               <h4 id="join-aggregate-and-sort-example">例: 結合、集計、およびソート</h4>
+                  
+                  <p>以下のクエリは、SALES および EVENT テーブルのハッシュ結合を実行し、次に集計およびソートオペレーションを実行して、グループ化された SUM 関数および ORDER BY 句を計上します。最初の Sort 演算子はコンピューティングノードで並行に実行されます。次に、Network 演算子は結果をリーダーノードに送ります。リーダーノードでは、Merge 演算子がソートされた最終的な結果を作成します。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">explain select eventname, sum(pricepaid) from sales, event 
+where sales.eventid=event.eventid group by eventname
+order by 2 desc;
+                                           QUERY PLAN
+---------------------------------------------------------------------------------
+ XN Merge  (cost=1002815366604.92..1002815366606.36 rows=576 width=27)
+  Merge Key: sum(sales.pricepaid)
+  -&gt;  XN Network  (cost=1002815366604.92..1002815366606.36 rows=576 width=27)
+        Send to leader
+        -&gt;  XN Sort  (cost=1002815366604.92..1002815366606.36 rows=576 width=27)
+              Sort Key: sum(sales.pricepaid)
+              -&gt;  XN HashAggregate  (cost=2815366577.07..2815366578.51 rows=576 width=27)
+                    -&gt;  XN Hash Join DS_BCAST_INNER  (cost=109.98..2815365714.80 rows=172456 width=27)
+                          Hash Cond: ("outer".eventid = "inner".eventid)
+                          -&gt;  XN Seq Scan on sales  (cost=0.00..1724.56 rows=172456 width=14)
+                          -&gt;  XN Hash  (cost=87.98..87.98 rows=8798 width=21)
+                                -&gt;  XN Seq Scan on event  (cost=0.00..87.98 rows=8798 width=21)</code></pre>
+                
+             
+            <h3 id="data-redistribution">データの再分散</h3>
+               
+               <p>結合の EXPLAIN 出力は、結合を容易にするためにクラスター周囲にデータを移動する方法も指定します。このデータの移動は、ブロードキャストまたは再分散のいずれかとすることができます。ブロードキャストでは、結合の一方の側からのデータ値は、各コンピューティングノードから他方の各コンピューティングノードにコピーされ、各コンピューティングノードはデータの完全なコピーで終了します。再分散では、特定のデータ値は現在のスライスから新しいスライス (別のノードにある場合があります) に送信されます。通常、データは再分散され、結合で該当する他方のテーブルの分散キーと一致します (その分散キーが結合する列の 1 つである場合)。いずれのテーブルにも、結合する列の 1 つに分散キーがない場合、両方のテーブルが分散されるか、内部テーブルが各ノードにブロードキャストされます。</p>
+               <p>EXPLAIN 出力は、内部テーブルと外部テーブルも参照します。内部テーブルが最初にスキャンされ、クエリプランの下部付近に表示されます。内部テーブルは、一致について調査されるテーブルです。通常、このテーブルはメモリに保持されますが、通常はハッシュのソーステーブルであり、可能な場合は、結合される 2 つのテーブルのうち小さい方になります。外部テーブルは、内部テーブルに対して一致させる行のソースです。通常はディスクから読み込まれます。クエリオプティマイザは、前回実行した ANALYZE コマンドから生成されたデータベース統計情報に基づいて内部テーブルと外部テーブルを選択します。クエリの FROM 句のテーブルの順序により、どのテーブルが内部でどのテーブルが外部かは決まりません。</p>
+               <p>結合を容易にするためにデータを移動する方法を特定するには、クエリプランで次の属性を使用します。</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+                   
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><span class="topcom">DS_BCAST_INNER</span></p>
+                     <p>内部テーブル全体のコピーがすべてのコンピューティングノードにブロードキャストされます。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">DS_DIST_ALL_NONE</span></p>
+                     <p>内部テーブルは DISTSTYLE ALL を使用してすべてのノードにすでに分散されているため、再分散は不要です。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">DS_DIST_NONE</span></p>
+                     <p>テーブルは再分散されない。対応するスライスがノード間でのデータ移動なしで結合されるため、共存結合が可能となる。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">DS_DIST_INNER</span></p>
+                     <p>内部テーブルが再分散されます。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">DS_DIST_OUTER</span></p>
+                     <p>外部テーブルが再分散されます。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">DS_DIST_ALL_INNER</span></p>
+                     <p>外部テーブルで DISTSTYLE ALL が使用されるため、内部テーブル全体が単一スライスに再分散されます。</p>
+                  </li><li class="listitem">
+                     <p><span class="topcom">DS_DIST_BOTH</span></p>
+                     <p>両方のテーブルが再分散されます。</p>
+                  </li></ul></div>
+             
+         <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c-query-planning.html">クエリプランと実行ワークフロー</div><div id="next" class="next-link" accesskey="n" href="./reviewing-query-plan-steps.html">クエリプランステップの確認</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-the-query-plan.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-the-query-plan.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

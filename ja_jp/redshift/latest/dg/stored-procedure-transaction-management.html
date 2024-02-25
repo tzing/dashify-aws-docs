@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>トランザクションの管理 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="stored-procedure-transaction-management" /><meta name="default_state" content="stored-procedure-transaction-management" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/stored-procedure-transaction-management.html" /><meta name="description" content="Amazon Redshift でストアドプロシージャのトランザクションを管理します。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/stored-procedure-transaction-management.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/stored-procedure-transaction-management.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="トランザクションの管理" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>トランザクションの管理 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#stored-procedure-transaction-management" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/stored-procedure-transaction-management.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/stored-procedure-transaction-management.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/stored-procedure-transaction-management.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Amazon Redshift のストアドプロシージャの作成",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/stored-procedure-overview.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Amazon Redshift でのストアドプロシージャの概要",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/stored-procedure-create.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "トランザクションの管理",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/stored-procedure-create.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#stored-procedure-transaction-management" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#stored-procedure-transaction-management-default-mode">デフォルトモードのストアドプロシージャのトランザクション管理</a><a href="#stored-procedure-transaction-management-nonatomic-mode">非アトミックモードのストアドプロシージャのトランザクション管理</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="stored-procedure-transaction-management">トランザクションの管理</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>ストアドプロシージャは、デフォルトのトランザクション管理動作または非アトミック動作で作成できます。</p>           
+            <h2 id="stored-procedure-transaction-management-default-mode">デフォルトモードのストアドプロシージャのトランザクション管理</h2>
+                 
+         <p>デフォルトのトランザクションモードの自動コミット動作では、個別に実行された SQL コマンドが個別にコミットされます。ストアドプロシージャへの呼び出しは、単一の SQL コマンドとして扱われます。プロシージャ内の SQL ステートメントは、呼び出しの開始時および終了時に暗黙的に開始および終了するトランザクションブロックに存在するかのように動作します。別のプロシージャに対するネストされた呼び出しは、他の任意の SQL ステートメントのように扱われ、呼び出し元と同じトランザクションのコンテキスト内で動作します。自動コミット動作の詳細については、「<a href="./c_serial_isolation.html">直列化可能分離</a>」を参照してください。</p>
+         
+
+         <p>ただし、ユーザー指定のトランザクションブロック (BEGIN... COMMIT で定義される) 内からストアドプロシージャを呼び出すとします。この場合、ストアドプロシージャのすべてのステートメントはユーザー指定のトランザクションのコンテキストで実行されます。プロシージャは終了時に暗黙でコミットしません。呼び出し元がプロシージャのコミットまたはロールバックを制御します。</p>
+         
+         <p>ストアドプロシージャの実行中にエラーが発生した場合は、現在のトランザクションで行われたすべての変更がロールバックされます。</p>
+
+         <p>ストアドプロシージャでは、次のトランザクション制御ステートメントを使用できます。</p> 
+         <div class="itemizedlist">
+             
+                         
+         <ul class="itemizedlist"><li class="listitem"><p>COMMIT – 現在のトランザクションで行われたすべての作業をコミットし、暗黙的に新しいトランザクションを開始します。詳細については、「<a href="./r_COMMIT.html">COMMIT</a>」を参照してください。</p></li><li class="listitem"><p>ROLLBACK – 現在のトランザクションで行われた作業をロールバックし、暗黙的に新しいトランザクションを開始します。詳細については、「<a href="./r_ROLLBACK.html">ROLLBACK</a>」を参照してください。</p></li></ul></div>
+         
+         <p>TRUNCATE は、ストアドプロシージャ内から発行できる別のステートメントであり、トランザクション管理に影響します。Amazon Redshift では、TRUNCATE は暗黙でコミットを発行します。この動作は、ストアドプロシージャのコンテキストでも変わりません。TRUNCATE ステートメントは、ストアドプロシージャ内から発行されると、現在のトランザクションをコミットして新しいものを開始します。詳細については、「<a href="./r_TRUNCATE.html">TRUNCATE</a>」を参照してください。</p>
+         
+         <p>COMMIT、ROLLBACK、または TRUNCATE ステートメントに続くステートメントはすべて、新しいトランザクションのコンテキストで実行されます。これらは、COMMIT、ROLLBACK、または TRUNCATE ステートメントが検出されるか、ストアドプロシージャが終了するまで行われます。</p>
+         
+         <p>ストアドプロシージャ内から COMMIT、ROLLBACK、または TRUNCATE ステートメントを使用する場合は、次の制約が適用されます。</p>
+         <div class="itemizedlist">
+             
+             
+                        
+         <ul class="itemizedlist"><li class="listitem"><p>ストアドプロシージャがトランザクションブロック内から呼び出された場合、COMMIT、ROLLBACK、または TRUNCATE ステートメントを発行することはできません。この制限は、ストアドプロシージャ自体の本体内およびネストされたプロシージャ呼び出し内に適用されます。</p></li><li class="listitem"><p>ストアドプロシージャが <code class="code">SET config</code> オプション付きで作成されている場合は、COMMIT、ROLLBACK、または TRUNCATE ステートメントを発行することはできません。この制限は、ストアドプロシージャ自体の本体内およびネストされたプロシージャ呼び出し内に適用されます。</p></li><li class="listitem"><p>すべての (明示的または暗黙的に) 開いているカーソルは、COMMIT、ROLLBACK、または TRUNCATE ステートメントの処理時に自動的に閉じられます。明示的および暗黙的なカーソルの制約については、「<a href="./stored-procedure-constraints.html">ストアドプロシージャサポートに関する考慮事項</a>」を参照してください。</p></li></ul></div>
+         
+         <p>また、動的 SQL を使用して COMMIT または ROLLBACK を実行することはできません。ただし、動的 SQL を使用して TRUNCATE を実行することができます。詳細については、「<a href="./c_PLpgSQL-statements.html#r_PLpgSQL-dynamic-sql">動的 SQL</a>」を参照してください。</p>
+         
+            
+         
+         <p>ストアドプロシージャを使用する場合、PL/pgSQL の BEGIN および END ステートメントはグループ化のみを目的としている点を考慮してください。トランザクションを開始または終了することはありません。詳細については、「<a href="./c_PLpgSQL-structure.html#r_PLpgSQL-block">ブロック</a>」を参照してください。</p>
+         
+         
+         
+         <p>次の例は、ストアドプロシージャを明示的なトランザクションブロック内から呼び出した場合のトランザクション動作を示しています。ストアドプロシージャの外部から発行された 2 つの挿入ステートメントと内部から発行された 1 つの挿入ステートメントは、すべて同じトランザクション (3382) に属します。トランザクションは、ユーザーが明示的なコミットを発行したときにコミットされます。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE OR REPLACE PROCEDURE sp_insert_table_a(a int) LANGUAGE plpgsql
+AS $$
+BEGIN
+  INSERT INTO test_table_a values (a);
+END;
+$$;
+
+Begin;
+  insert into test_table_a values (1);
+  Call sp_insert_table_a(2);
+  insert into test_table_a values (3);
+Commit; 
+
+select userid, xid, pid, type, trim(text) as stmt_text 
+from svl_statementtext where pid = pg_backend_pid() order by xid , starttime , sequence;
+
+ userid | xid  | pid |  type   |               stmt_text
+--------+------+-----+---------+----------------------------------------
+    103 | 3382 | 599 | UTILITY | Begin;
+    103 | 3382 | 599 | QUERY   | insert into test_table_a values (1);
+    103 | 3382 | 599 | UTILITY | Call sp_insert_table_a(2);
+    103 | 3382 | 599 | QUERY   | INSERT INTO test_table_a values ( $1 )
+    103 | 3382 | 599 | QUERY   | insert into test_table_a values (3);
+    103 | 3382 | 599 | UTILITY | COMMIT
+</code></pre>
+         
+         <p>それに対して、明示的なトランザクションブロックの外部から同じステートメントが発行され、セッションの自動コミットがオンに設定されている場合の例を示します。この場合、各ステートメントは独自のトランザクションで実行されます。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">insert into test_table_a values (1);
+Call sp_insert_table_a(2);
+insert into test_table_a values (3);
+
+select userid, xid, pid, type, trim(text) as stmt_text 
+from svl_statementtext where pid = pg_backend_pid() order by xid , starttime , sequence;
+
+ userid | xid  | pid |  type   |                                                                    stmt_text
+--------+------+-----+---------+-------------------------------------------------------------------------------------------------------------------------------------------------
+    103 | 3388 | 599 | QUERY   | insert into test_table_a values (1);
+    103 | 3388 | 599 | UTILITY | COMMIT
+    103 | 3389 | 599 | UTILITY | Call sp_insert_table_a(2);
+    103 | 3389 | 599 | QUERY   | INSERT INTO test_table_a values ( $1 )
+    103 | 3389 | 599 | UTILITY | COMMIT
+    103 | 3390 | 599 | QUERY   | insert into test_table_a values (3);
+    103 | 3390 | 599 | UTILITY | COMMIT            
+</code></pre>
+         
+         <p>次の例では、TRUNCATE ステートメントを <code class="code">test_table_a</code> 内に挿入後に発行しています。。TRUNCATE ステートメントは、現在のトランザクション (3335) をコミットして新しいトランザクション (3336) を開始する暗黙的なコミットを発行します。新しいトランザクションは、プロシージャの終了時にコミットされます。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE OR REPLACE PROCEDURE sp_truncate_proc(a int, b int) LANGUAGE plpgsql
+AS $$
+BEGIN
+  INSERT INTO test_table_a values (a);
+  TRUNCATE test_table_b;
+  INSERT INTO test_table_b values (b);
+END;
+$$;
+
+Call sp_truncate_proc(1,2);
+
+select userid, xid, pid, type, trim(text) as stmt_text 
+from svl_statementtext where pid = pg_backend_pid() order by xid , starttime , sequence;
+
+ userid | xid  |  pid  |  type   |                                                                                             stmt_text
+--------+------+-------+---------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    103 | 3335 | 23636 | UTILITY | Call sp_truncate_proc(1,2);
+    103 | 3335 | 23636 | QUERY   | INSERT INTO test_table_a values ( $1 )
+    103 | 3335 | 23636 | UTILITY | TRUNCATE test_table_b
+    103 | 3335 | 23636 | UTILITY | COMMIT
+    103 | 3336 | 23636 | QUERY   | INSERT INTO test_table_b values ( $1 )
+    103 | 3336 | 23636 | UTILITY | COMMIT    
+</code></pre>
+         
+         <p>次の例では、ネストされた呼び出しから TRUNCATE を発行しています。TRUNCATE は、トランザクション (3344) の外部および内部のプロシージャでそれまでに処理されたすべての作業をコミットします。また、新しいトランザクション (3345) を開始します。新しいトランザクションは、外部のプロシージャの終了時にコミットされます。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE OR REPLACE PROCEDURE sp_inner(c int, d int) LANGUAGE plpgsql
+AS $$
+BEGIN
+  INSERT INTO inner_table values (c);
+  TRUNCATE outer_table;
+  INSERT INTO inner_table values (d);
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE sp_outer(a int, b int, c int, d int) LANGUAGE plpgsql
+AS $$
+BEGIN
+  INSERT INTO outer_table values (a);
+  Call sp_inner(c, d);
+  INSERT INTO outer_table values (b);
+END;
+$$;
+
+Call sp_outer(1, 2, 3, 4);
+
+select userid, xid, pid, type, trim(text) as stmt_text 
+from svl_statementtext where pid = pg_backend_pid() order by xid , starttime , sequence;
+
+ userid | xid  |  pid  |  type   |                                                                                              stmt_text
+--------+------+-------+---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    103 | 3344 | 23636 | UTILITY | Call sp_outer(1, 2, 3, 4);
+    103 | 3344 | 23636 | QUERY   | INSERT INTO outer_table values ( $1 )
+    103 | 3344 | 23636 | UTILITY | CALL sp_inner( $1 , $2 )
+    103 | 3344 | 23636 | QUERY   | INSERT INTO inner_table values ( $1 )
+    103 | 3344 | 23636 | UTILITY | TRUNCATE outer_table
+    103 | 3344 | 23636 | UTILITY | COMMIT
+    103 | 3345 | 23636 | QUERY   | INSERT INTO inner_table values ( $1 )
+    103 | 3345 | 23636 | QUERY   | INSERT INTO outer_table values ( $1 )
+    103 | 3345 | 23636 | UTILITY | COMMIT
+</code></pre>
+         
+         <p>次の例は、TRUNCATE ステートメントのコミット時にカーソル <code class="code">cur1</code> が閉じられたことを示しています。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE OR REPLACE PROCEDURE sp_open_cursor_truncate()
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  rec RECORD;
+  cur1 cursor for select * from test_table_a order by 1;
+BEGIN
+  open cur1;
+  TRUNCATE table test_table_b;
+  Loop
+    fetch cur1 into rec;
+    raise info '%', rec.c1;
+    exit when not found;
+  End Loop;
+END
+$$;
+
+call sp_open_cursor_truncate();
+ERROR: cursor "cur1" does not exist
+CONTEXT: PL/pgSQL function "sp_open_cursor_truncate" line 8 at fetch
+</code></pre>
+
+         <p>次の例では、TRUNCATE ステートメントを発行します。明示的なトランザクションブロック内から呼び出すことはできません。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE OR REPLACE PROCEDURE sp_truncate_atomic() LANGUAGE plpgsql
+AS $$
+BEGIN
+  TRUNCATE test_table_b;
+END;
+$$;
+
+Begin;
+  Call sp_truncate_atomic();
+ERROR: TRUNCATE cannot be invoked from a procedure that is executing in an atomic context.
+HINT: Try calling the procedure as a top-level call i.e. not from within an explicit transaction block. 
+Or, if this procedure (or one of its ancestors in the call chain) was created with SET config options, recreate the procedure without them.
+CONTEXT: SQL statement "TRUNCATE test_table_b"
+PL/pgSQL function "sp_truncate_atomic" line 2 at SQL statement 
+</code></pre>
+         
+         
+         <p>次の例は、スーパーユーザーまたはテーブルの所有者ではないユーザーが、テーブルに対して TRUNCATE ステートメントを発行できることを示しています。ユーザーは、<code class="code">Security Definer</code>ストアドプロシージャを使用して、これを行います。この例では以下のアクションを示します。</p>
+         <div class="itemizedlist">
+             
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem"><p>ユーザー 1 はテーブル <code class="code">test_tbl</code> を作成します。</p></li><li class="listitem"><p>ユーザー 1 はストアドプロシージャ <code class="code">sp_truncate_test_tbl</code> を作成します。</p></li><li class="listitem"><p>ユーザー 1 は、ストアドプロシージャに対する <code class="code">EXECUTE</code> 権限をユーザー 2 に付与します。</p></li><li class="listitem"><p>ユーザー 2 は、ストアドプロシージャを実行してテーブル <code class="code">test_tbl</code> を切り捨てます。この例は、<code class="code">TRUNCATE</code> コマンドの前後の行数を示しています。</p></li></ul></div> 
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">set session_authorization to user1;
+create table test_tbl(id int, name varchar(20));
+insert into test_tbl values (1,'john'), (2, 'mary');
+CREATE OR REPLACE PROCEDURE sp_truncate_test_tbl() LANGUAGE plpgsql
+AS $$
+DECLARE
+  tbl_rows int;
+BEGIN
+  select count(*) into tbl_rows from test_tbl;
+  RAISE INFO 'RowCount before Truncate: %', tbl_rows;
+  TRUNCATE test_tbl;
+  select count(*) into tbl_rows from test_tbl;
+  RAISE INFO 'RowCount after Truncate: %', tbl_rows;
+END;
+$$ SECURITY DEFINER;
+grant execute on procedure sp_truncate_test_tbl() to user2;
+reset session_authorization;
+
+
+set session_authorization to user2;
+call sp_truncate_test_tbl();
+INFO:  RowCount before Truncate: 2
+INFO:  RowCount after Truncate: 0
+CALL
+reset session_authorization;         
+</code></pre>
+         
+                     
+         
+  
+         
+         <p>次の例では、COMMIT を 2 回発行しています。最初の COMMIT では、トランザクション 10363 で行われたすべての作業をコミットし、トランザクション 10364 を暗黙的に開始します。トランザクション 10364 は、2 番目の COMMIT ステートメントによってコミットされます。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE OR REPLACE PROCEDURE sp_commit(a int, b int) LANGUAGE plpgsql
+AS $$
+BEGIN
+  INSERT INTO test_table values (a);
+  COMMIT;
+  INSERT INTO test_table values (b);
+  COMMIT;
+END;
+$$;
+
+call sp_commit(1,2);
+
+select userid, xid, pid, type, trim(text) as stmt_text
+from svl_statementtext where pid = pg_backend_pid() order by xid , starttime , sequence;
+ userid |  xid  | pid  |  type   |                                                                                    stmt_text
+--------+-------+------+---------+-----------------------------------------------------------------------------------------------------------------
+    100 | 10363 | 3089 | UTILITY | call sp_commit(1,2);
+    100 | 10363 | 3089 | QUERY   | INSERT INTO test_table values ( $1 )
+    100 | 10363 | 3089 | UTILITY | COMMIT
+    100 | 10364 | 3089 | QUERY   | INSERT INTO test_table values ( $1 )
+    100 | 10364 | 3089 | UTILITY | COMMIT
+</code></pre>
+ 
+   
+    
+         <p>次の例では、<code class="code">sum_vals</code> が 2 より大きい場合に ROLLBACK ステートメントを発行します。最初の ROLLBACK ステートメントでは、トランザクション 10377 で行われたすべての作業をロールバックし、新しいトランザクション 10378 を開始します。プロシージャが終了すると、トランザクション 10378 がコミットされます。</p>
+         
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE OR REPLACE PROCEDURE sp_rollback(a int, b int) LANGUAGE plpgsql
+AS $$
+DECLARE
+  sum_vals int;
+BEGIN
+  INSERT INTO test_table values (a);
+  SELECT sum(c1) into sum_vals from test_table;
+  IF sum_vals &gt; 2 THEN
+    ROLLBACK;
+  END IF;
+  
+  INSERT INTO test_table values (b);
+END;
+$$;
+
+call sp_rollback(1, 2);
+
+select userid, xid, pid, type, trim(text) as stmt_text
+from svl_statementtext where pid = pg_backend_pid() order by xid , starttime , sequence;
+
+userid |  xid  | pid  |  type   |                                                                                    stmt_text
+--------+-------+------+---------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    100 | 10377 | 3089 | UTILITY | call sp_rollback(1, 2);
+    100 | 10377 | 3089 | QUERY   | INSERT INTO test_table values ( $1 )
+    100 | 10377 | 3089 | QUERY   | SELECT sum(c1) from test_table
+    100 | 10377 | 3089 | QUERY   | Undoing 1 transactions on table 133646 with current xid 10377 : 10377
+    100 | 10378 | 3089 | QUERY   | INSERT INTO test_table values ( $1 )
+    100 | 10378 | 3089 | UTILITY | COMMIT
+</code></pre>
+          
+               
+               <h2 id="stored-procedure-transaction-management-nonatomic-mode">非アトミックモードのストアドプロシージャのトランザクション管理</h2>
+               
+               
+               
+               <p>NONATOMIC モードで作成されたストアドプロシージャは、デフォルトモードで作成されたプロシージャとはトランザクション制御動作が異なります。ストアドプロシージャ外の SQL コマンドの自動コミット動作と同様に、NONATOMIC プロシージャの内側の各 SQL ステートメントは、独自のトランザクションで実行され、自動的にコミットします。ユーザーが NONATOMIC ストアドプロシージャ内で明示的なトランザクションブロックを開始した場合、ブロック内の SQL ステートメントは自動的にコミットされません。トランザクションブロックは、その中のステートメントのコミットまたはロールバックを制御します。</p>
+               
+               <p>NONATOMIC ストアドプロシージャでは、START TRANSACTION ステートメントを使用してプロシージャ内の明示的なトランザクションブロックを開くことができます。ただし、既に開いているトランザクションブロックがある場合、Amazon Redshift はサブトランザクションをサポートしていないため、このステートメントは何もしません。前のトランザクションは続行されます。</p>
+               
+               <p>NONATOMIC プロシージャ内でカーソルの FOR ループを操作する場合は、クエリの結果を繰り返し処理する前に、必ず明示的なトランザクションブロックを開いてください。それ以外の場合は、ループ内の SQL ステートメントが自動的にコミットされたときにカーソルが閉じられます。</p>
+               
+               <p>NONATOMIC モードの動作を使用する際の考慮事項は次のとおりです。</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem"><p>ストアドプロシージャ内の各 SQL ステートメントは、開いているトランザクションブロックがなく、セッションの自動コミットがオンに設定されている場合、自動的にコミットされます。</p></li><li class="listitem"><p>ストアドプロシージャがトランザクションブロック内から呼び出された場合、COMMIT、ROLLBACK、TRUNCATE ステートメントを発行してトランザクションを終了できます。これはデフォルトモードでは不可能です。</p></li><li class="listitem"><p>START TRANSACTION ステートメントを発行すると、ストアドプロシージャ内のトランザクションブロックを開始できます。</p></li></ul></div>
+               
+               <p>次の例は、NONATOMIC ストアドプロシージャを使用する場合のトランザクション動作を示しています。以下のすべての例のセッションでは、オートコミットが ON に設定されています。</p>
+               
+               <p>次の例では、NONATOMIC ストアドプロシージャに 2 つの INSERT ステートメントがあります。プロシージャがトランザクションブロックの外部で呼び出されると、プロシージャ内のすべての INSERT ステートメントが自動的にコミットされます。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE TABLE test_table_a(v int); 
+CREATE TABLE test_table_b(v int); 
+
+CREATE OR REPLACE PROCEDURE sp_nonatomic_insert_table_a(a int, b int) NONATOMIC AS
+$$
+BEGIN
+    INSERT INTO test_table_a values (a);
+    INSERT INTO test_table_b values (b);
+END;
+$$ 
+LANGUAGE plpgsql;
+
+Call sp_nonatomic_insert_table_a(1,2);
+
+Select userid, xid, pid, type, trim(text) as stmt_text 
+from svl_statementtext where pid = pg_backend_pid() order by xid , starttime , sequence;
+
+ userid | xid  |    pid     |  type   |               stmt_text                
+--------+------+------------+---------+----------------------------------------
+      1 | 1792 | 1073807554 | UTILITY | Call sp_nonatomic_insert_table_a(1,2);
+      1 | 1792 | 1073807554 | QUERY   | INSERT INTO test_table_a values ( $1 )
+      1 | 1792 | 1073807554 | UTILITY | COMMIT
+      1 | 1793 | 1073807554 | QUERY   | INSERT INTO test_table_b values ( $1 )
+      1 | 1793 | 1073807554 | UTILITY | COMMIT
+(5 rows)          
+</code></pre>
+               
+               <p>ただし、プロシージャが BEGIN..COMMIT ブロック内から呼び出された場合、すべてのステートメントは同じトランザクションの一部です (xid=1799)。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">Begin;
+  INSERT INTO test_table_a values (10);
+  Call sp_nonatomic_insert_table_a(20,30);
+  INSERT INTO test_table_b values (40);
+Commit; 
+
+Select userid, xid, pid, type, trim(text) as stmt_text 
+from svl_statementtext where pid = pg_backend_pid() order by xid , starttime , sequence;
+
+ userid | xid  |    pid     |  type   |                stmt_text                 
+--------+------+------------+---------+------------------------------------------
+      1 | 1799 | 1073914035 | UTILITY | Begin;
+      1 | 1799 | 1073914035 | QUERY   | INSERT INTO test_table_a values (10);
+      1 | 1799 | 1073914035 | UTILITY | Call sp_nonatomic_insert_table_a(20,30);
+      1 | 1799 | 1073914035 | QUERY   | INSERT INTO test_table_a values ( $1 )
+      1 | 1799 | 1073914035 | QUERY   | INSERT INTO test_table_b values ( $1 )
+      1 | 1799 | 1073914035 | QUERY   | INSERT INTO test_table_b values (40);
+      1 | 1799 | 1073914035 | UTILITY | COMMIT
+(7 rows)
+</code></pre>
+               
+               <p>この例では、トランザクションの開始とコミットの間に 2 つの INSERT ステートメントがあります。プロシージャがトランザクションブロックの外部で呼び出されると、2 つの INSERT ステートメントは同じトランザクションに含まれます (xid=1866)。</p>
+               
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE OR REPLACE PROCEDURE sp_nonatomic_txn_block(a int, b int) NONATOMIC AS
+$$
+BEGIN
+    START TRANSACTION;
+    INSERT INTO test_table_a values (a);
+    INSERT INTO test_table_b values (b);
+    COMMIT;
+END;
+$$ 
+LANGUAGE plpgsql;
+
+Call sp_nonatomic_txn_block(1,2);
+
+Select userid, xid, pid, type, trim(text) as stmt_text 
+from svl_statementtext where pid = pg_backend_pid() order by xid , starttime , sequence;
+
+ userid | xid  |    pid     |  type   |               stmt_text                
+--------+------+------------+---------+----------------------------------------
+      1 | 1865 | 1073823998 | UTILITY | Call sp_nonatomic_txn_block(1,2);
+      1 | 1866 | 1073823998 | QUERY   | INSERT INTO test_table_a values ( $1 )
+      1 | 1866 | 1073823998 | QUERY   | INSERT INTO test_table_b values ( $1 )
+      1 | 1866 | 1073823998 | UTILITY | COMMIT
+(4 rows)
+</code></pre>
+               
+               <p>プロシージャが BBEGIN...COMMIT ブロック内から呼び出された場合、プロシージャ内の START TRANSACTION は、既に開いているトランザクションがあるため、何も実行しません。このプロシージャ内の COMMIT は、現在のトランザクション (xid=1876) をコミットして、新しいトランザクションをコミットします。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">Begin;
+  INSERT INTO test_table_a values (10);
+  Call sp_nonatomic_txn_block(20,30);
+  INSERT INTO test_table_b values (40);
+Commit; 
+
+Select userid, xid, pid, type, trim(text) as stmt_text 
+from svl_statementtext where pid = pg_backend_pid() order by xid , starttime , sequence;
+
+ userid | xid  |    pid     |  type   |               stmt_text                
+--------+------+------------+---------+----------------------------------------
+      1 | 1876 | 1073832133 | UTILITY | Begin;
+      1 | 1876 | 1073832133 | QUERY   | INSERT INTO test_table_a values (10);
+      1 | 1876 | 1073832133 | UTILITY | Call sp_nonatomic_txn_block(20,30);
+      1 | 1876 | 1073832133 | QUERY   | INSERT INTO test_table_a values ( $1 )
+      1 | 1876 | 1073832133 | QUERY   | INSERT INTO test_table_b values ( $1 )
+      1 | 1876 | 1073832133 | UTILITY | COMMIT
+      1 | 1878 | 1073832133 | QUERY   | INSERT INTO test_table_b values (40);
+      1 | 1878 | 1073832133 | UTILITY | COMMIT
+(8 rows)
+</code></pre>
+               
+               <p>この例では、カーソルループを操作する方法を示します。テーブル test_table_a には 3 つの値があります。目的は、3 つの値を繰り返し処理して、テーブル test_table_b に挿入することです。NONATOMIC ストアドプロシージャを次の方法で作成すると、最初のループで INSERT ステートメントを実行したあとに、「"cur1" は存在しません」というエラーカーソルが表示されます。これは、INSERT の自動コミットによって開いているカーソルが閉じるためです。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">insert into test_table_a values (1), (2), (3);
+
+CREATE OR REPLACE PROCEDURE sp_nonatomic_cursor() NONATOMIC
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  rec RECORD;
+  cur1 cursor for select * from test_table_a order by 1;
+BEGIN
+  open cur1;
+  Loop
+    fetch cur1 into rec;
+    exit when not found;
+    raise info '%', rec.v;
+    insert into test_table_b values (rec.v);
+  End Loop;
+END
+$$;
+
+CALL sp_nonatomic_cursor();
+
+INFO:  1
+ERROR:  cursor "cur1" does not exist
+CONTEXT:  PL/pgSQL function "sp_nonatomic_cursor" line 7 at fetch
+</code></pre>
+               
+               <p>カーソルをループさせるには、トランザクションの開始とコミットの間にカーソルを置いてください。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">insert into test_table_a values (1), (2), (3);
+
+CREATE OR REPLACE PROCEDURE sp_nonatomic_cursor() NONATOMIC
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  rec RECORD;
+  cur1 cursor for select * from test_table_a order by 1;
+BEGIN
+  START TRANSACTION;
+  open cur1;
+  Loop
+    fetch cur1 into rec;
+    exit when not found;
+    raise info '%', rec.v;
+    insert into test_table_b values (rec.v);
+  End Loop;
+  COMMIT;
+END
+$$;
+
+CALL sp_nonatomic_cursor();
+
+INFO:  1
+INFO:  2
+INFO:  3
+CALL
+</code></pre>
+               
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./stored-procedure-result-set.html">結果セットを返す</div><div id="next" class="next-link" accesskey="n" href="./stored-procedure-trapping-errors.html">エラーのトラップ</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/stored-procedure-transaction-management.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/stored-procedure-transaction-management.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

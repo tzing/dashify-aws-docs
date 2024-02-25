@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>WLM クエリモニタリングルール - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="cm-c-wlm-query-monitoring-rules" /><meta name="default_state" content="cm-c-wlm-query-monitoring-rules" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="description" content="Amazon Redshift ワークロード管理では、クエリモニタリングルールは、WLM キューのメトリクスベースのパフォーマンスの境界を定義し、クエリがこれらの境界を超えた場合のアクションを指定します。例えば、実行時間の短いクエリ専用のキューには、60 秒以上実行されるクエリをキャンセルするルールを作成できます。デザインの不十分なクエリを追跡する目的で、ネステッドループを含むクエリを記録する別のルールを設定することができます。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="WLM クエリモニタリングルール" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>WLM クエリモニタリングルール - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#cm-c-wlm-query-monitoring-rules" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "ワークロード管理の実装",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "WLM クエリモニタリングルール",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#cm-c-wlm-query-monitoring-rules" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#cm-c-wlm-defining-query-monitoring-rules">クエリモニタールールの定義</a><a href="#cm-c-wlm-query-monitoring-metrics">Amazon Redshift のクエリモニタリングメトリクスのプロビジョニング</a><a href="#cm-c-wlm-query-monitoring-metrics-serverless">Amazon Redshift Serverless のクエリモニタリングメトリクス</a><a href="#cm-c-wlm-query-monitoring-templates">クエリモニタリングルールテンプレート</a><a href="#cm-c-wlm-qmr-tables-and-views">クエリのモニタリングルールのシステムテーブルとビュー</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="cm-c-wlm-query-monitoring-rules">WLM クエリモニタリングルール</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Amazon Redshift ワークロード管理では、クエリモニタリングルールは、WLM キューのメトリクスベースのパフォーマンスの境界を定義し、クエリがこれらの境界を超えた場合のアクションを指定します。例えば、実行時間の短いクエリ専用のキューには、60 秒以上実行されるクエリをキャンセルするルールを作成できます。デザインの不十分なクエリを追跡する目的で、ネステッドループを含むクエリを記録する別のルールを設定することができます。</p><p>ワークロード管理 (WLM) 構成の一部としてクエリモニタリングルールを定義します。1 つのキューに対して最大 25 個のルールを定義できます。ルールの総数はキュー全体で最大 25 個に制限されています。各ルールには最大 3 つの条件または述語と 1 つのアクションが含まれます。<em>述語</em>は、メトリクス、比較条件 (=, &lt;, or &gt; )、および値で構成されています。いずれかのルールのすべての述語が満たされると、ルールのアクションがトリガーされます。ルールアクションは、前述のようにログ、ホップ、中止を指定できます。</p><p>指定のキューのルールは、そのキューで実行中のクエリにのみ適用されます。ルールは他のルールに依存しません。</p><p>WLM は 10 秒ごとにメトリクスを評価します。同じ期間に複数のルールがトリガーされると、WLM は最も重大なアクション (中止、ホップ、ログ) を開始します。アクションがホップまたは中止の場合、アクションは記録され、クエリはキューから削除されます。アクションがログ場合、キューはキューで実行されます。WLM はルールごとにクエリあたり 1 つのログアクションを開始します。キューに他のルールが含まれている場合、これらのルールは引き続き有効です。アクションがホップで、クエリが別のキューにルーティングされる場合、新しいキューのルールが適用されます。特定のクエリに対して実行されるクエリのモニタリングと追跡アクションの詳細については、<a href="./wlm-short-query-acceleration.html">ショートクエリアクセラレーションを使用する</a> にあるサンプルコレクションを参照してください。</p><p>ルールの述語がすべて満たされると、WLM は <a href="./r_STL_WLM_RULE_ACTION.html">STL_WLM_RULE_ACTION</a> システムテーブルに行を書き込みます。さらに、Amazon Redshift は、現在実行されているクエリのクエリメトリクスを <a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a> に記録します。完了したクエリのメトリクスは <a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a> に保存されます。</p>
+         <h2 id="cm-c-wlm-defining-query-monitoring-rules">クエリモニタリングルールの定義</h2>
+
+
+         <p>WLM 構成の一部としてクエリモニタリングルールを作成します。このルールは、クラスターのパラメータグループ定義の一部として定義します。</p>
+
+
+
+         <p>ルールは AWS Management Consoleを使用して作成するか、JSON でプログラム的に作成できます。</p>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>プログラム的にルールを作成することを選択した場合は、コンソールを使用して、パラメータグループ定義に含める JSON を生成することを強くおすすめします。詳細については、<em>Amazon Redshift 管理ガイド</em>の「<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-parameter-groups-console.html#parameter-group-modify-qmr-console">コンソールを使用してクエリモニタリングルールを作成または変更する</a>」および「<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html#configure-parameters-using-the-cli">AWS CLI によるパラメータ値を設定する</a>」を参照してください。</p></div></div>
+
+         <p>クエリモニタリングルールを定義するには、次の要素を指定します。</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>ルール名 – ルール名は WLM 設定内で一意である必要があります。ルール名には最大で 32 文字の英数字または下線を使用できます。スペースまたは疑問符を含めることはできません。キューごとの 25 個までルールを指定できます。すべてのキューでのルールは合計 25 個までです。</p>
+            </li><li class="listitem">
+               <p>1 つ以上の述語 – ルールごとに最大 3 つのルールを定義できます。いずれかのルールのすべての述語が満たされると、関連付けられたアクションがトリガーされます。述語はメトリクス名、演算子 (=、&lt;、または &gt;)、および値で定義されます。例: 「<code class="code">query_cpu_time &gt; 100000</code>」。メトリクスのリストと各メトリクスの値については、このセクションの <a href="#cm-c-wlm-query-monitoring-metrics">Amazon Redshift のクエリモニタリングメトリクスのプロビジョニング</a> を参照してください。</p>
+            </li><li class="listitem">
+               <p>アクション – 複数のルールがトリガーされると、WLM は最も重大なアクションのルールを選択します。想定されるアクションの重大度は昇順で次のようになります。</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p>ログ – STL_WLM_RULE_ACTION システムテーブルにクエリに関する情報を記録します。ログレコードを書き込むだけの場合はログアクションを使用します。WLM は最大でクエリごと、ルールごとにログを 1 つ作成します。ログアクションの後、他のルールは有効な状態を維持し、WLM はひき続きクエリをモニタリングします。</p>
+                  </li><li class="listitem">
+                     <p>ホップ (手動 WLM でのみ利用可能) – アクションを記録して、次に一致するキューにクエリをホップします。一致するキューがない場合、クエリはキャンセルされます。QMR は、<a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_AS.html">CREATE TABLE AS</a> (CTAS) ステートメントと読み取り専用クエリ (SELECT ステートメントなど) のみホップします。詳細については、「<a href="./wlm-queue-hopping.html">WLM クエリキューのホッピング</a>」を参照してください。</p>
+                  </li><li class="listitem">
+                     <p>中断 – アクションをログに記録してクエリをキャンセルします。QMR は、COPY ステートメント、および ANALYZE や VACUUM などのメンテナンスオペレーションを停止しません。</p>
+                  </li><li class="listitem">
+                     <p>優先度の変更 (自動 WLM でのみ使用可能) – クエリの優先度を変更します。</p>
+                  </li></ul></div>
+            </li></ul></div>
+
+         
+         <p>クエリのランタイムを制限するには、WLM タイムアウトを使用する代わりにクエリモニタリングルールを作成することをお勧めします。例えば、次の JSON スニペットに示すように、<code class="code">max_execution_time</code> を 50,000 ミリ秒に設定できます。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"max_execution_time": 50000</code></pre>
+         <p>ただし、次の JSON スニペットに示すように、<code class="code">query_execution_time</code> を 50 秒に設定する同等のクエリモニタリングルールを定義します。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"rules": 
+[
+    <span>{</span>
+        "rule_name": "rule_query_execution",
+        "predicate": [
+            <span>{</span>
+                "metric_name": "query_execution_time",
+                "operator": "&gt;",
+                "value": 50
+            }
+        ],
+        "action": "abort"
+    }            
+]</code></pre>
+         
+         <p>クエリモニタリングルールを作成または変更するステップについては、<em>Amazon Redshift 管理ガイド</em>の「<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-parameter-groups-console.html#parameter-group-modify-qmr-console">コンソールを使用してクエリモニタリングルールを作成または変更する</a>」および「<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/workload-mgmt-config.html#wlm-json-config-properties">wlm_json_configuration パラメータのプロパティ</a>」を参照してください。</p>
+         
+
+         <p>クエリモニタリングルールの詳細は次のトピックで確認できます。</p>
+         <div class="itemizedlist">
+             
+
+             
+
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>
+                  <a href="#cm-c-wlm-query-monitoring-metrics">Amazon Redshift のクエリモニタリングメトリクスのプロビジョニング</a>
+               </p>
+            </li><li class="listitem">
+               <p>
+                  <a href="#cm-c-wlm-query-monitoring-templates">クエリモニタリングルールテンプレート</a>
+               </p>
+            </li><li class="listitem">
+               <p> <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-parameter-groups-console.html#parameter-group-modify-qmr-console">コンソールを用いたルールの作成</a> </p>
+            </li><li class="listitem">
+               <p> <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/workload-mgmt-config.html">ワークロード管理の設定</a> </p>
+            </li><li class="listitem">
+               <p>
+                  <a href="#cm-c-wlm-qmr-tables-and-views">クエリのモニタリングルールのシステムテーブルとビュー</a>
+               </p>
+            </li></ul></div>
+       
+         <h2 id="cm-c-wlm-query-monitoring-metrics">Amazon Redshift のクエリモニタリングメトリクスのプロビジョニング</h2>
+
+
+         <p>次のテーブルに、クエリモニタリングルールで使用されるメトリクスを説明します (これらのメトリクスは、<a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a> および <a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a> システムのテーブルに保存されるメトリクスとは異なります)。</p>
+         <p>指定のメトリクスについて、パフォーマンスしきい値はクエリレベルまたはセグメントレベルのいずれかで追跡されます。セグメントとステップの詳細については、「<a href="./c-query-planning.html">クエリプランと実行ワークフロー</a>」を参照してください。</p>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p><a href="./cm-c-defining-query-queues.html#wlm-timeout">WLM タイムアウト</a> パラメータは、クエリモニタリングルールとは異なります。</p></div></div>
+
+         <div class="table-container"><div class="table-contents"><table id="w319aac43c57c15b9"><thead>
+                  <tr>
+                     <th>メトリクス</th>
+                     <th>名前</th>
+                     <th>説明</th>
+
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">CPU 時間のクエリ</td>
+                     <td tabindex="-1">
+                        <code class="code">query_cpu_time</code>
+                     </td>
+                     <td tabindex="-1">クエリに使用される CPU 時間 (秒)。<code class="code">CPU
+                           time</code> は <code class="code">Query execution time</code> とは異なります。<p>有効な値は 0～999,999 です。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">ブロック読み取り</td>
+                     <td tabindex="-1">
+                        <code class="code">query_blocks_read</code>
+                     </td>
+                     <td tabindex="-1">クエリによって読み取られた 1 MB データブロックの数。<p>有効な値は 0～1,048,575 です。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">行数のスキャン</td>
+                     <td tabindex="-1">
+                        <code class="code">scan_row_count</code>
+                     </td>
+                     <td tabindex="-1">
+                        <p>スキャンステップの行数。行数は、削除対象としてマークされた行 (非実体の行) をフィルタリングする前およびユーザー定義のクエリフィルタが適用される前に出力された合計行数を表します。</p>
+                        <p>有効な値は 0～999,999,999,999,999 です。</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">クエリ実行時間</td>
+                     <td tabindex="-1">
+                        <code class="code">query_execution_time</code>
+                     </td>
+                     <td tabindex="-1">経過したクエリ実行時間 (秒)。キューでの待機時間は実行時間に含まれません。<p>有効な値は 0～86,399 です。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">クエリキュー時間</td>
+                     <td tabindex="-1">
+                        <code class="code">query_queue_time</code>
+                     </td>
+                     <td tabindex="-1">キューでの待機に費やされた時間（秒単位）。<p>有効な値は 0～86,399 です。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">CPU の使用</td>
+                     <td tabindex="-1">
+                        <code class="code">query_cpu_usage_percent</code>
+                     </td>
+                     <td tabindex="-1">クエリが使用する CPU 容量の割合。<p>有効な値は 0～6,399 です。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">ディスクへのメモリ</td>
+                     <td tabindex="-1">
+                        <code class="code">query_temp_blocks_to_disk</code>
+                     </td>
+                     <td tabindex="-1">中間結果の書き込みに使用される一時ディスク容量 (1 MB ブロック)。<p>有効な値は 0～319,815,679 です。</p></td>  
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">CPU スキュー</td>
+                     <td tabindex="-1">
+                        <code class="code">cpu_skew</code>
+                     </td>
+                     <td tabindex="-1">任意のスライスの最大 CPU 使用量とすべてのスライスの平均 CPU 使用量の比率。このメトリクスはセグメントレベルで定義されます。<p>有効な値は 0～99 です。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">I/O スキュー</td>
+                     <td tabindex="-1">
+                        <code class="code">io_skew</code>
+                     </td>
+                     <td tabindex="-1">任意のスライスの最大ブロック読み取り (I/O) とすべてのスライスの平均ブロック読み取りの比率。このメトリクスはセグメントレベルで定義されます。<p>有効な値は 0～99 です。</p></td>
+                  </tr>
+
+                  <tr>
+                     <td tabindex="-1">結合した行</td>
+                     <td tabindex="-1">
+                        <code class="code">join_row_count</code>
+                     </td>
+                     <td tabindex="-1">結合ステップで処理された行数。<p>有効な値は 0～999,999,999,999,999 です。</p></td>
+                  </tr>
+
+                  <tr>
+                     <td tabindex="-1">ネストしたループ結合行数</td>
+                     <td tabindex="-1">
+                        <code class="code">nested_loop_join_row_count</code>
+                     </td>
+                     <td tabindex="-1">ネストしたループ結合行数の行数。<p>有効な値は 0～999,999,999,999,999 です。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">返される行数</td>
+                     <td tabindex="-1">
+                        <code class="code">return_row_count</code>
+                     </td>
+                     <td tabindex="-1">クエリによって返された行の数。<p> 有効な値は 0～999,999,999,999,999 です。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">セグメント実行時間</td>
+                     <td tabindex="-1">
+                        <code class="code">segment_execution_time</code>
+                     </td>
+                     <td tabindex="-1">単一セグメントで経過した実行時間 (秒)。サンプリングエラーを回避または減少するには、<code class="code">segment_execution_time
+                           &gt; 10</code> をルールに含めます。<p>有効な値は 0～86,388 です。</p></td>
+                  </tr>
+
+                  <tr>
+                     <td tabindex="-1">Spectrum スキャン行数</td>
+                     <td tabindex="-1">
+                        <code class="code">spectrum_scan_row_count</code>
+                     </td>
+                     <td tabindex="-1">Amazon Redshift Spectrum クエリにスキャンされる Amazon S3 内のデータ行数。<p>有効な値は 0～999,999,999,999,999 です。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Spectrum スキャンサイズ</td>
+                     <td tabindex="-1">
+                        <code class="code">spectrum_scan_size_mb</code>
+                     </td>
+                     <td tabindex="-1">Amazon Redshift Spectrum クエリにスキャンされる Amazon S3 内のデータサイズ (MB)。<p>有効な値は 0～999,999,999,999,999 です。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">クエリ優先度</td>
+                     <td tabindex="-1">
+                        <code class="code">query_priority</code>
+                     </td>
+                     <td tabindex="-1">クエリの優先度です。<p>有効な値は、<code class="code">HIGHEST</code>、<code class="code">HIGH</code>、<code class="code">NORMAL</code>、<code class="code">LOW</code>、<code class="code">LOWEST</code> です。大なり (&gt;) 演算子と小なり (&lt;) 演算子を使用して <code class="code">query_priority</code> を比較する場合、<code class="code">HIGHEST</code> は <code class="code">HIGH</code> より大きく、<code class="code">HIGH</code> は <code class="code">NORMAL</code> より大きい、などがあります。</p></td>
+                  </tr>
+               </table></div></div>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem"><p>ホップアクションは、<code class="code">query_queue_time</code> 述語ではサポートされていません。つまり、<code class="code">query_queue_time</code> 述語が満たされたときにホップするように定義されたルールは無視されます。</p></li><li class="listitem">
+            <p>短いセグメントの実行時間は、一部のメトリクスで <code class="code">io_skew</code> や <code class="code">query_cpu_usage_percent</code> などのサンプリングエラーとなる場合があります。サンプリングエラーを回避または減少するには、セグメントの実行時間をルールに含めます。最良な開始ポイントは、<code class="code">segment_execution_time &gt; 10</code> です。</p>
+            </li></ul></div></div></div>
+         <p><a href="./r_SVL_QUERY_METRICS.html">SVL_QUERY_METRICS</a> ビューは、完了したクエリのメトリクスを示します。<a href="./r_SVL_QUERY_METRICS_SUMMARY.html">SVL_QUERY_METRICS_SUMMARY</a> ビューは、完了したクエリのメトリクスの最大値を示します。このビューの値は、クエリのモニタリングルールを定義するしきい値を決定する際に役立ちます。</p>
+       
+         <h2 id="cm-c-wlm-query-monitoring-metrics-serverless">Amazon Redshift Serverless のクエリモニタリングメトリクス</h2>
+         <p>次のテーブルでは、Amazon Redshift Serverless のクエリモニタリングルールで使用されるメトリクスについて説明します。</p>
+            
+         
+         <div class="table-container"><div class="table-contents"><table id="w319aac43c57c17b5"><thead>
+                  <tr>
+                     <th>メトリクス</th>
+                     <th>名前</th>
+                     <th>説明</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">CPU 時間のクエリ</td>
+                     <td tabindex="-1"><code class="code">max_query_cpu_time</code></td>
+                     <td tabindex="-1">クエリに使用される CPU 時間 (秒)。<code class="code">CPU time</code> は <code class="code">Query execution time</code> とは異なります。<p>有効な値は 0～999,999 です。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">ブロック読み取り</td>
+                     <td tabindex="-1">
+                        <code class="code">max_query_blocks_read</code>
+                     </td>
+                     <td tabindex="-1">クエリによって読み取られた 1 MB データブロックの数。<p>有効な値は 0～1,048,575 です。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">行数のスキャン</td>
+                     <td tabindex="-1">
+                        <code class="code">max_scan_row_count</code>
+                     </td>
+                     <td tabindex="-1">
+                        <p>スキャンステップの行数。行数は、削除対象としてマークされた行 (非実体の行) をフィルタリングする前およびユーザー定義のクエリフィルタが適用される前に出力された合計行数を表します。</p>
+                        <p>有効な値は 0～999,999,999,999,999 です。</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">クエリ実行時間</td>
+                     <td tabindex="-1">max_query_execution_time</td>
+                     <td tabindex="-1">
+                        <p>経過したクエリ実行時間 (秒)。キューでの待機時間は実行時間に含まれません。クエリが設定された実行時間を超えると、Amazon Redshift Serverless はクエリを中止します。</p>
+                        <p>有効な値は 0～86,399 です。</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">クエリキュー時間</td>
+                     <td tabindex="-1"><code class="code">max_query_queue_time</code></td>
+                     <td tabindex="-1">キューでの待機に費やされた時間（秒単位）。<p>有効な値は 0～86,399 です。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">CPU の使用</td>
+                     <td tabindex="-1">
+                        <code class="code">max_query_cpu_usage_percent</code>
+                     </td>
+                     <td tabindex="-1">クエリが使用する CPU 容量の割合。<p>有効な値は 0～6,399 です。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">ディスクへのメモリ</td>
+                     <td tabindex="-1">
+                        <code class="code">max_query_temp_blocks_to_disk</code>
+                     </td>
+                     <td tabindex="-1">中間結果の書き込みに使用される一時ディスク容量 (1 MB ブロック)。<p>有効な値は 0～319,815,679 です。</p></td>  
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">結合した行</td>
+                     <td tabindex="-1">
+                        <code class="code">max_join_row_count</code>
+                     </td>
+                     <td tabindex="-1">結合ステップで処理された行数。<p>有効な値は 0～999,999,999,999,999 です。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">ネストしたループ結合行数</td>
+                     <td tabindex="-1">
+                        <code class="code">max_nested_loop_join_row_count</code>
+                     </td>
+                     <td tabindex="-1">ネストしたループ結合行数の行数。<p>有効な値は 0～999,999,999,999,999 です。</p></td>
+                  </tr>
+               </table></div></div>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem"><p>ホップアクションは、<code class="code">max_query_queue_time</code> 述語ではサポートされていません。つまり、<code class="code">max_query_queue_time</code> 述語が満たされたときにホップするように定義されたルールは無視されます。</p></li><li class="listitem">
+                  <p>短いセグメントの実行時間は、一部のメトリクスで <code class="code">max_io_skew</code> や <code class="code">max_query_cpu_usage_percent</code> などのサンプリングエラーとなる場合があります。</p>
+               </li></ul></div></div></div>
+    
+       
+         <h2 id="cm-c-wlm-query-monitoring-templates">クエリモニタリングルールテンプレート</h2>
+
+
+
+         <p>Amazon Redshift コンソールを使用してルールを追加すると、事前定義されたテンプレートからルールを作成することを選択できます。Amazon Redshift は、述語のセットを含む新しいルールを作成し、述語にデフォルト値で入力します。デフォルトのアクションはログです。述語とアクションはユースケースに合わせて変更できます。</p>
+         <p>次の表に利用可能なテンプレートの一覧を示します。</p>
+         <div class="table-container"><div class="table-contents"><table id="w319aac43c57c19b7"><thead>
+                  <tr>
+                     <th>テンプレート名</th>
+                     <th>述語</th>
+                     <th>説明</th>
+
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">ネストされたループ結合</td>
+                     <td tabindex="-1">
+                        <code class="code">nested_loop_join_row_count &gt; 100</code>
+                     </td>
+                     <td tabindex="-1">ネストしたループ結合は、不完全な結合述語を示すことがあります。この場合、高確率でリターンセットが非常に大きくなります (デカルト積)。少ない行数を使用して潜在的なランナウェイクエリを早期に検出します。</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">クエリが多くの行を返す</td>
+                     <td tabindex="-1">
+                        <code class="code">return_row_count &gt; 1000000</code>
+                     </td>
+                     <td tabindex="-1">キューを実行中のシンプルで短いクエリ専用にすると、多くの行数を返すクエリを見つけるルールが含まれる可能性があります。テンプレートはデフォルトで 100 万行を使用します。システムによっては、100 万行で多いとみなされます。またより大きなシステムでは、10 億行で多いとみなされます。</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">多くの行がある結合</td>
+                     <td tabindex="-1">
+                        <code class="code">join_row_count &gt; 1000000000</code>
+                     </td>
+                     <td tabindex="-1">結合ステップの行数が以上に多い場合は、フィルタの制限を厳格化することが必要な可能性があります。テンプレートはデフォルトで 10 億行を使用します。素早くシンプルなクエリを目的にしたアドホック (ワンタイム) キューの場合は、この行数を小さくすることができます。</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">中間結果を書き込むときの高いディスク使用</td>
+                     <td tabindex="-1">
+                        <code class="code">query_temp_blocks_to_disk &gt; 100000</code>
+                     </td>
+                     <td tabindex="-1">現在実行中のクエリが制限を超えてシステム RAM を使用する場合、クエリ実行エンジンは中間結果をディスク (スピルされたメモリ) に書き込みます。通常、この条件は不正なクエリの結果です。また、この不正なクエリはディスク容量の大部分を使用します。ディスク使用量の許容可能なしきい値は、クラスターノードのタイプと数に応じて異なります。テンプレートは、デフォルトで 100,000 ブロックまたは 100 GB を使用します。小さなクラスターでは少ない数を使用できます。</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">高い I/O スキューで長時間実行されているクエリ</td>
+                     <td tabindex="-1"><code class="code">segment_execution_time &gt; 120</code> および <code class="code">io_skew &gt; 1.30</code> </td>
+                     <td tabindex="-1">I/O スキューは、1 つのノードスライスの I/O 料金が他のスライスよりもかなり高い場合に発生します。開始点として、1.30 のスキュー (平均 1.3 倍) は高いとみなされます。I/O スキューが高いことが必ず問題であるわけではありませんが、クエリの実行が長時間におよぶなどの状態と組み合わさる場合は、分散スタイルやソートキーに問題がある可能性があります。</td>
+                  </tr>
+               </table></div></div>
+
+       
+         <h2 id="cm-c-wlm-qmr-tables-and-views">クエリのモニタリングルールのシステムテーブルとビュー</h2>
+
+
+
+         <p>ルールの述語がすべて満たされると、WLM は <a href="./r_STL_WLM_RULE_ACTION.html">STL_WLM_RULE_ACTION</a> システムテーブルに行を書き込みます。この行には、ルールをトリガーしたクエリとその結果のアクションに関する詳細が含まれます。</p>
+         <p>さらに、Amazon Redshift では、次のシステムテーブルとビューにクエリメトリクスが記録されます。</p>
+         <div class="itemizedlist">
+             
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p><a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a> テーブルは、現在実行中のクエリのメトリクスを表示します。</p>
+            </li><li class="listitem">
+               <p><a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a> テーブルは完了したクエリのメトリクスを記録します。</p>
+            </li><li class="listitem">
+               <p><a href="./r_SVL_QUERY_METRICS.html">SVL_QUERY_METRICS</a> ビューは、完了したクエリのメトリクスを示します。</p>
+            </li><li class="listitem">
+               <p><a href="./r_SVL_QUERY_METRICS_SUMMARY.html">SVL_QUERY_METRICS_SUMMARY</a> ビューは、完了したクエリのメトリクスの最大値を示します。</p>
+            </li></ul></div>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./cm-c-wlm-dynamic-example.html">動的な WLM の例</div><div id="next" class="next-link" accesskey="n" href="./cm-c-wlm-system-tables-and-views.html">WLM システムテーブルとビュー</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>チュートリアル: K-means クラスタリングモデルの構築 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_k-means_clustering" /><meta name="default_state" content="tutorial_k-means_clustering" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_k-means_clustering.html" /><meta name="description" content="このチュートリアルでは、Amazon Redshift の機械学習モデルを作成し、推論クエリを実行するエンドツーエンドの例を示します。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_k-means_clustering.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="チュートリアル: K-means クラスタリングモデルの構築" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>チュートリアル: K-means クラスタリングモデルの構築 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_k-means_clustering" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_k-means_clustering.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_k-means_clustering.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_k-means_clustering.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Amazon Redshift での機械学習の使用",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Amazon Redshift 機械学習の開始方法",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Amazon Redshift ML のチュートリアル",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "チュートリアル: K-means クラスタリングモデルの構築",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_k-means_clustering" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#tutorial_k-means_clustering_tasks">ユースケースの例</a><a href="#tutorial_k-means_clustering_prereqs">前提条件</a><a href="#tutorial_k-means_clustering_step_load">ステップ 1: Amazon S3 から Amazon Redshift にデータをロードする</a><a href="#tutorial_k-means_clustering_create_model">ステップ 2: 機械学習モデルを作成する</a><a href="#tutorial_k-means_clustering_step_perform_predictions">ステップ 3: モデルを使用して予測を実行する</a><a href="#tutorial_k-means_clustering_related_topics">関連トピック</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_k-means_clustering">チュートリアル: K-means クラスタリングモデルの構築</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>このチュートリアルでは、Amazon Redshift ML を使用して、<a href="url-sm-dev;k-means.html" rel="noopener noreferrer" target="_blank">k-means アルゴリズム</a>に基づく機械学習モデルを作成、トレーニングおよびデプロイします。このアルゴリズムは、データ内でグループを検出する際にクラスタリングで発生する問題を解決します。K-means は、まだラベル付けされていないデータのグループ化に役立ちます。K-means クラスタリングの詳細については、「Amazon SageMaker デベロッパーガイドの「<a href="https://docs.aws.amazon.com/sagemaker/latest/dg/algo-kmeans-tech-notes.html">k-means クラスタリングの仕組み</a>」を参照してください。</p><p>CREATE MODEL オペレーションを使用して、Amazon Redshift クラスターから K-means モデルを作成します。CREATE MODEL コマンドを使用して、トレーニングデータのエクスポート、モデルのトレーニング、モデルのインポート、Amazon Redshift 予測関数の準備を行うことができます。トレーニングデータをテーブルまたは SELECT ステートメントとして指定するには、CREATE MODEL オペレーションを使用します。</p><p>このチュートリアルでは、K-means を<a href="https://aws.amazon.com/public-datasets/gdelt/" rel="noopener noreferrer" target="_blank"><span>イベント、言語、トーンのグローバルデータベース (GDELT)</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> データセットで使用し、世界中のニュースを監視して、データを日々秒単位で保存します K-means は、似たようなトーン、俳優、または場所のイベントをグループ化します。データは、Amazon Simple Storage Service の 2 つの異なるフォルダに複数のファイルで保存されます。フォルダは、1979 年から 2013 年、毎日のアップデート、2013 年以降が履歴的になっています。この例では、履歴フォーマットを使用して、1979 年のデータを取り込みます。</p>
+               <h2 id="tutorial_k-means_clustering_tasks">ユースケースの例</h2>
+               <p>Amazon Redshift ML では、ストリーミングサービスで同じような視聴習慣を持つカスタマーをグループ化するなど、クラスタリングに関するその他の問題を解決できます。また、Redshift ML を使用して、配送サービスに最適な配送センターの数を予測することもできます。</p>
+            <p><b>[Tasks]</b> (タスク)</p><div class="itemizedlist">
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>前提条件</p>
+               </li><li class="listitem">
+                  <p>ステップ 1: Amazon S3 から Amazon Redshift にデータをロードする</p>
+               </li><li class="listitem">
+                  <p>ステップ 2: 機械学習モデルを作成する</p>
+               </li><li class="listitem">
+                  <p>ステップ 3: モデルを使用して予測を実行する</p>
+               </li></ul></div>
+            <h2 id="tutorial_k-means_clustering_prereqs">前提条件</h2>
+               <p>このチュートリアルを完了するには、Amazon Redshift ML の「<a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">管理の設定</a>」を完了している必要があります。</p>
+          
+               <h2 id="tutorial_k-means_clustering_step_load">ステップ 1: Amazon S3 から Amazon Redshift にデータをロードする</h2>
+               <div class="orderedlist">
+                   
+                   
+               <ol><li>
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">Amazon Redshift クエリエディタv2</a> を使用して次のクエリを実行します。クエリはパブリックスキーマに <code class="code">gdelt_data</code> テーブルが存在する場合はそれをドロップし、パブリックスキーマに同じ名前のテーブルを作成します。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">DROP TABLE IF EXISTS gdelt_data CASCADE;
+
+CREATE TABLE gdelt_data (
+    GlobalEventId bigint,
+    SqlDate bigint,
+    MonthYear bigint,
+    Year bigint,
+    FractionDate double precision,
+    Actor1Code varchar(256),
+    Actor1Name varchar(256),
+    Actor1CountryCode varchar(256),
+    Actor1KnownGroupCode varchar(256),
+    Actor1EthnicCode varchar(256),
+    Actor1Religion1Code varchar(256),
+    Actor1Religion2Code varchar(256),
+    Actor1Type1Code varchar(256),
+    Actor1Type2Code varchar(256),
+    Actor1Type3Code varchar(256),
+    Actor2Code varchar(256),
+    Actor2Name varchar(256),
+    Actor2CountryCode varchar(256),
+    Actor2KnownGroupCode varchar(256),
+    Actor2EthnicCode varchar(256),
+    Actor2Religion1Code varchar(256),
+    Actor2Religion2Code varchar(256),
+    Actor2Type1Code varchar(256),
+    Actor2Type2Code varchar(256),
+    Actor2Type3Code varchar(256),
+    IsRootEvent bigint,
+    EventCode bigint,
+    EventBaseCode bigint,
+    EventRootCode bigint,
+    QuadClass bigint,
+    GoldsteinScale double precision,
+    NumMentions bigint,
+    NumSources bigint,
+    NumArticles bigint,
+    AvgTone double precision,
+    Actor1Geo_Type bigint,
+    Actor1Geo_FullName varchar(256),
+    Actor1Geo_CountryCode varchar(256),
+    Actor1Geo_ADM1Code varchar(256),
+    Actor1Geo_Lat double precision,
+    Actor1Geo_Long double precision,
+    Actor1Geo_FeatureID bigint,
+    Actor2Geo_Type bigint,
+    Actor2Geo_FullName varchar(256),
+    Actor2Geo_CountryCode varchar(256),
+    Actor2Geo_ADM1Code varchar(256),
+    Actor2Geo_Lat double precision,
+    Actor2Geo_Long double precision,
+    Actor2Geo_FeatureID bigint,
+    ActionGeo_Type bigint,
+    ActionGeo_FullName varchar(256),
+    ActionGeo_CountryCode varchar(256),
+    ActionGeo_ADM1Code varchar(256),
+    ActionGeo_Lat double precision,
+    ActionGeo_Long double precision,
+    ActionGeo_FeatureID bigint,
+    DATEADDED bigint
+);</code></pre>
+                  </li><li>
+                     <p>次のクエリは、サンプルデータを <code class="code">gdelt_data</code> テーブルにロードします。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY gdelt_data
+FROM 's3://gdelt-open-data/events/1979.csv' 
+REGION 'us-east-1'
+IAM_ROLE default 
+CSV
+DELIMITER '\t';</code></pre>
+                  </li></ol></div>
+                
+                  <h3 id="tutorial_k-means_clustering_examine">トレーニングデータを検証する (オプション)</h3>
+                  <p>モデルがどのデータでトレーニングされるかを確認するには、次のクエリを使用します。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    AvgTone,
+    EventCode,
+    NumArticles,
+    Actor1Geo_Lat,
+    Actor1Geo_Long,
+    Actor2Geo_Lat,
+    Actor2Geo_Long
+FROM
+    gdelt_data LIMIT 100;</code></pre>
+                
+             
+               <h2 id="tutorial_k-means_clustering_create_model">ステップ 2: 機械学習モデルを作成する</h2>
+               <p>次の例では、CREATE MODEL コマンドを使用して、データを 7 つのクラスターにグループ化するモデルを作成します。K 値は、データポイントが分割されるクラスターの数です。このモデルは、データポイントをそれらが互いに類似しているクラスターに分類します。データポイントをグループにクラスタリングすることにより、K-Means アルゴリズムは最適なクラスター中心を反復的に決定します。次に、アルゴリズムは各データポイントを最も近いクラスター中心に割り当てます。最も近い中心が同じである各メンバーは、同じグループに属します。1 つのグループには、可能な限り互いに類似した (かつ、他のグループのメンバーとは可能な限り相違する) メンバーが集められます。K 値は主観的であり、データポイント間の類似性を測定する方法に依存します。クラスターが不均等に分布している場合は、K 値を変更してクラスターサイズを平滑化できます。</p>
+               <p>次の例では、<code class="replaceable"><code class="code">DOC-EXAMPLE-BUCKET</code></code> を ユーザーの Amazon S3 バケットと置換します。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL news_data_clusters
+FROM
+    (
+        SELECT
+            AvgTone,
+            EventCode,
+            NumArticles,
+            Actor1Geo_Lat,
+            Actor1Geo_Long,
+            Actor2Geo_Lat,
+            Actor2Geo_Long
+        FROM
+            gdelt_data
+    ) FUNCTION news_monitoring_cluster 
+    IAM_ROLE default 
+    AUTO OFF 
+    MODEL_TYPE KMEANS 
+    PREPROCESSORS 'none' 
+    HYPERPARAMETERS DEFAULT
+    EXCEPT
+    (K '7') 
+    SETTINGS (S3_BUCKET '<code class="replaceable">&lt;DOC-EXAMPLE-BUCKET&gt;</code>');</code></pre>
+                
+                  <h3 id="tutorial_k-means_clustering_check_status">モデルトレーニングのステータスを確認する (オプション)</h3>
+                  <p>SHOW MODEL コマンドを使用して、モデルの準備が完了したことを知ることができます。</p>
+                  <p>モデルのステータスを確認するには、次の SHOW MODEL オペレーションを使用して、<code class="code">Model State</code> が<code class="code">Ready</code> であるかを調べます。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL NEWS_DATA_CLUSTERS;</code></pre>
+                  <p>モデルの準備が整うと、前のオペレーションの出力は <code class="code">Model State</code> が <code class="code">Ready</code> であることが表示されます。次は SHOW MODEL オペレーションの出力例です。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------+------------------------------------------------------------------------------------------------------+
+|        Model Name        |                                          news_data_clusters                                          |
++--------------------------+------------------------------------------------------------------------------------------------------+
+|       Schema Name        |                                                public                                                |
+|          Owner           |                                               awsuser                                                |
+|      Creation Time       |                                       Fri, 17.06.2022 16:32:19                                       |
+|       Model State        |                                                READY                                                 |
+|        train:msd         |                                             2973.822754                                              |
+|      train:progress      |                                              100.000000                                              |
+|     train:throughput     |                                            237114.875000                                             |
+|      Estimated Cost      |                                               0.004983                                               |
+|                          |                                                                                                      |
+|      TRAINING DATA:      |                                                                                                      |
+|          Query           | SELECT AVGTONE, EVENTCODE, NUMARTICLES, ACTOR1GEO_LAT, ACTOR1GEO_LONG, ACTOR2GEO_LAT, ACTOR2GEO_LONG |
+|                          |                                           FROM GDELT_DATA                                            |
+|                          |                                                                                                      |
+|       PARAMETERS:        |                                                                                                      |
+|        Model Type        |                                                kmeans                                                |
+|    Training Job Name     |                                redshiftml-20220617163219978978-kmeans                                |
+|      Function Name       |                                       news_monitoring_cluster                                        |
+|   Function Parameters    |       avgtone eventcode numarticles actor1geo_lat actor1geo_long actor2geo_lat actor2geo_long        |
+| Function Parameter Types |                             float8 int8 int8 float8 float8 float8 float8                             |
+|         IAM Role         |                                         default-aws-iam-role                                         |
+|        S3 Bucket         |                                            <code class="replaceable">DOC-EXAMPLE-BUCKET</code>                                        |
+|       Max Runtime        |                                                 5400                                                 |
+|                          |                                                                                                      |
+|     HYPERPARAMETERS:     |                                                                                                      |
+|       feature_dim        |                                                  7                                                   |
+|            k             |                                                  7                                                   |
++--------------------------+------------------------------------------------------------------------------------------------------+</code></pre>
+                
+             
+               <h2 id="tutorial_k-means_clustering_step_perform_predictions">ステップ 3: モデルを使用して予測を実行する</h2>
+                
+                  <h3 id="tutorial_k-means_clustering_identify_clusters">クラスターを特定する</h3>
+                  <p>モデルによってデータ内で識別される離散グループ (別名クラスター) を見つけることができます。クラスターとは、他のどのクラスター中心よりもそのクラスター中心に近いデータポイントの集合です。K 値はモデル内のクラスター数を表すため、クラスター中心の数も表します。次のクエリは、それぞれの <code class="code">globaleventid</code> に関連付けられたクラスターを表示することによってクラスターを識別します。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    globaleventid,
+    news_monitoring_cluster (
+        AvgTone,
+        EventCode,
+        NumArticles,
+        Actor1Geo_Lat,
+        Actor1Geo_Long,
+        Actor2Geo_Lat,
+        Actor2Geo_Long
+    ) AS cluster
+FROM
+    gdelt_data;</code></pre>
+                
+                
+                  <h3 id="tutorial_k-means_clustering_check_distribution">データの分布を確認する</h3>
+                  <p>クラスター間のデータの分布をチェックして、選択した K 値によってデータがある程度均等に分布されたかどうかを確認できます。次のクエリを使用して、データがクラスター全体に均等に分布されているかどうかを判断します。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    events_cluster,
+    COUNT(*) AS nbr_events
+FROM
+    (
+        SELECT
+            globaleventid,
+            news_monitoring_cluster(
+                AvgTone,
+                EventCode,
+                NumArticles,
+                Actor1Geo_Lat,
+                Actor1Geo_Long,
+                Actor2Geo_Lat,
+                Actor2Geo_Long
+            ) AS events_cluster
+        FROM
+            gdelt_data
+    )
+GROUP BY
+    1;</code></pre>
+                  <p>クラスターが不均等に分布している場合は、K 値を変更してクラスターサイズを平滑化できます。</p>
+                
+                
+                  <h3 id="tutorial_k-means_clustering_determine_centers">クラスター中心を決定する</h3>
+                  <p>データポイントは、他のどのクラスターセンターよりもクラスター中心の近くにあります。したがって、クラスター中心を調べることは、クラスターを定義するのに役立ちます。</p>
+                  <p>次のクエリを実行して、イベントコード別の記事数に基づいてクラスター中心を決定します。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    news_monitoring_cluster (
+        AvgTone,
+        EventCode,
+        NumArticles,
+        Actor1Geo_Lat,
+        Actor1Geo_Long,
+        Actor2Geo_Lat,
+        Actor2Geo_Long
+    ) AS events_cluster,
+    eventcode,
+    SUM(numArticles) AS numArticles
+FROM
+    gdelt_data
+GROUP BY
+    1,
+    2;</code></pre>
+                
+                
+                  <h3 id="tutorial_k-means_clustering_data_points_info">クラスターのデータポイントに関する情報を表示する</h3>
+                  <p>次のクエリを使用して、5 番目のクラスターに割り当てられたポイントのデータを返します。選択した記事には 2 人の俳優が含まれている必要があります。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    news_monitoring_cluster (
+        AvgTone,
+        EventCode,
+        NumArticles,
+        Actor1Geo_Lat,
+        Actor1Geo_Long,
+        Actor2Geo_Lat,
+        Actor2Geo_Long
+    ) AS events_cluster,
+    eventcode,
+    actor1name,
+    actor2name,
+    SUM(numarticles) AS totalarticles
+FROM
+    gdelt_data
+WHERE
+    events_cluster = 5
+    AND actor1name &lt;&gt; ' '
+    AND actor2name &lt;&gt; ' '
+GROUP BY
+    1,
+    2,
+    3,
+    4
+ORDER BY
+    5 desc;</code></pre>
+                
+                
+                  <h3 id="tutorial_k-means_clustering_show_events_data">同じ人種コードの俳優のイベントに関するデータを表示する</h3>
+                  <p>次のクエリは、肯定的なトーンのイベントについて書かれた記事数を係数します。また、このクエリでは、2 人の俳優の民族コードが同じである必要があり、各イベントが割り当てられているクラスターが返されます。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    news_monitoring_cluster (
+        AvgTone,
+        EventCode,
+        NumArticles,
+        Actor1Geo_Lat,
+        Actor1Geo_Long,
+        Actor2Geo_Lat,
+        Actor2Geo_Long
+    ) AS events_cluster,
+    SUM(numarticles) AS total_articles,
+    eventcode AS event_code,
+    Actor1EthnicCode AS ethnic_code
+FROM
+    gdelt_data
+WHERE
+    Actor1EthnicCode = Actor2EthnicCode
+    AND Actor1EthnicCode &lt;&gt; ' '
+    AND Actor2EthnicCode &lt;&gt; ' '
+    AND AvgTone &gt; 0
+GROUP BY
+    1,
+    3,
+    4
+HAVING
+    (total_articles) &gt; 4
+ORDER BY
+    1,
+    2 ASC;</code></pre>
+                
+             
+               <h2 id="tutorial_k-means_clustering_related_topics">関連トピック</h2>
+               <p>Amazon Redshift ML の詳細については、次のドキュメントを参照してください。</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html"> Amazon Redshift 機械学習を使用するためのコスト</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">CREATE MODEL オペレーション</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html"> EXPLAIN_MODEL 関数</a></p>
+                  </li></ul></div>
+               <p>機械学習の詳細については、以下のドキュメントを参照してください。</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">機械学習の概要</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">初心者やエキスパート向けの機械学習</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">機械学習予測の公平性とモデルの説明可能性とは</a></p>
+                  </li></ul></div>
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial_remote_inference.html">チュートリアル: リモート推論モデルの構築</div><div id="next" class="next-link" accesskey="n" href="./tutorial_multi-class_classification.html">チュートリアル: 複数クラス分類モデルの構築</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_k-means_clustering.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_k-means_clustering.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

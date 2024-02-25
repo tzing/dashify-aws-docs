@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>AWS アカウント 内でのデータ共有 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="within-account" /><meta name="default_state" content="within-account" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/within-account.html" /><meta name="description" content="AWS アカウント内の異なる Amazon Redshift クラスター間で、読み取りのためにデータを共有することができます。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/within-account.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/within-account.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/within-account.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/within-account.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/within-account.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/within-account.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/within-account.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/within-account.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/within-account.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/within-account.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/within-account.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/within-account.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/within-account.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/within-account.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/within-account.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/within-account.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/within-account.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/within-account.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/within-account.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/within-account.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/within-account.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/within-account.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="AWS アカウント 内でのデータ共有" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>AWS アカウント 内でのデータ共有 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#within-account" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/within-account.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/within-account.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/within-account.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Amazon Redshift でのクラスター間のデータの共有",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/datashare-overview.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "データ共有タスクの管理",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/getting-started-datashare.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "SQL インターフェースによるデータ共有の管理",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/getting-started-datashare-sql.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "AWS アカウント 内でのデータ共有",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/getting-started-datashare-sql.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#within-account" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="within-account">AWS アカウント 内でのデータ共有</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>AWS アカウント内の異なる Amazon Redshift クラスター間で、読み取りのためにデータを共有することができます。</p><div class="procedure"><h6>プロデューサークラスターの管理者またはデータベース所有者として、読み取り目的でデータを共有するには</h6><ol><li><p>クラスターにデータ共有を作成します。詳細については、「<a href="./r_CREATE_DATASHARE.html">CREATE DATASHARE</a>」を参照してください。</p>
+            
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE DATASHARE salesshare;</code></pre>
+            <p>クラスターのスーパーユーザーとデータベースの所有者は、データ共有を作成できます。各データ共有は、作成時にデータベースに関連付けられます。そのデータベースのオブジェクトのみがそのデータ共有で共有できます。同じデータベース上に、同じ粒度または異なる粒度のオブジェクトを使用して、複数のデータ共有を作成できます。クラスターが作成できるデータ共有の数に制限はありません。</p>
+            <p>Amazon Redshift コンソールを使用してデータ共有を作成することもできます。詳細については、「<a href="./datashare-creation.html#create-datashare-console">データ共有の作成</a>」を参照してください。</p>
+      </li><li><p>データ共有を操作するための権限を委任します。詳細については、「<a href="./r_GRANT.html">GRANT</a>」または「<a href="./r_REVOKE.html">REVOKE</a>」を参照してください。</p>
+
+            <p>次の例では、<code class="code">salesshare</code>上の <code class="code">dbuser</code> にアクセス許可を付与しています。</p>
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">GRANT ALTER, SHARE ON DATASHARE salesshare TO dbuser;</code></pre>
+
+            <p>クラスターのスーパーユーザーとデータ共有の所有者は、追加のユーザーに対してデータ共有の変更許可の付与または取り消しを実行できます。</p>
+      </li><li><p>データ共有にオブジェクトを追加したり、データ共有からオブジェクトを削除したりします。データ共有にオブジェクトを追加するには、オブジェクトを追加する前にスキーマを追加します。スキーマを追加する場合、Amazon Redshift はその下にすべてのオブジェクトを追加するわけではありません。これらは明示的に追加してください。詳細については、「<a href="./r_ALTER_DATASHARE.html">ALTER DATASHARE</a>」を参照してください。</p>
+
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">ALTER DATASHARE salesshare ADD SCHEMA PUBLIC;
+ALTER DATASHARE salesshare ADD TABLE public.tickit_sales_redshift;
+ALTER DATASHARE salesshare ADD ALL TABLES IN SCHEMA PUBLIC;</code></pre>
+            
+            <p>データ共有にビューを追加することもできます。</p>
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE VIEW public.sales_data_summary_view AS SELECT * FROM public.tickit_sales_redshift;
+ALTER DATASHARE salesshare ADD TABLE public.sales_data_summary_view;</code></pre>
+
+         
+            <p>ALTER DATASHARE を使用して、特定のスキーマ内のスキーマ、テーブル、ビュー、および関数を共有します。スーパーユーザー、データ共有の所有者、またはデータ共有に対する ALTER または ALL 許可を持つユーザーは、データ共有を変更して、それに対するオブジェクトの追加または削除を実行できます。ユーザーは、データ共有に対してオブジェクトの追加または削除を行う許可を持っている必要があります。ユーザーは、オブジェクトの所有者である、またはオブジェクトに対する SELECT、USAGE、もしくは ALL 許可を持っている必要もあります。</p>  
+
+            <p>スキーマを指定して作成された新しいテーブル、ビュー、または SQL ユーザー定義関数 (UDF) をデータ共有に追加するには、INCLUDENEW 句を使用します。データ共有とスキーマの各ペアについて、このプロパティを変更できるのはスーパーユーザーのみです。</p>
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">ALTER DATASHARE salesshare ADD SCHEMA PUBLIC;
+ALTER DATASHARE salesshare SET INCLUDENEW = TRUE FOR SCHEMA PUBLIC;</code></pre>
+
+            <p>Amazon Redshift コンソールを使用して、データ共有でオブジェクトを追加または削除することもできます。詳細については、「<a href="./datashare-creation.html#add-datashare-object-console">データ共有へのデータ共有オブジェクトの追加</a>」、「<a href="./manage-datashare-existing-console.html#remove-datashare-object-console">データ共有からのデータ共有オブジェクトの削除</a>」、および「<a href="./manage-datashare-existing-console.html#edit-datashare-console">アカウントで作成されたデータ共有の編集</a>」を参照してください。</p></li><li><p>コンシューマーをデータ共有に追加するか、データ共有からコンシューマーを削除します。次の例では、コンシューマークラスター名前空間を <code class="code">salesshare</code> に追加しています。この名前空間は、アカウント内にあるコンシューマークラスターの名前空間ための、グローバルにユニークな識別子 (GUID) です。詳細については、「<a href="./r_GRANT.html">GRANT</a>」または「<a href="./r_REVOKE.html">REVOKE</a>」を参照してください。</p>
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">GRANT USAGE ON DATASHARE salesshare TO NAMESPACE '13b8833d-17c6-4f16-8fe4-1a018f5ed00d';</code></pre>
+
+            <p>GRANT ステートメントでは、1 つのデータ共有コンシューマーにしか許可を付与できません。</p>
+            
+            <p>クラスターのスーパーユーザーおよびデータ共有オブジェクトの所有者、またはデータ共有に対する SHARE アクセス許可を持つユーザーは、コンシューマーをデータ共有に追加したり、データ共有からコンシューマーを削除したりできます。そのために、GRANT USAGE または REVOKE USAGE を使用します。</p>
+            <p>現在表示されているクラスターの名前空間を検索するには、SELECT CURRENT_NAMESPACE コマンドを使用できます。同じ AWS アカウント内の異なるクラスターの名前空間を検索するには、Amazon Redshift コンソールのクラスター詳細ページにアクセスします。そのページで、新しく追加された名前空間フィールドを見つけます。</p>
+            <p>また、Amazon Redshift コンソールを使用して、データ共有に対しデータコンシューマーを追加したり削除したりできます。詳細については、<a href="./datashare-creation.html#add-data-consumer-console">データ共有へのデータコンシューマーの追加</a> および <a href="./manage-datashare-existing-console.html#remove-data-consumer-console">データ共有からのデータコンシューマーの削除</a> を参照してください。</p>
+         </li><li><p>(オプション) データ共有にセキュリティ制限を追加します。次の例は、パブリック IP アクセスを持つコンシューマークラスターがデータ共有の読み取りを許可されていることを示しています。詳細については、「<a href="./r_ALTER_DATASHARE.html">ALTER DATASHARE</a>」を参照してください。</p>
+
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">ALTER DATASHARE salesshare SET PUBLICACCESSIBLE = TRUE;</code></pre>
+
+            <p>データ共有の作成後に、コンシューマーのタイプに関するプロパティを変更できます。例えば、特定のデータ共有からデータを使用するクラスターは、公開でアクセスできないように定義できます。データ共有で指定されたセキュリティ制限を満たさないコンシューマークラスターからのクエリは、クエリランタイムで拒否されます。</p>
+            <p>Amazon Redshift コンソールを使用して、データ共有を編集することもできます。詳細については、「<a href="./manage-datashare-existing-console.html#edit-datashare-console">アカウントで作成されたデータ共有の編集</a>」を参照してください。</p>
+            
+         </li><li><p>クラスターで作成されたデータ共有を一覧表示し、データ共有の内容を調べます。</p>
+
+            <p>次の例は、<code class="code">salesshare</code>という名前のデータ共有の情報を表示します。詳細については、<a href="./r_DESC_DATASHARE.html">DESC DATASHARE</a> および <a href="./r_SHOW_DATASHARES.html">SHOW DATASHARES</a> を参照してください。</p>
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">DESC DATASHARE salesshare;
+
+               
+ producer_account  |          producer_namespace          | share_type | share_name | object_type |           object_name          |   include_new
+-------------------+--------------------------------------+------------+------------+-------------+--------------------------------+-------------------
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | OUTBOUND   | salesshare | table       | public.tickit_users_redshift   |   
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | OUTBOUND   | salesshare | table       | public.tickit_venue_redshift   |
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | OUTBOUND   | salesshare | table       | public.tickit_category_redshift|
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | OUTBOUND   | salesshare | table       | public.tickit_date_redshift    |
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | OUTBOUND   | salesshare | table       | public.tickit_event_redshift   |
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | OUTBOUND   | salesshare | table       | public.tickit_listing_redshift |
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | OUTBOUND   | salesshare | table       | public.tickit_sales_redshift   |
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | OUTBOUND   | salesshare | schema      | public                         |  t
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | OUTBOUND   | salesshare | view        | public.sales_data_summary_view |</code></pre>
+            
+            <p>次の例は、プロデューサークラスター内のアウトバウンドデータ共有を表示します。</p>
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW DATASHARES LIKE 'sales%';</code></pre>
+            <p>出力は次の例のようになります。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">share_name | share_owner  | source_database | consumer_database | share_type |     createdate      | is_publicaccessible  | share_acl | producer_account |          producer_namespace 
+-----------+--------------+-----------------+-------------------+------------+---------------------+----------------------+-----------+------------------+---------------------------------------
+salesshare |    100       | dev             |                   |  OUTBOUND  | 2020-12-09 02:27:08 |          True        |           |   123456789012   | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d </code></pre>
+            <p>詳細については、「<a href="./r_DESC_DATASHARE.html">DESC DATASHARE</a>」および「<a href="./r_SHOW_DATASHARES.html">SHOW DATASHARES</a>」を参照してください。</p>
+            <p><a href="./r_SVV_DATASHARES.html">SVV_DATASHARES</a>、<a href="./r_SVV_DATASHARE_CONSUMERS.html">SVV_DATASHARE_CONSUMERS</a>、および <a href="./r_SVV_DATASHARE_OBJECTS.html">SVV_DATASHARE_OBJECTS</a> を使用して、データ共有、そのデータ共有内のオブジェクト、およびデータ共有のコンシューマーを表示することもできます。</p>
+         </li><li><p>データ共有を削除します。詳細については、「<a href="./r_DROP_DATASHARE.html">DROP DATASHARE</a>」を参照してください。</p>
+            <p><a href="./r_DROP_DATASHARE.html">DROP DATASHARE</a> を使用して、いつでもデータ共有オブジェクトを削除できます。クラスターのスーパーユーザーとデータ共有の所有者は、データ共有を削除できます。</p>
+
+            <p>次の例では、<code class="code">salesshare</code>という名前のデータ共有を削除します。</p>
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">DROP DATASHARE salesshare;</code></pre>
+
+            <p>Amazon Redshift コンソールを使用してデータ共有を削除することもできます。詳細については、「<a href="./manage-datashare-existing-console.html#delete-datashare-console">アカウント内で作成された  データ共有の削除</a>」を参照してください。</p>
+         </li><li><p>ALTER DATASHARE コマンドを使用すると、データ共有から任意の時点でオブジェクトを削除できます。REVOKE USAGE ON を使用すると、特定のコンシューマーについて、データ共有への許可を取り消すことができます。このコマンドは、データ共有内にあるオブジェクトの USAGE 許可を取り消し、すべてのコンシューマークラスターへのアクセスを即座に停止します。アクセス許可が取り消されたあとは、データベースやテーブルに関するものを含め、データ共有およびメタデータを一覧表示するためのクエリは、共有されたオブジェクトを返さなくなります。</p>
+
+            
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">ALTER DATASHARE salesshare REMOVE TABLE public.tickit_sales_redshift;</code></pre>
+
+            <p>Amazon Redshift コンソールを使用して、データ共有を編集することもできます。詳細については、「<a href="./manage-datashare-existing-console.html#edit-datashare-console">アカウントで作成されたデータ共有の編集</a>」を参照してください。</p>
+         </li><li><p>コンシューマーとデータを共有する必要がなくなった場合は、名前空間からデータ共有へのアクセスを取り消します。</p>
+
+            
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">REVOKE USAGE ON DATASHARE salesshare FROM NAMESPACE '13b8833d-17c6-4f16-8fe4-1a018f5ed00d';</code></pre>
+
+            <p>Amazon Redshift コンソールを使用して、データ共有を編集することもできます。詳細については、「<a href="./manage-datashare-existing-console.html#edit-datashare-console">アカウントで作成されたデータ共有の編集</a>」を参照してください。</p>
+         </li></ol></div><div class="procedure"><h6>コンシューマークラスターの管理者として読み取り目的でデータを共有するには</h6><ol><li><p>利用可能なデータ共有を一覧表示し、各データ共有のコンテンツを表示します。詳細については、「<a href="./r_DESC_DATASHARE.html">DESC DATASHARE</a>」および「<a href="./r_SHOW_DATASHARES.html">SHOW DATASHARES</a>」を参照してください。</p>
+            <p>次の例では、指定されたプロデューサー名前空間のインバウンドデータ共有の情報を表示します。DESC DATASHARE をコンシューマークラスターの管理者として実行する場合、インバウンドデータ共有を表示するには、NAMESPACE オプションを指定する必要があります。</p>
+
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">DESC DATASHARE salesshare OF NAMESPACE '13b8833d-17c6-4f16-8fe4-1a018f5ed00d';
+
+
+ producer_account  |          producer_namespace          | share_type | share_name | object_type |           object_name           |   include_new
+-------------------+--------------------------------------+------------+------------+-------------+---------------------------------+------------------
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | INBOUND    | salesshare | table       | public.tickit_users_redshift    |     
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | INBOUND    | salesshare | table       | public.tickit_venue_redshift    |     
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | INBOUND    | salesshare | table       | public.tickit_category_redshift |
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | INBOUND    | salesshare | table       | public.tickit_date_redshift     |
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | INBOUND    | salesshare | table       | public.tickit_event_redshift    |
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | INBOUND    | salesshare | table       | public.tickit_listing_redshift  |
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | INBOUND    | salesshare | table       | public.tickit_sales_redshift    |
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | INBOUND    | salesshare | schema      | public                          |    
+ 123456789012      | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d | INBOUND    | salesshare | view        | public.sales_data_summary_view  |   </code></pre>
+            <p>クラスターのスーパーユーザーのみがこれを行うことができます。SVV_DATASHARES を使用してデータ共有を表示し、SVV_DATASHARE_OBJECTS を使用してデータ共有内のオブジェクトを表示することもできます。</p>
+            <p>次の例では、コンシューマークラスター内のインバウンドデータ共有を表示します。</p>
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW DATASHARES LIKE 'sales%';
+
+
+ share_name | share_owner | source_database | consumer_database | share_type | createdate | is_publicaccessible | share_acl | producer_account |          producer_namespace
+------------+-------------+-----------------+-------------------+------------+------------+---------------------+-----------+------------------+--------------------------------------
+ salesshare |             |                 |                   | INBOUND    |            |         t           |           |   123456789012   | 13b8833d-17c6-4f16-8fe4-1a018f5ed00d</code></pre>
+         </li><li><p>データベーススーパーユーザーとして、データ共有を参照するローカルデータベースを作成できます。詳細については、「<a href="./r_CREATE_DATABASE.html">CREATE DATABASE</a>」を参照してください。</p>
+
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE DATABASE sales_db FROM DATASHARE salesshare OF NAMESPACE '13b8833d-17c6-4f16-8fe4-1a018f5ed00d';</code></pre>
+            
+            <p>ローカルデータベース内のオブジェクトへのアクセスをより細かく制御する場合は、データベースの作成時に WITH PERMISSIONS 句を使用します。これにより、ステップ 4 でデータベース内のオブジェクトにオブジェクトレベルのアクセス許可を付与できます。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE DATABASE sales_db WITH PERMISSIONS FROM DATASHARE salesshare OF NAMESPACE '13b8833d-17c6-4f16-8fe4-1a018f5ed00d';</code></pre>
+
+            <p><a href="./r_SVV_REDSHIFT_DATABASES.html">SVV_REDSHIFT_DATABASES</a> ビューにクエリを実行すると、データ共有から作成したデータベースを確認できます。データ共有から作成されたこれらのデータベースに接続することはできません。これらのデータベースは読み取り専用です。ただし、コンシューマークラスターのローカルデータベースに接続し、データベース間クエリを実行して、データ共有から作成されたデータベースで、データを照会することは可能です。既存のデータ共有から作成されたデータベースオブジェクトの上にデータ共有を作成することはできません。ただし、コンシューマークラスター上の別のテーブルにデータをコピーし、必要な処理を実行してから、作成された新しいオブジェクトを共有できます。</p>
+            <p>Amazon Redshift コンソールを使用して、データ共有からデータベースを作成することもできます。詳細については、「<a href="./query-datashare-console.html#create-database-from-datashare-console">データ共有からのデータベースの作成</a>」を参照してください。</p>
+
+         </li><li><p>(オプション) 外部スキーマを作成して、コンシューマークラスターにインポートされたコンシューマデータベース内の特定のスキーマを参照し、詳細なアクセス許可を割り当てます。詳細については、「<a href="./r_CREATE_EXTERNAL_SCHEMA.html">CREATE EXTERNAL SCHEMA</a>」を参照してください。</p>
+
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE EXTERNAL SCHEMA sales_schema FROM REDSHIFT DATABASE 'sales_db' SCHEMA 'public';</code></pre>
+
+     
+
+         </li><li><p>必要に応じて、データ共有から作成されたデータベースおよびスキーマ参照に対するアクセス許可を、コンシューマークラスター内のユーザーおよびロールに付与します。詳細については、「<a href="./r_GRANT.html">GRANT</a>」または「<a href="./r_REVOKE.html">REVOKE</a>」を参照してください。</p>
+
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">GRANT USAGE ON DATABASE sales_db TO Bob;</code></pre>
+            
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">GRANT USAGE ON SCHEMA sales_schema TO ROLE Analyst_role;</code></pre>
+
+            <p>WITH PERMISSIONS を使用することなくデータベースを作成している場合は、データ共有から作成されたデータベース全体に対するアクセス許可のみをユーザーおよびロールに割り当てることができます。場合によっては、データ共有から作成されたデータベースオブジェクトのサブセットに対して、詳細なコントロールが必要になります。その場合は、データ共有内の特定のスキーマを指す外部スキーマ参照を作成し (前出のステップを参照)、スキーマレベルの詳細なアクセス許可を提供できます。</p>
+                  <p>また、共有オブジェクトの上に遅延バインディングビューを作成し、これらを使用して詳細なアクセス許可を割り当てることもできます。また、プロデューサークラスターで必要な粒度で追加のデータ共有を作成するよう検討することもできます。</p>
+            <p>ステップ 2 で WITH PERMISSIONS を使用してデータベースを作成した場合は、共有データベース内のオブジェクトにオブジェクトレベルのアクセス許可を割り当てる必要があります。USAGE アクセス許可のみを持つユーザーは、追加のオブジェクトレベルのアクセス許可が付与されるまで、WITH PERMISSIONS を使用して作成されたデータベース内のオブジェクトにはアクセスできません。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">GRANT SELECT ON sales_db.public.tickit_sales_redshift to Bob;</code></pre>
+
+         </li><li><p>データ共有内の共有オブジェクト内のデータをクエリします。</p>
+            <p>コンシューマークラスター上のコンシューマデータベースおよびスキーマに対するアクセス許可を持つユーザーおよびロールは、任意の共有オブジェクトのメタデータを探索およびナビゲートできます。また、コンシューマークラスター内のローカルオブジェクトを探索およびナビゲートすることもできます。これを行うには、JDBC または ODBC ドライバー、または SVV_ALL および SVV_REDSHIFT ビューを使用します。</p>
+                  <p>プロデューサークラスターには、各スキーマ内のデータベース、テーブル、およびビューに多数のスキーマが含まれる場合があります。コンシューマー側のユーザーは、データ共有を通じて利用可能になったオブジェクトのサブセットのみを表示できます。これらのユーザーは、プロデューサークラスターからのメタデータ全体を表示することはできません。このアプローチは、データ共有による詳細なメタデータセキュリティの制御を提供します。</p>
+            <p>引き続きローカルクラスターのデータベースに接続します。ただし、3 つの部分からなる database.schema.table 表記を使用して、データ共有から作成されたデータベースとスキーマから読み込むこともできるようになりました。表示されているすべてのデータベースにまたがるクエリを実行できます。これらは、クラスター上のローカルデータベースでも、データ共有から作成されたデータベースでもかまいません。コンシューマークラスターは、データ共有から作成されたデータベースに接続できません。</p>
+            <p>完全な資格を使用してデータにアクセスできます。詳細については、「<a href="./cross-database_example.html">クロスデータベースクエリの使用例</a>」を参照してください。</p>
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT * FROM sales_db.public.tickit_sales_redshift ORDER BY 1,2 LIMIT 5;
+
+ salesid | listid | sellerid | buyerid | eventid | dateid | qtysold | pricepaid | commission |      saletime
+---------+--------+----------+---------+---------+--------+---------+-----------+------------+---------------------
+       1 |      1 |    36861 |   21191 |    7872 |   1875 |       4 |    728.00 |     109.20 | 2008-02-18 02:36:48
+       2 |      4 |     8117 |   11498 |    4337 |   1983 |       2 |     76.00 |      11.40 | 2008-06-06 05:00:16
+       3 |      5 |     1616 |   17433 |    8647 |   1983 |       2 |    350.00 |      52.50 | 2008-06-06 08:26:17
+       4 |      5 |     1616 |   19715 |    8647 |   1986 |       1 |    175.00 |      26.25 | 2008-06-09 08:38:52
+       5 |      6 |    47402 |   14115 |    8240 |   2069 |       2 |    154.00 |      23.10 | 2008-08-31 09:17:02</code></pre>
+            <p>SELECT ステートメントは、共有オブジェクトに対してのみ使用できます。ただし、別のローカルデータベース内の共有オブジェクトからデータをクエリすることで、コンシューマークラスターにテーブルを作成できます。</p><p>クエリに加えて、コンシューマーは共有オブジェクトのビューを作成できます。遅延バインディングビューまたはマテリアライズドビューのみがサポートされます。Amazon Redshift は、共有データの通常のビューをサポートしていません。コンシューマーが作成するビューは、複数のローカルデータベースまたはデータ共有から作成されたデータベースにまたがることができます。詳細については、「<a href="./r_CREATE_VIEW.html">CREATE VIEW</a>」を参照してください。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">// Connect to a local cluster database
+               
+// Create a view on shared objects and access it. 
+CREATE VIEW sales_data 
+AS SELECT * 
+FROM sales_db.public.tickit_sales_redshift 
+WITH NO SCHEMA BINDING;
+
+SELECT * FROM sales_data;</code></pre>
+         </li></ol></div><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./getting-started-datashare-sql.html">SQL インターフェースによるデータ共有の管理</div><div id="next" class="next-link" accesskey="n" href="./across-account.html">AWS アカウント間のデータの共有</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/within-account.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/within-account.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

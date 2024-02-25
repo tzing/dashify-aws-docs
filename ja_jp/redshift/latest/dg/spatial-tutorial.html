@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>チュートリアル: Amazon Redshift での空間 SQL 関数の使用 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="spatial-tutorial" /><meta name="default_state" content="spatial-tutorial" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/spatial-tutorial.html" /><meta name="description" content="このチュートリアルでは、Amazon Redshift で空間 SQL 関数を使用する方法を説明します。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/spatial-tutorial.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/spatial-tutorial.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/spatial-tutorial.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/spatial-tutorial.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/spatial-tutorial.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/spatial-tutorial.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/spatial-tutorial.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/spatial-tutorial.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/spatial-tutorial.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/spatial-tutorial.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/spatial-tutorial.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/spatial-tutorial.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/spatial-tutorial.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/spatial-tutorial.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/spatial-tutorial.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/spatial-tutorial.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/spatial-tutorial.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/spatial-tutorial.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/spatial-tutorial.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/spatial-tutorial.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/spatial-tutorial.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/spatial-tutorial.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="チュートリアル: Amazon Redshift での空間 SQL 関数の使用" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>チュートリアル: Amazon Redshift での空間 SQL 関数の使用 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#spatial-tutorial" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/spatial-tutorial.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/spatial-tutorial.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/spatial-tutorial.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Amazon Redshift での空間データのクエリ",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/geospatial-overview.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "チュートリアル: Amazon Redshift での空間 SQL 関数の使用",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/geospatial-overview.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#spatial-tutorial" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#spatial-tutorial-prerequisites">前提条件</a><a href="#spatial-tutorial-test-data">ステップ 1: テーブルを作成し、テストデータをロードする</a><a href="#spatial-tutorial-query">ステップ 2: 空間データのクエリを実行する</a><a href="#spatial-tutorial-clean-up">ステップ 3: リソースをクリーンアップする</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="spatial-tutorial">チュートリアル: Amazon Redshift での空間 SQL 関数の使用</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>このチュートリアルでは、Amazon Redshift でいくつかの空間 SQL 関数を使用する方法を説明します。</p><p>これを行うには、空間 SQL 関数を使用して 2 つのテーブルをクエリします。このチュートリアルでは、ドイツのベルリンに位置する賃貸宿泊施設の位置データと郵便番号を関連付ける公開データセットのデータを使用します。</p><div class="highlights" id="inline-topiclist"><h6>トピック</h6><ul><li><a href="#spatial-tutorial-prerequisites">前提条件</a></li><li><a href="#spatial-tutorial-test-data">ステップ 1: テーブルを作成し、テストデータをロードする</a></li><li><a href="#spatial-tutorial-query">ステップ 2: 空間データのクエリを実行する</a></li><li><a href="#spatial-tutorial-clean-up">ステップ 3: リソースをクリーンアップする</a></li></ul></div>
+        <h2 id="spatial-tutorial-prerequisites">前提条件</h2>
+           
+        <p>このチュートリアルでは、以下のリソースが必要になります。</p>
+           
+        <div class="itemizedlist">
+             
+             
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                        <p>アクセスおよび更新できる既存の Amazon Redshift クラスターおよびデータベース。既存のクラスターでは、テーブルを作成し、サンプルデータをロードし、SQL クエリを実行して空間関数を実証します。クラスターには 2 つ以上のノードが必要です。クラスターの作成方法を学ぶには、<a href="https://docs.aws.amazon.com/redshift/latest/gsg/">Amazon Redshift 入門ガイド</a>の手順に従ってください。</p>
+            </li><li class="listitem">
+                        <p>Amazon Redshift クエリエディタを使用するには、クエリエディタをサポートする AWS リージョンにあるクラスターを使用する必要があります。詳細については、「Amazon Redshift 管理ガイド」の「<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor.html">クエリエディタを使用してデータベースのクエリを実行する</a>」を参照してください。</p>
+            </li><li class="listitem">
+                        <p>Amazon S3 からのテストデータのロードを Amazon Redshift クラスターに許可する AWS 認証情報。AWS の他のサービス (Amazon S3 など) へのアクセス方法については、「<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/authorizing-redshift-service.html">Amazon Redshift が AWS サービスにアクセスすることを許可する</a>」を参照してください。</p>
+            </li><li class="listitem">
+                        <p><code class="code">mySpatialDemoRole</code> という名前の AWS Identity and Access Management (IAM) ロール。Amazon S3 データを読み取るためのマネージドポリシー <code class="code">AmazonS3ReadOnlyAccess</code> がアタッチ済み。Amazon S3 バケットからデータをロードするアクセス許可を持つロールを作成するには、「<em>Amazon Redshift 管理ガイド</em>」の「<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/copy-unload-iam-role.html">IAM ロールを使用して COPY、UNLOAD、CREATE EXTERNAL SCHEMA オペレーションを認可する</a>」を参照してください。</p>
+            </li><li class="listitem"><p>IAM ロール <code class="code">mySpatialDemoRole</code> を作成した後、そのロールには Amazon Redshift クラスターとの関連付けが必要です。その関連付けを作成する方法の詳細については、「<em>Amazon Redshift 管理ガイド</em>」の「<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/copy-unload-iam-role.html">IAM ロールを使用して COPY、UNLOAD、CREATE EXTERNAL SCHEMA オペレーションを認可する</a>」を参照してください。</p>    
+            </li></ul></div>   
+
+        
+        <h2 id="spatial-tutorial-test-data">ステップ 1: テーブルを作成し、テストデータをロードする</h2>
+            
+            
+             
+            <p>このチュートリアルで使用されているソースデータは、<code>accommodations.csv</code> および <code>zipcodes.csv</code> という名前のファイルです。</p>
+        <p><code>accommodations.csv</code> ファイルは、insideairbnb.com からのオープンソースデータです。<code>zipcodes.csv</code> ファイルは、ドイツのベルリンブランデンブルク国立統計研究所 (Amt für Statistik Berlin-Brandenburg) からのオープンソースデータである郵便番号を提供します。どちらのデータソースも、クリエイティブ・コモンズ・ライセンスで提供されています。データは、ドイツ、ベルリンリージョンに限定されています。これらのファイルは、このチュートリアルで使用する Amazon S3 公開バケットにあります。</p>
+            
+            <p>必要に応じて、次の Amazon S3 リンクからソースデータをダウンロードできます。</p> 
+            <div class="itemizedlist">
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem"><p><a href="https://s3.amazonaws.com/redshift-downloads/spatial-data/accommodations.csv" rel="noopener noreferrer" target="_blank"><span><code class="code">accommodations</code> テーブルのソースデータ</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p></li><li class="listitem"><p><a href="https://s3.amazonaws.com/redshift-downloads/spatial-data/zipcode.csv" rel="noopener noreferrer" target="_blank"><span><code class="code">zipcode</code> テーブルのソースデータ</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p></li></ul></div>
+            
+           <p>次の手順を使用して、テーブルを作成し、テストデータをロードします。</p>
+
+            <div class="procedure"><h6>テーブルを作成してテストデータをロードするには</h6><ol><li>
+                    <p>Amazon Redshift クエリエディタを開きます。クエリエディタ操作の詳細については、「<em>Amazon Redshift 管理ガイド</em>」の「<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor.html">クエリエディタを使用するデータベースのクエリ</a>」を参照してください。</p> 
+                </li><li>
+                    <p>このチュートリアルで使用するテーブルがデータベースにすでに存在する場合は、削除してください。詳細については、「<a href="#spatial-tutorial-clean-up">ステップ 3: リソースをクリーンアップする</a>」を参照してください。</p>
+                </li><li>
+                    <p><code class="code">accommodations</code> テーブルを作成して、各宿泊施設の地理的位置 (経度と緯度)、リストの名前、およびその他のビジネスデータを保存します。</p>
+                <p>このチュートリアルでは、ドイツ、ベルリンの部屋レンタルについて説明します。<code class="code">shape</code> 列には、宿泊施設の場所に関する地理的ポイントが保存されます。その他の列には、レンタルに関する情報が含まれています。</p>
+                    <p><code class="code">accommodations</code> テーブルを作成するには、Amazon Redshift クエリエディタで次の SQL ステートメントを実行します。</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">CREATE TABLE public.accommodations (
+  id INTEGER PRIMARY KEY,
+  shape GEOMETRY,
+  name VARCHAR(100),
+  host_name VARCHAR(100),
+  neighbourhood_group VARCHAR(100),
+  neighbourhood VARCHAR(100),
+  room_type VARCHAR(100),
+  price SMALLINT,
+  minimum_nights SMALLINT,
+  number_of_reviews SMALLINT,
+  last_review DATE,
+  reviews_per_month NUMERIC(8,2),
+  calculated_host_listings_count SMALLINT, 
+  availability_365 SMALLINT
+);</code></pre>
+               </li><li>
+                    <p>ベルリンの郵便番号を保存するために、クエリエディタで <code class="code">zipcode</code> テーブルを作成します。</p>
+                <p><em>郵便番号</em>は、<code class="code">wkb_geometry</code> 列のポリゴンとして定義されています。残りの列では、郵便番号に関する追加の空間メタデータについて説明しています。</p>
+                <p><code class="code">zipcode</code> テーブルを作成するには、Amazon Redshift クエリエディタで次の SQL ステートメントを実行します。</p>
+                    
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">CREATE TABLE public.zipcode (
+  ogc_field INTEGER PRIMARY KEY NOT NULL,
+  wkb_geometry GEOMETRY,
+  gml_id VARCHAR(256),
+  spatial_name VARCHAR(256),
+  spatial_alias VARCHAR(256),
+  spatial_type VARCHAR(256)
+ );</code></pre>
+                    
+                </li><li>
+                    <p>サンプルデータをテーブルにロードします。</p>
+                <p>このチュートリアルのサンプルデータは、認証済みのすべての AWS ユーザーに読み取りアクセスを許可する、Amazon S3 バケット内に用意されています。Amazon S3 へのアクセスを許可する、有効な AWS 認証情報を使用する必要があります。</p>
+                <p>テストデータをテーブルにロードするには、次の COPY コマンドを実行します。<code class="replaceable"><code class="code">account-number</code></code> は自分の AWS アカウント番号に置き換えます。一重引用符で囲まれた認証情報文字列に、スペースまたは改行を含めることはできません。</p>
+                    
+                    
+  
+                                                         
+                            
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">COPY public.accommodations 
+FROM 's3://redshift-downloads/spatial-data/accommodations.csv' 
+DELIMITER ';' 
+IGNOREHEADER 1 REGION 'us-east-1'
+CREDENTIALS 'aws_iam_role=arn:aws:iam::<code class="replaceable">account-number</code>:role/mySpatialDemoRole';
+</code></pre>
+                            
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">COPY public.zipcode 
+FROM 's3://redshift-downloads/spatial-data/zipcode.csv' 
+DELIMITER ';' 
+IGNOREHEADER 1 REGION 'us-east-1'
+CREDENTIALS 'aws_iam_role=arn:aws:iam::<code class="replaceable">account-number</code>:role/mySpatialDemoRole';
+</code></pre>  
+ 
+ 
+                            
+                            
+                             
+                            
+                </li><li>
+                    <p>以下のコマンドを実行して、各テーブルが正しくロードされていることを確認します。</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">select count(*) from accommodations;</code></pre>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">select count(*) from zipcode;</code></pre>
+                    <p>以下の結果の表に示しているのは、テストテーブルの各テーブルでの行数です。</p>
+                    <div class="table-container"><div class="table-contents"><table id="w319aac25c67c11c13c12b9"><thead>
+                                <tr>
+                                    <th>テーブル名</th>
+                                    <th>Rows</th>
+                                </tr>
+                            </thead>
+                                <tr>
+                                    <td tabindex="-1">宿泊施設</td>
+                                    <td tabindex="-1">22,248</td>
+                                </tr>
+                                <tr>
+                                    <td tabindex="-1">zipcode</td>
+                                    <td tabindex="-1">190</td>
+                                </tr>
+                            </table></div></div>
+                </li></ol></div>                       
+     
+        <h2 id="spatial-tutorial-query">ステップ 2: 空間データのクエリを実行する</h2>
+
+        <p>テーブルを作成してロードした後、SQL SELECT ステートメントを使用してテーブルにクエリを実行できます。次のクエリは、取得できる情報の一部を示しています。ニーズを満たすために空間関数を使用する他の多くのクエリを書き込むことができます。</p>
+        <div class="procedure"><h6>空間データをクエリするには</h6><ol><li>
+                <p>次のように、クエリを実行して、<code class="code">accommodations</code> テーブルに保存されているリストの総数を取得します。空間参照系は世界測地系 (WGS) 84 であり、一意の空間参照識別子 4326 を持ちます。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT count(*) FROM public.accommodations WHERE ST_SRID(shape) = 4326;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+ count
+-------
+ 22248</code></pre>                
+            </li><li>
+                <p>いくつかの追加属性を使用して、ジオメトリオブジェクトを well-known text (WKT) 形式で取得します。さらに、この郵便番号データが空間参照 ID (SRID) 4326 を使用する世界測地システム (WGS) 84 にも保存されているかどうかを検証できます。空間データを相互運用するには、空間データを同じ空間参照系に保存する必要があります。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT ogc_field, spatial_name, spatial_type, ST_SRID(wkb_geometry), ST_AsText(wkb_geometry) 
+FROM public.zipcode 
+ORDER BY spatial_name;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+ogc_field  spatial_name  spatial_type  st_srid  st_astext
+---------------------------------------------------------------
+0           10115        Polygon        4326     POLYGON((...))
+4           10117        Polygon        4326     POLYGON((...))
+8           10119        Polygon        4326     POLYGON((...))
+...
+(190 rows returned)</code></pre>
+                
+            </li><li>
+                <p>ベルリンの自治区であるベルリンミッテ (10117) のポリゴンを GeoJSON 形式で選択し、そのディメンション、およびこのポリゴンのポイント数を選択します。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT ogc_field, spatial_name, ST_AsGeoJSON(wkb_geometry), ST_Dimension(wkb_geometry), ST_NPoints(wkb_geometry)
+FROM public.zipcode 
+WHERE spatial_name='10117';</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+ogc_field  spatial_name  spatial_type                                   st_dimension  st_npoint
+-----------------------------------------------------------------------------------------------
+4           10117         <span>{</span>"type":"Polygon", "coordinates":[[[...]]]}    2             331
+</code></pre>
+                
+            </li><li>
+                <p>次の SQL コマンドを実行して、ブランデンブルク門から 500 メートル以内にある宿泊施設の数を確認します。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT count(*) 
+FROM public.accommodations 
+WHERE ST_DistanceSphere(shape, ST_GeomFromText('POINT(13.377704 52.516431)', 4326)) &lt; 500;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+count
+------
+  29
+</code></pre>
+                             
+            </li><li>
+                <p>次のクエリを実行して、近いと表示されている宿泊施設に保存されているデータから、ブランデンブルク門の大まかな位置を取得します。</p>
+                <p>このクエリには、複数の選択が必要です。リクエストされた場所が宿泊施設に近いため、以前のクエリと同じではないため、カウントが異なります。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">WITH poi(loc) as (
+  SELECT st_astext(shape) FROM accommodations WHERE name LIKE '%brandenburg gate%'
+)
+SELECT count(*) 
+FROM accommodations a, poi p
+WHERE ST_DistanceSphere(a.shape, ST_GeomFromText(p.loc, 4326)) &lt; 500;</code></pre>                
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+count
+------
+  60
+</code></pre>  
+                
+              
+            </li><li>
+                <p>次のクエリを実行して、ブランデンブルク門周辺のすべての宿泊施設の詳細を料金の降順に表示します。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT name, price, ST_AsText(shape) 
+FROM public.accommodations
+WHERE ST_DistanceSphere(shape, ST_GeomFromText('POINT(13.377704 52.516431)', 4326)) &lt; 500
+ORDER BY price DESC;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+name                                                   price  st_astext
+-------------------------------------------------------------------------------------------------------
+DUPLEX APARTMENT/PENTHOUSE in 5* LOCATION! 7583        300    POINT(13.3826510209548 52.5159819722552)
+DUPLEX-PENTHOUSE IN FIRST LOCATION! 7582               300    POINT(13.3799997083855 52.5135918444834)
+... 
+(29 rows returned)
+</code></pre> 
+                
+                             
+            </li><li>
+                <p>次のクエリを実行して、最も高価な宿泊施設を郵便番号で取得します。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT 
+  a.price, a.name, ST_AsText(a.shape), 
+  z.spatial_name, ST_AsText(z.wkb_geometry) 
+FROM accommodations a, zipcode z 
+WHERE price = 9000 AND ST_Within(a.shape, z.wkb_geometry);</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+price   name                                 st_astext                                  spatial_name      st_astext
+-------------------------------------------------------------------------------------------------------------------------------------------------
+9000    Ueber den Dächern Berlins Zentrum    POINT(13.334436985013 52.4979779501538)    10777             POLYGON((13.3318284987227 52.4956021172799,...
+</code></pre>               
+            </li><li>
+                <p>サブクエリを使用して、宿泊施設の最大料金、最小料金、または中央値を計算します。</p>
+                <p>次のクエリは、宿泊施設の料金の中央値を郵便番号別に示しています。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT 
+  a.price, a.name, ST_AsText(a.shape), 
+  z.spatial_name, ST_AsText(z.wkb_geometry) 
+FROM accommodations a, zipcode z 
+WHERE 
+  ST_Within(a.shape, z.wkb_geometry) AND 
+  price = (SELECT median(price) FROM accommodations)
+ORDER BY a.price;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+price name                            st_astext                                   spatial_name   st_astext
+---------------------------------------------------------------------------------------------------------------------------------------------                    
+45    "Cozy room Berlin-Mitte"        POINT(13.3864349535358 52.5292016386514)    10115          POLYGON((13.3658598465795 52.535659581048,...
+...
+(723 rows returned)
+</code></pre> 
+                
+            </li><li>
+                <p>次のクエリを実行して、ベルリンにリストされている宿泊施設の数を取得します。ホットスポットを見つけるために、これらは郵便番号でグループ化され、供給量によってソートされます。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT z.spatial_name as zip, count(*) as numAccommodations 
+FROM public.accommodations a, public.zipcode z
+WHERE ST_Within(a.shape, z.wkb_geometry)
+GROUP BY zip 
+ORDER BY numAccommodations DESC;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+zip  	numaccommodations
+----------------------------
+10245	872
+10247	832
+10437	733
+10115	664
+...
+(187 rows returned)
+</code></pre>
+            </li></ol></div>
+
+
+
+
+     
+           <h2 id="spatial-tutorial-clean-up">ステップ 3: リソースをクリーンアップする</h2>
+           
+           
+           <p>クラスターが実行されている限り料金が発生し続けます。このチュートリアルを完了したら、サンプルクラスターを削除できます。</p>
+           <p>クラスターを維持したいが、テストデータテーブルで使用されるストレージを復元するには、以下のコマンドを実行してテーブルを削除します。</p>
+           <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">drop table public.accommodations cascade;</code></pre>
+           <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">drop table public.zipcode cascade;</code></pre>
+           
+       <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./geospatial-overview.html">空間データのクエリの実行</div><div id="next" class="next-link" accesskey="n" href="./spatial-copy-shapefile.html">シェープファイルのロード</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/spatial-tutorial.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/spatial-tutorial.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

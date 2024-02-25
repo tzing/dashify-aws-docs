@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>セクション 3: ユーザーグループとクエリグループに基づいてクエリをキューにルーティング - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-wlm-routing-queries-to-queues" /><meta name="default_state" content="tutorial-wlm-routing-queries-to-queues" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="description" content="クラスターを新しいパラメータグループに関連付けて WLM を設定しました。次に、いくつかのクエリを実行して Amazon Redshift がどのようにクエリをキューにルーティングして処理するかを確認します。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="セクション 3: ユーザーグループとクエリグループに基づいてクエリをキューにルーティング" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>セクション 3: ユーザーグループとクエリグループに基づいてクエリをキューにルーティング - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-wlm-routing-queries-to-queues" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "ワークロード管理の実装",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "手動 WLM を実装する",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "チュートリアル: 手動ワークロード管理 (WLM) キューの設定",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "セクション 3: ユーザーグループとクエリグループに基づいてクエリをキューにルーティング",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-wlm-routing-queries-to-queues" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#tutorial-wlm-view-query-config">ステップ 1: データベースのクエリキュー設定を表示する</a><a href="#tutorial-wlm-query-group">ステップ 2: クエリグループキューを使ってクエリを実行する</a><a href="#tutorial-wlm-create-db-user-and-group">ステップ 3: データベースユーザーとグループを作成する</a><a href="#tutorial-wlm-user-group-query">ステップ 4: ユーザーグループキューを使ってクエリを実行する</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-wlm-routing-queries-to-queues">セクション 3: ユーザーグループとクエリグループに基づいてクエリをキューにルーティング</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>クラスターを新しいパラメータグループに関連付けて WLM を設定しました。次に、いくつかのクエリを実行して Amazon Redshift がどのようにクエリをキューにルーティングして処理するかを確認します。</p>
+            <h2 id="tutorial-wlm-view-query-config">ステップ 1: データベースのクエリキュー設定を表示する</h2>
+
+            <p>まず、データベースに WLM が正常に設定されていることを確認します。</p>
+             
+                <h3 id="how-to-wlm-view-query-config">クエリキュー設定を表示するには</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                <ol><li>
+                        <p>RSQL を開き、次のクエリを実行します。クエリは「<a href="./tutorial-wlm-understanding-default-processing.html#tutorial-wlm-create-queue-state-view">ステップ 1: WLM_QUEUE_STATE_VW ビューを作成する</a>」で作成した WLM_QUEUE_STATE_VW ビューを使用します。クラスターを再起動する前にセッションをデータベースに接続済みである場合は、再接続する必要があります。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;</code></pre>
+                        <p>結果の例は次のとおりです。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_060.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>この結果を、「<a href="./tutorial-wlm-understanding-default-processing.html#tutorial-wlm-create-queue-state-view">ステップ 1: WLM_QUEUE_STATE_VW ビューを作成する</a>」で受け取った結果と比較します。キューが 2 つ追加されていることがわかります。キュー 1 は test クエリグループのキューになり、キュー 2 は admin ユーザーグループのキューになっています。</p>
+                        <p>キュー 3 はデフォルトキューになっています。リストの最後のキューは常にデフォルトキューです。これは、クエリでユーザーグループやクエリグループが指定されていない場合、デフォルトでクエリがルーティングされる先のキューです。</p>
+                    </li><li>
+                        <p>次のクエリを実行して、クエリがキュー 3 で実行されることを確認します。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;</code></pre>
+                        <p>結果の例は次のとおりです。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_070.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-query-group">ステップ 2: クエリグループキューを使ってクエリを実行する</h2>
+
+
+             
+                <h3 id="how-to-wlm-query-group">クエリグループキューを使ってクエリを実行するには</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+                     
+                     
+                <ol><li>
+                        <p>次のクエリを実行して、クエリを <code class="code">test</code> クエリグループにルーティングします。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set query_group to test;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>他の RSQL ウィンドウから、次のクエリを実行します。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;</code></pre>
+                        <p>結果の例は次のとおりです。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_080.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>クエリは、test クエリグループ (今はキュー 1) にルーティングされました。</p>
+                    </li><li>
+                        <p>キューの状態表示ですべてを選択します。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;</code></pre>
+                        <p>次のような結果が表示されます。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_090.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li><li>
+                        <p>今度は、クエリグループをリセットして、実行時間が長いクエリを再び実行します。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">reset query_group;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>ビューに対するクエリを実行して、結果を確認します。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;
+select * from wlm_query_state_vw;</code></pre>
+                        <p>結果の例は次のとおりです。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_100.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_110.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>結果として、クエリが今は再びキュー 3 で実行されています。</p>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-create-db-user-and-group">ステップ 3: データベースユーザーとグループを作成する</h2>
+
+            <p>このキューでクエリを実行する前に、データベースにユーザーグループを作成して、このユーザーグループにユーザーを追加する必要があります。次に、新しいユーザーの認証情報を使って RSQL にログインして、クエリを実行します。データベースユーザーを作成するには、管理ユーザーのようなスーパーユーザーとしてクエリを実行する必要があります。</p>
+             
+                <h3 id="how-to-wlm-create-db-user-and-group">新しいデータベースユーザーとユーザーグループを作成するには</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                <ol><li>
+                        <p>RSQL ウィンドウで次のコマンドを実行して、データベースに <code class="code">adminwlm</code> という名前の新しいデータベースユーザーを作成します。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create user adminwlm createuser password '123Admin';</code></pre>
+                    </li><li>
+                        <p>続いて、次のコマンドを実行して、新しいユーザーグループを作成し、新しい <code class="code">adminwlm</code> ユーザーをそのユーザーグループに追加します。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create group admin;
+alter group admin add user adminwlm;</code></pre>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-user-group-query">ステップ 4: ユーザーグループキューを使ってクエリを実行する</h2>
+
+            <p>次に、クエリを実行し、それをユーザーグループキューにルーティングします。これを行うのは、実行するクエリのタイプを処理するように設定されたキューにクエリをルーティングする場合です。</p>
+             
+                <h3 id="how-to-wlm-user-group-query">ユーザーグループキューを使ってクエリを実行するには</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+                     
+                     
+                <ol><li>
+                        <p>RSQL ウィンドウ 2 で、次のクエリを実行して、<code class="code">adminwlm</code> アカウントに切り替え、そのユーザーとしてクエリを実行します。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set session authorization 'adminwlm';
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>RSQL ウィンドウ 1 で、次のクエリを実行して、クエリがルーティングされるクエリキューを確認します。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;
+select * from wlm_queue_state_vw;</code></pre>
+                        <p>結果の例は次のとおりです。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_120.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_130.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>このクエリが実行されたキューはキュー 2 (<code class="code">admin</code> ユーザーキュー) です。このユーザーとしてログインしてクエリを実行すると、別のクエリグループを指定しない限り、クエリは常にキュー 2 で実行されます。選択されるキューは、キューの割り当てルールによって異なります。詳細については、「<a href="./cm-c-wlm-queue-assignment-rules.html">WLM キュー割り当てルール</a>」を参照してください。</p>
+                    </li><li>
+                        <p>次に、RSQL ウィンドウ 2.から次のクエリを実行します。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set query_group to test;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>RSQL ウィンドウ 1 で、次のクエリを実行して、クエリがルーティングされるクエリキューを確認します。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;
+select * from wlm_query_state_vw;</code></pre>
+                        <p>結果の例は次のとおりです。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_140.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_150.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li><li>
+                        <p>処理が完了したら、クエリグループをリセットします。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">reset query_group;</code></pre>
+                    </li></ol></div>
+             
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-wlm-modifying-wlm-configuration.html">セクション 2: WLM のクエリキュー設定の変更</div><div id="next" class="next-link" accesskey="n" href="./tutorial-wlm-query-slot-count.html">セクション 4: wlm_query_slot_count を使用してキューの同時実行レベルを一時的に変更</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

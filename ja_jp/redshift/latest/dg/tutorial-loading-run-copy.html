@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>ステップ 5: COPY コマンドを実行する - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-loading-run-copy" /><meta name="default_state" content="tutorial-loading-run-copy" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="description" content="基本の COPY コマンドの構文を確認した後、さまざまなオプションを指定して COPY コマンドを実行し、さまざまなファイル形式を使用してテーブルをロードする方法を学習します。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-run-copy.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="ステップ 5: COPY コマンドを実行する" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>ステップ 5: COPY コマンドを実行する - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-loading-run-copy" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "データのロード",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "チュートリアル: Amazon S3 からデータをロードする",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "ステップ 5: COPY コマンドを実行する",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-data.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-loading-run-copy" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#tutorial-loading-data-copy-syntax">COPY コマンドの構文</a><a href="#tutorial-loading-run-copy-load-tables">SSB テーブルのロード</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-loading-run-copy">ステップ 5: COPY コマンドを実行する</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>COPY コマンドを実行して、SSB のスキーマの各テーブルをロードします。この COPY コマンドの例は、さまざまなファイル形式からのロード、COPY コマンドのオプションの使用、およびロードエラーのトラブルシューティングの方法を示しています。</p><div class="highlights" id="inline-topiclist"><h6>トピック</h6><ul><li><a href="#tutorial-loading-data-copy-syntax">COPY コマンドの構文</a></li><li><a href="#tutorial-loading-run-copy-load-tables">SSB テーブルのロード</a></li></ul></div>
+            <h2 id="tutorial-loading-data-copy-syntax">COPY コマンドの構文</h2>
+
+
+            <p>基本的な <a href="./r_COPY.html">COPY</a> コマンドの構文は次のとおりです。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY table_name [ column_list ] FROM data_source CREDENTIALS access_credentials [options] </code></pre>
+            <p>COPY コマンドを実行するには、以下の値を指定します。</p>
+             
+                <h6>テーブル名 </h6>
+                <p>COPY コマンドのターゲットテーブル。テーブルはすでにデータベースに存在する必要があります。テーブルは一時テーブルまたは永続的テーブルです。COPY コマンドは、新しい入力データをテーブルの既存の行に追加します。</p>
+             
+             
+                <h6>列リスト</h6>
+                <p>デフォルトでは、COPY はソースデータのフィールドを順番にテーブルの列にロードします。オプションで、列名のカンマ区切りリストである<em>列リスト</em>を指定して、データフィールドを特定の列にマッピングすることができます。このチュートリアルでは列リストは使用しません。詳細については、COPY コマンドのリファレンスの「<a href="./copy-parameters-column-mapping.html#copy-column-list">Column List</a>」を参照してください。</p>
+             
+            <p><span class="topcon">データソース</span></p>
+            <p>COPY コマンドを使用して、Amazon S3 バケット、Amazon EMR クラスター、リモート ホスト (SSH 接続を使用)、または Amazon DynamoDB テーブルからデータをロードできます。このチュートリアルでは、Amazon S3 バケットのデータファイルからロードします。Amazon S3 からロードする際、バケット名とデータファイルの場所を指定する必要があります。これを行うには、データファイルのオブジェクトパス、または各データファイルとその場所を明示的に一覧表示するマニフェストファイルの場所を指定します。</p>
+            <div class="itemizedlist">
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem">
+                    <p>キープレフィックス </p>
+                    <p>Amazon S3 に保存されたオブジェクトはオブジェクトキーによって一意に識別されます。オブジェクトキーには、バケット名、フォルダ名 (存在する場合)、およびオブジェクト名が含まれます。<em>キープレフィックス</em>は、同じプレフィックスを持つ一連のオブジェクトを指します。オブジェクトパスは、キープレフィックスを共有するすべてのオブジェクトをロードするために、COPY コマンドで使用するキープレフィックスです。たとえば、キープレフィックス <code class="code">custdata.txt</code> は、単一のファイルを指す場合も、<code class="code">custdata.txt.001</code>、<code class="code">custdata.txt.002</code> など、一連のファイルを指す場合もあります。</p>
+                </li><li class="listitem">
+                    <p>マニフェストファイル</p>
+                    <p>場合によっては、複数のバケットやフォルダなどから、異なる接頭辞を持つファイルをロードする必要があります。また、接頭辞を共有するファイルを除外する必要がある場合もあります。これらの場合には、マニフェストファイルを使用できます。<em>マニフェストファイル</em>は、ロードする各ファイルとその一意のオブジェクトキーを明示的にリストします。このチュートリアルでは、マニフェストファイルを使用して PART テーブルをロードします。</p>
+                </li></ul></div>
+             
+                <h6>認証情報</h6>
+                <p>ロードするデータが格納されている AWS リソースにアクセスするには、十分な権限を持つユーザーの AWS アクセス認証情報を指定する必要があります。これらの認証情報には IAM ロール の Amazon リソースネーム (ARN) が含まれます。Amazon S3 からデータをロードするには、認証情報に ListBucket と GetObject のアクセス許可が含まれている必要があります。データが暗号化されている場合は、追加の認証情報が必要です。詳細については、COPY コマンドのリファレンスの「<a href="./copy-parameters-authorization.html">認証パラメータ</a>」を参照してください。アクセスの管理の詳細については、<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-access-control.html">Amazon S3 リソースへの許可の管理</a>を参照してください。</p>
+             
+            <p><span class="topcon">オプション</span></p>
+            <p>COPY コマンドで多くのパラメータを指定することによって、ファイル形式の指定、データ形式の管理、エラーの管理、およびその他の機能の制御を行うことができます。このチュートリアルでは、次のような COPY コマンドのオプションおよび機能を使用します。</p>
+            <div class="itemizedlist">
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem">
+                    <p>キープレフィックス</p>
+                    <p>キープレフィックスを指定して複数のファイルからロードする方法については、「<a href="#tutorial-loading-load-part">NULL AS を使用した PART テーブルのロード</a>」を参照してください。</p>
+                </li><li class="listitem">
+                    <p>CSV 形式</p>
+                    <p>CSV 形式のデータをロードする方法については、「<a href="#tutorial-loading-load-part">NULL AS を使用した PART テーブルのロード</a>」を参照してください。</p>
+                </li><li class="listitem">
+                    <p>NULL AS</p>
+                    <p>NULL AS オプションを使用して PART をロードする方法については、「<a href="#tutorial-loading-load-part">NULL AS を使用した PART テーブルのロード</a>」を参照してください。</p>
+                </li><li class="listitem">
+                    <p>文字区切り形式</p>
+                    <p>DELIMITER オプションの使用方法については、「<a href="#tutorial-loading-load-supplier">REGION を使用した SUPPLIER テーブルのロード</a>」を参照してください。</p>
+                </li><li class="listitem">
+                    <p>REGION</p>
+                    <p>REGION オプションの使用方法については、「<a href="#tutorial-loading-load-supplier">REGION を使用した SUPPLIER テーブルのロード</a>」を参照してください。</p>
+                </li><li class="listitem">
+                    <p>固定幅形式</p>
+                    <p>固定幅データから CUSTOMER テーブルをロードする方法については、「<a href="#tutorial-loading-load-customer">MANIFEST を使用した CUSTOMER テーブルのロード</a>」を参照してください。</p>
+                </li><li class="listitem">
+                    <p>MAXERROR</p>
+                    <p>MAXERROR オプションの使用方法については、「<a href="#tutorial-loading-load-customer">MANIFEST を使用した CUSTOMER テーブルのロード</a>」を参照してください。</p>
+                </li><li class="listitem">
+                    <p>ACCEPTINVCHARS</p>
+                    <p>ACCEPTINVCHARS オプションの使用方法については、「<a href="#tutorial-loading-load-customer">MANIFEST を使用した CUSTOMER テーブルのロード</a>」を参照してください。</p>
+                </li><li class="listitem">
+                    <p>MANIFEST</p>
+                    <p>MANIFEST オプションの使用方法については、「<a href="#tutorial-loading-load-customer">MANIFEST を使用した CUSTOMER テーブルのロード</a>」を参照してください。</p>
+                </li><li class="listitem">
+                    <p>DATEFORMAT</p>
+                    <p>DATEFORMAT オプションの使用方法については、「<a href="#tutorial-loading-load-dwdate">DATEFORMAT を使用した DWDATE テーブルのロード</a>」を参照してください。</p>
+                </li><li class="listitem">
+                    <p>GZIP、LZOP および BZIP2</p>
+                    <p>ファイルを圧縮する方法については、「<a href="#tutorial-loading-load-lineorder">複数ファイルを使用した LINEORDER テーブルのロード</a>」を参照してください。</p>
+                </li><li class="listitem">
+                    <p>COMPUPDATE</p>
+                    <p>COMPUPDATE オプションの使用方法については、「<a href="#tutorial-loading-load-lineorder">複数ファイルを使用した LINEORDER テーブルのロード</a>」を参照してください。</p>
+                </li><li class="listitem">
+                    <p>複数のファイル</p>
+                    <p>複数のファイルをロードする方法については、「<a href="#tutorial-loading-load-lineorder">複数ファイルを使用した LINEORDER テーブルのロード</a>」を参照してください。</p>
+                </li></ul></div>
+         
+            <h2 id="tutorial-loading-run-copy-load-tables">SSB テーブルのロード</h2>
+
+            <p>SSB スキーマの各テーブルをロードするには、次の COPY コマンドを使用します。各テーブルに対するコマンドは、COPY のさまざまなオプションとトラブルシューティングの手法を示しています。</p>
+            <p>SSB テーブルをロードするには、以下の手順に従います。</p>
+            <div class="orderedlist">
+                 
+                 
+                 
+                 
+                 
+                 
+            <ol><li>
+                    <p><a href="#tutorial-loading-run-copy-replaceables">バケット名と AWS 認証情報を置き換える</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-part">NULL AS を使用した PART テーブルのロード</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-supplier">REGION を使用した SUPPLIER テーブルのロード</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-customer">MANIFEST を使用した CUSTOMER テーブルのロード</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-dwdate">DATEFORMAT を使用した DWDATE テーブルのロード</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-lineorder">複数ファイルを使用した LINEORDER テーブルのロード</a></p>
+
+                </li></ol></div>
+             
+                <h3 id="tutorial-loading-run-copy-replaceables">バケット名と AWS 認証情報を置き換える</h3>
+
+                <p>このチュートリアルの COPY コマンドは次の形式で表示されます。</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy table from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/<em>key_prefix</em>' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>'
+options;</code></pre>
+                
+                <p>各 COPY コマンドで、以下の作業を行います。</p>
+                <div class="orderedlist">
+                     
+                     
+                <ol><li>
+                        <p><code class="replaceable">&lt;your-bucket-name&gt;</code> を、お使いのクラスターと同じリージョンにあるバケットの名前に置き換えます。</p>
+                        <p>このステップでは、バケットとクラスターが同じリージョンにあることを前提としています。代わりに、COPY コマンドで <a href="./copy-parameters-data-source-s3.html#copy-region">REGION</a> オプションを使用してリージョンを指定できます。</p>
+                    </li><li>
+                        <p><code class="replaceable">&lt;aws-account-id&gt;</code> および <code class="replaceable">&lt;role-name&gt;</code> は、使用している AWS アカウント ならびに IAM ロールに置き換えます。一重引用符で囲まれた認証情報文字列に、スペースまたは改行を含めることはできません。ARN の形式はサンプルとは多少異なる場合があることに注意してください。COPY コマンドを実行するときは、正しい ARN を使用するために、IAM コンソールからロールの ARN をコピーすることをお勧めします。</p>
+                        
+                    </li></ol></div>
+             
+             
+                <h3 id="tutorial-loading-load-part">NULL AS を使用した PART テーブルのロード</h3>
+
+                <p>このステップでは、CSV オプションと NULL AS オプションを使用して、PART テーブルをロードします。</p>
+                <p>COPY コマンドでは、複数のファイルから並列してデータをロードでき、1 つのファイルからロードする場合よりも高速です。この原理を示すために、このチュートリアルでは、ファイルは非常に小さくなりますが、各テーブルのデータを 8 個のファイルに分割しています。後のステップで、1 つのファイルからのロードと複数のファイルからのロードとの時間の差を比較します。詳細については、「<a href="./c_best-practices-use-multiple-files.html">データファイルをロードする</a>」を参照してください。</p>
+                 
+                    <h6>キープレフィックス</h6>
+                    <p>ファイルセットのキープレフィックスを指定するか、マニフェストファイルにファイルのリストを明示的に指定することで、複数のファイルからロードできます。このステップでは、キープレフィックスを使用します。後のステップでは、マニフェストファイルを使用します。キープレフィックス <code class="code">'s3://mybucket/load/part-csv.tbl'</code> によって、<code class="code">load</code> フォルダ内の以下のファイルのセットがロードされます。</p>
+                 
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">part-csv.tbl-000
+part-csv.tbl-001
+part-csv.tbl-002
+part-csv.tbl-003
+part-csv.tbl-004
+part-csv.tbl-005
+part-csv.tbl-006
+part-csv.tbl-007
+</code></pre>
+                 
+                    <h6>CSV 形式</h6>
+                    <p>CSV は、カンマ区切り値を意味し、スプレッドシートのデータをインポートおよびエクスポートする際に使用される一般的な形式です。CSV では、フィールド内に引用符で囲まれた文字列を含めることができるため、カンマ区切り形式よりも柔軟です。CSV 形式から COPY を実行する場合、デフォルトの引用文字は二重引用符 ( " ) ですが、QUOTE AS オプションを使用して別の引用文字を指定できます。フィールド内で引用符文字を使用する場合は、追加の引用符文字で文字をエスケープしてください。</p>
+                 
+                <p>PART テーブルの CSV 形式のデータファイルから抜粋した次のデータは、二重引用符で囲まれた文字列 (<code class="code">"LARGE ANODIZED
+                    BRASS"</code>) を示しています。また、引用符で囲まれた文字列内の 2 つの二重引用符で囲まれた文字列 (<code class="code">"MEDIUM ""BURNISHED"" TIN"</code>) が表示されます。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">15,dark sky,MFGR#3,MFGR#47,MFGR#3438,indigo,"LARGE ANODIZED BRASS",45,LG CASE
+22,floral beige,MFGR#4,MFGR#44,MFGR#4421,medium,"PROMO, POLISHED BRASS",19,LG DRUM
+23,bisque slate,MFGR#4,MFGR#41,MFGR#4137,firebrick,"MEDIUM ""BURNISHED"" TIN",42,JUMBO JAR</code></pre>
+                <p>PART テーブルのデータには、COPY が失敗する原因となる文字が含まれています。この演習では、エラーをトラブルシューティングし、修正します。</p>
+                <p>形式のデータをロードするには、COPY コマンド に <code class="code">csv</code>csv を追加 します。以下のコマンドを実行して、PART テーブルをロードします。</p>
+                
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy part from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/part-csv.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>'
+csv;</code></pre>
+                
+                <p>次のようなエラーメッセージが表示されます。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">An error occurred when executing the SQL command:
+copy part from 's3://mybucket/load/part-csv.tbl' 
+credentials' ...
+
+ERROR: Load into table 'part' failed.  Check 'stl_load_errors' system table for details. [SQL State=XX000] 
+
+Execution time: 1.46s
+
+1 statement(s) failed.
+1 statement(s) failed.</code></pre>
+                <p>エラーに関する詳細情報を取得するには、STL_LOAD_ERRORS テーブルに対してクエリを実行します。次のクエリでは、列を短縮して読みやすくするために SUBSTRING 関数を使用し、返される行数を減らすために LIMIT 10 を使用しています。バケット名の長さに合わせて、<code class="code">substring(filename,22,25)</code> の値を調整できます。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select query, substring(filename,22,25) as filename,line_number as line, 
+substring(colname,0,12) as column, type, position as pos, substring(raw_line,0,30) as line_text,
+substring(raw_field_value,0,15) as field_text, 
+substring(err_reason,0,45) as reason
+from stl_load_errors 
+order by query desc
+limit 10;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> query  |    filename      | line |  column   |    type    | pos |      
+--------+-------------------------+-----------+------------+------------+-----+----
+ 333765 | part-csv.tbl-000 |    1 |           |            |   0 |
+
+ line_text        | field_text |                    reason
+------------------+------------+----------------------------------------------
+ 15,NUL next,     |            | Missing newline: Unexpected character 0x2c f</code></pre>
+
+
+                 
+                    <h6>NULL AS</h6>
+                    <p><code class="code">part-csv.tbl</code> データファイルでは、NUL ターミネータ文字 (<code class="code">\x000</code> または <code class="code">\x0</code>) を使用して NULL 値を表します。</p>
+                 
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>スペルやよく似ていますが、NUL と NULL は同じではありません。NUL は、コードポイントが <code class="code">x000</code> である UTF-8 文字で、通常、レコードの終わり (EOR) を示すために使用されます。NULL はデータがないことを表す SQL 値です。</p></div></div>
+                <p>デフォルトでは、COPY は NUL ターミネータ文字を EOR 文字として処理し、レコードを終了します。これは通常、予期しない結果やエラーが発生する原因となります。テキストデータで NULL を示す標準的な方法はありません。したがって、NULL AS COPY コマンドオプションを使用すると、テーブルのロード時に NULL で置換する文字を指定できます。この例では、COPY で、NUL ターミネータ文字を NULL 値として処理する必要があります。</p>
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>NULL 値を受け取るテーブルの列は、<em>NULL が許容される</em>ように設定されている必要があります。つまり、CREATE TABLE の指定に NOT NULL 制約を含めないようにする必要があります。</p></div></div>
+                <p>NULL AS オプションを使って PART をロードするには、以下の COPY コマンドを実行します。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy part from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/part-csv.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+csv
+null as '\000';</code></pre>
+                
+                <p>COPY によって NULL 値がロードされたことを確認するには、以下のコマンドを実行して NULL が含まれる行のみを選択します。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select p_partkey, p_name, p_mfgr, p_category from part where p_mfgr is null;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> p_partkey |  p_name  | p_mfgr | p_category
+-----------+----------+--------+------------
+        15 | NUL next |        | MFGR#47
+        81 | NUL next |        | MFGR#23
+       133 | NUL next |        | MFGR#44 
+(2 rows)</code></pre>
+             
+
+             
+                <h3 id="tutorial-loading-load-supplier">REGION を使用した SUPPLIER テーブルのロード</h3>
+
+                <p>このステップでは、DELIMITER オプションと REGION オプションを使用して、SUPPLIER テーブルをロードします。</p>
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>SUPPLIER テーブルを読み込むためのファイルは、AWS サンプルバケットに用意されています。このステップでファイルをアップロードする必要はありません。</p></div></div>
+                 
+                    <h6>文字区切り形式</h6>
+                    <p>文字区切りファイルのフィールドは、パイプ文字 ( | )、カンマ ( , )、タブ ( \t ) など、特定の文字で区切られます。文字区切りファイルでは、区切り記号として、非表示の ASCII 文字を含め、任意の ASCII 文字 1 文字を使用できます。DELIMITER オプションを使用して区切り文字を指定できます。デフォルトの区切り文字はパイプ文字です。</p>
+                 
+                <p>SUPPLIER テーブルから抜粋した次のデータでは、パイプ区切り形式を使用しています。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">1|1|257368|465569|41365|19950218|2-HIGH|0|17|2608718|9783671|4|2504369|92072|2|19950331|TRUCK
+1|2|257368|201928|8146|19950218|2-HIGH|0|36|6587676|9783671|9|5994785|109794|6|19950416|MAIL</code></pre>
+
+                
+                 
+                    <h6>REGION</h6>
+                    <p>可能な限り、ロードデータは Amazon Redshift クラスターと同じ AWS リージョンに配置してください。データとクラスターが同じリージョンにある場合、レイテンシーが短縮され、リージョン間のデータ転送のコストを回避できます。詳細については、「<a href="./c_loading-data-best-practices.html">データをロードするための Amazon Redshift のベストプラクティス</a>」を参照してください。</p>
+                 
+                <p>別の AWS リージョンからデータをロードする必要がある場合は、REGION オプションを使用して、そのロードデータが配置されている AWS リージョンを指定します。リージョンを指定する場合は、マニフェストファイルを含むすべてのロードデータが、指定されたリージョンに存在している必要があります。詳細については、「<a href="./copy-parameters-data-source-s3.html#copy-region">REGION</a>」を参照してください。</p>
+                <p>クラスターが米国東部 (バージニア北部) リージョンにある場合は、以下のコマンドを実行して米国西部 (オレゴン) リージョンにある Amazon S3 バケット内のパイプ区切りデータから SUPPLIER テーブルをロードします。この例では、バケット名を変更しないでください。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy supplier from 's3://awssampledbuswest2/ssbgz/supplier.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+delimiter '|' 
+gzip
+region 'us-west-2';</code></pre>
+                
+                <p>クラスターが米国東部 (バージニア北部) リージョンに<em>ない</em>場合は、以下のコマンドを実行して米国東部 (バージニア北部) リージョンにある Amazon S3 バケット内のパイプ区切りデータから SUPPLIER テーブルをロードします。この例では、バケット名を変更しないでください。</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy supplier from 's3://awssampledb/ssbgz/supplier.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+delimiter '|' 
+gzip
+region 'us-east-1';
+</code></pre>
+                
+             
+
+             
+                <h3 id="tutorial-loading-load-customer">MANIFEST を使用した CUSTOMER テーブルのロード</h3>
+
+                <p>このステップでは、FIXEDWIDTH、MAXERROR、ACCEPTINVCHARS、および MANIFEST オプションを使用して、CUSTOMER テーブルをロードします。</p>
+                <p>この演習のサンプルデータには、COPY でロードしようとしたときにエラーの原因となる文字が含まれています。MAXERRORS オプションと STL_LOAD_ERRORS システムテーブルを使用してロードエラーのトラブルシューティングを行い、次に ACCEPTINVCHARS オプションと MANIFEST オプションを使用してエラーを排除します。</p>
+                 
+                    <h6>固定幅形式</h6>
+                    <p>固定幅形式は、区切り記号でフィールドを分離するのではなく、各フィールドを固定文字数で定義します。CUSTOMER テーブルから抜粋した次のデータでは、固定幅形式を使用しています。</p>
+                 
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">1   Customer#000000001   IVhzIApeRb           MOROCCO  0MOROCCO  AFRICA      25-705 
+2   Customer#000000002   XSTf4,NCwDVaWNe6tE   JORDAN   6JORDAN   MIDDLE EAST 23-453
+3   Customer#000000003   MG9kdTD              ARGENTINA5ARGENTINAAMERICA     11-783</code></pre>
+
+                <p>ラベル/幅のペアの順序はテーブルの列の順序に正確に一致する必要があります。詳細については、「<a href="./copy-parameters-data-format.html#copy-fixedwidth">FIXEDWIDTH</a>」を参照してください。</p>
+                <p>CUSTOMER テーブルのデータの固定幅指定文字列は、次のとおりです。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, 
+c_region :12, c_phone:15,c_mktsegment:10'</code></pre>
+                <p>固定幅データから CUSTOMER テーブルをロードするには、以下のコマンドを実行します。</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy customer
+from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, c_region :12, c_phone:15,c_mktsegment:10';</code></pre>
+                
+                <p>次のようなエラーメッセージが表示されます。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">An error occurred when executing the SQL command:
+copy customer
+from 's3://mybucket/load/customer-fw.tbl'
+credentials'...
+
+ERROR: Load into table 'customer' failed.  Check 'stl_load_errors' system table for details. [SQL State=XX000] 
+
+Execution time: 2.95s
+
+1 statement(s) failed.</code></pre>
+                 
+                    <h6>MAXERROR</h6>
+                    <p>デフォルトでは、COPY で最初にエラーが発生したときに、コマンドは失敗し、エラーメッセージを返します。テスト中は時間を節約するために、MAXERROR オプションを使用して、失敗する前に指定した数のエラーをスキップするように COPY に指示できます。CUSTOMER テーブルのデータのロードを最初にテストするときにはエラーが予想されるため、COPY コマンドに <code class="code">maxerror 10</code> を追加します。</p>
+                 
+                <p>FIXEDWIDTH オプションと MAXERROR オプションを使用してテストするには、以下のコマンドを実行します。</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy customer
+from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, c_region :12, c_phone:15,c_mktsegment:10'
+maxerror 10;</code></pre>
+                
+                <p>今回は、エラーメッセージの代わりに、次のような警告メッセージが表示されます。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Warnings:
+Load into table 'customer' completed, 112497 record(s) loaded successfully.
+Load into table 'customer' completed, 7 record(s) could not be loaded.  Check 'stl_load_errors' system table for details.</code></pre>
+                <p>この警告は、COPY で 7 個のエラーが発生したことを示します。エラーを確認するには、次の例のように、STL_LOAD_ERRORS テーブルに対してクエリを実行します。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select query, substring(filename,22,25) as filename,line_number as line, 
+substring(colname,0,12) as column, type, position as pos, substring(raw_line,0,30) as line_text,
+substring(raw_field_value,0,15) as field_text, 
+substring(err_reason,0,45) as error_reason
+from stl_load_errors 
+order by query desc, filename 
+limit 7;</code></pre>
+                <p>STL_LOAD_ERRORS のクエリの結果は次のようになるはずです。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> query  |         filename          | line |  column   |    type    | pos |           line_text           | field_text |              error_reason
+--------+---------------------------+------+-----------+------------+-----+-------------------------------+------------+----------------------------------------------
+ 334489 | customer-fw.tbl.log       |    2 | c_custkey | int4       |  -1 | customer-fw.tbl               | customer-f | Invalid digit, Value 'c', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    6 | c_custkey | int4       |  -1 | Complete                      | Complete   | Invalid digit, Value 'C', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    3 | c_custkey | int4       |  -1 | #Total rows                   | #Total row | Invalid digit, Value '#', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    5 | c_custkey | int4       |  -1 | #Status                       | #Status    | Invalid digit, Value '#', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    1 | c_custkey | int4       |  -1 | #Load file                    | #Load file | Invalid digit, Value '#', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl000        |    1 | c_address | varchar    |  34 | 1         Customer#000000001  | .Mayag.ezR | String contains invalid or unsupported UTF8
+ 334489 | customer-fw.tbl000        |    1 | c_address | varchar    |  34 | 1         Customer#000000001  | .Mayag.ezR | String contains invalid or unsupported UTF8
+(7 rows)</code></pre>
+                <p>この結果を調べると、<code class="code">error_reasons</code> 列に 2 件のメッセージがあることがわかります。</p>
+                <div class="itemizedlist">
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Invalid digit, Value '#', Pos 0, Type: Integ </code></pre>
+                        <p>これらのエラーは、<code class="code">customer-fw.tbl.log</code> ファイルによって発生しています。問題は、このファイルがデータファイルではなくログファイルであることです。このファイルがロードされないようにする必要があります。マニフェストファイルを使用して、誤ったファイルがロードされることを回避できます。</p>
+                    </li><li class="listitem">
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">String contains invalid or unsupported UTF8 </code></pre>
+                        <p>VARCHAR データ型は、最大 3 バイトのマルチバイト UTF-8 文字をサポートします。ロードデータにサポートされていない文字や無効な文字が含まれている場合、ACCEPTINVCHARS オプションを使用して、すべての無効な文字を指定した代替文字に置き換えることができます。</p>
+                    </li></ul></div>
+                <p>負荷に関するもう一つの問題は、検出がより難しく、負荷が予期せぬ結果を生み出しました。この問題を調査するには、以下のコマンドを実行して、CUSTOMER テーブルをクエリします。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select c_custkey, c_name, c_address        
+from customer
+order by c_custkey
+limit 10;
+</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> c_custkey |          c_name           |         c_address
+-----------+---------------------------+---------------------------
+         2 | Customer#000000002        | XSTf4,NCwDVaWNe6tE
+         2 | Customer#000000002        | XSTf4,NCwDVaWNe6tE
+         3 | Customer#000000003        | MG9kdTD
+         3 | Customer#000000003        | MG9kdTD
+         4 | Customer#000000004        | XxVSJsL
+         4 | Customer#000000004        | XxVSJsL
+         5 | Customer#000000005        | KvpyuHCplrB84WgAi
+         5 | Customer#000000005        | KvpyuHCplrB84WgAi
+         6 | Customer#000000006        | sKZz0CsnMD7mp4Xd0YrBvx
+         6 | Customer#000000006        | sKZz0CsnMD7mp4Xd0YrBvx
+(10 rows)</code></pre>
+                <p>行は一意である必要がありますが、重複があります。</p>
+                <p>予期しない結果を検証するもう 1 つの方法は、ロードされた行数を検証することです。今回のケースでは、100000 行がロードされているはずですが、ロードのメッセージには 112497 件のレコードがロードされたと示されています。ロードされた行が多いのは、COPY で余分なファイル <code class="code">customer-fw.tbl0000.bak</code> がロードされたためです。</p>
+                <p>この演習では、マニフェストファイルを使用して、誤ったファイルがロードされることを回避します。</p>
+                 
+                    <h6>ACCEPTINVCHARS</h6>
+                    <p>デフォルトでは、COPY は列のデータ型でサポートされていない文字を検出した場合、その行をスキップし、エラーを返します。無効な UTF-8 文字の詳細については、「<a href="./multi-byte-character-load-errors.html">マルチバイト文字のロードエラー</a>」を参照してください。</p>
+                 
+                <p>MAXERRORS オプションによってエラーを無視してロードを続行し、STL_LOAD_ERRORS にクエリを実行して無効な文字を特定した後、データファイルを修正できます。ただし、MAXERRORS はロードの問題のトラブルシューティングには最適ですが、一般的に、本番環境では使用しないでください。</p>
+                <p>ACCEPTINVCHARS オプションは、通常、無効な文字を管理するのに適しています。ACCEPTINVCHARS によって、無効な文字を指定した有効な文字で置き換え、ロード操作を続行することを COPY コマンドに指示します。置換文字として、NULL 以外の有効な ASCII 文字を指定できます。デフォルトの置換文字は疑問符 (?) です。COPY は、マルチバイト文字を同じ長さの置換文字列に置き換えます。たとえば、4 バイト文字は <code class="code">'????'</code> に置き換えられます。</p>
+                <p>COPY は、無効な UTF-8 文字を含む行の数を返します。また、影響を受ける行ごとに STL_REPLACEMENTS システムテーブルにエントリを追加します (ノードスライスあたり最大 100 行)。さらに多くの無効な UTF-8 文字も置き換えられますが、それらの置換イベントは記録されません。</p>
+                <p>ACCEPTINVCHARS は VARCHAR 列に対してのみ有効です。</p>
+                <p>このステップでは、ACCEPTINVCHARS と置換文字 <code class="code">'^'</code> を追加します。</p>
+                 
+                    <h6>MANIFEST</h6>
+                    <p>キープレフィックスを使用して Amazon S3 からの COPY を実行すると、不要なテーブルをロードするリスクがあります。たとえば、<code class="code">'s3://mybucket/load/</code> フォルダには、キープレフィックス <code class="code">customer-fw.tbl</code> を共有する 8 個のデータファイルが含まれます (<code class="code">customer-fw.tbl0000</code>、<code class="code">customer-fw.tbl0001</code> など)。ただし、同じフォルダには、余分なファイルである <code class="code">customer-fw.tbl.log</code> や <code class="code">customer-fw.tbl-0001.bak</code> も含まれています。</p>
+                 
+                <p>必要なすべてのファイル、および正しいファイルのみをロードするには、マニフェストファイルを使用します。マニフェストは JSON 形式のテキストファイルで、ロードされる各ソースファイルについて一意のオブジェクトキーを明示的にリストします。ファイルオブジェクトは、異なるフォルダや異なるバケットにあってもかまいませんが、同じリージョンに存在している必要があります。詳細については、「<a href="./copy-parameters-data-source-s3.html#copy-manifest">MANIFEST</a>」を参照してください。</p>
+                <p>以下に <code class="code">customer-fw-manifest</code> のテキストを示します。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight"><span>{</span>
+  "entries": [
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-000"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-001"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-002"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-003"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-004"},    
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-005"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-006"}, 
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-007"} 
+    ]
+}</code></pre>
+                <div class="procedure"><h6>マニフェストファイルを使用して CUSTOMER テーブルのデータをロードするには</h6><ol><li>
+                        <p>テキストエディタで <code class="code">customer-fw-manifest</code> ファイルを開きます。</p>
+                    </li><li>
+                        <p><code class="replaceable">&lt;your-bucket-name&gt;</code> の部分はお客様のバケットの名前に置き換えます。</p>
+                    </li><li>
+                        <p>ファイルを保存します。</p>
+                    </li><li>
+                        <p>バケットのロードフォルダにファイルをアップロードします。</p>
+                    </li><li>
+                        <p>以下の COPY コマンドを実行します。</p>
+                        
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy customer from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw-manifest'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, c_region :12, c_phone:15,c_mktsegment:10'
+maxerror 10 
+acceptinvchars as '^'
+manifest;</code></pre>
+                        
+                    </li></ol></div>
+             
+             
+                <h3 id="tutorial-loading-load-dwdate">DATEFORMAT を使用した DWDATE テーブルのロード</h3>
+
+                <p>このステップでは、DELIMITER オプションと DATEFORMAT オプションを使用して、DWDATE テーブルをロードします。</p>
+                
+                <p>DATE 列と TIMESTAMP 列をロードする場合、COPY ではデフォルトの形式を想定しています。日付の場合は YYYY-MM-DD で、タイムスタンプの場合は YYYY-MM-DD HH:MI:SS です。ロードデータでデフォルトの形式が使用されていない場合、DATEFORMAT と TIMEFORMAT を使用して形式を指定できます。</p>
+                <p>次の例は、DWDATE テーブルの日付形式を示しています。列 2 の日付形式が一貫していないことに注意してください。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">19920104	1992-01-04          Sunday		January	1992	199201	Jan1992	1	4	4	1...
+19920112	January 12, 1992	Monday		January	1992	199201	Jan1992	2	12	12	1...
+19920120	January 20, 1992	Tuesday	    January	1992	199201	Jan1992	3	20	20	1...</code></pre>
+                 
+                    <h6>DATEFORMAT</h6>
+                    <p>日付形式は 1 つだけ指定できます。ロードデータに一貫性のない形式が含まれている場合やその形式が異なる列に含まれている場合、または形式がロード時にわからない場合は、DATEFORMAT を <code class="code">'auto'</code> 引数と共に使用します。<code class="code">'auto'</code> を指定すると、COPY は有効な日付または時間形式を認識してデフォルト形式に変換します。<code class="code">'auto'</code> オプションは、DATEFORMAT および TIMEFORMAT 文字列を使用する場合にサポートされない形式を認識します。詳細については、「<a href="./automatic-recognition.html">DATEFORMAT と TIMEFORMAT で自動認識を使用する</a>」を参照してください。</p>
+                 
+                <p>DWDATE テーブルをロードするには、以下の COPY コマンドを実行します。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy dwdate from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/dwdate-tab.tbl'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+delimiter '\t' 
+dateformat 'auto';</code></pre>
+                
+             
+             
+                <h3 id="tutorial-loading-load-lineorder">複数ファイルを使用した LINEORDER テーブルのロード</h3>
+
+                <p>このステップでは、GZIP オプションと COMPUPDATE オプションを使用して、LINEORDER テーブルをロードします。</p>
+                <p>この演習では、LINEORDER テーブルを単一のデータファイルからロードし、次に、複数のファイルからロードします。これにより、2 つの方法のロード時間を比較できます。</p>
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>LINEORDER テーブルを読み込むためのファイルは、AWS サンプルバケットに用意されています。このステップでファイルをアップロードする必要はありません。</p></div></div>
+                 
+                    <h6>GZIP、LZOP および BZIP2</h6>
+                    <p>ファイルは gzip、lzop、または bzip2 圧縮形式を使って圧縮できます。圧縮ファイルからロードする場合、COPY はロードの過程でファイルを解凍します。ファイルを圧縮すると、ストレージ領域を節約し、アップロード時間を短縮できます。</p>
+                 
+                 
+                    <h6>COMPUPDATE</h6>
+                    <p>COPY は、圧縮エンコードなしで空のテーブルをロードする場合、ロードデータを分析し、最適なエンコードを決定します。次に、ロードを開始する前にそのエンコードを使用するようにテーブルを変更します。この分析プロセスは時間がかかりますが、分析が行われるのはテーブルごとに多くて 1 回です。時間を節約するには、COMPUPDATE をオフにすることにより、このステップを省略できます。COPY の実行時間を正確に評価するために、このステップでは COMPUPDATE をオフにします。</p>
+                 
+                 
+                    <h6>複数のファイル</h6>
+                    <p>COPY コマンドでは、1 つのファイルからロードする代わりに、複数のファイルから並列でロードすると、データを非常に効率的にロードできます。ファイルの数がクラスターのスライスの数の倍数になるようにデータをファイルに分割します。そうすることで Amazon Redshift はワークロードを分割し、スライス間で均等にデータを配分します。ノードあたりのスライスの数は、クラスターのノードサイズによって決まります。各ノードサイズに含まれるスライス数の詳細については、「<em>Amazon Redshift 管理ガイド</em>」の「<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#rs-about-clusters-and-nodes">クラスターおよびノードについて</a>」を参照してください。</p>
+                 
+                <p>例えば、このチュートリアルで使用される dc2.large コンピューティングノードにはそれぞれ 2 個のスライスがあるため、4 ノードのクラスターに 8 個のスライスがあります。前の手順では、ロードデータが非常に小さい 8 つのファイルに格納されていました。このステップでは、1 つの大きいファイルからのロードと複数のファイルからのロードとの時間の差を比較します。</p>
+                <p>このチュートリアルで使用するファイルには、約 1,500 万件のレコードが含まれ、約 1.2 GB の領域を使用します。これらのファイルは Amazon Redshift のスケールでは非常に小さいファイルですが、複数のファイルからロードする際のパフォーマンス上の利点を示すには十分です。これらのファイルは非常に大きいため、このチュートリアルで、ファイルをダウンロードして Amazon S3 にアップロードするには時間がかかりすぎます。このため、AWS サンプルバケットからファイルを直接ロードします。</p>
+                <p>次のスクリーンショットは LINEORDER のデータ ファイルを示しています。</p>
+
+                <div class="mediaobject">
+                     
+                        <img src="images/tutorial-load-lineorder-files.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                     
+                </div>
+                <div class="procedure"><h6>複数のファイルを使用して COPY のパフォーマンスを評価するには</h6><ol><li>
+                        <p>単一のファイルから COPY を実行するには、以下のコマンドを実行します。バケット名を変更しないでください。</p>
+                        
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy lineorder from 's3://awssampledb/load/lo/lineorder-single.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+gzip
+compupdate off
+region 'us-east-1';</code></pre>
+                        
+                    </li><li>
+                        <p>結果は次のようになります。実行時間を書き留めてください。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Warnings:
+Load into table 'lineorder' completed, 14996734 record(s) loaded successfully.
+
+0 row(s) affected.
+copy executed successfully
+
+Execution time: 51.56s</code></pre>
+                    </li><li>
+                        <p>複数のファイルから COPY を実行するには、以下のコマンドを実行します。バケット名を変更しないでください。</p>
+                        
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy lineorder from 's3://awssampledb/load/lo/lineorder-multi.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+gzip
+compupdate off
+region 'us-east-1';
+</code></pre>
+                        
+                    </li><li>
+                        <p>結果は次のようになります。実行時間を書き留めてください。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Warnings:
+Load into table 'lineorder' completed, 14996734 record(s) loaded successfully.
+
+0 row(s) affected.
+copy executed successfully
+
+Execution time: 17.7s</code></pre>
+                    </li><li>
+                        <p>実行時間を比較します。</p>
+                        <p>この例では、1,500 万件のレコードをロードする時間が、51.56 秒から 17.7 秒へと短縮され、65.7% の削減を達成しました。</p>
+                        <p>これらの結果は 4 ノードクラスターの使用に基づいています。クラスターにさらにノードがある場合は、時間の節約は増加します。数十個から数百個のノードがある、一般的な Amazon Redshift クラスターの場合、違いはさらに明確になります。単一ノードクラスターの場合、実行時間の差はほとんどありません。</p>
+                    </li></ol></div>
+             
+             
+                <h3 id="tutorial-loading-next-step6">次のステップ</h3>
+
+                <p><a href="./tutorial-loading-data-vacuum.html">ステップ 6: データベースにバキューム操作を実行し、分析する</a></p>
+             
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-loading-data-create-tables.html">ステップ 4: サンプルテーブルを作成する</div><div id="next" class="next-link" accesskey="n" href="./tutorial-loading-data-vacuum.html">ステップ 6: データベースにバキューム操作を実行し、分析する</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-run-copy.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-run-copy.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>認証パラメータ - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="copy-parameters-authorization" /><meta name="default_state" content="copy-parameters-authorization" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/copy-parameters-authorization.html" /><meta name="description" content="COPY コマンドが、他の AWS リソース (Amazon S3、Amazon EMR、Amazon DynamoDB、Amazon EC2 など) のデータにアクセスするにためには承認が必要です。この承認は、クラスターにアタッチされた AWS Identity and Access Management (IAM) ロール ( ロールベースのアクセスコントロール ) を参照することで提供できます。Amazon S3 のロードデータを暗号化できます。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/copy-parameters-authorization.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/copy-parameters-authorization.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/copy-parameters-authorization.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/copy-parameters-authorization.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/copy-parameters-authorization.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-authorization.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-authorization.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/copy-parameters-authorization.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/copy-parameters-authorization.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/copy-parameters-authorization.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/copy-parameters-authorization.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/copy-parameters-authorization.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/copy-parameters-authorization.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/copy-parameters-authorization.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/copy-parameters-authorization.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/copy-parameters-authorization.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/copy-parameters-authorization.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/copy-parameters-authorization.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/copy-parameters-authorization.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/copy-parameters-authorization.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/copy-parameters-authorization.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-authorization.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="認証パラメータ" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>認証パラメータ - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#copy-parameters-authorization" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/copy-parameters-authorization.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/copy-parameters-authorization.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/copy-parameters-authorization.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "SQL リファレンス",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm_chap_SQLCommandRef.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "SQL コマンド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_SQL_commands.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "COPY",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_COPY.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "COPY パラメータリファレンス",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_COPY-parameters.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 8,
+        "name" : "認証パラメータ",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_COPY-parameters.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#copy-parameters-authorization" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="copy-parameters-authorization">認証パラメータ</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>COPY コマンドが、他の AWS リソース (Amazon S3、Amazon EMR、Amazon DynamoDB、Amazon EC2 など) のデータにアクセスするにためには承認が必要です。この承認は、クラスターにアタッチされた <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html">AWS Identity and Access Management (IAM) ロール</a> (<em>ロールベースのアクセスコントロール</em>) を参照することで提供できます。Amazon S3 のロードデータを暗号化できます。</p><p>以下のトピックでは、認証オプションの詳細と例をさらに示します。</p><div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p><a href="./copy-usage_notes-access-permissions.html#copy-usage_notes-iam-permissions">COPY、UNLOAD、CREATE LIBRARY のための IAM のアクセス許可</a></p>
+            </li><li class="listitem">
+               <p><a href="./copy-usage_notes-access-permissions.html#copy-usage_notes-access-role-based">ロールベースアクセスコントロール</a></p>
+            </li><li class="listitem">
+               <p><a href="./copy-usage_notes-access-permissions.html#copy-usage_notes-access-key-based">キーベースのアクセスコントロール</a></p>
+            </li></ul></div><p>以下のいずれかを使用して COPY コマンドに認証を提供します。</p><div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p><a href="#copy-iam-role">IAM_ROLE</a> パラメータ</p>
+            </li><li class="listitem">
+               <p><a href="#copy-access-key-id">ACCESS_KEY_ID and SECRET_ACCESS_KEY</a> 個のパラメータ</p>
+            </li><li class="listitem">
+               <p><a href="#copy-credentials">CREDENTIALS</a> 句</p>
+            </li></ul></div><div class="variablelist">
+             
+            
+            
+
+             
+
+            
+            
+
+             
+
+            
+             
+
+         <dl>
+               <dt id="copy-iam-role"><span class="term">IAM_ROLE <span>{</span> default | 'arn:aws:iam::<code class="replaceable">&lt;AWS アカウント-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' }</span></dt>
+               <dd>
+                  <p> デフォルトキーワードを使用して、COPY コマンドの実行時にデフォルトとして設定され、クラスターに関連付けられた IAM ロールの使用を、Amazon Redshift に指示します。</p>
+                  <p>クラスターが認証と承認に使用する IAM ロールの Amazon リソースネーム (ARN) を使用します。IAM_ROLE を指定すると、ACCESS_KEY_ID および SECRET_ACCESS_KEY、SESSION_TOKEN、または CREDENTIALS は使用できません。</p>
+                  <p>以下に、IAM_ROLE パラメータの構文を示します。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">IAM_ROLE <span>{</span> default | 'arn:aws:iam::<code class="replaceable">&lt;AWS アカウント-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' }</code></pre>
+                  <p>詳細については、「<a href="./copy-usage_notes-access-permissions.html#copy-usage_notes-access-role-based">ロールベースアクセスコントロール</a>」を参照してください。</p>
+               </dd>
+             
+               <dt id="copy-access-key-id"><span class="term">ACCESS_KEY_ID '<em>access-key-id </em>' SECRET_ACCESS_KEY '<em>secret-access-key</em>'</span></dt>
+               <dd>
+                  <p>この認証方法は推奨されません。</p>
+                  
+                  <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>アクセス認証情報をプレーンテキストで提供するのではなく、IAM_ROLE パラメータを指定してロールベースの認証を使用することを強くお勧めします。詳細については、「<a href="./copy-usage_notes-access-permissions.html#copy-usage_notes-access-role-based">ロールベースアクセスコントロール</a>」を参照してください。</p></div></div>
+               </dd>
+             
+               <dt id="copy-token"><span class="term">SESSION_TOKEN '<em>temporary-token</em>'</span></dt>
+
+               <dd>
+                  <p>一時的アクセス認証情報で使用するセッショントークン。SESSION_TOKEN を指定した場合、ACCESS_KEY_ID と SECRET_ACCESS_KEY も使用して一時的アクセスキー認証情報を指定する必要があります。SESSION_TOKEN を指定した場合、IAM_ROLE または CREDENTIALS は使用できません。詳細については、IAM ユーザーガイドの「<a href="./copy-usage_notes-access-permissions.html#r_copy-temporary-security-credentials">一時的な認証情報</a>」を参照してください。</p>
+                  <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>一時的セキュリティ認証情報を作成するのではなく、ロールベースの認証を使用することを強くお勧めします。IAM ロールを使用して承認すると、Amazon Redshift が自動的に各セッション用の一時的ユーザー認証情報を作成します。詳細については、「<a href="./copy-usage_notes-access-permissions.html#copy-usage_notes-access-role-based">ロールベースアクセスコントロール</a>」を参照してください。</p></div></div>
+                  <p>以下に、ACCESS_KEY_ID と SECRET_ACCESS_KEY パラメータを使用した SESSION_TOKEN パラメータの構文を示します。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">ACCESS_KEY_ID '<code class="replaceable">&lt;access-key-id&gt;</code>'
+SECRET_ACCESS_KEY '<code class="replaceable">&lt;secret-access-key&gt;</code>'
+SESSION_TOKEN '<code class="replaceable">&lt;temporary-token&gt;</code>';</code></pre>
+                  <p>SESSION_TOKEN を指定した場合、CREDENTIALS または IAM_ROLE は使用できません。</p>
+               </dd>
+             
+               <dt id="copy-credentials"><span class="term">[WITH] CREDENTIALS [AS] '<em>credentials-args</em>'</span></dt>
+               <dd>
+                  <p>クラスターが、データファイルまたはマニフェストファイルを含む他の AWS リソースにアクセスする際の方法を示す句。CREDENTIALS パラメータは、IAM_ROLE または ACCESS_KEY_ID と SECRET_ACCESS_KEY との併用はできません。</p>
+                  <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>柔軟性を強化するために、CREDENTIALS パラメータの代わりに <a href="#copy-iam-role">IAM_ROLE</a> パラメータを使用することをお勧めします。</p></div></div>
+                  <p>必要に応じて <a href="./copy-parameters-data-source-s3.html#copy-encrypted">ENCRYPTED</a> パラメータを使用する場合は、<em>credentials-args</em> 文字列が、暗号化キーを提供します。</p>
+                  <p><em>credentials-args</em> 文字列では大文字と小文字が区別され、空白を含めることはできません。</p>
+
+                  <p>キーワード WITH および AS はオプションで、無視されます。</p>
+                  <p><a href="./copy-usage_notes-access-permissions.html#copy-usage_notes-access-role-based.phrase">role-based access control</a> または <a href="./copy-usage_notes-access-permissions.html#copy-usage_notes-access-key-based.phrase">key-based access control</a> のどちらかを指定できます。どちらの場合も、IAM ロールまたはユーザーは、指定された AWS リソースにアクセスするために必要なアクセス許可が必要です。詳細については、「<a href="./copy-usage_notes-access-permissions.html#copy-usage_notes-iam-permissions">COPY、UNLOAD、CREATE LIBRARY のための IAM のアクセス許可</a>」を参照してください。</p>
+                  <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>AWS 認証情報および機密データを保護するには、ロールベースのアクセスコントロールを使用することを強くお勧めします。</p></div></div>
+
+                  <p>ロールベースのアクセスコントロールを指定するには、次の形式で <em>credentials-args</em> 文字列を指定します。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>'</code></pre>
+
+                  
+                  
+                  <p>一時トークン認証情報を使用するには、一時アクセスキー ID、一時秘密アクセスキー、および一時トークンを提供する必要があります。<em>credentials-args</em> 文字列は次の形式になります。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREDENTIALS
+'aws_access_key_id=<code class="replaceable">&lt;temporary-access-key-id&gt;</code>;aws_secret_access_key=<code class="replaceable">&lt;temporary-secret-access-key&gt;</code>;token=<code class="replaceable">&lt;temporary-token&gt;</code>'</code></pre>
+                  <p> 詳細については、「<a href="./copy-usage_notes-access-permissions.html#r_copy-temporary-security-credentials">一時的な認証情報</a>」を参照してください。</p>
+
+                  <p><a href="./copy-parameters-data-source-s3.html#copy-encrypted">ENCRYPTED</a> パラメータを使用する場合、<em>credentials-args</em> 文字列は下記のような形式になります。ここで <code class="replaceable">&lt;root-key&gt;</code> はファイルの暗号化に使用されたルートキーの値です。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREDENTIALS
+'<code class="replaceable">&lt;credentials-args&gt;</code>;master_symmetric_key=<code class="replaceable">&lt;root-key&gt;</code>'  </code></pre>
+                  <p>例えば、次の COPY コマンドが、暗号化キーを含むロールベースのアクセスコントロールを使用するとします。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy customer from 's3://mybucket/mydata' 
+credentials 
+'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>;master_symmetric_key=<code class="replaceable">&lt;root-key&gt;</code>'</code></pre>
+                  
+                  
+                
+                  <p>次の COPY コマンドでは、暗号化キーを使用したロールベースのアクセスコントロールを出力します。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy customer from 's3://mybucket/mydata' 
+credentials 
+'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>;master_symmetric_key=<code class="replaceable">&lt;root-key&gt;</code>'</code></pre>
+               
+                  
+               </dd>
+            </dl></div><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./copy-parameters-data-source-dynamodb.html">Amazon DynamoDB からの COPY</div><div id="next" class="next-link" accesskey="n" href="./copy-parameters-column-mapping.html">列のマッピングオプション</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/copy-parameters-authorization.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/copy-parameters-authorization.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

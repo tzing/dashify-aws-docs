@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>セクション 2: WLM のクエリキュー設定の変更 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-wlm-modifying-wlm-configuration" /><meta name="default_state" content="tutorial-wlm-modifying-wlm-configuration" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="description" content="キューのデフォルトの仕組みが理解できたため、次は手動 WLM を使用してクエリキューを設定する方法について説明します。このセクションでは、クラスターの新しいパラメータグループを作成して設定します。ユーザーキューを 2 つ追加で作成して、クエリのユーザーグループまたはクエリグループラベルに基づいてクエリを受け付けるように、これらのキューを設定します。この 2 つのキューのどちらにもルーティングされないクエリは、実行時にデフォルトキューにルーティングされます。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="セクション 2: WLM のクエリキュー設定の変更" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>セクション 2: WLM のクエリキュー設定の変更 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-wlm-modifying-wlm-configuration" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "ワークロード管理の実装",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "手動 WLM を実装する",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-defining-query-queues.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "チュートリアル: 手動ワークロード管理 (WLM) キューの設定",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "セクション 2: WLM のクエリキュー設定の変更",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-wlm-modifying-wlm-configuration" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-wlm-modifying-wlm-configuration">セクション 2: WLM のクエリキュー設定の変更</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>キューのデフォルトの仕組みが理解できたため、次は手動 WLM を使用してクエリキューを設定する方法について説明します。このセクションでは、クラスターの新しいパラメータグループを作成して設定します。ユーザーキューを 2 つ追加で作成して、クエリのユーザーグループまたはクエリグループラベルに基づいてクエリを受け付けるように、これらのキューを設定します。この 2 つのキューのどちらにもルーティングされないクエリは、実行時にデフォルトキューにルーティングされます。</p><div class="procedure"><h6>パラメータグループの手動 WLM 設定を作成するには</h6><ol><li> <p>AWS Management Console にサインインして <a href="https://console.aws.amazon.com/redshift/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/redshift/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>で Amazon Redshift コンソールを開きます。</p> 
+                    </li><li>
+                        <p>ナビゲーションメニューで、<b>[Configurations]</b> (設定) を選択し、次に <b>[Workload management]</b> (ワークロード管理) を選択して <b>[Workload management]</b> (ワークロード管理) ページを表示します。</p>
+                    </li><li>
+                        <p>[<b>作成</b>] を選択して [<b>パラメータグループの作成</b>] ウィンドウを表示します。</p>
+                    </li><li>
+                        <p><b>[Parameter group name]</b> (パラメータグループ名) と<b>[Description]</b> (説明)の両方で <code class="userinput">WLMTutorial</code> を入力し、<b>[Create]</b> (作成) をクリックしてパラメータグループを作成します。</p>
+                        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>[<b>パラメータグループ名</b>] は作成時にすべて小文字に変換されます。</p></div></div>
+                    </li><li>
+                        <p>[<b>ワークロード管理</b>] ページで、パラメータグループ <code class="userinput">wlmtutorial</code> を選択し、[<b>パラメータ</b>] と [<b>ワークロード管理</b>] のタブのある詳細ページを表示します。</p>
+                    </li><li>
+                        <p>[<b>ワークロード管理</b>] タブを開いていることを確認し、[<b>Switch WLM mode (WLM モードの切り替え)</b>] を選択して [<b>Concurrency settings (同時実行設定)</b>] ウィンドウを表示します。</p>
+                    </li><li>
+                        <p>[<b>Manual WLM (手動 WLM)</b>] を選択してから [<b>保存</b>] を選択し、手動 WLM に切り替えます。</p>
+                    </li><li>
+                        <p>[<b>Edit workload queues (ワークロードキューの編集)</b>] を選択します。</p>
+                    </li><li>
+                        <p>[<b>キューの追加</b>] を 2 度選択して、2 つのキューを追加します。現在 [<b>キュー 1</b>]、[<b>キュー 2</b>]、[<b>デフォルトキュー</b>] の 3つのキューがある状態です。</p>
+                    </li><li>
+                        <p>それぞれのキューの情報を次のように入力します。</p>
+                        <div class="itemizedlist">
+                             
+                             
+                             
+                        <ul class="itemizedlist"><li class="listitem">
+                                <p><b>[Queue 1]</b> (キュー 1) では、<b>[Memory (%)]</b> (メモリ (%)) に <code class="userinput">30</code>、<b>[Concurrency on main]</b> (メインの同時実行性)に <code class="userinput">2</code>、<b>[Query groups]</b> (クエリグループ) に <code class="userinput">test</code> を入力します。その他の設定はデフォルト値のままにしておきます。</p>
+                                
+                            </li><li class="listitem">
+                                <p><b>[Queue 2]</b> (キュー 2) では、<b>[Memory (%)]</b> (メモリ (%)) に <code class="userinput">40</code>、<b>[Concurrency on main]</b> (メインの同時実行性) に <code class="userinput">3</code>、<b>[User groups]</b> (ユーザーグループ) に <code class="userinput">admin</code> を入力します。その他の設定はデフォルト値のままにしておきます。</p>
+                            </li><li class="listitem">
+                                <p>[<b>デフォルトキュー</b>] には変更を加えないでください。WLM は、未割り当てのメモリをデフォルトキューに割り当てます。</p>
+                            </li></ul></div>
+                    </li><li>
+                        <p>設定を保存するには [<b>保存</b>] を選択します。</p>
+                    </li></ol></div><p>次に、手動 WLM 設定を持つパラメータグループをクラスターに関連付けます。</p><div class="procedure"><h6>パラメータグループをクラスターの手動 WLM 設定に関連付けるには</h6><ol><li> <p>AWS Management Console にサインインして <a href="https://console.aws.amazon.com/redshift/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/redshift/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>で Amazon Redshift コンソールを開きます。</p> 
+                    </li><li>
+                        <p>ナビゲーションメニューから <b>[Clusters]</b> (クラスター) を選択し、次に <b>[Clusters]</b> (クラスター) を選択してクラスターのリストを表示します。</p>
+                    </li><li>
+                        <p>クラスターの詳細を表示するには、<code class="code">examplecluster</code> などのクラスターを選択します。次に、<b>[Properties]</b> (プロパティ) タブを選択して、そのクラスターのプロパティを表示します。</p>
+                    </li><li>
+                        <p><b>[Database configurations]</b> (データベース構成) セクションで、<b>[Edit]</b> (編集)、<b>[Edit parameter group]</b> (パラメータグループの編集) を選択して、パラメータグループのウィンドウを表示します。</p>
+                    </li><li>
+                        <p><b>[Parameter groups]</b> (パラメータグループ) で、以前に作成した <code class="userinput">wlmtutorial</code> パラメータグループを選択します。</p>
+                    </li><li>
+                        <p><b>[Save changes]</b> (変更を保存) を選択して、パラメータグループを関連付けます。</p>
+                        <p>クラスターは変更されたパラメータグループで変更されます。ただし、変更をデータベースにも適用するには、クラスターを再起動する必要があります。</p>
+                    </li><li>
+                        <p>クラスターを選択してから、<b>[Actions]</b> (アクション) の <b>[Reboot]</b> (再起動) を選択します。</p>
+                    </li></ol></div><p>クラスターが再起動されると、ステータスは [<b>利用可能</b>] に戻ります。</p><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-wlm-understanding-default-processing.html">セクション 1: デフォルトキュー処理の動作の理解</div><div id="next" class="next-link" accesskey="n" href="./tutorial-wlm-routing-queries-to-queues.html">セクション 3: ユーザーグループとクエリグループに基づいてクエリをキューにルーティング</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>UNION、INTERSECT、または EXCEPT - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="r_UNION" /><meta name="default_state" content="r_UNION" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_UNION.html" /><meta name="description" content="2 つの別個のクエリ式の結果を比較してマージします。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_UNION.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/r_UNION.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/r_UNION.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/r_UNION.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/r_UNION.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/r_UNION.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/r_UNION.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/r_UNION.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/r_UNION.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/r_UNION.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/r_UNION.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/r_UNION.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/r_UNION.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_UNION.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_UNION.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_UNION.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_UNION.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/r_UNION.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/r_UNION.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_UNION.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_UNION.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/r_UNION.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="UNION、INTERSECT、または EXCEPT" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>UNION、INTERSECT、または EXCEPT - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#r_UNION" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_UNION.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_UNION.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_UNION.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "SQL リファレンス",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm_chap_SQLCommandRef.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "SQL コマンド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_SQL_commands.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "SELECT",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_SELECT_synopsis.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "UNION、INTERSECT、または EXCEPT",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_SELECT_synopsis.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#r_UNION" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#r_UNION-synopsis">構文</a><a href="#r_UNION-parameters">パラメータ</a><a href="#r_UNION-order-of-evaluation-for-set-operators">セット演算の評価の順番</a><a href="#r_UNION-usage-notes">使用に関する注意事項</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="r_UNION">UNION、INTERSECT、または EXCEPT</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><div class="highlights"><h6>トピック</h6><ul><li><a href="#r_UNION-synopsis">構文</a></li><li><a href="#r_UNION-parameters">パラメータ</a></li><li><a href="#r_UNION-order-of-evaluation-for-set-operators">セット演算の評価の順番</a></li><li><a href="#r_UNION-usage-notes">使用に関する注意事項</a></li><li><a href="./c_example_union_query.html">UNION クエリの例</a></li><li><a href="./c_example_unionall_query.html">UNION ALL クエリの例</a></li><li><a href="./c_example_intersect_query.html">INTERSECT クエリの例</a></li><li><a href="./c_Example_MINUS_query.html">EXCEPT クエリの例</a></li></ul></div><p>UNION、INTERSECT、または EXCEPT <em>セット演算子</em>は、2 つの個別のクエリ式の比較とマージに使われます。例えば、ウェブサイトで購入者と販売者の両方を兼ねているが、ユーザー名が別々の列または表に格納されているユーザーを確認するには、これら 2 種類のユーザーの<em>積集合</em>を求めます。購入者ではあるが販売者ではないウェブユーザーを確認するには、EXCEPT 演算子を使用すると、2 つユーザーリストの<em>差</em>を見つけることができます。役割とは無関係に、すべてのユーザーのリストを作成する場合、UNION 演算子を使用できます。</p>
+            <h2 id="r_UNION-synopsis">構文</h2>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight"><em>query</em>
+<span>{</span> UNION [ ALL ] | INTERSECT | EXCEPT | MINUS }
+<em>query</em>
+                     </code></pre>
+          
+            <h2 id="r_UNION-parameters">パラメータ</h2>
+            <div class="variablelist">
+                
+                
+                
+                
+                
+            <dl>
+                  <dt><span class="term"> <em>query</em> </span></dt>
+                  <dd>
+                     <p>UNION、INTERSECT、または EXCEPT 演算子の後に続く 2 番目のクエリ式に、SELECT リストの形式で対応するクエリ式。2 つの式は、互換性のあるデータ型の出力列を同数含んでいる必要があります。そうでない場合、2 つの結果セットの比較とマージはできません。データ型の複数のカテゴリ間で黙示的な変換を許可しない演算を設定します。詳細については「<a href="./c_Supported_data_types.html#r_Type_conversion">型の互換性と変換</a>」を参照してください。</p>
+
+                     <p>クエリ式の数を上限なしに含むクエリを構築して、そのクエリを任意の組み合わせで UNION、INTERSECT、および EXCEPT 演算子に関連付けることができます。例えば、テーブル T1、T2、および T3 に互換性のある列セットが含まれていると想定した場合、次のクエリ構造は有効です。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from t1
+union
+select * from t2
+except
+select * from t3
+order by c1;</code></pre>
+                  </dd>
+                
+                  <dt><span class="term">UNION </span></dt>
+                  <dd>
+                     <p>行が片方の式から生成されたか、両方の式から生成されたかにかかわらず、2 つのクエリ式からの行を返す演算を設定します。</p>
+                  </dd>
+                
+                  <dt><span class="term">INTERSECT </span></dt>
+                  <dd>
+                     <p>2 つのクエリ式から生成される行を返す演算を設定します。両方の式によって返されない行は破棄されます。</p>
+                  </dd>
+                
+                  <dt><span class="term">EXCEPT | MINUS </span></dt>
+                  <dd>
+                     <p>2 つのクエリ式の一方から生成される行を返す演算を設定します。結果を制限するため、行は最初の結果テーブルに存在し、2 番目のテーブルには存在しない必要があります。MINUS と EXCEPT はまったく同じ意味です。</p>
+                  </dd>
+                
+                  <dt><span class="term">ALL </span></dt>
+                  <dd>
+                     <p>ALL キーワードは、UNION が生成する重複行を保持します。ALL キーワードを使用しないよう場合のデフォルトの動作は、このような重複を破棄します。INTERSECT ALL、EXCEPT ALL、および MINUS ALL はサポートされません。</p>
+                  </dd>
+               </dl></div>
+          
+            <h2 id="r_UNION-order-of-evaluation-for-set-operators">セット演算の評価の順番</h2>
+            <p>UNION および EXCEPT セット演算子は左結合です。優先順位の決定でかっこを指定しなかった場合、これらのセット演算子の組み合わせは、左から右に評価されます。例えば、次のクエリでは、T1 と T2 の UNION が最初に評価され、次に UNION の結果に対して、EXCEPT 演算が実行されます。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from t1
+union
+select * from t2
+except
+select * from t3
+order by c1;</code></pre>
+            <p>同じクエリ内で演算子の組み合わせを使用した場合、INTERSECT 演算子は UNION および EXCEPT よりも優先されます。例えば、次のクエリは T2 と T3 の積集合を評価し、その結果を T1 を使って結合します。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from t1
+union
+select * from t2
+intersect
+select * from t3
+order by c1;</code></pre>
+            <p>かっこを追加することで、評価の順番を変更することができます。次のケースでは、T1 と T2 の結合結果と T3 の積集合を求めます。このクエリでは異なる結果が生成されます。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">(select * from t1
+union
+select * from t2)
+intersect
+(select * from t3)
+order by c1;</code></pre>
+          
+            <h2 id="r_UNION-usage-notes">使用に関する注意事項</h2>
+            <div class="itemizedlist">
+                
+                
+               
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>セット演算クエリの結果で返される列名は、最初のクエリ式のテーブルからの列名 (またはエイリアス) です。これらの列名は、列内の値はセット演算子の両方のテーブルから生成されるという点で誤解を生む可能性があるため、結果セットには意味のあるエイリアスを付けることをお勧めします。</p>
+                  
+               </li><li class="listitem">
+                  <p>セット演算子より前に記述されたクエリ式には、ORDER BY 句を含めないでください。ORDER BY 句は、セット演算子を含むクエリの最後に使用することで、意味のあるソート結果が得られます。この場合、ORDER BY 句は、すべてのセット演算の最終結果に適用されます。最も外側のクエリには、標準の LIMIT 句および OFFSET 句を含めることもできます。</p>
+               </li><li class="listitem">
+                  <p>セット演算子クエリが 10 進数の結果を返した場合、同じ精度とスケールで対応する結果列を返すように奨励されます。例えば、T1.REVENUE が DECIMAL(10,2) 列で T2.REVENUE が DECIMAL(8,4) 列の次のクエリでは、DECIMAL(12,4) への結果も 10 進数であることが奨励されます。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select t1.revenue union select t2.revenue;</code></pre>
+                  <p>スケールは <code class="code">4</code> になります。2 つの列の最大のスケールです。精度は <code class="code">12</code> です。T1.REVENUE は小数点の左側に 8 桁必要であるからです (12 - 4 = 8)。このような奨励により、UNION の両側からのすべての値が結果に適合します。64 ビットの値の場合、最大結果精度は 19 で、最大結果スケールは 18 です。128 ビットの値の場合、最大結果精度は 38 で、最大結果スケールは 37 です。</p>
+                  <p>生成されるデータ型が Amazon Redshift の精度とスケールの上限を超えた場合、クエリはエラーを返します。</p>
+               </li><li class="listitem">
+                  <p>集合演算で 2 行が同一として扱われるのは、対応する列のペアごとに、2 つのデータ値が<em>等しい</em>または<em>どちらも NULL</em> である場合です。例えば、テーブル T1 と T2 の両方に 1 つの列と 1 つの行が含まれていて、両方のテーブルでその行が NULL の場合、これらのテーブルに INTERSECT 演算に実行すると、その行が返されます。</p>
+               </li></ul></div>
+         <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_QUALIFY_clause.html">QUALIFY 句</div><div id="next" class="next-link" accesskey="n" href="./c_example_union_query.html">UNION クエリの例</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_UNION.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_UNION.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

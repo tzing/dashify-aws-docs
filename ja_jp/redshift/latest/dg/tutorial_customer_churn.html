@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>チュートリアル: カスタマーチャーンモデルの構築 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_customer_churn" /><meta name="default_state" content="tutorial_customer_churn" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_customer_churn.html" /><meta name="description" content="このチュートリアルでは、Amazon Redshift の機械学習モデルを作成し、推論クエリを実行するエンドツーエンドの例を示します。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_customer_churn.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_customer_churn.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_customer_churn.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_customer_churn.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_customer_churn.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_customer_churn.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_customer_churn.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_customer_churn.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_customer_churn.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_customer_churn.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_customer_churn.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_customer_churn.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_customer_churn.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_customer_churn.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_customer_churn.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_customer_churn.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_customer_churn.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_customer_churn.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_customer_churn.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_customer_churn.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_customer_churn.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_customer_churn.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="チュートリアル: カスタマーチャーンモデルの構築" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>チュートリアル: カスタマーチャーンモデルの構築 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_customer_churn" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_customer_churn.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_customer_churn.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_customer_churn.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Amazon Redshift での機械学習の使用",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Amazon Redshift 機械学習の開始方法",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Amazon Redshift ML のチュートリアル",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "チュートリアル: カスタマーチャーンモデルの構築",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_customer_churn" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#tutorial_customer_churn_tasks">ユースケースの例</a><a href="#tutorial_customer_churn_prereqs">前提条件</a><a href="#tutorial_customer_churn_step_load">ステップ 1: Amazon S3 から Amazon Redshift にデータをロードする</a><a href="#tutorial_customer_churn_step_create_model">ステップ 2: 機械学習モデルを作成する</a><a href="#tutorial_customer_churn_step_perform_predictions">ステップ 3: モデルを使用して予測を実行する</a><a href="#tutorial_customer_churn_related_topics">関連トピック</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_customer_churn">チュートリアル: カスタマーチャーンモデルの構築</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>このチュートリアルでは、Amazon Redshift ML を使用して CREATE MODEL コマンドでカスタマーチャーンモデルを作成し、ユーザーシナリオの予測クエリを実行します。次に、CREATE MODEL コマンドが生成する SQL 関数を使用してクエリを実装します。</p><p>簡単な CREATE MODEL コマンドを使用して、トレーニングデータのエクスポート、モデルのトレーニング、モデルのインポート、Amazon Redshift 予測関数の準備を行うことができます。トレーニングデータをテーブルまたは SELECT ステートメントとして指定するには、CREATE MODEL ステートメントを使用します。</p><p>この例では、履歴情報を使用して、携帯電話事業者のカスタマーチャーンに対して機械学習モデルを構築します。まず、SageMaker は機械学習モデルをトレーニングし、任意のカスタマーのプロファイル情報を使用してモデルをテストします。モデルが検証されると、Amazon SageMaker はモデルと予測関数を Amazon Redshift にデプロイします。予測関数を使用して、カスタマーが解約するかしないかを予測できます。</p>
+            <h2 id="tutorial_customer_churn_tasks">ユースケースの例</h2>
+            <p>Amazon Redshift ML を使用して、セールスリードが成立するかどうかを予測するなど、他の二項分類の問題を解決できます。また、金融取引が不正であるかどうかを予測することもできます。</p>
+            <p><b>[Tasks]</b> (タスク)</p><div class="itemizedlist">
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>前提条件</p>
+               </li><li class="listitem">
+                  <p>ステップ 1: Amazon S3 から Amazon Redshift にデータをロードする</p>
+               </li><li class="listitem">
+                  <p>ステップ 2: 機械学習モデルを作成する</p>
+               </li><li class="listitem">
+                  <p>ステップ 3: モデルを使用して予測を実行する</p>
+               </li></ul></div>
+          
+            <h2 id="tutorial_customer_churn_prereqs">前提条件</h2>
+            <p>このチュートリアルを完了するためには、以下のものが必要です。</p>
+            
+            
+            <div class="itemizedlist">
+               
+                
+                
+                
+               
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>Amazon Redshift ML 用に Amazon Redshift クラスターをセットアップする必要があります。これを行うには、「<a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">Amazon Redshift ML 管理者によるクラスターと設定のセットアップ</a>」のドキュメントを使用します。</p>
+               </li><li class="listitem">
+                  <p>モデルの作成に使用する Amazon Redshift クラスターと、トレーニングデータを使用し、モデルアーティファクトのステージングを保管する Amazon S3 バケットは、同じ AWS リージョンに置かれている必要があります。</p>
+               </li><li class="listitem">
+                  <p>このドキュメントで使用されている SQL コマンドおよびサンプルデータセットをダウンロードするには、次のいずれかの操作を行います。</p>
+                  <div class="itemizedlist">
+                      
+                      
+                  <ul class="itemizedlist"><li class="listitem">
+                        <p>[<a href="https://s3.amazonaws.com/redshift-downloads/redshift-ml/tutorial-scripts/redshift-ml-tutorial.sql" rel="noopener noreferrer" target="_blank"><span>SQL commands (SQL コマンド)</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>]、[<a href="https://s3.amazonaws.com/redshift-downloads/redshift-ml/customer_activity/customer_activity.csv" rel="noopener noreferrer" target="_blank"><span>Customer activity file (顧客のアクティビティファイル)</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>]、および [<a href="https://s3.amazonaws.com/redshift-downloads/redshift-ml/abalone_xg/abalone.csv" rel="noopener noreferrer" target="_blank"><span>Abalone file (アワビファイル)</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>] をダウンロードします。</p>
+                     </li><li class="listitem">
+                        <p>Amazon S3 用の AWS CLI を使用して、次のコマンドを実行します。独自のターゲットパスを使用できます。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">aws s3 cp s3://redshift-downloads/redshift-ml/tutorial-scripts/redshift-ml-tutorial.sql <code class="replaceable">&lt;/target/path&gt;</code>
+aws s3 cp s3://redshift-downloads/redshift-ml/customer_activity/customer_activity.csv <code class="replaceable">&lt;/target/path&gt;</code>
+aws s3 cp s3://redshift-downloads/redshift-ml/abalone_xgb/abalone_xgb.csv <code class="replaceable">&lt;/target/path&gt;</code></code></pre>
+                     </li></ul></div>
+               </li></ul></div>
+          
+            <h2 id="tutorial_customer_churn_step_load">ステップ 1: Amazon S3 から Amazon Redshift にデータをロードする</h2>
+            <p><a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">Amazon Redshift クエリエディタ v2</a> を使用してクエリを編集および実行し、結果を視覚化します。</p>
+            <p>次のクエリを実行すると、<code class="code">customer_activity</code> という名前のテーブルを作成し、サンプルデータセットを Amazon S3 から取り込みます。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">DROP TABLE IF EXISTS customer_activity;
+
+CREATE TABLE customer_activity (
+state varchar(2),
+account_length int,
+area_code int,
+phone varchar(8),
+intl_plan varchar(3),
+vMail_plan varchar(3),
+vMail_message int,
+day_mins float,
+day_calls int,
+day_charge float,
+total_charge float,
+eve_mins float,
+eve_calls int,
+eve_charge float,
+night_mins float,
+night_calls int,
+night_charge float,
+intl_mins float,
+intl_calls int,
+intl_charge float,
+cust_serv_calls int,
+churn varchar(6),
+record_date date
+);
+
+COPY customer_activity
+FROM 's3://redshift-downloads/redshift-ml/customer_activity/'
+REGION 'us-east-1' IAM_ROLE default
+FORMAT AS CSV IGNOREHEADER 1;</code></pre>
+          
+            <h2 id="tutorial_customer_churn_step_create_model">ステップ 2: 機械学習モデルを作成する</h2>
+            
+            <p>チャーンはこのモデルのターゲット入力です。モデルの他のすべての入力は、チャーンを予測する関数の作成に役立つ属性です。</p>
+            <p>次の例では、CREATE MODEL オペレーションを使用して、カスタマーがアクティブになるかどうかを予測するモデルを提供します。これには、カスタマーの年齢、郵便番号、使用量、およびケースなどの入力が使用されます。次の例では、<code class="replaceable"><code class="code">DOC-EXAMPLE-BUCKET</code></code> を ユーザーの Amazon S3 バケットと置換します。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL customer_churn_auto_model
+FROM
+    (
+      SELECT state,
+             account_length,
+             area_code,
+             total_charge/account_length AS average_daily_spend,
+             cust_serv_calls/account_length AS average_daily_cases,
+             churn
+      FROM customer_activity
+      WHERE  record_date &lt; '2020-01-01'
+     )
+TARGET churn FUNCTION ml_fn_customer_churn_auto
+IAM_ROLE default SETTINGS (
+  S3_BUCKET '<code class="replaceable">&lt;DOC-EXAMPLE-BUCKET&gt;</code>'
+);</code></pre>
+            <p>先ほどの例の SELECT クエリは、トレーニングデータを作成します。TARGET 句は、CREATE MODEL オペレーションが予測する方法を学習するために使用する機械学習ラベルである列を指定します。ターゲット列の「churn」は、顧客がまだ有効なメンバーシップを持っているか、メンバーシップを一時停止しているかを示します。S3_BUCKET フィールドは、以前に作成した Amazon S3 バケットの名前です。Amazon S3 バケットは、Amazon Redshift と Amazon SageMaker の間でトレーニングデータとアーティファクトを共有するために使用されます。残りの列は、予測に使用される機能です。</p>
+            <p>CREATE MODEL コマンド基本的なユースケースの構文と機能の概要については、<a href="https://docs.aws.amazon.com/redshift/latest/dg/r_create_model_use_cases.html#r_simple_create_model">「単純な CREATE MODEL」</a>を参照してください。</p>
+             
+               <h3 id="tutorial_customer_churn_encryption">サーバー側の暗号化のアクセス許可を追加する (オプション)</h3>
+               <p>Amazon Redshift はデフォルトでトレーニングに Amazon SageMaker Autopilot を使用します。特に、Amazon Redshift は、カスタマー指定の Amazon S3 バケットにトレーニングデータを安全にエクスポートします。<code class="code">KMS_KEY_ID</code> を指定しない場合、データはデフォルトでサーバー側の暗号化 SSE-S3 を使用して暗号化されます。</p>
+               <p>入力に対し、AWS KMS マネージドキーを使用したサーバー側の暗号化 (SSE-KMS) が行われている場合は、次のアクセス許可を追加します。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+    "Effect": "Allow",
+    "Action": [
+    "kms:Encrypt"
+    "kms:Decrypt"
+    ]
+}</code></pre>
+               <p>Amazon SageMaker のロールの詳細については、<em>Amazon SageMaker デベロッパーガイド</em>の「<a href="https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html">Amazon SageMaker ロール</a>」を参照してください。</p>
+               
+             
+             
+               <h3 id="tutorial_customer_churn_check_status">モデルトレーニングのステータスを確認する (オプション)</h3>
+               <p>SHOW MODEL コマンドを使用して、モデルの準備が完了したことを知ることができます。</p><p>テーブルのステータスを確認するには、次のオペレーションを使用します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL customer_churn_auto_model;</code></pre><p>次は先ほどのオペレーションの出力例です。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|           Key            |                                                                             Value                                                                             |
++--------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|        Model Name        |                                                                   customer_churn_auto_model                                                                   |
+|       Schema Name        |                                                                            public                                                                             |
+|          Owner           |                                                                            awsuser                                                                            |
+|      Creation Time       |                                                                   Tue, 14.06.2022 17:15:52                                                                    |
+|       Model State        |                                                                           TRAINING                                                                            |
+|                          |                                                                                                                                                               |
+|      TRAINING DATA:      |                                                                                                                                                               |
+|          Query           | SELECT STATE, ACCOUNT_LENGTH, AREA_CODE, TOTAL_CHARGE / ACCOUNT_LENGTH AS AVERAGE_DAILY_SPEND, CUST_SERV_CALLS / ACCOUNT_LENGTH AS AVERAGE_DAILY_CASES, CHURN |
+|                          |                                                                    FROM CUSTOMER_ACTIVITY                                                                     |
+|                          |                                                               WHERE RECORD_DATE &lt; '2020-01-01'                                                                |
+|      Target Column       |                                                                             CHURN                                                                             |
+|                          |                                                                                                                                                               |
+|       PARAMETERS:        |                                                                                                                                                               |
+|        Model Type        |                                                                             auto                                                                              |
+|       Problem Type       |                                                                                                                                                               |
+|        Objective         |                                                                                                                                                               |
+|     AutoML Job Name      |                                                                redshiftml-20220614171552640901                                                                |
+|      Function Name       |                                                                   ml_fn_customer_churn_auto                                                                   |
+|   Function Parameters    |                                            state account_length area_code average_daily_spend average_daily_cases                                             |
+| Function Parameter Types |                                                                 varchar int4 int4 float8 int4                                                                 |
+|         IAM Role         |                                                                     default-aws-iam-role                                                                      |
+|        S3 Bucket         |                                                                        <code class="replaceable">DOC-EXAMPLE-BUCKET</code>                                                                     |
+|       Max Runtime        |                                                                             5400                                                                              |
++--------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+</code></pre><p>モデルトレーニングが完了すると、<code class="code">model_state</code> 変数は <code class="code">Model is Ready</code> になり、予測関数が使用可能になります。</p>
+             
+            
+            
+            
+            
+          
+            <h2 id="tutorial_customer_churn_step_perform_predictions">ステップ 3: モデルを使用して予測を実行する</h2>
+            <p>SQL ステートメントを使用すると、予測モデルによって行われた予測を表示できます。この例では、CREATE MODEL オペレーションによって作成された予測関数の名前は <code class="code">ml_fn_customer_churn_auto</code> です。予測関数の入力引数は、<code class="code">state</code> には varchar、<code class="code">account_length</code> には integer など、機能のタイプに対応しています。予測関数の出力は、CREATE MODEL ステートメントの TARGET 列と同じ型です。</p><div class="orderedlist">
+                   
+                   
+                   
+               <ol><li>
+                     <p>2020 年 1 月 1 日より前のデータでモデルをトレーニングしたので、テストセットで予測関数を使用します。例えば、次のクエリは、2020 年 1 月 1 日以降にサインアップしたカスタマーが、解約するかどうかを予測します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    phone,
+    ml_fn_customer_churn_auto(
+        state,
+        account_length,
+        area_code,
+        total_charge / account_length,
+        cust_serv_calls / account_length
+    ) AS active
+FROM
+    customer_activity
+WHERE
+    record_date &gt; '2020-01-01';</code></pre>
+                  </li><li>
+                     <p>次の例では、異なるユースケースで同じ予測関数を使用しています。このケースでは、Amazon Redshift は、記録の日付が 2020 年 1 月 1 日以降のさまざまな州からのカスタマーにおいて、解約者と非解約者の割合を予測します。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">WITH predicted AS (
+    SELECT
+        state,
+        ml_fn_customer_churn_auto(
+            state,
+            account_length,
+            area_code,
+            total_charge / account_length,
+            cust_serv_calls / account_length
+        ) :: varchar(6) AS active
+    FROM
+        customer_activity
+    WHERE
+        record_date &gt; '2020-01-01'
+)
+SELECT
+    state,
+    SUM(
+        CASE
+            WHEN active = 'True.' THEN 1
+            ELSE 0
+        END
+    ) AS churners,
+    SUM(
+        CASE
+            WHEN active = 'False.' THEN 1
+            ELSE 0
+        END
+    ) AS nonchurners,
+    COUNT(*) AS total_per_state
+FROM
+    predicted
+GROUP BY
+    state
+ORDER BY
+    state;</code></pre>
+                  </li><li>
+                     <p>次の例では、ある状態で解約するカスタマーの割合を予測するユースケースに予測関数を使用します。このケースでは、Amazon Redshift は、記録の日付が 2020 年 1 月 1 日より後の場合の解約率を予測します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">WITH predicted AS (
+    SELECT
+        state,
+        ml_fn_customer_churn_auto(
+            state,
+            account_length,
+            area_code,
+            total_charge / account_length,
+            cust_serv_calls / account_length
+        ) :: varchar(6) AS active
+    FROM
+        customer_activity
+    WHERE
+        record_date &gt; '2020-01-01'
+)
+SELECT
+    state,
+    CAST((CAST((SUM(
+        CASE
+            WHEN active = 'True.' THEN 1
+            ELSE 0
+        END
+    )) AS FLOAT) / CAST(COUNT(*) AS FLOAT)) AS DECIMAL (3, 2)) AS pct_churn,
+    COUNT(*) AS total_customers_per_state
+FROM
+    predicted
+GROUP BY
+    state
+ORDER BY
+    3 DESC;</code></pre>
+                  </li></ol></div>
+          
+            <h2 id="tutorial_customer_churn_related_topics">関連トピック</h2>
+            <p>Amazon Redshift ML の詳細については、次のドキュメントを参照してください。</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">Amazon Redshift ML 機械学習を使用するためのコスト</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">CREATE MODEL コマンド</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">EXPLAIN_MODEL 関数</a></p>
+                  </li></ul></div>
+            <p>機械学習の詳細については、以下のドキュメントを参照してください。</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">機械学習の概要</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">初心者やエキスパート向けの機械学習</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">機械学習予測の公平性とモデルの説明可能性とは</a></p>
+                  </li></ul></div>
+         <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorials_for_amazon_redshift_ml.html">Amazon Redshift ML のチュートリアル</div><div id="next" class="next-link" accesskey="n" href="./tutorial_remote_inference.html">チュートリアル: リモート推論モデルの構築</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_customer_churn.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_customer_churn.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

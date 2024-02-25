@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>キューへのクエリの割り当て - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="cm-c-executing-queries" /><meta name="default_state" content="cm-c-executing-queries" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-executing-queries.html" /><meta name="description" content="Amazon Redshift のユーザーロール、ユーザーグループ、クエリグループに従って、クエリをキューに割り当てる方法の例を示します。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="データベース開発者ガイド" /><meta name="abstract" content="エンタープライズレベル、ペタバイト規模、フルマネージドのデータウェアハウスサービス、Amazon Redshift を使用してデータウェアハウスを作成および管理できます。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-executing-queries.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-executing-queries.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-executing-queries.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-executing-queries.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-executing-queries.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-executing-queries.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-executing-queries.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-executing-queries.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-executing-queries.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-executing-queries.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-executing-queries.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-executing-queries.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-executing-queries.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-executing-queries.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-executing-queries.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-executing-queries.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-executing-queries.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-executing-queries.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-executing-queries.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-executing-queries.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-executing-queries.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-executing-queries.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="データベース開発者ガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="データベース開発者ガイド" /><meta id="panorama-serviceConsolePage" value="キューへのクエリの割り当て" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>キューへのクエリの割り当て - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#cm-c-executing-queries" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-executing-queries.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-executing-queries.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-executing-queries.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,クラスター,データウェアハウス,開発者,サンプルデータ,データベース,データベース開発者,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "データベース開発者ガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "ワークロード管理の実装",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "キューへのクエリの割り当て",
+        "item" : "https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#cm-c-executing-queries" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#cm-c-executing-queries-assigning-queries-to-queues-based-on-user-roles">ユーザーロールに基づくクエリのキューへの割り当て</a><a href="#cm-c-executing-queries-assigning-queries-to-queues-based-on-user-groups">ユーザーグループに基づくクエリのキューへの割り当て</a><a href="#cm-c-executing-queries-assigning-a-query-to-a-query-group">クエリグループへのクエリの割り当て</a><a href="#cm-c-executing-queries-assigning-superuser-queue">Superuser キューへのクエリの割り当て</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="cm-c-executing-queries">キューへのクエリの割り当て</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>次の例では、ユーザーロール、ユーザーグループ、クエリグループに従ってクエリをキューに割り当てます。</p>
+         <h2 id="cm-c-executing-queries-assigning-queries-to-queues-based-on-user-roles"> ユーザーロールに基づくクエリのキューへの割り当て</h2>
+         <p> ユーザーがロールに割り当てられ、そのロールがキューにアタッチされている場合、そのユーザーによって実行されたクエリはそのキューに割り当てられます。次の例では、<code class="code">sales_rw</code> という名前のユーザーロールを作成し、そのロールにユーザー <code class="code">test_user</code> を割り当てます。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create role sales_rw;
+grant role sales_rw to test_user;
+</code></pre>
+         <p>1 つのロールを別のロールに明示的に付与することで、2 つのロールのアクセス許可を組み合わせることもできます。ネストされたロールをユーザーに割り当てると、両方のロールのアクセス許可がユーザーに付与されます。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create role sales_rw;
+create role sales_ro;
+grant role sales_ro to role sales_rw;
+grant role sales_rw to test_user;
+</code></pre>
+         <p>クラスターでロールが付与されているユーザーのリストを表示するには、SVV_USER_GRANTS テーブルにクエリを実行します。クラスターでロールが付与されているロールのリストを表示するには、SVV_ROLE_GRANTS テーブルにクエリを実行します。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from svv_user_grants;
+select * from svv_role_grants;</code></pre>
+       
+         <h2 id="cm-c-executing-queries-assigning-queries-to-queues-based-on-user-groups">ユーザーグループに基づくクエリのキューへの割り当て</h2>
+
+
+         <p>ユーザーグループ名がキューの定義にリストされている場合、そのユーザーグループのメンバーによって実行されたキューは、対応するキューに割り当てられます。次の例では、ユーザーグループを作成し、SQL コマンド <a href="./r_CREATE_USER.html">CREATE USER</a>、<a href="./r_CREATE_GROUP.html">CREATE GROUP</a>、および <a href="./r_ALTER_GROUP.html">ALTER GROUP</a> を使用してユーザーをグループに割り当てます。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create group admin_group with user admin246, admin135, sec555;
+create user vp1234 in group ad_hoc_group password 'vpPass1234';
+alter group admin_group add user analyst44, analyst45, analyst46;  </code></pre>
+       
+         <h2 id="cm-c-executing-queries-assigning-a-query-to-a-query-group">クエリグループへのクエリの割り当て</h2>
+
+
+         <p>適切なクエリグループにクエリを割り当てることで、実行時にクエリをキューに割り当てることができます。クエリグループを開始するには、SET コマンドを使用します。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">SET query_group TO <em><code class="replaceable">group_label</code></em>             </code></pre>
+         <p>ここで、<code class="replaceable"><code class="code">group_label</code></code> は、WLM 設定にリストされているクエリグループのラベルです。</p>
+         <p><code class="code">SET query_group</code> コマンドの後で実行するすべてのクエリは、クエリグループをリセットするか、現在のログインセッションを終了するまで、指定されたクエリグループのメンバーとして実行されます。Amazon Redshift オブジェクトの設定とリセットの詳細については、SQL コマンドリファレンスの「<a href="./r_SET.html">SET</a>」および「<a href="./r_RESET.html">RESET</a>」を参照してください。</p>
+         <p>指定するクエリグループラベルは現在の WLM 設定に含まれている必要があります。それ以外の場合、<em>SET query_group</em> コマンドはクエリキューに対して効果がありません。</p>
+         <p>TO 句で定義されたラベルはクエリログにキャプチャされるので、このラベルをトラブルシューティングに使用できます。query_group 設定パラメータの詳細については、設定リファレンスの「<a href="./r_query_group.html">query_group</a>」を参照してください。</p>
+         <p>次の例では、クエリグループ 'priority' の一部として 2 つのクエリを実行し、クエリグループをリセットします。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set query_group to 'priority';
+select count(*)from stv_blocklist;
+select query, elapsed, substring from svl_qlog order by query desc limit 5; 
+reset query_group;           </code></pre>
+
+       
+         <h2 id="cm-c-executing-queries-assigning-superuser-queue">Superuser キューへのクエリの割り当て</h2>
+
+
+         <p>superuser キューにクエリを割り当てるには、スーパーユーザーとして Amazon Redshift にログオンし、superuser グループでクエリを実行します。終了したら、クエリグループをリセットし、以降のクエリが superuser キューで実行されないようにします。</p>
+         <p>次の例では、2 つのコマンドを superuser キューで実行するように割り当てます。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set query_group to 'superuser';
+
+analyze;
+vacuum; 
+reset query_group;</code></pre>
+         <p>スーパーユーザーのリストを表示するには、PG_USER システムカタログテーブルをクエリします。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from pg_user where usesuper = 'true';</code></pre>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./cm-c-wlm-queue-assignment-rules.html">WLM キュー割り当てルール</div><div id="next" class="next-link" accesskey="n" href="./cm-c-wlm-dynamic-properties.html">動的プロパティと静的プロパティ</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-executing-queries.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-executing-queries.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
