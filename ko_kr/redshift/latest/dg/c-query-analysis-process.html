@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ko-KR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>쿼리 분석 워크플로우 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c-query-analysis-process" /><meta name="default_state" content="c-query-analysis-process" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-analysis-process.html" /><meta name="description" content="쿼리가 예상보다 오래 걸리면 다음 단계에 따라 쿼리 성능에 부정적인 영향을 미칠 수 있는 문제를 찾아 교정합니다. 시스템에서 튜닝을 통해 성능을 높일 수 있는 쿼리에 대해 확신이 없는 경우에는 먼저 섹션의 진단 코드를 실행하세요." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="데이터베이스 개발자 안내서" /><meta name="abstract" content="페타바이트 규모의 엔터프라이즈급 완전관리형 데이터 웨어하우징 서비스인 Amazon Redshift로 데이터 웨어하우스를 생성하고 관리합니다." /><meta name="guide-locale" content="ko_kr" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-analysis-process.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-query-analysis-process.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-query-analysis-process.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-query-analysis-process.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-query-analysis-process.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-query-analysis-process.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-query-analysis-process.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-query-analysis-process.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-query-analysis-process.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-query-analysis-process.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-query-analysis-process.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-query-analysis-process.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-query-analysis-process.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-query-analysis-process.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-query-analysis-process.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-analysis-process.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-analysis-process.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-query-analysis-process.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-query-analysis-process.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-analysis-process.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-query-analysis-process.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-query-analysis-process.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="데이터베이스 개발자 안내서" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="데이터베이스 개발자 안내서" /><meta id="panorama-serviceConsolePage" value="쿼리 분석 워크플로우" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>쿼리 분석 워크플로우 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c-query-analysis-process" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-analysis-process.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-analysis-process.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-analysis-process.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,데이터 웨어하우스,샘플 데이터,데이터베이스,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "데이터베이스 개발자 안내서",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "쿼리 성능 튜닝",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-optimizing-query-performance.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "쿼리 분석 및 개선",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-tuning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "쿼리 분석 워크플로우",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-tuning.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c-query-analysis-process" target="_blank" rel="noopener noreferrer" title="pdf-tooltip"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">aws-documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">데이터베이스 개발자 안내서</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="c-query-analysis-process">쿼리 분석 워크플로우</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>쿼리가 예상보다 오래 걸리면 다음 단계에 따라 쿼리 성능에 부정적인 영향을 미칠 수 있는 문제를 찾아 교정합니다. 시스템에서 튜닝을 통해 성능을 높일 수 있는 쿼리에 대해 확신이 없는 경우에는 먼저 <a href="./diagnostic-queries-for-query-tuning.html#identify-queries-that-are-top-candidates-for-tuning">튜닝에 가장 적합한 쿼리 식별</a> 섹션의 진단 코드를 실행하세요.</p><div class="orderedlist">
+             
+             
+             
+             
+             
+             
+             
+             
+         <ol><li>
+               <p>테이블이 모범 사례에 따라 설계되어 있는지 확인합니다. 자세한 내용은 <a href="./c_designing-tables-best-practices.html">Amazon Redshift 테이블 설계 모범 사례</a> 섹션을 참조하세요.</p>
+            </li><li>
+               <p>테이블에서 불필요한 데이터를 삭제하거나 아카이빙할 수 있는지 살펴봅니다. 예를 들어 쿼리가 항상 지난 6개월 분량의 데이터를 대상으로 하지만 테이블에는 지난 18개월 분량의 데이터가 저장되어 있다고 가정하겠습니다. 이러한 경우 이전 데이터를 삭제하거나 아카이브하여 스캔 및 분산해야 하는 레코드 수를 줄일 수 있습니다.</p>
+            </li><li>
+               <p>쿼리에서 테이블에 대한 <a href="./r_VACUUM_command.html">VACUUM</a> 명령을 실행하여 공간을 회수한 다음 행을 재정렬합니다. 정렬되지 않은 영역이 크고, 쿼리가 조인 또는 조건자에서 정렬 키를 사용하는 경우, VACUUM을 실행하는 것이 좋습니다.</p>
+            </li><li>
+               <p>쿼리에서 테이블에 대한 <a href="./r_ANALYZE.html">ANALYZE</a> 명령을 실행하여 통계를 최신 상태로 유지합니다. 쿼리에서 테이블 하나라도 최근에 크기가 많이 변경된 경우에는 ANALYZE를 실행하는 것이 좋습니다. ANALYZE 명령 전체를 실행하는 데 시간이 너무 오래 걸린다면 단일 열에 대한 ANALYZE를 실행하여 처리 시간을 줄일 수 있습니다. 이러한 방법으로도 테이블 크기 통계가 업데이트됩니다. 테이블 크기는 쿼리 계획에서 중요한 요인입니다.</p>
+            </li><li>
+               <p>각 유형별 클라이언트에 따라(클라이언트가 사용하는 연결 프로토콜 유형에 따라) 쿼리를 한 번씩 실행해야만 쿼리가 컴파일 및 캐싱됩니다. 그러면 이후 쿼리를 실행하는 속도가 빨라집니다. 자세한 내용은 <a href="./c-query-performance.html">쿼리 성능에 영향을 미치는 요인</a> 섹션을 참조하세요.</p>
+            </li><li>
+               <p><a href="./r_STL_ALERT_EVENT_LOG.html">STL_ALERT_EVENT_LOG</a> 테이블을 확인하고 쿼리의 잠재적 문제를 찾아 교정합니다. 자세한 내용은 <a href="./c-reviewing-query-alerts.html">쿼리 알림 검토</a> 섹션을 참조하세요.</p>
+            </li><li>
+               <p><a href="./r_EXPLAIN.html">EXPLAIN</a> 명령을 실행하여 쿼리 계획을 가져와 쿼리를 최적화하는 데 사용합니다. 자세한 내용은 <a href="./c-analyzing-the-query-plan.html">쿼리 계획 분석</a> 섹션을 참조하세요.</p>
+            </li><li>
+               <p><a href="./r_SVL_QUERY_SUMMARY.html">SVL_QUERY_SUMMARY</a> 및 <a href="./r_SVL_QUERY_REPORT.html">SVL_QUERY_REPORT</a> 뷰를 사용하여 요약 정보를 가져와 쿼리를 최적화하는 데 사용합니다. 자세한 내용은 <a href="./c-analyzing-the-query-summary.html">쿼리 요약 분석</a> 섹션을 참조하세요.</p>
+            </li></ol></div><p>간혹 빠르게 실행해야 하데 다른 장기 실행 쿼리가 끝날 때까지 기다려야 하는 쿼리가 있는 경우도 있습니다. 이때는 쿼리 자체에서 개선할 방법은 없습니다. 하지만 쿼리 유형마다 다른 쿼리 대기열을 생성 및 사용하여 전체 시스템 성능을 높일 수는 있습니다. 쿼리 대기열의 대기 시간에 대한 자세한 내용은 <a href="./diagnostic-queries-for-query-tuning.html#review-queue-wait-times-for-queries">쿼리의 대기열 대기 시간 검토</a> 섹션을 참조하세요. 상태 확인 구성에 대한 자세한 내용은 <a href="./cm-c-implementing-workload-management.html">워크로드 관리 구현</a> 섹션을 참조하세요.</p><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="주의" /> <strong>javascript가 브라우저에서 비활성화되거나 사용이 불가합니다.</strong></p><p>AWS 설명서를 사용하려면 Javascript가 활성화되어야 합니다. 지침을 보려면 브라우저의 도움말 페이지를 참조하십시오.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">문서 규칙</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c-query-tuning.html">쿼리 분석 및 개선</div><div id="next" class="next-link" accesskey="n" href="./c-reviewing-query-alerts.html">쿼리 알림 검토</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 예</div><div class="content"><p>칭찬해 주셔서 감사합니다!</p><p>잠깐 시간을 내어 좋았던 부분을 알려 주시면 더 열심히 만들어 보겠습니다.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-analysis-process.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 아니요</div><div class="content"><p>이 페이지에 작업이 필요하다는 점을 알려 주셔서 감사합니다. 실망시켜 드려 죄송합니다.</p><p>잠깐 시간을 내어 설명서를 향상시킬 수 있는 방법에 대해 말씀해 주십시오.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-analysis-process.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

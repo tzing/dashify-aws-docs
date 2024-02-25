@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ko-KR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>튜토리얼: 원격 추론 모델 구축 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_remote_inference" /><meta name="default_state" content="tutorial_remote_inference" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_remote_inference.html" /><meta name="description" content="Amazon Redshift 기계 학습 모델을 생성하고 추론 쿼리를 실행하는 종합적인 예제를 보려면 이 튜토리얼을 사용하세요." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="데이터베이스 개발자 안내서" /><meta name="abstract" content="페타바이트 규모의 엔터프라이즈급 완전관리형 데이터 웨어하우징 서비스인 Amazon Redshift로 데이터 웨어하우스를 생성하고 관리합니다." /><meta name="guide-locale" content="ko_kr" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_remote_inference.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_remote_inference.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_remote_inference.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_remote_inference.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_remote_inference.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_remote_inference.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_remote_inference.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_remote_inference.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_remote_inference.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_remote_inference.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_remote_inference.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_remote_inference.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_remote_inference.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_remote_inference.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_remote_inference.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_remote_inference.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_remote_inference.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_remote_inference.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_remote_inference.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_remote_inference.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_remote_inference.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_remote_inference.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="데이터베이스 개발자 안내서" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="데이터베이스 개발자 안내서" /><meta id="panorama-serviceConsolePage" value="튜토리얼: 원격 추론 모델 구축" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>튜토리얼: 원격 추론 모델 구축 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_remote_inference" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_remote_inference.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_remote_inference.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_remote_inference.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,데이터 웨어하우스,샘플 데이터,데이터베이스,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "데이터베이스 개발자 안내서",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Amazon Redshift에서 기계 학습 사용",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Amazon Redshift 기계 학습 시작하기",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Amazon Redshift ML 튜토리얼",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "튜토리얼: 원격 추론 모델 구축",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_remote_inference" target="_blank" rel="noopener noreferrer" title="pdf-tooltip"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">aws-documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">데이터베이스 개발자 안내서</a></div><div id="page-toc-src"><a href="#tutorial_remote_inference_tasks">사용 사례</a><a href="#tutorial_remote_inference_prereqs">필수 조건</a><a href="#tutorial_remote_inference_step_deploy">1단계: Amazon SageMaker 모델 배포</a><a href="#tutorial_remote_inference_step_endpoint">2단계: SageMaker 모델 엔드포인트 가져오기</a><a href="#tutorial_remote_inference_step_load">3단계: Amazon S3에서 Amazon Redshift로 데이터 로드</a><a href="#tutorial_remote_inference_step_create_model">4단계: Amazon Redshift ML을 사용하여 모델 생성</a><a href="#tutorial_remote_inference_step_perform_predictions">5단계: 모델을 사용하여 예측 수행</a><a href="#tutorial_remote_inference_related_topics">관련 주제</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_remote_inference">튜토리얼: 원격 추론 모델 구축</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>이 튜토리얼에서는 이전에 Amazon Redshift 외부의 Amazon SageMaker에서 훈련 및 배포한 <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/randomcutforest.html">Random Cut Forest 모델</a>을 생성하는 방법을 단계별로 살펴봅니다. Random Cut Forest 알고리즘은 데이터 세트 내에서 이상한 데이터 포인트를 감지합니다. 원격 추론을 사용하여 모델을 생성하면 Random Cut Forest SageMaker 모델을 Amazon Redshift로 가져올 수 있습니다. 그런 다음 Amazon Redshift에서 SQL을 사용하여 원격 SageMaker 엔드포인트에 대한 예측을 수행합니다.</p><p>CREATE MODEL 명령을 사용하여 Amazon SageMaker 엔드포인트에서 기계 학습 모델을 가져오고 Amazon Redshift 예측 함수를 준비할 수 있습니다. CREATE MODEL 작업을 사용할 때 SageMaker 기계 학습 모델의 엔드포인트 이름을 제공합니다.</p><p>이 튜토리얼에서는 SageMaker 모델 엔드포인트를 사용하여 Amazon Redshift 기계 학습 모델을 생성합니다. 기계 학습 모델이 준비되면 이를 사용하여 Amazon Redshift에서 예측을 수행할 수 있습니다. 먼저 Amazon SageMaker에서 엔드포인트를 훈련하고 생성한 다음 엔드포인트 이름을 얻습니다. 그런 다음 CREATE MODEL 명령을 사용하여 Amazon Redshift ML을 통해 모델을 생성합니다. 마지막으로 CREATE MODEL 명령이 생성하는 예측 함수를 사용하여 모델에 대한 예측을 수행합니다.</p>
+            <h2 id="tutorial_remote_inference_tasks">사용 사례</h2>
+            <p>Random Cut Forest 모델과 원격 추론을 사용하여 다른 데이터 세트에서 전자 상거래 트랜잭션의 급격한 증가 또는 감소 예측과 같은 이상 징후를 감지할 수 있습니다. 날씨 또는 지진 활동의 중대한 변화도 예측할 수 있습니다.</p>
+         <p><b>작업</b></p>
+            <div class="itemizedlist">
+                
+                
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>필수 조건</p>
+               </li><li class="listitem">
+                  <p>1단계: Amazon SageMaker 모델 배포</p>
+               </li><li class="listitem">
+                  <p>2단계: SageMaker 모델 엔드포인트 가져오기</p>
+               </li><li class="listitem">
+                  <p>3단계: Amazon S3에서 Amazon Redshift로 데이터 로드</p>
+               </li><li class="listitem">
+                  <p>4단계: Amazon Redshift ML을 사용하여 모델 생성</p>
+               </li><li class="listitem">
+                  <p>5단계: 모델을 사용하여 예측 수행</p>
+               </li></ul></div>
+          
+            <h2 id="tutorial_remote_inference_prereqs">필수 조건</h2>
+            <p>이 튜토리얼을 완료하려면 다음과 같은 사전 조건이 필요합니다.</p>
+            <div class="itemizedlist">
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>Amazon Redshift ML의 <a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">관리 설정</a>을 완료한 상태여야 합니다.</p>
+               </li><li class="listitem">
+                  <p><a href="https://s3.amazonaws.com/sagemaker-sample-files/datasets/tabular/anomaly_benchmark_taxi/NAB_nyc_taxi.csv" rel="noopener noreferrer" target="_blank"><span>NYC 택시 데이터 세트</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>를 다운로드하고, <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html">Amazon S3 버킷을 생성하고</a>, <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html">Amazon S3 버킷에 데이터를 업로드</a>한 상태여야 합니다.</p>
+               </li><li class="listitem">
+                  <p>SageMaker 모델 및 엔드포인트를 훈련하고 배포하고 SageMaker 엔드포인트의 이름을 가져와야 합니다. <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=RedshiftBYOM&amp;templateURL=https://redshift-ml-multiclass.s3.amazonaws.com/redshift-byom-blog.yaml" rel="noopener noreferrer" target="_blank"><span>이 AWS CloudFormation 템플릿</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>을 사용하여 AWS 계정에 있는 모든 SageMaker 리소스를 자동으로 프로비저닝합니다.</p>
+               </li></ul></div>
+          
+            <h2 id="tutorial_remote_inference_step_deploy">1단계: Amazon SageMaker 모델 배포</h2>
+            <div class="orderedlist">
+                
+                
+                
+                
+                
+            <ol><li>
+                  <p>모델을 배포하려면 Amazon SageMaker 콘솔로 이동하여 탐색 창의 <b>Notebook</b>(노트북)에서 <b>Notebook instances</b>(노트북 인스턴스)를 선택합니다.</p>
+               </li><li>
+                  <p> CloudFormation 템플릿으로 생성된 Jupyter Notebook에서 <b>Open Jupyter</b>(Jupyter 열기)를 선택합니다.</p>
+               </li><li>
+                  <p><code class="code">bring-your-own-model-remote-inference.ipynb</code>를 선택합니다.</p>
+               </li><li>
+                  <p>다음 줄을 Amazon S3 버킷과 접두사로 대체하여 Amazon S3에 훈련 입력 및 출력을 저장하도록 파라미터를 설정합니다.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">data_location=f"s3://<code class="replaceable"><span>{</span>bucket}/<span>{</span>prefix}/</code>",
+output_path=f"s3://<code class="replaceable"><span>{</span>bucket}/<span>{</span>prefix}/</code>output",</code></pre>
+               </li><li>
+                  <p><b>Fast-forward</b>(빨리 감기) 버튼을 눌러 모든 셀을 실행합니다.</p>
+               </li></ol></div>
+          
+            <h2 id="tutorial_remote_inference_step_endpoint">2단계: SageMaker 모델 엔드포인트 가져오기</h2>
+            <p>Amazon SageMaker 콘솔 탐색창의 <b>Inference</b>(추론)에서 <b>Endpoints</b>(엔드포인트)를 눌러 모델 이름을 찾습니다. Amazon Redshift에서 원격 추론 모델을 생성할 때 모델의 엔드포인트 이름을 복사해야 합니다.</p>
+          
+            <h2 id="tutorial_remote_inference_step_load">3단계: Amazon S3에서 Amazon Redshift로 데이터 로드</h2>
+            <p><a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">Amazon Redshift 쿼리 편집기 v2</a>를 사용하여 Amazon Redshift에서 다음 SQL 명령을 실행합니다. 이 명령은 <code class="code">rcf_taxi_data</code> 테이블이 있는 경우 이 테이블을 삭제하고 같은 이름의 테이블을 생성한 후 샘플 데이터 세트를 테이블로 로드합니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">DROP TABLE IF EXISTS public.rcf_taxi_data CASCADE;
+
+CREATE TABLE public.rcf_taxi_data (ride_timestamp timestamp, nbr_passengers int);
+
+COPY public.rcf_taxi_data
+FROM
+    's3://sagemaker-sample-files/datasets/tabular/anomaly_benchmark_taxi/NAB_nyc_taxi.csv'
+    IAM_ROLE default
+    IGNOREHEADER 1
+    FORMAT AS CSV;</code></pre>
+          
+            <h2 id="tutorial_remote_inference_step_create_model">4단계: Amazon Redshift ML을 사용하여 모델 생성</h2>
+            <p>다음 쿼리를 실행하여 이전 단계에서 얻은 SageMaker 모델 엔드포인트를 사용하여 Amazon Redshift ML에 모델을 생성합니다. <code class="replaceable"><code class="code">randomcutforest-xxxxxxxxx</code></code>를 사용자의 SageMaker 엔드포인트 이름으로 대체합니다.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL public.remote_random_cut_forest
+FUNCTION remote_fn_rcf(int)
+RETURNS decimal(10, 6) SAGEMAKER '<code class="replaceable">&lt;randomcutforest-xxxxxxxxx&gt;</code>' IAM_ROLE default;</code></pre>
+             
+               <h3 id="tutorial_remote_inference_check_status">모델 상태 확인(선택 사항)</h3>
+               <p>SHOW MODEL 명령을 사용하여 모델이 준비되었는지 알 수 있습니다.</p>
+                  <p>모델 상태를 확인하려면 다음 SHOW MODEL 작업을 사용합니다.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL public.remote_random_cut_forest</code></pre>
+               <p>출력에 SageMaker 엔드포인트와 함수 이름이 표시됩니다.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------+-----------------------------------------+
+|        Model Name        |        remote_random_cut_forest         |
++--------------------------+-----------------------------------------+
+|       Schema Name        |                 public                  |
+|          Owner           |                 awsuser                 |
+|      Creation Time       |        Wed, 15.06.2022 17:58:21         |
+|       Model State        |                  READY                  |
+|                          |                                         |
+|       PARAMETERS:        |                                         |
+|         Endpoint         |      <code class="replaceable">&lt;randomcutforest-xxxxxxxxx&gt;</code>        |
+|      Function Name       |              remote_fn_rcf              |
+|      Inference Type      |                 Remote                  |
+| Function Parameter Types |                  int4                   |
+|         IAM Role         |          default-aws-iam-role           |
++--------------------------+-----------------------------------------+</code></pre>
+             
+          
+            <h2 id="tutorial_remote_inference_step_perform_predictions">5단계: 모델을 사용하여 예측 수행</h2>
+            <p>Amazon SageMaker Random Cut Forest 알고리즘은 데이터 세트 내에서 이상한 데이터 포인트를 감지하도록 설계되었습니다. 이 예에서 모델은 중요한 행사로 인한 택시 이용의 급증을 감지하도록 설계되었습니다. 이 모델을 사용하여 각 데이터 포인트에 대한 이상 점수를 생성하면 이상 이벤트를 예측할 수 있습니다.</p>
+            <p>다음 쿼리를 사용하여 전체 택시 데이터 세트의 이상 점수를 계산합니다. 이전 단계에서 CREATE MODEL 스테이트먼트에 사용한 함수를 참조한다는 점에 유의하세요.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    ride_timestamp,
+    nbr_passengers,
+    public.remote_fn_rcf(nbr_passengers) AS score
+FROM
+    public.rcf_taxi_data;</code></pre>
+             
+               <h3 id="tutorial_remote_inference_anomalies">높음 및 낮음 이상 여부 확인(선택 사항)</h3>
+               <p>다음 쿼리를 실행하여 점수가 평균 점수에서 3표준편차보다 큰 데이터 요소를 찾습니다.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">WITH score_cutoff AS (
+    SELECT
+        STDDEV(public.remote_fn_rcf(nbr_passengers)) AS std,
+        AVG(public.remote_fn_rcf(nbr_passengers)) AS mean,
+        (mean + 3 * std) AS score_cutoff_value
+    FROM
+        public.rcf_taxi_data
+)
+SELECT
+    ride_timestamp,
+    nbr_passengers,
+    public.remote_fn_rcf(nbr_passengers) AS score
+FROM
+    public.rcf_taxi_data
+WHERE
+    score &gt; (
+        SELECT
+            score_cutoff_value
+        FROM
+            score_cutoff
+    )
+ORDER BY
+    2 DESC;</code></pre>
+               <p>다음 쿼리를 실행하여 점수가 평균 점수에서 3표준편차보다 큰 데이터 요소를 찾습니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">WITH score_cutoff AS (
+    SELECT
+        STDDEV(public.remote_fn_rcf(nbr_passengers)) AS std,
+        AVG(public.remote_fn_rcf(nbr_passengers)) AS mean,
+        (mean - 3 * std) AS score_cutoff_value
+    FROM
+        public.rcf_taxi_data
+)
+SELECT
+    ride_timestamp,
+    nbr_passengers,
+    public.remote_fn_rcf(nbr_passengers) AS score
+FROM
+    public.rcf_taxi_data
+WHERE
+    score &lt; (
+        SELECT
+            score_cutoff_value
+        FROM
+            score_cutoff
+    )
+ORDER BY
+    2 DESC;</code></pre>
+             
+          
+            <h2 id="tutorial_remote_inference_related_topics">관련 주제</h2>
+            <p>Amazon Redshift ML에 대한 자세한 내용은 다음 설명서를 참조하세요.</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem"> 
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">Amazon Redshift 기계 학습 사용 비용</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">CREATE MODEL 작업</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">EXPLAIN_MODEL 함수</a></p>
+                  </li></ul></div>
+            <p>기계 학습에 대한 자세한 내용은 다음 설명서를 참조하세요.</p>
+            <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">기계 학습 개요</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">초보자 및 전문가를 위한 기계 학습</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">What Is Fairness and Model Explainability for Machine Learning Predictions?</a>(기계 학습 예측을 위한 공정성과 모델 설명 가능성이란 무엇입니까?)</p>
+                  </li></ul></div>
+         <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="주의" /> <strong>javascript가 브라우저에서 비활성화되거나 사용이 불가합니다.</strong></p><p>AWS 설명서를 사용하려면 Javascript가 활성화되어야 합니다. 지침을 보려면 브라우저의 도움말 페이지를 참조하십시오.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">문서 규칙</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial_customer_churn.html">튜토리얼: 고객 이탈 모델 구축</div><div id="next" class="next-link" accesskey="n" href="./tutorial_k-means_clustering.html">튜토리얼: K-평균 클러스터링 모델 구축</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 예</div><div class="content"><p>칭찬해 주셔서 감사합니다!</p><p>잠깐 시간을 내어 좋았던 부분을 알려 주시면 더 열심히 만들어 보겠습니다.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_remote_inference.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 아니요</div><div class="content"><p>이 페이지에 작업이 필요하다는 점을 알려 주셔서 감사합니다. 실망시켜 드려 죄송합니다.</p><p>잠깐 시간을 내어 설명서를 향상시킬 수 있는 방법에 대해 말씀해 주십시오.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_remote_inference.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ko-KR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>단원 4: wlm_query_slot_count를 사용하여 대기열에서 동시성 레벨을 임시로 재정의 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-wlm-query-slot-count" /><meta name="default_state" content="tutorial-wlm-query-slot-count" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="description" content="간혹 사용자들은 특정 쿼리에서 일시적으로 리소스가 더 필요한 경우도 있습니다. 이때는 wlm_query_slot_count 구성 설정을 사용하여 쿼리 대기열에 대한 슬롯 할당 방식을 일시적으로 재정의할 수 있습니다. 여기에서 슬롯 이란 쿼리를 처리하는 데 사용되는 메모리 단위이자 CPU를 말합니다. 간혹 데이터베이스의 VACUUM 작업처럼 클러스터에서 많은 리소스가 필요한 쿼리를 실행할 때는 슬롯 수를 재정의할 수 있습니다." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="데이터베이스 개발자 안내서" /><meta name="abstract" content="페타바이트 규모의 엔터프라이즈급 완전관리형 데이터 웨어하우징 서비스인 Amazon Redshift로 데이터 웨어하우스를 생성하고 관리합니다." /><meta name="guide-locale" content="ko_kr" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="데이터베이스 개발자 안내서" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="데이터베이스 개발자 안내서" /><meta id="panorama-serviceConsolePage" value="단원 4: wlm_query_slot_count를 사용하여 대기열에서 동시성 레벨을 임시로 재정의" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>단원 4: wlm_query_slot_count를 사용하여 대기열에서 동시성 레벨을 임시로 재정의 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-wlm-query-slot-count" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,데이터 웨어하우스,샘플 데이터,데이터베이스,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "데이터베이스 개발자 안내서",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "워크로드 관리 구현",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "수동 WLM 구현",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-defining-query-queues.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "자습서: 수동 워크로드 관리(WLM) 대기열 구성",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "단원 4: wlm_query_slot_count를 사용하여 대기열에서 동시성 레벨을 임시로 재정의",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-wlm-query-slot-count" target="_blank" rel="noopener noreferrer" title="pdf-tooltip"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">aws-documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">데이터베이스 개발자 안내서</a></div><div id="page-toc-src"><a href="#tutorial-wlm-override-slot-count">1단계: wlm_query_slot_count를 사용하여 동시성 레벨 재정의</a><a href="#tutorial-wlm-run-queries-from-different-sessions">2단계: 다른 세션에서 쿼리 실행</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-wlm-query-slot-count">단원 4: wlm_query_slot_count를 사용하여 대기열에서 동시성 레벨을 임시로 재정의</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>간혹 사용자들은 특정 쿼리에서 일시적으로 리소스가 더 필요한 경우도 있습니다. 이때는 wlm_query_slot_count 구성 설정을 사용하여 쿼리 대기열에 대한 슬롯 할당 방식을 일시적으로 재정의할 수 있습니다. 여기에서 <em>슬롯</em>이란 쿼리를 처리하는 데 사용되는 메모리 단위이자 CPU를 말합니다. 간혹 데이터베이스의 VACUUM 작업처럼 클러스터에서 많은 리소스가 필요한 쿼리를 실행할 때는 슬롯 수를 재정의할 수 있습니다.</p><p>간혹 특정 쿼리 유형에 맞춰 wlm_query_slot_count를 설정해야 하는 사용자가 있을 수 있습니다. 그런 경우 WLM 구성을 조정하여 해당 사용자의 쿼리 요건에 더욱 적합한 대기열을 제공할 수 있습니다. 슬롯 수를 사용하여 동시성 수준을 일시적으로 재정의하는 방법에 대한 자세한 내용은 <a href="./r_wlm_query_slot_count.html">wlm_query_slot_count</a> 섹션을 참조하세요.</p>
+            <h2 id="tutorial-wlm-override-slot-count">1단계: wlm_query_slot_count를 사용하여 동시성 레벨 재정의</h2>
+
+            <p>본 자습서의 목적에 따라 이번에도 장기간 실행되는 SELECT 쿼리를 실행합니다. <code class="code">adminwlm</code> 사용자 권한으로 이 쿼리를 실행하면서 wlm_query_slot_count를 사용해 쿼리에 사용할 수 있는 슬롯 수를 늘릴 것입니다.</p>
+             
+                <h3 id="how-to-wlm-override-slot-count">wlm_query_slot_count를 사용하여 동시성 레벨을 재정의하려면</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+                     
+                <ol><li>
+                        <p>WLM_QUERY_STATE_VW 뷰에 대한 쿼리를 실행하여 결과까지 충분히 볼 수 있도록 쿼리에 대한 제한을 높입니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set wlm_query_slot_count to 3; 
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>이제 관리자 계정을 사용하여 WLM_QUERY_STATE_VW에 대한 쿼리를 실행하고 쿼리가 어떻게 실행되고 있는지 확인합니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;</code></pre>
+                        <p>다음은 예 결과입니다.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_170.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>쿼리의 슬롯 수는 현재 3개입니다. 이 수는 쿼리가 슬롯 3개를 모두 사용하여 쿼리를 처리하면서 대기열의 모든 리소스를 해당 쿼리에 할당하고 있다는 것을 의미합니다.</p>
+                    </li><li>
+                        <p>이제 다음 쿼리를 실행합니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from WLM_QUEUE_STATE_VW;</code></pre>
+                        <p>다음은 예 결과입니다.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_160.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>wlm_query_slot_count 구성 설정은 현재 세션에서만 유효합니다. 이 세션이 종료되거나 다른 사용자가 쿼리를 실행할 경우에는 WLM 구성이 사용됩니다.</p>
+                    </li><li>
+                        <p>슬롯 수를 재설정한 후 테스트를 다시 실행합니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">reset wlm_query_slot_count;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                        <p>다음은 예 결과입니다.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_180.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_190.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-run-queries-from-different-sessions">2단계: 다른 세션에서 쿼리 실행</h2>
+
+            <p>이제는 다른 세션에서 쿼리를 실행합니다.</p>
+             
+                <h3 id="how-to-wlm-run-queries-from-different-sessions">다른 세션에서 쿼리를 실행하려면</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+
+                     
+                <ol><li>
+                        <p>RSQL 창 1 및 2에서 다음과 같이 실행하여 테스트 쿼리 그룹을 사용합니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set query_group to test;</code></pre>
+                    </li><li>
+                        <p>RSQL 창 1에서 다음 장기(long-running) 쿼리를 실행합니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>장기 쿼리가 여전히 RSQL 창 1에서 실행되고 있을 때 다음을 실행합니다. 이러한 명령은 대기열의 슬롯을 모두 사용할 수 있도록 슬롯 수를 높인 다음 장기 쿼리를 시작합니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set wlm_query_slot_count to 2;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>세 번째 RSQL 창을 열고 뷰에 대한 쿼리를 실행하여 결과를 확인합니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;
+select * from wlm_query_state_vw;</code></pre>
+                        <p>다음은 예 결과입니다.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_200.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_210.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>첫 번째 쿼리는 대기열 1에 할당된 슬롯 중 하나를 사용하여 쿼리를 실행합니다. 또한 대기열에서 대기 중인 쿼리가 하나 있습니다(여기에서 <code class="code">queued</code>는 <code class="code">1</code>이고 <code class="code">state</code>는 <code class="code">QueuedWaiting</code>임). 첫 번째 쿼리가 실행을 마치면 두 번째 쿼리가 실행을 시작합니다. 이렇게 실행되는 이유는 두 쿼리가 모두 <code class="code">test</code> 쿼리 그룹으로 라우팅되었기 때문이며, 두 번째 쿼리는 처리를 시작할 정도로 충분한 수의 슬롯이 나올 때까지 대기해야 합니다.</p>
+                    </li></ol></div>
+             
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="주의" /> <strong>javascript가 브라우저에서 비활성화되거나 사용이 불가합니다.</strong></p><p>AWS 설명서를 사용하려면 Javascript가 활성화되어야 합니다. 지침을 보려면 브라우저의 도움말 페이지를 참조하십시오.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">문서 규칙</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-wlm-routing-queries-to-queues.html">단원 3: 사용자 그룹 및 쿼리 그룹을 기반으로 쿼리를 대기열로 라우팅</div><div id="next" class="next-link" accesskey="n" href="./tutorial-wlm-cleaning-up-resources.html">단원 5: 리소스 정리</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 예</div><div class="content"><p>칭찬해 주셔서 감사합니다!</p><p>잠깐 시간을 내어 좋았던 부분을 알려 주시면 더 열심히 만들어 보겠습니다.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-query-slot-count.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 아니요</div><div class="content"><p>이 페이지에 작업이 필요하다는 점을 알려 주셔서 감사합니다. 실망시켜 드려 죄송합니다.</p><p>잠깐 시간을 내어 설명서를 향상시킬 수 있는 방법에 대해 말씀해 주십시오.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-query-slot-count.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

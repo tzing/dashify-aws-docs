@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ko-KR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>RLS 성능 관련 모범 사례 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="t_rls_performance" /><meta name="default_state" content="t_rls_performance" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_rls_performance.html" /><meta name="description" content="RLS로 보호되는 테이블에서 높은 Amazon Redshift 성능을 보장하기 위한 모범 사례를 설명합니다." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="데이터베이스 개발자 안내서" /><meta name="abstract" content="페타바이트 규모의 엔터프라이즈급 완전관리형 데이터 웨어하우징 서비스인 Amazon Redshift로 데이터 웨어하우스를 생성하고 관리합니다." /><meta name="guide-locale" content="ko_kr" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_rls_performance.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/t_rls_performance.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/t_rls_performance.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/t_rls_performance.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/t_rls_performance.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/t_rls_performance.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/t_rls_performance.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/t_rls_performance.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/t_rls_performance.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/t_rls_performance.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/t_rls_performance.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/t_rls_performance.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/t_rls_performance.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/t_rls_performance.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/t_rls_performance.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_rls_performance.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_rls_performance.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/t_rls_performance.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/t_rls_performance.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_rls_performance.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/t_rls_performance.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/t_rls_performance.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="데이터베이스 개발자 안내서" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="데이터베이스 개발자 안내서" /><meta id="panorama-serviceConsolePage" value="RLS 성능 관련 모범 사례" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>RLS 성능 관련 모범 사례 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#t_rls_performance" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_rls_performance.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_rls_performance.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_rls_performance.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,데이터 웨어하우스,샘플 데이터,데이터베이스,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "데이터베이스 개발자 안내서",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "데이터베이스 보안 관리",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_Database_objects.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "행 수준 보안",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_rls.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "RLS 성능 관련 모범 사례",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_rls.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#t_rls_performance" target="_blank" rel="noopener noreferrer" title="pdf-tooltip"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">aws-documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">데이터베이스 개발자 안내서</a></div><div id="page-toc-src"><a href="#t_rls_safe_operators">연산자 및 함수의 안전</a><a href="#t_rls_result_cache">결과 캐싱</a><a href="#t_rls_complex_policies">복잡한 정책</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="t_rls_performance">RLS 성능 관련 모범 사례</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>다음은 RLS로 보호되는 테이블에서 높은 Amazon Redshift 성능을 보장하기 위한 모범 사례입니다.</p>
+            <h2 id="t_rls_safe_operators">연산자 및 함수의 안전</h2>
+            <p>RLS 보호 테이블을 쿼리할 때 특정 연산자나 함수를 사용하면 성능이 저하될 수 있습니다. Amazon Redshift는 RLS 보호 테이블을 쿼리할 때 연산자와 함수를 안전하거나 안전하지 않은 것으로 분류합니다. 함수나 연산자는 입력에 따라 관찰 가능한 부작용이 없는 경우 RLS 안전으로 분류됩니다. 구체적으로 살펴보면, RLS 안전 함수 또는 연산자는 다음 중 하나일 수 없습니다.</p>
+            <div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>오류 메시지를 포함하거나 포함하지 않은 상태로, 입력 값 또는 입력 값에 종속된 값을 출력합니다.</p>
+               </li><li class="listitem">
+                  <p>입력 값에 종속된 오류를 실패 처리하거나 반환합니다.</p>
+               </li></ul></div>
+            <p>RLS 불안전 연산자는 다음과 같습니다.</p>
+            <div class="itemizedlist">
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>산술 연산자: +, -, /, *, %.</p>
+               </li><li class="listitem">
+                  <p>텍스트 연산자: LIKE 및 SIMILAR TO</p>
+               </li><li class="listitem">
+                  <p>변환 운영자</p>
+               </li><li class="listitem">
+                  <p>UDF</p>
+               </li></ul></div>
+            <p>다음 SELECT 문을 사용하여 연산자와 함수의 안전성을 검사합니다.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT proname, proc_is_rls_safe(oid) FROM pg_proc;</code></pre>
+            <p>Amazon Redshift는 RLS 보호 테이블에 대한 쿼리를 계획할 때 RLS 불안전 연산자 및 함수를 포함하는 사용자 조건자의 평가 순서를 제한합니다. RLS 불안전 연산자 또는 함수를 참조하는 쿼리는 RLS 보호 테이블을 쿼리할 때 성능이 저하될 수 있습니다. Amazon Redshift가 정렬 키를 활용하기 위해 RLS 불안전 조건자를 기본 테이블 스캔으로 푸시다운할 수 없는 경우 성능이 크게 저하될 수 있습니다. 더 나은 성능을 얻으려면 정렬 키를 활용하는 RLS 불안전 조건자를 사용하는 쿼리는 사용하지 마세요. Amazon Redshift가 연산자와 함수를 푸시다운할 수 있는지 확인하려면 EXPLAIN 문을 시스템 권한 EXPLAIN RLS와 함께 사용하면 됩니다.</p>
+          
+            <h2 id="t_rls_result_cache">결과 캐싱</h2>
+            <p>쿼리 런타임을 줄이고 시스템 성능을 향상시키기 위해 Amazon Redshift는 특정 형식의 쿼리 결과를 리더 노드의 메모리에 캐시합니다.</p>
+            <p>Amazon Redshift는 보호되지 않은 테이블에 대한 조건이 모두 충족되고 다음 조건이 모두 충족될 경우, 새 쿼리 스캐닝 RLS 보호 테이블에 캐싱된 결과를 사용합니다.</p>
+            <div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>정책의 테이블 또는 보기가 수정되지 않았습니다.</p>
+               </li><li class="listitem">
+                  <p>정책은 실행 시마다 평가되어야 하는 함수(예: GETDATE 또는 CURRENT_USER)를 사용하지 않습니다.</p>
+               </li></ul></div>
+            <p>성능을 높이려면, 이전 조건을 충족하지 않는 정책 조건자를 사용하지 마세요.</p>
+            <p>Amazon Redshift의 결과 캐싱에 대한 자세한 내용은 <a href="./c_challenges_achieving_high_performance_queries.html#result-caching"> 결과 캐싱 </a> 섹션을 참조하세요.</p>
+          
+            <h2 id="t_rls_complex_policies">복잡한 정책</h2>
+            <p>성능을 높이려면 여러 테이블을 조인하는 하위 쿼리에 복잡한 정책을 사용하지 마세요.</p>
+         <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="주의" /> <strong>javascript가 브라우저에서 비활성화되거나 사용이 불가합니다.</strong></p><p>AWS 설명서를 사용하려면 Javascript가 활성화되어야 합니다. 지침을 보려면 브라우저의 도움말 페이지를 참조하십시오.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">문서 규칙</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./t_rls_usage.html">RLS 정책 사용 고려 사항</div><div id="next" class="next-link" accesskey="n" href="./r_rls-procedures.html">RLS 정책 생성, 연결, 분리 및 삭제</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 예</div><div class="content"><p>칭찬해 주셔서 감사합니다!</p><p>잠깐 시간을 내어 좋았던 부분을 알려 주시면 더 열심히 만들어 보겠습니다.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_rls_performance.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 아니요</div><div class="content"><p>이 페이지에 작업이 필요하다는 점을 알려 주셔서 감사합니다. 실망시켜 드려 죄송합니다.</p><p>잠깐 시간을 내어 설명서를 향상시킬 수 있는 방법에 대해 말씀해 주십시오.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_rls_performance.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

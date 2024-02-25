@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ko-KR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>튜토리얼: Amazon Redshift Spectrum을 사용한 중첩 데이터 쿼리 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-query-nested-data" /><meta name="default_state" content="tutorial-query-nested-data" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="description" content="Amazon Redshift Spectrum을 사용하여 중첩 데이터를 쿼리합니다." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="데이터베이스 개발자 안내서" /><meta name="abstract" content="페타바이트 규모의 엔터프라이즈급 완전관리형 데이터 웨어하우징 서비스인 Amazon Redshift로 데이터 웨어하우스를 생성하고 관리합니다." /><meta name="guide-locale" content="ko_kr" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-query-nested-data.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="데이터베이스 개발자 안내서" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="데이터베이스 개발자 안내서" /><meta id="panorama-serviceConsolePage" value="튜토리얼: Amazon Redshift Spectrum을 사용한 중첩 데이터 쿼리" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>튜토리얼: Amazon Redshift Spectrum을 사용한 중첩 데이터 쿼리 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-query-nested-data" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,데이터 웨어하우스,샘플 데이터,데이터베이스,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "데이터베이스 개발자 안내서",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Amazon Redshift Spectrum을 사용하여 외부 데이터 쿼리",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-using-spectrum.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "튜토리얼: Amazon Redshift Spectrum을 사용한 중첩 데이터 쿼리",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-using-spectrum.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-query-nested-data" target="_blank" rel="noopener noreferrer" title="pdf-tooltip"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">aws-documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">데이터베이스 개발자 안내서</a></div><div id="page-toc-src"><a href="#tutorial-nested-data-overview">개요</a><a href="#tutorial-nested-data-create-table">1단계: 중첩 데이터가 포함된 외부 테이블 만들기</a><a href="#tutorial-query-nested-data-sqlextensions">2단계: SQL 확장을 통한 Amazon S3의 중첩 데이터 쿼리</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-query-nested-data">튜토리얼: Amazon Redshift Spectrum을 사용한 중첩 데이터 쿼리</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div>
+        <h2 id="tutorial-nested-data-overview">개요</h2>
+                
+        <p>Amazon Redshift Spectrum은 Parquet, ORC, JSON 및 Ion 파일 형식에서 중첩 데이터에 대한 쿼리를 지원합니다. Redshift Spectrum은 외부 테이블을 사용하여 데이터에 액세스합니다. 복합 데이터 형식인 <code class="code">struct</code>, <code class="code">array</code> 및 <code class="code">map</code>을 사용하는 외부 테이블을 생성할 수 있습니다.</p>
+        <p>예를 들어 <code class="code">customers</code>라는 폴더에 다음과 같은 Amazon S3 데이터가 저장된 데이터 파일이 있다고 가정하겠습니다. 단일 루트 요소는 없지만 이 샘플 데이터의 각 JSON 객체는 테이블의 행을 나타냅니다.</p>
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>"id": 1,
+ "name": <span>{</span>"given": "John", "family": "Smith"},
+ "phones": ["123-457789"],
+ "orders": [<span>{</span>"shipdate": "2018-03-01T11:59:59.000Z", "price": 100.50},
+            <span>{</span>"shipdate": "2018-03-01T09:10:00.000Z", "price": 99.12}]
+}
+<span>{</span>"id": 2,
+ "name": <span>{</span>"given": "Jenny", "family": "Doe"},
+ "phones": ["858-8675309", "415-9876543"],
+ "orders": []
+}
+<span>{</span>"id": 3,
+ "name": <span>{</span>"given": "Andy", "family": "Jones"},
+ "phones": [],
+ "orders": [<span>{</span>"shipdate": "2018-03-02T08:02:15.000Z", "price": 13.50}]
+}  </code></pre>        
+   
+        
+        <p>Amazon Redshift Spectrum을 사용하여 파일의 중첩된 데이터를 쿼리할 수 있습니다. 다음은 이 방법으로 Apache Parquet 데이터를 쿼리하는 방법을 나타내는 자습서입니다.</p> 
+        <p>자습서 사전 요구 사항, 단계 및 중첩 데이터 사용 사례에 대해서는 다음 주제를 참조하십시오.</p>
+        <div class="itemizedlist">
+             
+             
+             
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p><a href="#tutorial-nested-data-prereq">사전 조건</a></p>
+            </li><li class="listitem">
+                <p><a href="#tutorial-nested-data-create-table">1단계: 중첩 데이터가 포함된 외부 테이블 만들기</a></p>
+            </li><li class="listitem">
+                <p><a href="#tutorial-query-nested-data-sqlextensions">2단계: SQL 확장을 통한 Amazon S3의 중첩 데이터 쿼리</a></p>
+            </li><li class="listitem">
+                <p><a href="./nested-data-use-cases.html">중첩 데이터 사용 사례 </a></p>
+            </li><li class="listitem">
+                <p><a href="./nested-data-restrictions.html">중첩된 데이터 제한(미리 보기)</a></p>
+            </li><li class="listitem">
+                <p><a href="./serializing-complex-JSON.html">복잡한 중첩 JSON 직렬화</a></p>
+            </li></ul></div>
+        
+        
+
+
+         
+            <h3 id="tutorial-nested-data-prereq">사전 조건</h3>
+            
+            <p>Redshift Spectrum을 아직 사용하지 않고 있다면 계속 진행하기 전에 <a href="./c-getting-started-using-spectrum.html">Amazon Redshift Spectrum 시작하기</a>에서 다음 단계를 따르세요.</p>
+            
+            <p>외부 스키마를 만들려면 다음 명령에서 IAM 역할 ARN을 <a href="./c-getting-started-using-spectrum-create-role.html">IAM 역할 생성</a>에서 생성한 역할 ARN으로 대체합니다. 그런 다음 SQL 클라이언트에서 명령을 실행합니다.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create external schema spectrum 
+from data catalog 
+database 'myspectrum_db' 
+iam_role 'arn:aws:iam::123456789012:role/myspectrum_role'
+create external database if not exists;</code></pre>
+         
+
+     
+        <h2 id="tutorial-nested-data-create-table">1단계: 중첩 데이터가 포함된 외부 테이블 만들기</h2>
+        <p>Amazon S3에서 <a href="https://s3.amazonaws.com/redshift-downloads/tickit/spectrum/customers/customer_file1" rel="noopener noreferrer" target="_blank"><span>소스 데이터</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>를 다운로드하여 볼 수 있습니다. </p>
+
+        <p>이번 자습서에서 사용할 외부 테이블을 만들려면 다음과 같이 명령을 실행합니다.</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE EXTERNAL TABLE spectrum.customers (
+  id     int,
+  name   struct&lt;given:varchar(20), family:varchar(20)&gt;,
+  phones array&lt;varchar(20)&gt;,
+  orders array&lt;struct&lt;shipdate:timestamp, price:double precision&gt;&gt;
+)
+STORED AS PARQUET
+LOCATION 's3://redshift-downloads/tickit/spectrum/customers/';     </code></pre>
+        
+        <p>위의 예에서 외부 테이블 <code class="code">spectrum.customers</code>는 데이터 형식으로 <code class="code">struct</code>와 <code class="code">array</code>를 사용하여 중첩 데이터가 포함된 열을 정의합니다. Amazon Redshift Spectrum은 Parquet, ORC, JSON 및 Ion 파일 형식에서 중첩 데이터에 대한 쿼리를 지원합니다. <code class="code">STORED AS</code> 파라미터는 Apache Parquet 파일의 경우 <code class="code">PARQUET</code>입니다. <code class="code">LOCATION</code> 파라미터는 중첩 데이터 또는 파일이 들어 있는 Amazon S3 폴더를 참조해야 합니다. 자세한 내용은 <a href="./r_CREATE_EXTERNAL_TABLE.html">CREATE EXTERNAL TABLE</a> 섹션을 참조하세요.</p>
+        
+        
+        <p><code class="code">array</code>와 <code class="code">struct</code> 형식은 모든 수준에서 중첩이 가능합니다. 예를 들어 다음 예와 같이 <code class="code">toparray</code>라는 이름으로 열을 정의할 수 있습니다.</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">toparray array&lt;struct&lt;nestedarray:
+         array&lt;struct&lt;morenestedarray: 
+         array&lt;string&gt;&gt;&gt;&gt;&gt;</code></pre>
+        <p>또한 다음 예의 <code class="code">struct</code> 열처럼 <code class="code">x</code> 형식을 중첩시킬 수도 있습니다.</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">x struct&lt;a: string,
+         b: struct&lt;c: integer,
+                   d: struct&lt;e: string&gt;
+                  &gt;
+        &gt;</code></pre>
+   
+     
+                <h2 id="tutorial-query-nested-data-sqlextensions">2단계: SQL 확장을 통한 Amazon S3의 중첩 데이터 쿼리</h2>
+                <p>Redshift Spectrum은 Amazon Redshift SQL 구문 확장을 통해 복합 형식인 <code class="code">array</code>, <code class="code">map</code> 및 <code class="code">struct</code>에 대한 쿼리를 지원합니다.</p>
+                 
+                    <h3 id="nested-data-sqlextension1">확장 1: 구조체 열에 대한 액세스</h3>
+                    <p>필드 이름을 경로로 연결하는 점 표기법을 사용해 <code class="code">struct</code> 열에서 데이터를 추출할 수 있습니다. 예를 들어 다음은 고객의 성과 이름을 반환하는 쿼리입니다. 이름은 긴 경로인 <code class="code">c.name.given</code>을 통해 액세스하고, 성은 긴 경로인 <code class="code">c.name.family</code>을 통해 액세스합니다.</p>    
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, c.name.given, c.name.family
+FROM   spectrum.customers c;</code></pre>
+                    <p>위의 쿼리는 다음과 같은 데이터를 반환합니다.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">id | given | family
+---|-------|-------
+1  | John  | Smith
+2  | Jenny | Doe
+3  | Andy  | Jones
+(3 rows)</code></pre>
+                    <p><code class="code">struct</code>는 어떤 수준에서든지 다른 <code class="code">struct</code>의 열이 될 수 있고, 이 열은 또다시 다른 <code class="code">struct</code>의 열이 될 수 있습니다. 이렇게 깊게 중첩되는 <code class="code">struct</code>의 열에 액세스하는 경로는 계속해서 길어질 수 있습니다. 예를 들어 다음 예에서 <code class="code">x</code> 열에 대한 정의를 보십시오.</p>     
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">x struct&lt;a: string,
+         b: struct&lt;c: integer, 
+                      d: struct&lt;e: string&gt;
+                  &gt;
+        &gt;</code></pre>        
+        <p><code class="code">e</code>로 <code class="code">x.b.d.e</code>의 데이터에 액세스할 수 있습니다.</p>
+    
+                    
+                    
+                   
+                 
+                    <h3 id="nested-data-sqlextension2">확장 2: FROM 절의 포괄적 배열</h3>
+                    <p><code class="code">array</code> 절에서 테이블 이름이 아닌 <code class="code">map</code> 열을 지정하여 <code class="code">array</code> 열(확장 시 <code class="code">FROM</code> 열까지도)의 데이터를 추출할 수 있습니다. 이러한 확장은 기본 쿼리의 <code class="code">FROM</code> 절은 물론이고 하위 쿼리의 <code class="code">FROM</code> 절에도 적용됩니다.</p>
+                        
+                <p><code class="code">array</code> 요소는 <code class="code">c.orders[0]</code>와 같이 위치로 참조할 수 있습니다(미리 보기).</p>
+                    <p>포괄적 <code class="code">arrays</code>를 조인과 함께 사용하면 다음 사용 사례에서 설명하겠지만 다양한 유형의 중첩 해제가 가능합니다.</p>
+                     
+                        <h4 id="unnest-inner-joins">내부 조인을 사용한 중첩 해제</h4>
+                        <p>다음은 고객 ID와 주문한 고객의 주문 발송일을 선택하는 쿼리입니다. FROM 절의 SQL 확장인 <code class="code">c.orders
+                        o</code>는 별칭인 <code class="code">c</code>에 따라 달라집니다.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, o.shipdate
+FROM   spectrum.customers c, c.orders o </code></pre> 
+                        <p>주문한 고객 <code class="code">c</code>마다 <code class="code">FROM</code> 절이 고객 <code class="code">o</code>의 각 주문 <code class="code">c</code>에 대해 행을 하나씩 반환합니다. 각 행은 고객 행 <code class="code">c</code>와 주문 행 <code class="code">o</code>가 함께 표시됩니다. 그러면 <code class="code">SELECT</code> 절에는 <code class="code">c.id</code>와 <code class="code">o.shipdate</code>만 유지됩니다. 결과는 다음과 같습니다.</p>
+                         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">id|      shipdate
+--|----------------------
+1 |2018-03-01  11:59:59
+1 |2018-03-01  09:10:00
+3 |2018-03-02  08:02:15
+(3 rows) </code></pre>   
+                        <p>별칭 <code class="code">c</code>는 고객 필드에 대한 액세스를, 그리고 별칭 <code class="code">o</code>는 주문 필드에 대한 액세스를 제공합니다.</p>
+                        <p>시맨틱은 표준 SQL과 비슷합니다. <code class="code">FROM</code> 절을 다음 중첩 루프를 실행하는 것으로 생각할 수 있습니다. 이후에는 출력할 필드를 선택하는 <code class="code">SELECT</code> 절이 나옵니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">for each customer c in spectrum.customers
+  for each order o in c.orders
+     output c.id and o.shipdate </code></pre>
+                        <p>따라서 주문하지 않은 고객은 결과에서도 표시되지 않습니다.</p>
+                        <p>또한 이것을 <code class="code">FROM</code> 테이블과 <code class="code">JOIN</code> 배열을 사용해 <code class="code">customers</code>을 실행하는 <code class="code">orders</code> 절이라고 생각할 수도 있습니다. 실제로 다음 예와 같이 쿼리를 작성하는 것도 가능합니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, o.shipdate
+FROM   spectrum.customers c INNER JOIN c.orders o ON true </code></pre>
+                        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>참고</h6></div><div class="awsdocs-note-text"><p>이름이 <code class="code">c</code>인 테이블에 <code class="code">orders</code>라는 스키마가 존재한다면 <code class="code">c.orders</code>는 <code class="code">orders</code>의 배열 열이 아닌 <code class="code">customers</code> 테이블을 참조합니다.</p></div></div>
+                 
+                 
+                    <h4 id="unnest-left-joins">왼쪽 조인을 사용한 중첩 해제</h4>
+                    <p>다음은 모든 고객 이름과 고객의 주문을 출력하는 쿼리입니다. 따라서 주문하지 않은 고객의 이름까지 모두 반환됩니다. 하지만 이 경우에는 아래 Jenny Doe의 예와 같이 주문 열이 NULL 값을 갖습니다.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, c.name.given, c.name.family, o.shipdate, o.price
+FROM   spectrum.customers c LEFT JOIN c.orders o ON true</code></pre>
+                    
+                    <p>위의 쿼리는 다음과 같은 데이터를 반환합니다.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">id  |  given  | family  |    shipdate          | price
+----|---------|---------|----------------------|--------
+ 1  |  John   | Smith   | 2018-03-01  11:59:59 | 100.5
+ 1  |  John   | Smith   | 2018-03-01  09:10:00 |  99.12
+ 2  |  Jenny  | Doe     |                      |
+ 3  |  Andy   | Jones   | 2018-03-02  08:02:15 |  13.5
+ (4 rows)</code></pre>
+                 
+                
+                 
+                    <h3 id="nested-data-sqlextension3">확장 3: 별칭을 사용해 스칼라 배열에 직접 액세스 </h3>
+                    <p><code class="code">FROM</code> 절의 별칭 <code class="code">p</code>가 스칼라 배열을 포괄하는 경우에는 쿼리가 <code class="code">p</code> 값을 <code class="code">p</code>로 참조합니다. 예를 들어 다음은 고객 이름과 전화 번호를 쌍으로 반환하는 쿼리입니다.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.name.given, c.name.family, p AS phone
+FROM   spectrum.customers c LEFT JOIN c.phones p ON true  </code></pre>
+                    <p>위의 쿼리는 다음과 같은 데이터를 반환합니다.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">given  |  family  |  phone
+-------|----------|-----------
+John   | Smith    | 123-4577891
+Jenny  | Doe      | 858-8675309
+Jenny  | Doe      | 415-9876543
+Andy   | Jones    | 
+(4 rows) </code></pre>
+                     
+                 
+                    <h3 id="nested-data-sqlextension4">확장 4: 맵 요소에 대한 액세스 </h3>
+                    <p>Redshift Spectrum은 <code class="code">map</code> 데이터 형식을 <code class="code">array</code> 열과 <code class="code">struct</code> 열로 구성된 <code class="code">key</code> 형식이 포함된 <code class="code">value</code> 형식으로 처리합니다. <code class="code">key</code>는 <code class="code">scalar</code>가 되어야 하고, 값은 어떤 데이터 형식이든 될 수 있습니다.</p>
+                    <p>예를 들어 다음은 전화 번호를 저장할 목적으로 <code class="code">map</code>이 포함된 외부 테이블을 만드는 코드입니다.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE EXTERNAL TABLE spectrum.customers2 (
+  id     int,
+  name   struct&lt;given:varchar(20), family:varchar(20)&gt;,
+  phones map&lt;varchar(20), varchar(20)&gt;,
+  orders array&lt;struct&lt;shipdate:timestamp, price:double precision&gt;&gt;
+)
+STORED AS PARQUET
+LOCATION 's3://redshift-downloads/tickit/spectrum/customers/';</code></pre>
+                    <p><code class="code">map</code> 형식은 <code class="code">array</code> 열과 <code class="code">key</code> 열로 구성된 <code class="code">value</code> 형식처럼 처리되기 때문에 앞에 나오는 스키마를 마치 뒤에 나오는 스키마라고 생각할 수 있습니다.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE EXTERNAL TABLE spectrum.customers3 (
+  id     int,
+  name   struct&lt;given:varchar(20), family:varchar(20)&gt;,
+  phones array&lt;struct&lt;key:varchar(20), value:varchar(20)&gt;&gt;,
+  orders array&lt;struct&lt;shipdate:timestamp, price:double precision&gt;&gt;
+)
+STORED AS PARQUET
+LOCATION 's3://redshift-downloads/tickit/spectrum/customers/';   </code></pre>
+                    
+                    <p>다음은 고객 이름과 휴대 전화 번호를 함께 반환한 후 각 이름의 번호를 반환하는 쿼리입니다. 맵 쿼리는 <code class="code">array</code> 형식의 중첩 <code class="code">struct</code>를 쿼리하는 것과 동일하게 처리됩니다. 다음은 앞에서 설명한 외부 테이블을 만든 경우에만 데이터를 반환하는 쿼리입니다.</p>   
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="">SELECT c.name.given, c.name.family, p.value 
+FROM   spectrum.customers c, c.phones p 
+WHERE  p.key = 'mobile';  </code></pre>   
+                  <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>참고</h6></div><div class="awsdocs-note-text"><p><code class="code">key</code>에 대한 <code class="code">map</code>는 Ion 및 JSON 파일 형식에 대한 <code class="code">string</code>입니다.</p></div></div>      
+                    
+                    
+                     
+                <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="주의" /> <strong>javascript가 브라우저에서 비활성화되거나 사용이 불가합니다.</strong></p><p>AWS 설명서를 사용하려면 Javascript가 활성화되어야 합니다. 지침을 보려면 브라우저의 도움말 페이지를 참조하십시오.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">문서 규칙</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c-spectrum-troubleshooting.html">쿼리 문제 해결</div><div id="next" class="next-link" accesskey="n" href="./nested-data-use-cases.html">중첩 데이터 사용 사례 </div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 예</div><div class="content"><p>칭찬해 주셔서 감사합니다!</p><p>잠깐 시간을 내어 좋았던 부분을 알려 주시면 더 열심히 만들어 보겠습니다.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-query-nested-data.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 아니요</div><div class="content"><p>이 페이지에 작업이 필요하다는 점을 알려 주셔서 감사합니다. 실망시켜 드려 죄송합니다.</p><p>잠깐 시간을 내어 설명서를 향상시킬 수 있는 방법에 대해 말씀해 주십시오.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-query-nested-data.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

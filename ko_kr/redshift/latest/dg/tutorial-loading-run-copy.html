@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ko-KR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>5단계: COPY 명령 실행 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-loading-run-copy" /><meta name="default_state" content="tutorial-loading-run-copy" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="description" content="기본적인 COPY 명령 구문을 배운 다음 다양한 옵션으로 SQL 클라이언트에서 COPY 명령을 실행하여 다양한 파일 형식을 사용하는 테이블을 로드하는 방법을 배웁니다." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="데이터베이스 개발자 안내서" /><meta name="abstract" content="페타바이트 규모의 엔터프라이즈급 완전관리형 데이터 웨어하우징 서비스인 Amazon Redshift로 데이터 웨어하우스를 생성하고 관리합니다." /><meta name="guide-locale" content="ko_kr" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-run-copy.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="데이터베이스 개발자 안내서" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="데이터베이스 개발자 안내서" /><meta id="panorama-serviceConsolePage" value="5단계: COPY 명령 실행" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>5단계: COPY 명령 실행 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-loading-run-copy" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,데이터 웨어하우스,샘플 데이터,데이터베이스,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "데이터베이스 개발자 안내서",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "데이터 로딩",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "튜토리얼: Amazon S3에서 데이터 로드",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "5단계: COPY 명령 실행",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-data.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-loading-run-copy" target="_blank" rel="noopener noreferrer" title="pdf-tooltip"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">aws-documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">데이터베이스 개발자 안내서</a></div><div id="page-toc-src"><a href="#tutorial-loading-data-copy-syntax">COPY 명령 구문</a><a href="#tutorial-loading-run-copy-load-tables">SSB 테이블 로드</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-loading-run-copy">5단계: COPY 명령 실행</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>COPY 명령을 실행하여 SSB 스키마에서 각각의 테이블을 로드합니다. COPY 명령 예에서는 다양한 파일 형식에서 로드하는 방법, 몇 가지 COPY 명령 옵션을 사용하는 방법, 로드 오류 문제를 해결하는 방법을 보여 줍니다.</p><div class="highlights" id="inline-topiclist"><h6>주제</h6><ul><li><a href="#tutorial-loading-data-copy-syntax">COPY 명령 구문</a></li><li><a href="#tutorial-loading-run-copy-load-tables">SSB 테이블 로드</a></li></ul></div>
+            <h2 id="tutorial-loading-data-copy-syntax">COPY 명령 구문</h2>
+
+
+            <p>기본적인 <a href="./r_COPY.html">COPY</a> 명령 구문은 다음과 같습니다.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY table_name [ column_list ] FROM data_source CREDENTIALS access_credentials [options] </code></pre>
+            <p>COPY 명령을 실행하기 위해서는 다음 값을 제공해야 합니다.</p>
+             
+                <h6>테이블 이름 </h6>
+                <p>COPY 명령의 대상 테이블. 이 테이블은 사전에 데이터베이스에 존재해야 하며, 임시 테이블일 수도 있고, 영구 테이블일 수도 있습니다. COPY 명령은 새로운 입력 데이터를 테이블의 기존 행에 추가합니다.</p>
+             
+             
+                <h6>열 목록</h6>
+                <p>기본적으로 COPY는 원본 데이터에서 테이블 열로 필드를 순서대로 로드합니다. 필요할 경우, 열 이름이 쉼표로 분리된 <em>열 목록</em>을 지정하여 데이터 필드를 특정 열에 매핑할 수 있습니다. 이 자습서에서는 열 목록을 사용하지 않습니다. 자세한 내용은 COPY 명령 참조의 <a href="./copy-parameters-column-mapping.html#copy-column-list">Column List</a> 섹션을 참조하세요.</p>
+             
+            <p><span class="topcon">데이터 원본</span></p>
+            <p>COPY 명령을 사용하여 Amazon S3 버킷, Amazon EMR 클러스터, SSH 연결을 사용하는 원격 호스트 또는 Amazon DynamoDB 테이블에서 데이터를 로드할 수 있습니다. 이 튜토리얼에서는 Amazon S3 버킷의 데이터 파일에서 데이터를 로드합니다. Amazon S3에서 로드할 때 버킷 이름과 데이터 파일 위치를 제공해야 합니다. 이렇게 하려면 데이터 파일의 객체 경로 또는 각 데이터 파일과 해당 위치를 명시적으로 나열하는 매니페스트 파일의 위치를 제공합니다.</p>
+            <div class="itemizedlist">
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem">
+                    <p>키 접두사 </p>
+                    <p>Amazon S3에 저장된 객체는 버킷 이름, 폴더 이름(있는 경우), 객체 이름이 포함된 객체 키에 의해 고유하게 식별됩니다. <em>키 접두사</em>는 접두사가 동일한 객체 집합을 말합니다. 객체 경로는 키 접두사로서 해당 키 접두사를 공유하는 모든 객체를 로드할 때 COPY 명령이 사용합니다. 예를 들어 키 접두사 <code class="code">custdata.txt</code>는 단일 파일 또는 <code class="code">custdata.txt.001</code>, <code class="code">custdata.txt.002</code> 등등의 파일 집합을 가리킬 수 있습니다.</p>
+                </li><li class="listitem">
+                    <p>매니페스트 파일</p>
+                    <p>경우에 따라 여러 버킷 또는 폴더와 같이 접두사가 다른 파일을 로드해야 할 수도 있습니다. 또는 접두사를 공유하는 파일을 제외해야 할 수도 있습니다. 이 경우 매니페스트 파일을 사용할 수 있습니다. <em>매니페스트 파일</em>은 각각의 로드 파일과 그 고유한 객체 키를 명시적으로 나열합니다. 이 자습서 뒷부분에서는 매니페스트 파일을 사용하여 PART 테이블을 로드합니다.</p>
+                </li></ul></div>
+             
+                <h6>보안 인증 정보</h6>
+                <p>로드할 데이터가 포함된 AWS 리소스에 액세스하려면 충분한 권한이 있는 사용자의 AWS 액세스 보안 인증 정보를 제공해야 합니다. 이러한 자격 증명에는 IAM 역할 Amazon 리소스 이름(ARN)이 포함됩니다. Amazon S3에서 데이터를 로드하려면 자격 증명에 ListBucket 및 GetObject 권한이 있어야 합니다. 데이터가 암호화된 경우 추가 자격 증명이 필요합니다. 자세한 내용은 COPY 명령 참조의 <a href="./copy-parameters-authorization.html">권한 부여 파라미터</a> 섹션을 참조하세요. 액세스 관리에 대한 자세한 내용은 <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-access-control.html">Amazon S3 리소스에 대한 액세스 권한 관리</a> 섹션을 참조하세요.</p>
+             
+            <p><span class="topcon">옵션</span></p>
+            <p>COPY 명령에 여러 파라미터를 지정하면 파일 형식을 지정하고, 데이터 형식을 관리하고, 오류를 관리하고, 다른 기능을 제어할 수 있습니다. 이 자습서에서 사용하는 COPY 명령 옵션과 기능은 다음과 같습니다.</p>
+            <div class="itemizedlist">
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem">
+                    <p>키 접두사</p>
+                    <p>키 접두사를 지정하여 여러 파일에서 로드하는 방법에 대한 자세한 내용은 <a href="#tutorial-loading-load-part">NULL AS를 사용하여 PART 테이블 로드</a> 섹션을 참조하세요.</p>
+                </li><li class="listitem">
+                    <p>CSV 형식</p>
+                    <p>CSV 형식의 데이터를 로드하는 방법에 대한 자세한 내용은 <a href="#tutorial-loading-load-part">NULL AS를 사용하여 PART 테이블 로드</a> 섹션을 참조하세요.</p>
+                </li><li class="listitem">
+                    <p>NULL AS</p>
+                    <p>NULL AS 옵션을 사용하여 PART를 로드하는 방법에 대한 자세한 내용은 <a href="#tutorial-loading-load-part">NULL AS를 사용하여 PART 테이블 로드</a> 섹션을 참조하세요.</p>
+                </li><li class="listitem">
+                    <p>문자로 구분된 형식</p>
+                    <p>DELIMITER 옵션을 사용하는 방법에 대한 자세한 내용은 <a href="#tutorial-loading-load-supplier">REGION을 사용하여 SUPPLIER 테이블 로드</a> 섹션을 참조하세요.</p>
+                </li><li class="listitem">
+                    <p>REGION</p>
+                    <p>REGION 옵션을 사용하는 방법에 대한 자세한 내용은 <a href="#tutorial-loading-load-supplier">REGION을 사용하여 SUPPLIER 테이블 로드</a> 섹션을 참조하세요.</p>
+                </li><li class="listitem">
+                    <p>고정 형식 너비</p>
+                    <p>고정 너비 데이터에서 CUSTOMER 테이블을 로드하는 방법에 대한 자세한 내용은 <a href="#tutorial-loading-load-customer">MANIFEST를 사용하여 CUSTOMER 테이블 로드</a> 섹션을 참조하세요.</p>
+                </li><li class="listitem">
+                    <p>MAXERROR</p>
+                    <p>MAXERROR 옵션을 사용하는 방법에 대한 자세한 내용은 <a href="#tutorial-loading-load-customer">MANIFEST를 사용하여 CUSTOMER 테이블 로드</a> 섹션을 참조하세요.</p>
+                </li><li class="listitem">
+                    <p>ACCEPTINVCHARS</p>
+                    <p>ACCEPTINVCHARS 옵션을 사용하는 방법에 대한 자세한 내용은 <a href="#tutorial-loading-load-customer">MANIFEST를 사용하여 CUSTOMER 테이블 로드</a> 섹션을 참조하세요.</p>
+                </li><li class="listitem">
+                    <p>MANIFEST</p>
+                    <p>MANIFEST 옵션을 사용하는 방법에 대한 자세한 내용은 <a href="#tutorial-loading-load-customer">MANIFEST를 사용하여 CUSTOMER 테이블 로드</a> 섹션을 참조하세요.</p>
+                </li><li class="listitem">
+                    <p>DATEFORMAT</p>
+                    <p>DATEFORMAT 옵션을 사용하는 방법에 대한 자세한 내용은 <a href="#tutorial-loading-load-dwdate">DATEFORMAT을 사용하여 DWDATE 테이블 로드</a> 섹션을 참조하세요.</p>
+                </li><li class="listitem">
+                    <p>GZIP, LZOP 및 BZIP2</p>
+                    <p>파일 압축 방법에 대한 자세한 내용은 <a href="#tutorial-loading-load-lineorder">여러 파일을 사용하여 LINEORDER 테이블 로드</a> 섹션을 참조하세요.</p>
+                </li><li class="listitem">
+                    <p>COMPUPDATE</p>
+                    <p>COMPUPDATE 옵션을 사용하는 방법에 대한 자세한 내용은 <a href="#tutorial-loading-load-lineorder">여러 파일을 사용하여 LINEORDER 테이블 로드</a> 섹션을 참조하세요.</p>
+                </li><li class="listitem">
+                    <p>여러 파일</p>
+                    <p>여러 파일을 로드하는 방법에 대한 자세한 내용은 <a href="#tutorial-loading-load-lineorder">여러 파일을 사용하여 LINEORDER 테이블 로드</a> 섹션을 참조하세요.</p>
+                </li></ul></div>
+         
+            <h2 id="tutorial-loading-run-copy-load-tables">SSB 테이블 로드</h2>
+
+            <p>다음 COPY 명령을 사용하여 SSB 스키마에서 각각의 테이블을 로드합니다. 각 테이블에 대한 명령은 다양한 COPY 옵션과 문제 해결 방법을 보여 줍니다.</p>
+            <p>SSB 테이블을 로드하려면 다음 단계를 따릅니다.</p>
+            <div class="orderedlist">
+                 
+                 
+                 
+                 
+                 
+                 
+            <ol><li>
+                    <p><a href="#tutorial-loading-run-copy-replaceables">버킷 이름 및 AWS 자격 증명 대체</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-part">NULL AS를 사용하여 PART 테이블 로드</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-supplier">REGION을 사용하여 SUPPLIER 테이블 로드</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-customer">MANIFEST를 사용하여 CUSTOMER 테이블 로드</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-dwdate">DATEFORMAT을 사용하여 DWDATE 테이블 로드</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-lineorder">여러 파일을 사용하여 LINEORDER 테이블 로드</a></p>
+
+                </li></ol></div>
+             
+                <h3 id="tutorial-loading-run-copy-replaceables">버킷 이름 및 AWS 자격 증명 대체</h3>
+
+                <p>이 자습서의 COPY 명령은 다음 형식으로 제시되어 있습니다.</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy table from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/<em>key_prefix</em>' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>'
+options;</code></pre>
+                
+                <p>각 COPY 명령에 대해 다음을 수행합니다.</p>
+                <div class="orderedlist">
+                     
+                     
+                <ol><li>
+                        <p><code class="replaceable">&lt;your-bucket-name&gt;</code>을 클러스터와 같은 리전에 있는 버킷 이름으로 대체합니다.</p>
+                        <p>이 단계에서는 버킷과 클러스터가 같은 리전에 있다고 가정합니다. 또는 COPY 명령과 함께 <a href="./copy-parameters-data-source-s3.html#copy-region">REGION</a> 옵션을 사용하여 리전을 지정할 수 있습니다.</p>
+                    </li><li>
+                        <p><code class="replaceable">&lt;aws-account-id&gt;</code>와 <code class="replaceable">&lt;role-name&gt;</code>을 사용자의 AWS 계정와 IAM 역할로 바꿉니다. 자격 증명 문자열에서 작은따옴표로 묶이는 구간에는 공백이나 줄 바꿈이 있어서는 안 됩니다. ARN은 샘플과 형식이 약간 다를 수 있습니다. COPY 명령을 실행할 때 정확한지 확인하려면 IAM 콘솔에서 역할에 대한 ARN을 복사하는 것이 가장 좋습니다.</p>
+                        
+                    </li></ol></div>
+             
+             
+                <h3 id="tutorial-loading-load-part">NULL AS를 사용하여 PART 테이블 로드</h3>
+
+                <p>이 단계에서는 CSV 및 NULL AS 옵션을 사용하여 PART 테이블을 로드합니다.</p>
+                <p>COPY 명령은 여러 파일에서 데이터를 병렬로 로드할 수 있으므로 단일 파일에서 로드하는 것보다 훨씬 빠릅니다. 이 원리를 보여 주기 위해 이 자습서에서는 각 테이블의 데이터를 아주 작은 여덟 개의 파일로 분할합니다. 이후 단계에서는 단일 파일에서 로드할 때와 여러 파일에서 로드할 때의 시간 차이를 비교합니다. 자세한 내용은 <a href="./c_best-practices-use-multiple-files.html">파일에서 데이터 로드</a> 섹션을 참조하세요.</p>
+                 
+                    <h6>키 접두사</h6>
+                    <p>파일 세트의 키 접두사를 지정하거나 매니페스트 파일에서 파일을 명시적으로 나열하여 여러 파일에서 데이터를 로드할 수 있습니다. 이 단계에서는 키 접두사를 사용합니다. 매니페스트 파일은 이후 단계에서 사용합니다. 키 접두사 <code class="code">'s3://mybucket/load/part-csv.tbl'</code>는 <code class="code">load</code> 폴더에 있는 다음 파일 세트를 로드합니다.</p>
+                 
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">part-csv.tbl-000
+part-csv.tbl-001
+part-csv.tbl-002
+part-csv.tbl-003
+part-csv.tbl-004
+part-csv.tbl-005
+part-csv.tbl-006
+part-csv.tbl-007
+</code></pre>
+                 
+                    <h6>CSV 형식</h6>
+                    <p>쉼표로 분리된 값(comma separated value)을 뜻하는 CSV는 스프레드시트 데이터 가져오기 및 내보내기에 사용되는 공통 형식입니다. CSV는 쉼표로 구분된(comma-delimited) 형식보다 더 유연한데, 필드 내에서 따옴표로 묶인 문자열을 포함시킬 수 있기 때문입니다. CSV 형식에서 COPY의 기본 인용 부호는 큰따옴표(")이지만 QUOTE AS 옵션을 사용하면 다른 인용 부호를 지정할 수 있습니다. 필드 안에서 인용 부호를 사용할 때는 추가 인용 부호로 이스케이프 처리해야 합니다.</p>
+                 
+                <p>PART 테이블용 CSV 형식 데이터 파일에서 발췌한 다음 예는 큰따옴표로 묶인 문자열(<code class="code">"LARGE ANODIZED
+                    BRASS"</code>)을 보여줍니다. 또한 따옴표로 묶인 문자열 안에서 2개의 큰따옴표로 묶인 문자열(<code class="code">"MEDIUM ""BURNISHED"" TIN"</code>)도 보여줍니다.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">15,dark sky,MFGR#3,MFGR#47,MFGR#3438,indigo,"LARGE ANODIZED BRASS",45,LG CASE
+22,floral beige,MFGR#4,MFGR#44,MFGR#4421,medium,"PROMO, POLISHED BRASS",19,LG DRUM
+23,bisque slate,MFGR#4,MFGR#41,MFGR#4137,firebrick,"MEDIUM ""BURNISHED"" TIN",42,JUMBO JAR</code></pre>
+                <p>PART 테이블용 데이터에는 COPY가 실패하도록 하는 문자가 포함되어 있습니다. 이 연습에서는 오류 문제를 해결하고 수정합니다.</p>
+                <p>CSV 형식인 데이터를 로드하려면 COPY 명령에 <code class="code">csv</code>를 추가합니다. 다음 명령을 실행하여 PART 테이블을 로드합니다.</p>
+                
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy part from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/part-csv.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>'
+csv;</code></pre>
+                
+                <p>다음과 비슷한 오류 메시지가 나타날 수 있습니다.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">An error occurred when executing the SQL command:
+copy part from 's3://mybucket/load/part-csv.tbl' 
+credentials' ...
+
+ERROR: Load into table 'part' failed.  Check 'stl_load_errors' system table for details. [SQL State=XX000] 
+
+Execution time: 1.46s
+
+1 statement(s) failed.
+1 statement(s) failed.</code></pre>
+                <p>오류에 대한 자세한 내용을 보려면 STL_LOAD_ERRORS 테이블을 쿼리하십시오. 다음 쿼리는 SUBSTRING 함수를 사용해 읽기 쉽게 열을 줄이고 LIMIT 10을 사용해 반환되는 행의 수를 줄입니다. 버킷 이름의 길이를 감안하여 <code class="code">substring(filename,22,25)</code>에서 값을 조정할 수 있습니다.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select query, substring(filename,22,25) as filename,line_number as line, 
+substring(colname,0,12) as column, type, position as pos, substring(raw_line,0,30) as line_text,
+substring(raw_field_value,0,15) as field_text, 
+substring(err_reason,0,45) as reason
+from stl_load_errors 
+order by query desc
+limit 10;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> query  |    filename      | line |  column   |    type    | pos |      
+--------+-------------------------+-----------+------------+------------+-----+----
+ 333765 | part-csv.tbl-000 |    1 |           |            |   0 |
+
+ line_text        | field_text |                    reason
+------------------+------------+----------------------------------------------
+ 15,NUL next,     |            | Missing newline: Unexpected character 0x2c f</code></pre>
+
+
+                 
+                    <h6>NULL AS</h6>
+                    <p><code class="code">part-csv.tbl</code> 데이터 파일은 NUL 종결자 문자(<code class="code">\x000</code> 또는 <code class="code">\x0</code>)를 사용하여 NULL 값을 표시합니다.</p>
+                 
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>참고</h6></div><div class="awsdocs-note-text"><p>철자가 매우 비슷함에도 불구하고 NUL과 NULL은 서로 다릅니다. NUL은 레코드 끝(EOR)을 표시하는 데 종종 사용되는 코드포인트 <code class="code">x000</code>이 포함된 UTF-8 문자입니다. NULL은 데이터 없음을 나타내는 SQL 값입니다.</p></div></div>
+                <p>기본적으로 COPY는 NUL 종결자 문자를 EOR 문자로 취급하고 레코드를 종결하므로 종종 예상치 못한 오류가 발생합니다. 텍스트 데이터에서 NULL을 나타내는 단일 표준 방법은 없습니다. 그러므로 테이블을 로드할 때 NULL AS COPY 명령 옵션을 사용하여 NULL로 대체할 문자를 지정할 수 있습니다. 이 예에서는 COPY가 NUL 종결자 문자를 NULL 문자로 취급하도록 합니다.</p>
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>참고</h6></div><div class="awsdocs-note-text"><p>NULL 값을 받는 테이블 열은 <em>null을 허용하는 열</em>로 구성되어야 합니다. 다시 말해 CREATE TABLE 사양에서 NOT NULL 제약을 포함해서는 안 됩니다.</p></div></div>
+                <p>NULL AS 옵션을 사용하여 PART를 로드하려면 다음 COPY 명령을 실행합니다.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy part from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/part-csv.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+csv
+null as '\000';</code></pre>
+                
+                <p>COPY가 NULL 값을 로드했는지 확인하려면 다음 명령을 사용하여 NULL이 포함된 행만 선택합니다.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select p_partkey, p_name, p_mfgr, p_category from part where p_mfgr is null;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> p_partkey |  p_name  | p_mfgr | p_category
+-----------+----------+--------+------------
+        15 | NUL next |        | MFGR#47
+        81 | NUL next |        | MFGR#23
+       133 | NUL next |        | MFGR#44 
+(2 rows)</code></pre>
+             
+
+             
+                <h3 id="tutorial-loading-load-supplier">REGION을 사용하여 SUPPLIER 테이블 로드</h3>
+
+                <p>이 단계에서는 DELIMITER 및 REGION 옵션을 사용하여 SUPPLIER 테이블을 로드합니다.</p>
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>참고</h6></div><div class="awsdocs-note-text"><p>SUPPLIER 테이블을 로드하기 위한 파일은 AWS 샘플 버킷에서 제공됩니다. 이 단계에서는 파일을 업로드하지 않아도 됩니다.</p></div></div>
+                 
+                    <h6>문자로 구분된 형식</h6>
+                    <p>문자로 구분된 파일의 필드는 파이프 문자( | ), 쉼표( , ) 또는 탭( \t ) 같은 특정 문자로 분리되어 있습니다. 문자로 구분된 파일은 비인쇄 ASCII 문자 중 하나를 포함한 어떤 단일 ASCII 문자도 구분 기호로 사용할 수 있습니다. DELIMITER 옵션을 사용하여 구분 기호 문자를 지정합니다. 기본 구분자는 파이프 문자(|)입니다.</p>
+                 
+                <p>SUPPLIER 테이블용 데이터에서 발췌한 다음 예는 파이프로 구분된 형식을 사용합니다.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">1|1|257368|465569|41365|19950218|2-HIGH|0|17|2608718|9783671|4|2504369|92072|2|19950331|TRUCK
+1|2|257368|201928|8146|19950218|2-HIGH|0|36|6587676|9783671|9|5994785|109794|6|19950416|MAIL</code></pre>
+
+                
+                 
+                    <h6>REGION</h6>
+                    <p>가능하다면 항상 Amazon Redshift 클러스터와 동일한 AWS 리전에 로드 데이터를 위치시켜야 합니다. 데이터와 클러스터가 같은 리전에 있으면 대기 시간이 줄어들고 리전 간 데이터 전송 비용을 피할 수 있습니다. 자세한 내용은 <a href="./c_loading-data-best-practices.html">데이터 로드에 대한 Amazon Redshift 모범 사례</a> 섹션을 참조하세요.</p>
+                 
+                <p>다른 AWS 리전에서 데이터를 로드해야 하는 경우 REGION 옵션을 사용하여 로드 데이터가 위치한 AWS 리전을 지정합니다. 리전을 지정하는 경우, 매니페스트 파일을 포함한 모든 로드 데이터가 명명된 리전에 있어야 합니다. 자세한 내용은 <a href="./copy-parameters-data-source-s3.html#copy-region">REGION</a> 섹션을 참조하세요.</p>
+                <p>클러스터가 미국 동부(버지니아 북부) 리전에 있는 경우 다음 명령을 사용하여 미국 서부(오레곤)에 위치한 Amazon S3 버킷에 있는 파이프로 구분된 데이터에서 SUPPLIER 테이블을 로드합니다. 이 예에서는 버킷 이름을 변경하지 마십시오.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy supplier from 's3://awssampledbuswest2/ssbgz/supplier.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+delimiter '|' 
+gzip
+region 'us-west-2';</code></pre>
+                
+                <p>클러스터가 미국 동부(버지니아 북부) 리전에 있지 <em>않은</em> 경우 다음 명령을 사용하여 미국 동부(버지니아 북부)에 위치한 Amazon S3 버킷에 있는 파이프로 구분된 데이터에서 SUPPLIER 테이블을 로드합니다. 이 예에서는 버킷 이름을 변경하지 마십시오.</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy supplier from 's3://awssampledb/ssbgz/supplier.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+delimiter '|' 
+gzip
+region 'us-east-1';
+</code></pre>
+                
+             
+
+             
+                <h3 id="tutorial-loading-load-customer">MANIFEST를 사용하여 CUSTOMER 테이블 로드</h3>
+
+                <p>이 단계에서는 FIXEDWIDTH, MAXERROR, ACCEPTINVCHARS 및 MANIFEST 옵션을 사용하여 CUSTOMER 테이블을 로드합니다.</p>
+                <p>이 연습의 샘플 데이터에는 COPY가 로드를 시도할 때 실패를 초래하는 문자가 포함되어 있습니다. MAXERRORS 옵션과 STL_LOAD_ERRORS 시스템 테이블을 사용하여 로드 오류 문제를 해결한 다음 ACCEPTINVCHARS 및 MANIFEST 옵션을 사용하여 오류를 제거합니다.</p>
+                 
+                    <h6>고정 너비 형식</h6>
+                    <p>고정 너비 형식은 구분 기호로 필드를 분리하지 않고 각 필드를 고정된 수의 문자로 정의합니다. CUSTOMER 테이블용 데이터에서 발췌한 다음 예는 고정 너비 형식을 사용합니다.</p>
+                 
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">1   Customer#000000001   IVhzIApeRb           MOROCCO  0MOROCCO  AFRICA      25-705 
+2   Customer#000000002   XSTf4,NCwDVaWNe6tE   JORDAN   6JORDAN   MIDDLE EAST 23-453
+3   Customer#000000003   MG9kdTD              ARGENTINA5ARGENTINAAMERICA     11-783</code></pre>
+
+                <p>레이블/폭 페어의 순서는 테이블 열의 순서와 정확히 일치해야 합니다. 자세한 내용은 <a href="./copy-parameters-data-format.html#copy-fixedwidth">FIXEDWIDTH</a> 섹션을 참조하세요.</p>
+                <p>CUSTOMER 테이블 데이터용 고정 너비 사양 문자열은 다음과 같습니다.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, 
+c_region :12, c_phone:15,c_mktsegment:10'</code></pre>
+                <p>고정 너비 데이터에서 CUSTOMER 테이블을 로드하려면 다음 명령을 실행합니다.</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy customer
+from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, c_region :12, c_phone:15,c_mktsegment:10';</code></pre>
+                
+                <p>다음과 비슷한 오류 메시지가 표시됩니다.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">An error occurred when executing the SQL command:
+copy customer
+from 's3://mybucket/load/customer-fw.tbl'
+credentials'...
+
+ERROR: Load into table 'customer' failed.  Check 'stl_load_errors' system table for details. [SQL State=XX000] 
+
+Execution time: 2.95s
+
+1 statement(s) failed.</code></pre>
+                 
+                    <h6>MAXERROR</h6>
+                    <p>기본적으로 COPY 실행 시 처음 오류가 발생할 때 명령이 실패하고 오류 메시지가 반환됩니다. 테스트 도중 시간을 절약하기 위해 MAXERROR 옵션을 사용하여 실패 전에 지정된 수의 오류를 건너뛰도록 COPY에 명령할 수 있습니다. CUSTOMER 테이블 데이터 로드를 처음 테스트할 때 오류를 예상하기 때문에 COPY 명령에 <code class="code">maxerror 10</code>을 추가합니다.</p>
+                 
+                <p>FIXEDWIDTH 및 MAXERROR 옵션을 사용하여 테스트하려면 다음 명령을 실행합니다.</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy customer
+from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, c_region :12, c_phone:15,c_mktsegment:10'
+maxerror 10;</code></pre>
+                
+                <p>이번에는 오류 메시지 대신 다음과 비슷한 경고 메시지가 나타납니다.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Warnings:
+Load into table 'customer' completed, 112497 record(s) loaded successfully.
+Load into table 'customer' completed, 7 record(s) could not be loaded.  Check 'stl_load_errors' system table for details.</code></pre>
+                <p>경고는 COPY 실행 시 일곱 번 오류가 발생했음을 나타냅니다. 오류를 확인하려면 다음 예에 나온 것처럼 STL_LOAD_ERRORS 테이블을 쿼리하십시오.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select query, substring(filename,22,25) as filename,line_number as line, 
+substring(colname,0,12) as column, type, position as pos, substring(raw_line,0,30) as line_text,
+substring(raw_field_value,0,15) as field_text, 
+substring(err_reason,0,45) as error_reason
+from stl_load_errors 
+order by query desc, filename 
+limit 7;</code></pre>
+                <p>STL_LOAD_ERRORS 쿼리 결과가 다음과 비슷해야 합니다.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> query  |         filename          | line |  column   |    type    | pos |           line_text           | field_text |              error_reason
+--------+---------------------------+------+-----------+------------+-----+-------------------------------+------------+----------------------------------------------
+ 334489 | customer-fw.tbl.log       |    2 | c_custkey | int4       |  -1 | customer-fw.tbl               | customer-f | Invalid digit, Value 'c', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    6 | c_custkey | int4       |  -1 | Complete                      | Complete   | Invalid digit, Value 'C', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    3 | c_custkey | int4       |  -1 | #Total rows                   | #Total row | Invalid digit, Value '#', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    5 | c_custkey | int4       |  -1 | #Status                       | #Status    | Invalid digit, Value '#', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    1 | c_custkey | int4       |  -1 | #Load file                    | #Load file | Invalid digit, Value '#', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl000        |    1 | c_address | varchar    |  34 | 1         Customer#000000001  | .Mayag.ezR | String contains invalid or unsupported UTF8
+ 334489 | customer-fw.tbl000        |    1 | c_address | varchar    |  34 | 1         Customer#000000001  | .Mayag.ezR | String contains invalid or unsupported UTF8
+(7 rows)</code></pre>
+                <p>결과를 검사하면 <code class="code">error_reasons</code> 열에 2개의 메시지가 있음을 볼 수 있습니다.</p>
+                <div class="itemizedlist">
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Invalid digit, Value '#', Pos 0, Type: Integ </code></pre>
+                        <p>이 오류의 원인은 <code class="code">customer-fw.tbl.log</code> 파일입니다. 문제는 이것이 데이터 파일이 아니라 로그 파일이며, 로드되어서는 안 된다는 것입니다. 매니페스트 파일을 사용하면 잘못된 파일이 로드되는 것을 피할 수 있습니다.</p>
+                    </li><li class="listitem">
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">String contains invalid or unsupported UTF8 </code></pre>
+                        <p>VARCHAR 데이터 형식은 최대 3바이트의 멀티바이트 UTF-8 문자를 지원합니다. 지원되지 않거나 잘못된 문자가 로드 데이터에 포함된 경우, ACCEPTINVCHARS 옵션을 사용하여 잘못된 각각의 문자를 지정된 다른 문자로 대체할 수 있습니다.</p>
+                    </li></ul></div>
+                <p>로드의 또 다른 문제는 감지하기가 더 어렵습니다. 로드로 인해 예기치 않은 결과가 발생했습니다. 이 문제를 조사하려면 다음 명령을 실행하여 CUSTOMER 테이블을 쿼리합니다.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select c_custkey, c_name, c_address        
+from customer
+order by c_custkey
+limit 10;
+</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> c_custkey |          c_name           |         c_address
+-----------+---------------------------+---------------------------
+         2 | Customer#000000002        | XSTf4,NCwDVaWNe6tE
+         2 | Customer#000000002        | XSTf4,NCwDVaWNe6tE
+         3 | Customer#000000003        | MG9kdTD
+         3 | Customer#000000003        | MG9kdTD
+         4 | Customer#000000004        | XxVSJsL
+         4 | Customer#000000004        | XxVSJsL
+         5 | Customer#000000005        | KvpyuHCplrB84WgAi
+         5 | Customer#000000005        | KvpyuHCplrB84WgAi
+         6 | Customer#000000006        | sKZz0CsnMD7mp4Xd0YrBvx
+         6 | Customer#000000006        | sKZz0CsnMD7mp4Xd0YrBvx
+(10 rows)</code></pre>
+                <p>행들이 고유해야 하지만 중복된 행이 있습니다.</p>
+                <p>예상치 못한 결과를 검사하는 또 다른 방법은 로드된 행의 수를 확인하는 것입니다. 이 경우, 100,000개의 행이 로드되어야 하지만 로드 메시지는 112,497개의 레코드를 로드했다고 보고했습니다. 이 여분의 행은 불필요한 파일인 <code class="code">customer-fw.tbl0000.bak</code>을 COPY가 로드했기 때문에 로드되었습니다.</p>
+                <p>이 연습에서는 잘못된 파일이 로드되는 것을 방지하기 위해 매니페스트 파일을 사용합니다.</p>
+                 
+                    <h6>ACCEPTINVCHARS</h6>
+                    <p>기본적으로 COPY는 열의 데이터 형식이 지원하지 않는 문자가 있으면 행을 건너뛰고 오류를 반환합니다. 잘못된 UTF-8 문자에 대한 자세한 내용은 <a href="./multi-byte-character-load-errors.html">멀티바이트 문자 로드 오류</a> 섹션을 참조하세요.</p>
+                 
+                <p>MAXERRORS 옵션을 사용하여 오류를 무시하고 로드를 계속한 다음 STL_LOAD_ERRORS를 쿼리해 잘못된 문자를 찾은 후 데이터 파일을 수정할 수 있습니다. 하지만 MAXERRORS는 로드 문제 해결에 사용하는 것이 가장 좋으며, 일반적으로 프로덕션 환경에서는 사용하지 말아야 합니다.</p>
+                <p>잘못된 문자를 관리하는 데는 일반적으로 ACCEPTINVCHARS 옵션을 택하는 것이 더 좋습니다. ACCEPTINVCHARS는 COPY에게 잘못된 각 문자를 지정된 유효한 문자로 대체하고 로드 작업을 계속하라고 명령합니다. NULL을 제외한 어떤 ASCII 문자도 대체 문자로 지정할 수 있습니다. 기본 대체 문자는 물음표(?)입니다. COPY는 멀티바이트 문자를 같은 길이의 대체 문자열로 대체합니다. 예를 들어 4바이트 문자는 <code class="code">'????'</code>로 대체됩니다.</p>
+                <p>COPY는 유효하지 않은 UTF-8 문자가 포함된 행 수를 반환합니다. 또한 영향을 받는 각 행에 대해 STL_REPLACEMENTS 시스템 테이블에 노드 조각당 최대 100행까지 항목을 추가합니다. 이후 추가되는 잘못된 UTF-8 문자 역시 변경되지만 이러한 문자의 변경 이벤트는 기록되지 않습니다.</p>
+                <p>ACCEPTINVCHARS는 VARCHAR 열에서만 유효합니다.</p>
+                <p>이 단계에서는 대체 문자 <code class="code">'^'</code>과 함께 ACCEPTINVCHARS를 추가합니다.</p>
+                 
+                    <h6>MANIFEST</h6>
+                    <p>키 접두사를 사용하여 Amazon S3에서 COPY를 실행할 때는 원치 않는 테이블이 로드될 위험이 있습니다. 예를 들어 <code class="code">'s3://mybucket/load/</code> 폴더에는 키 접두사 <code class="code">customer-fw.tbl</code>: <code class="code">customer-fw.tbl0000</code>, <code class="code">customer-fw.tbl0001</code> 등을 공유하는 8개의 데이터 파일이 포함되어 있습니다. 하지만 같은 폴더에 불필요한 파일인 <code class="code">customer-fw.tbl.log</code>와 <code class="code">customer-fw.tbl-0001.bak</code>도 포함되어 있습니다.</p>
+                 
+                <p>올바른 파일만 모두 로드하려면 매니페스트 파일을 사용하십시오. 매니페스트는 로드할 각 원본 파일의 고유한 객체 키를 명시적으로 나열하는 JSON 형식의 텍스트 파일입니다. 파일 객체는 서로 다른 폴더나 버킷에 있을 수 있지만 리전은 같아야 합니다. 자세한 내용은 <a href="./copy-parameters-data-source-s3.html#copy-manifest">MANIFEST</a> 섹션을 참조하세요.</p>
+                <p>다음은 <code class="code">customer-fw-manifest</code> 텍스트를 보여줍니다.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight"><span>{</span>
+  "entries": [
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-000"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-001"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-002"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-003"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-004"},    
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-005"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-006"}, 
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-007"} 
+    ]
+}</code></pre>
+                <div class="procedure"><h6>매니페스트 파일을 사용하여 CUSTOMER 테이블의 데이터를 로드하려면</h6><ol><li>
+                        <p>텍스트 편집기에서 파일을 엽니다.<code class="code">customer-fw-manifest</code></p>
+                    </li><li>
+                        <p><code class="replaceable">&lt;your-bucket-name&gt;</code>을 버킷의 이름으로 바꿉니다.</p>
+                    </li><li>
+                        <p>파일을 저장합니다.</p>
+                    </li><li>
+                        <p>파일을 버킷의 로드 폴더에 업로드합니다.</p>
+                    </li><li>
+                        <p>다음 COPY 명령을 실행합니다.</p>
+                        
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy customer from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw-manifest'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, c_region :12, c_phone:15,c_mktsegment:10'
+maxerror 10 
+acceptinvchars as '^'
+manifest;</code></pre>
+                        
+                    </li></ol></div>
+             
+             
+                <h3 id="tutorial-loading-load-dwdate">DATEFORMAT을 사용하여 DWDATE 테이블 로드</h3>
+
+                <p>이 단계에서는 DELIMITER 및 DATEFORMAT 옵션을 사용하여 DWDATE 테이블을 로드합니다.</p>
+                
+                <p>DATE 및 TIMESTAMP 열을 로드할 때 COPY는 기본 형식(날짜는 YYYY-MM-DD, 타임스탬프는 YYYY-MM-DD HH:MI:SS)을 예상합니다. 로드 데이터가 기본 형식을 사용하지 않는 경우, DATEFORMAT 및 TIMEFORMAT을 사용하여 형식을 지정할 수 있습니다.</p>
+                <p>발췌한 다음 예는 DWDATE 테이블의 날짜 형식을 보여 줍니다. 열 2의 날짜 형식이 일관되지 않다는 점을 눈여겨보십시오.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">19920104	1992-01-04          Sunday		January	1992	199201	Jan1992	1	4	4	1...
+19920112	January 12, 1992	Monday		January	1992	199201	Jan1992	2	12	12	1...
+19920120	January 20, 1992	Tuesday	    January	1992	199201	Jan1992	3	20	20	1...</code></pre>
+                 
+                    <h6>DATEFORMAT</h6>
+                    <p>날짜 형식은 하나만 지정할 수 있습니다. 로드 데이터에 서로 다른 열에서 일관되지 않은 형식이 포함되어 있거나 형식이 로드 시에 알려지지 않은 경우, <code class="code">'auto'</code> 인수와 함께 DATEFORMAT을 사용합니다. <code class="code">'auto'</code>가 지정되면 COPY는 유효한 날짜 또는 시간 형식을 인식하여 이를 기본 형식으로 변환합니다. <code class="code">'auto'</code> 옵션은 DATEFORMAT 및 TIMEFORMAT 문자열 사용 시 지원되지 않는 몇 가지 형식을 인식합니다. 자세한 내용은 <a href="./automatic-recognition.html">DATEFORMAT 및 TIMEFORMAT 옵션의 자동 인식 사용</a> 섹션을 참조하세요.</p>
+                 
+                <p>DWDATE 테이블을 로드하려면 다음 COPY 명령을 실행합니다.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy dwdate from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/dwdate-tab.tbl'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+delimiter '\t' 
+dateformat 'auto';</code></pre>
+                
+             
+             
+                <h3 id="tutorial-loading-load-lineorder">여러 파일을 사용하여 LINEORDER 테이블 로드</h3>
+
+                <p>이 단계에서는 GZIP 및 COMPUPDATE 옵션을 사용하여 LINEORDER 테이블을 로드합니다.</p>
+                <p>이 연습에서는 단일 데이터 파일에서 LINEORDER 테이블을 로드한 다음 여러 파일에서 다시 로드합니다. 이렇게 하면 두 방법의 로드 시간을 비교할 수 있습니다.</p>
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>참고</h6></div><div class="awsdocs-note-text"><p>LINEORDER 테이블을 로드하기 위한 파일은 AWS 샘플 버킷에서 제공됩니다. 이 단계에서는 파일을 업로드하지 않아도 됩니다.</p></div></div>
+                 
+                    <h6>GZIP, LZOP 및 BZIP2</h6>
+                    <p>gzip, lzop 또는 bzip2 압축 형식을 사용하여 파일을 압축할 수 있습니다. 압축된 파일에서 로드하면 COPY가 로드 프로세스 중에 파일 압축을 해제합니다. 파일을 압축하면 스토리지 공간이 절약되고 업로드 시간이 단축됩니다.</p>
+                 
+                 
+                    <h6>COMPUPDATE</h6>
+                    <p>압축 인코딩 없는 빈 테이블을 로드하는 경우, COPY는 로드 데이터를 분석하여 최적의 인코딩을 결정합니다. 그런 다음 로드를 시작하기 전에 이러한 인코딩을 사용하도록 테이블을 변경합니다. 이 분석 프로세스는 시간이 걸리지만 테이블당 최대 한 번 실행됩니다. 시간을 절약하려면 COMPUPDATE를 꺼서 이 단계를 건너뛸 수 있습니다. COPY 시간의 정확한 평가가 가능하도록 하려면 이 단계에서 COMPUPDATE를 끄십시오.</p>
+                 
+                 
+                    <h6>여러 파일</h6>
+                    <p>COPY 명령은 단일 파일에서 로드하는 대신 여러 파일에서 데이터를 병렬로 로드할 때 데이터를 매우 효율적으로 로드할 수 있습니다. 파일 수가 클러스터에 있는 조각 수의 배수가 되도록 데이터를 파일로 분할할 수 있습니다. 이 경우 Amazon Redshift는 워크로드를 분할하고 슬라이스 간에 데이터를 균등하게 배포합니다. 노드당 조각 수는 클러스터의 노드 크기에 따라 달라집니다. 각 노드 크기의 슬라이스 수에 대한 자세한 내용은 <em>Amazon Redshift 관리 가이드</em>의 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#rs-about-clusters-and-nodes">클러스터 및 노드 정보</a> 섹션을 참조하세요.</p>
+                 
+                <p>예를 들어 이 자습서에서 사용하는 dc2.large 컴퓨팅 노드는 각각 조각이 2개입니다. 따라서 4노드 클러스터는 총 8개의 조각을 갖게 됩니다. 앞 단계에서는 파일이 매우 작음에도 불구하고 여덟 개의 파일에 로드 데이터가 포함되었습니다. 이 단계에서는 큰 단일 파일에서 로드할 때와 여러 파일에서 로드할 때의 시간 차이를 비교합니다.</p>
+                <p>이 자습서에서 사용할 파일에는 약 1,500만 개의 레코드가 포함되며, 약 1.2GB를 차지합니다. 이 파일들은 Amazon Redshift 규모에서는 매우 작지만 여러 파일에서 로드할 경우의 성능상 장점을 보여주는 데는 충분합니다. 파일을 다운로드한 다음 Amazon S3에 업로드하는 데 필요한 시간이 이 튜토리얼에서 다루기에 너무 큽니다. 따라서 AWS 샘플 버킷에서 직접 파일을 로드합니다.</p>
+                <p>다음 스크린샷은 LINEORDER를 위한 데이터 파일을 보여 줍니다.</p>
+
+                <div class="mediaobject">
+                     
+                        <img src="images/tutorial-load-lineorder-files.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                     
+                </div>
+                <div class="procedure"><h6>여러 파일에서의 COPY 성능을 평가하려면</h6><ol><li>
+                        <p>다음 명령을 실행하여 단일 파일에서 COPY합니다. 버킷 이름은 변경하지 마십시오.</p>
+                        
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy lineorder from 's3://awssampledb/load/lo/lineorder-single.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+gzip
+compupdate off
+region 'us-east-1';</code></pre>
+                        
+                    </li><li>
+                        <p>결과는 다음과 비슷해야 합니다. 실행 시간을 적어 둡니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Warnings:
+Load into table 'lineorder' completed, 14996734 record(s) loaded successfully.
+
+0 row(s) affected.
+copy executed successfully
+
+Execution time: 51.56s</code></pre>
+                    </li><li>
+                        <p>다음 명령을 실행하여 여러 파일에서 COPY합니다. 버킷 이름은 변경하지 마십시오.</p>
+                        
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy lineorder from 's3://awssampledb/load/lo/lineorder-multi.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+gzip
+compupdate off
+region 'us-east-1';
+</code></pre>
+                        
+                    </li><li>
+                        <p>결과는 다음과 비슷해야 합니다. 실행 시간을 적어 둡니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Warnings:
+Load into table 'lineorder' completed, 14996734 record(s) loaded successfully.
+
+0 row(s) affected.
+copy executed successfully
+
+Execution time: 17.7s</code></pre>
+                    </li><li>
+                        <p>실행 시간을 비교합니다.</p>
+                        <p>우리 예에서는 1,500만 개의 레코드를 로드하는 시간이 51.56초에서 17.7초로 줄어들어 65.7퍼센트 단축되었습니다.</p>
+                        <p>이 결과는 4노드 클러스터 사용을 기준으로 한 것입니다. 클러스터에 더 많은 노드가 있는 경우, 시간이 더욱 단축됩니다. 수십에서 수백 개의 노드가 있는 일반적인 Amazon Redshift 클러스터의 경우 이 차이는 더 크게 벌어집니다. 단일 노드 클러스터인 경우, 실행 시간의 차이가 거의 없습니다.</p>
+                    </li></ol></div>
+             
+             
+                <h3 id="tutorial-loading-next-step6">다음 단계</h3>
+
+                <p><a href="./tutorial-loading-data-vacuum.html">6단계: 데이터베이스 vacuum 및 분석</a></p>
+             
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="주의" /> <strong>javascript가 브라우저에서 비활성화되거나 사용이 불가합니다.</strong></p><p>AWS 설명서를 사용하려면 Javascript가 활성화되어야 합니다. 지침을 보려면 브라우저의 도움말 페이지를 참조하십시오.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">문서 규칙</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-loading-data-create-tables.html">4단계: 샘플 테이블 생성</div><div id="next" class="next-link" accesskey="n" href="./tutorial-loading-data-vacuum.html">6단계: 데이터베이스 vacuum 및 분석</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 예</div><div class="content"><p>칭찬해 주셔서 감사합니다!</p><p>잠깐 시간을 내어 좋았던 부분을 알려 주시면 더 열심히 만들어 보겠습니다.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-run-copy.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 아니요</div><div class="content"><p>이 페이지에 작업이 필요하다는 점을 알려 주셔서 감사합니다. 실망시켜 드려 죄송합니다.</p><p>잠깐 시간을 내어 설명서를 향상시킬 수 있는 방법에 대해 말씀해 주십시오.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-run-copy.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

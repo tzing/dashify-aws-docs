@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ko-KR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>스칼라 Lambda UDF 생성 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="udf-creating-a-lambda-sql-udf" /><meta name="default_state" content="udf-creating-a-lambda-sql-udf" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="description" content="Amazon Redshift는 AWS Lambda에 정의된 사용자 정의 함수를 SQL 쿼리의 일부로 사용할 수 있습니다. Java, Go, PowerShell, Node.js, C#, Python 및 Ruby와 같이 Lambda에서 지원하는 모든 프로그래밍 언어로 스칼라 Lambda UDF를 작성할 수 있습니다. 또는 사용자 정의 런타임을 사용할 수 있습니다." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="데이터베이스 개발자 안내서" /><meta name="abstract" content="페타바이트 규모의 엔터프라이즈급 완전관리형 데이터 웨어하우징 서비스인 Amazon Redshift로 데이터 웨어하우스를 생성하고 관리합니다." /><meta name="guide-locale" content="ko_kr" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="데이터베이스 개발자 안내서" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="데이터베이스 개발자 안내서" /><meta id="panorama-serviceConsolePage" value="스칼라 Lambda UDF 생성" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>스칼라 Lambda UDF 생성 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#udf-creating-a-lambda-sql-udf" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,데이터 웨어하우스,샘플 데이터,데이터베이스,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "데이터베이스 개발자 안내서",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "사용자 정의 함수 생성",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/user-defined-functions.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "스칼라 Lambda UDF 생성",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/user-defined-functions.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#udf-creating-a-lambda-sql-udf" target="_blank" rel="noopener noreferrer" title="pdf-tooltip"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">aws-documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">데이터베이스 개발자 안내서</a></div><div id="page-toc-src"><a href="#udf-lambda-register">Lambda UDF 등록</a><a href="#udf-lambda-security">Lambda UDF 보안 및 권한 관리</a><a href="#udf-lambda-authorization">Lambda UDF에 대한 권한 부여 파라미터 구성</a><a href="#udf-lambda-json">Amazon Redshift와 Lambda 간의 JSON 인터페이스 사용</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="udf-creating-a-lambda-sql-udf">스칼라 Lambda UDF 생성</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Amazon Redshift는 AWS Lambda에 정의된 사용자 정의 함수를 SQL 쿼리의 일부로 사용할 수 있습니다. Java, Go, PowerShell, Node.js, C#, Python 및 Ruby와 같이 Lambda에서 지원하는 모든 프로그래밍 언어로 스칼라 Lambda UDF를 작성할 수 있습니다. 또는 사용자 정의 런타임을 사용할 수 있습니다.</p><p>Lambda UDF는 Lambda에서 정의 및 관리되며 Amazon Redshift에서 이러한 UDF를 호출하기 위한 액세스 권한을 제어할 수 있습니다. 동일한 쿼리에서 여러 Lambda 함수를 호출하거나 동일한 함수를 여러 번 호출할 수 있습니다.</p><p>스칼라 함수가 지원되는 SQL 문의 절에서 Lambda UDF를 사용합니다. SELECT, UPDATE, INSERT 또는 DELETE와 같은 모든 SQL 문에서 Lambda UDF를 사용할 수도 있습니다.</p><div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>참고</h6></div><div class="awsdocs-note-text"><p>Lambda UDF를 사용하면 Lambda 서비스에서 추가 요금이 발생할 수 있습니다. 발생 여부는 Lambda 요청 수(UDF 호출) 및 Lambda 프로그램 실행의 총 기간과 같은 요인에 따라 다릅니다. 그러나 Amazon Redshift에서 Lambda UDF를 사용하기 위한 추가 요금은 없습니다. AWS Lambda 요금에 대한 자세한 내용은 <a href="https://aws.amazon.com/lambda/pricing" rel="noopener noreferrer" target="_blank"><span>AWS Lambda 요금</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>을 참조하세요.</p><p>Lambda 요청 수는 Lambda UDF가 사용되는 특정 SQL 문 절에 따라 다릅니다. 예를 들어 함수가 다음과 같은 WHERE 절에서 사용된다고 가정합니다. <code class="code"></code> </p><p><code class="code">SELECT a, b FROM t1 WHERE lambda_multiply(a, b) = 64; SELECT a, b FROM t1 WHERE
+               a*b = lambda_multiply(2, 32) </code></p><p>이 경우 Amazon Redshift는 각각에 대해 첫 번째 SELECT 문을 호출하고 두 번째 SELECT 문을 한 번만 호출합니다.</p><p>그러나 쿼리의 프로젝션 부분에서 UDF를 사용하면 결과 집합의 모든 정규화된 또는 집계된 행에 대해 한 번만 Lambda 함수를 호출할 수 있습니다.</p></div></div>
+         <h2 id="udf-lambda-register">Lambda UDF 등록</h2>
+      <p> <a href="./r_CREATE_EXTERNAL_FUNCTION.html">CREATE EXTERNAL FUNCTION</a> 명령은 다음 파라미터를 생성합니다.</p>
+      <div class="itemizedlist">
+          
+          
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>(옵션) 데이터 형식이 있는 인수 목록입니다.</p>
+         </li><li class="listitem">
+            <p>반환 데이터 형식 1개</p>
+         </li><li class="listitem">
+            <p>Amazon Redshift에서 호출하는 외부 함수의 한 함수 이름입니다.</p>
+         </li><li class="listitem">
+            <p>Amazon Redshift 클러스터에서 Lambda를 수임하고 호출할 권한이 있는 한 IAM 역할입니다.</p>
+         </li><li class="listitem">
+            <p>Lambda UDF가 호출하는 한 Lambda 함수 이름입니다.</p>
+         </li></ul></div>
+         <p>CREATE EXTERNAL FUNCTION에 대한 자세한 내용은 <a href="./r_CREATE_EXTERNAL_FUNCTION.html">CREATE EXTERNAL FUNCTION</a> 섹션을 참조하세요.</p>
+      <p>이 함수의 입력 및 반환 데이터 형식은 모든 표준 Amazon Redshift 데이터 형식일 수 있습니다.</p>
+      <p>Amazon Redshift는 외부 함수가 일괄 처리된 인수와 결과를 보내고 받을 수 있도록 합니다.</p>
+       
+         <h2 id="udf-lambda-security">Lambda UDF 보안 및 권한 관리</h2>
+         <p>Lambda UDF를 생성하려면 LANGUAGE EXFUNC에 대한 사용 권한이 있는지 확인합니다. 특정 사용자, 그룹 또는 퍼블릭에 명시적으로 USAGE ON LANGUAGE EXFUNC를 부여하거나 USAGE ON LANGUAGE EXFUNC를 취소해야 합니다.</p>
+            <p>다음 예는 EXFUNC에 대한 사용 권한을 PUBLIC에 부여합니다.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">grant usage on language exfunc to PUBLIC; </code></pre>
+         <p>다음 예는 PUBLIC에서의 exfunc 사용 권한을 취소한 후 사용자 그룹 lambda_udf_devs에 사용을 부여합니다.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">revoke usage on language exfunc from PUBLIC;
+grant usage on language exfunc to group lambda_udf_devs;</code></pre>
+         <p>Lambda UDF를 실행하려면 호출된 각 함수에 대한 권한이 있는지 확인합니다. 기본적으로 새로운 Lambda UDF를 실행하는 권한은 PUBLIC에 허용됩니다. 사용을 제한하려면 함수에 대해 PUBLIC에서 이 권한을 취소합니다. 그런 다음 특정 사용자나 그룹에 권한을 허용합니다.</p>
+           <p>다음 예는 PUBLIC의 exfunc_sum 함수 실행 권한을 취소합니다. 그런 다음 사용자 그룹 lambda_udf_devs에 사용 권한을 부여합니다.</p>
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">revoke execute on function exfunc_sum(int, int) from PUBLIC;
+grant execute on function exfunc_sum(int, int) to group lambda_udf_devs;</code></pre>
+         <p>기본적으로 수퍼유저는 모든 권한을 갖습니다.</p>
+               <p>권한 부여 및 취소에 대한 자세한 내용은 <a href="./r_GRANT.html">GRANT</a> 및 <a href="./r_REVOKE.html">REVOKE</a> 섹션을 참조하세요.</p>
+       
+         <h2 id="udf-lambda-authorization">Lambda UDF에 대한 권한 부여 파라미터 구성</h2>
+         
+         <p>CREATE EXTERNAL FUNCTION 명령은 AWS Lambda에서 Lambda 함수를 호출할 수 있는 권한이 필요합니다. 권한 부여를 시작하려면 CREATE EXTERNAL FUNCTION 명령을 실행할 때 AWS Identity and Access Management(IAM) 역할을 지정합니다. IAM 역할에 대한 자세한 내용은 <em>IAM 사용 설명서</em>의 <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html">IAM 역할</a> 단원을 참조하세요.</p>
+            <p>클러스터에 연결된 Lambda 함수를 호출할 수 있는 권한이 있는 기존 IAM 역할이 있는 경우 명령에 대한 IAM_ROLE 파라미터에서 역할 Amazon 리소스 이름(ARN)을 대체할 수 있습니다. 다음 섹션에서는 CREATE EXTERNAL FUNCTION 명령에서 IAM 역할을 사용하는 단계를 설명합니다.</p>
+         
+          
+            <h3 id="udf-lambda-create-iam">Lambda용 IAM 역할 생성</h3>
+            <p>IAM 역할에는 Lambda 함수를 호출할 수 있는 권한이 필요합니다. IAM 역할을 생성하는 동안 다음 방법 중 하나로 권한을 제공합니다.</p>
+                  <div class="itemizedlist">
+                      
+                      
+                  <ul class="itemizedlist"><li class="listitem"><p>IAM 역할을 생성하는 동안 [<b>권한 정책 연결(Attach permissions policy)</b>] 페이지에서 <code class="code">AWSLambdaRole</code> 정책을 연결합니다. <code class="code">AWSLambdaRole</code> 정책은 최소 요구 사항인 Lambda 함수를 호출할 수 있는 권한을 부여합니다. 자세한 내용과 기타 정책은 <em>AWS Lambda 개발자 안내서</em>의 <a href="https://docs.aws.amazon.com/lambda/latest/dg/access-control-identity-based.html">AWS Lambda에 대한 자격 증명 기반 IAM 정책</a> 섹션을 참조하세요.</p></li><li class="listitem"><p>모든 리소스 또는 해당 함수의 ARN이 있는 특정 Lambda 함수의 <code class="code">lambda:InvokeFunction</code> 권한으로 IAM 역할에 연결할 사용자 정의 정책을 생성합니다. 정책을 생성하는 방법에 대한 자세한 내용은 <em>IAM User Guide</em>의 <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_create.html">Creating IAM policies</a> 섹션을 참조하세요.</p>
+                       <p>다음 예제 정책은 특정 Lambda 함수에서 Lambda 호출을 사용합니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+    "Version": "2012-10-17",
+    "Statement": [
+        <span>{</span>
+            "Sid": "Invoke",
+            "Effect": "Allow",
+            "Action": [
+                "lambda:InvokeFunction"
+            ],
+            "Resource": "arn:aws:lambda:us-west-2:123456789012:function:my-function"
+        }
+    ]
+}</code></pre>
+                        <p>Lambda 함수의 리소스에 대한 자세한 내용은 <em>IAM API Reference</em>의 <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-api-permissions-ref.html">Resources and conditions for Lambda actions</a> 섹션을 참조하세요.</p>
+                        <p>필요한 권한으로 사용자 지정 정책을 생성한 후 IAM 역할을 생성하는 동안 [<b>권한 정책 연결(Attach permissions policy)</b>] 페이지에서 IAM 역할에 정책을 연결할 수 있습니다.</p></li></ul></div>
+            <p>IAM 역할을 생성하는 단계는 <em>Amazon Redshift 관리 가이드</em>의 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/authorizing-redshift-service.html">사용자를 대신하여 기타 AWS 서비스에 액세스하도록 Amazon Redshift에 권한 부여</a> 섹션을 참조하세요.</p>
+              <p>새 IAM 역할을 생성하지 않으려면 앞에서 언급한 권한을 기존 IAM 역할에 추가할 수 있습니다.</p>
+                
+        
+          
+            <h3 id="udf-lambda-associate-iam">IAM 역할을 클러스터와 연결</h3>
+              <p>클러스터에 IAM 역할 연결 Amazon Redshift 관리 콘솔, CLI 또는 API를 사용하여 역할을 클러스터에 추가하거나, 클러스터와 연결된 역할을 확인할 수 있습니다. 자세한 내용은 <em>Amazon Redshift 관리 가이드</em>의 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/copy-unload-iam-role.html">클러스터와 IAM 역할 연결</a> 섹션을 참조하세요.</p>
+          
+            
+             
+               <h3 id="udf-lambda-include-iam">명령에 IAM 역할 포함</h3>
+               <p>CREATE EXTERNAL FUNCTION 명령에 IAM 역할 ARN을 포함합니다. IAM 역할을 생성하면 IAM이 생성된 역할의 Amazon 리소스 이름(ARN)을 반환합니다. IAM 역할을 지정하려면 역할 ARN에 <code class="code">IAM_ROLE</code> 파라미터를 제공합니다. 다음은 <code class="code">IAM_ROLE</code> 파라미터에 대한 구문을 보여줍니다.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">IAM_ROLE 'arn:aws:iam::aws-account-id:role/role-name'</code></pre>
+               <p>동일한 리전 내의 다른 계정에 있는 Lambda 함수를 호출하려면 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/authorizing-redshift-service.html#authorizing-redshift-service-chaining-roles.html">Amazon Redshift에서 IAM 역할 연결</a>을 참조하세요.</p>
+             
+       
+         <h2 id="udf-lambda-json">Amazon Redshift와 AWS Lambda 간의 JSON 인터페이스 사용</h2>
+         
+         <p>Amazon Redshift는 통신하는 모든 Lambda 함수에 대해 공통 인터페이스를 사용합니다.</p>
+         <p>다음 표는 JSON 페이로드에 대해 예상할 수 있는 지정된 Lambda 함수의 입력 필드 목록을 보여줍니다.</p>
+         
+         
+         <div class="table-container"><div class="table-contents"><table id="w319aac17c21c17b7"><thead>
+                  <tr>
+                     <th>필드 이름</th>
+                     <th>
+                        <p>설명</p>
+                     </th>
+                     <th>값 범위</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">request_id</td>
+                     <td tabindex="-1">각 호출 요청을 고유하게 식별하는 UUID(Universally Unique Identifier)입니다.</td>
+                     <td tabindex="-1">
+                        <p>유효한 UUID입니다.</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>클러스터</p>
+                     </td>
+                     <td tabindex="-1">클러스터의 전체 Amazon 리소스 이름(ARN)입니다.</td>
+                     <td tabindex="-1">
+                        <p>유효한 클러스터 ARN입니다.</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>사용자</p>
+                     </td>
+                     <td tabindex="-1">호출하는 사용자의 이름입니다.</td>
+                     <td tabindex="-1">유효한 사용자 이름입니다.</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>데이터베이스</p>
+                     </td>
+                     <td tabindex="-1">쿼리가 실행 중인 데이터베이스의 이름입니다.</td>
+                     <td tabindex="-1">유효한 데이터베이스 이름입니다.</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>external_function</p>
+                     </td>
+                     <td tabindex="-1">호출하는 외부 함수의 정규화된 이름입니다.</td>
+                     <td tabindex="-1">유효한 정규화된 함수 이름입니다.</td>
+                  </tr>
+                 
+                  
+                  <tr>
+                     <td tabindex="-1">
+                        <p>query_id</p>
+                     </td>
+                     <td tabindex="-1">호출하는 쿼리의 쿼리 ID입니다.</td>
+                     <td tabindex="-1">유효한 쿼리 ID입니다.</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>num_records</p>
+                     </td>
+                     <td tabindex="-1">페이로드의 인수 수입니다.</td>
+                     <td tabindex="-1">값 1 - 2^64입니다.</td>
+                  </tr>
+                 
+                  <tr>
+                     <td tabindex="-1">
+                        <p>인수</p>
+                     </td>
+                     <td tabindex="-1">지정된 형식의 데이터 페이로드입니다.</td>
+                     <td tabindex="-1">배열 형식의 데이터는 JSON 배열이어야 합니다. 인수의 수가 1보다 크면 각 요소는 배열인 레코드입니다. Amazon Redshift는 배열을 사용하여 페이로드의 레코드 순서를 유지합니다.</td>
+                  </tr>
+               </table></div></div>
+         <p>JSON 배열의 순서에 따라 일괄 처리 순서가 결정됩니다. Lambda 함수는 인수를 반복적으로 처리하고 정확한 수의 레코드를 생성해야 합니다. 다음은 페이로드의 예입니다.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+  "request_id" : "23FF1F97-F28A-44AA-AB67-266ED976BF40",
+  "cluster" : "arn:aws:redshift:xxxx",
+  "user" : "adminuser",
+  "database" : "db1",
+  "external_function": "public.foo",
+  "query_id" : 5678234,
+  "num_records" : 4,
+  "arguments" : [
+     [ 1, 2 ],
+     [ 3, null],
+     null,
+     [ 4, 6]
+   ]
+ }</code></pre>
+         <p>Lambda 함수의 반환 출력에는 다음 필드가 포함됩니다.</p>
+         
+         <div class="table-container"><div class="table-contents"><table id="w319aac17c21c17c15"><thead>
+                  <tr>
+                     <th>필드 이름</th>
+                     <th>
+                        <p>설명</p>
+                     </th>
+                     <th>값 범위</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">success</td>
+                     <td tabindex="-1">함수의 성공 또는 실패 표시입니다.</td>
+                     <td tabindex="-1">
+                        <p>값 <code class="code">"true"</code> 또는 <code class="code">"false"</code>입니다.</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>error_msg</p>
+                     </td>
+
+                     <td tabindex="-1">성공 값이 <code class="code">"false"</code>이면 오류 메시지(함수가 실패한 경우)입니다. 그렇지 않으면 이 필드는 무시됩니다.</td>
+
+                     <td tabindex="-1">
+                        <p>유효한 메시지입니다.</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>num_records</p>
+                     </td>
+                     <td tabindex="-1">페이로드의 레코드 수입니다.</td>
+                     <td tabindex="-1">값 1 - 2^64입니다.</td>
+                  </tr>
+                 
+                  <tr>
+                     <td tabindex="-1">
+                        <p>결과</p>
+                     </td>
+                     <td tabindex="-1">지정된 형식의 호출 결과입니다.</td>
+                     <td tabindex="-1">해당 사항 없음</td>
+                  </tr>
+               </table></div></div>
+         <p>다음은 Lambda 함수 출력의 예입니다.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+  "success": true,   // true indicates the call succeeded
+  "error_msg" : "my function isn't working",  // shall only exist when success != true
+  "num_records": 4,      // number of records in this payload
+  "results" : [
+     1,
+     4,
+     null,
+     7
+   ]
+}</code></pre>
+         <p>SQL 쿼리에서 Lambda 함수를 호출할 때 Amazon Redshift는 다음 사항을 고려하여 연결 보안을 보장합니다.</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem"><p>GRANT 및 REVOKE 권한. UDF 보안 및 권한에 대한 자세한 내용은 <a href="./udf-security-and-privileges.html">UDF 보안 및 권한</a> 섹션을 참조하세요.</p></li><li class="listitem"><p>Amazon Redshift는 지정된 Lambda 함수에 최소 데이터 집합만 제출합니다.</p></li><li class="listitem"><p>Amazon Redshift는 지정된 IAM 역할을 가진 지정된 Lambda 함수만 호출합니다.</p></li></ul></div>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="주의" /> <strong>javascript가 브라우저에서 비활성화되거나 사용이 불가합니다.</strong></p><p>AWS 설명서를 사용하려면 Javascript가 활성화되어야 합니다. 지침을 보려면 브라우저의 도움말 페이지를 참조하십시오.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">문서 규칙</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./udf-logging-messages.html">오류 및 경고 로깅</div><div id="next" class="next-link" accesskey="n" href="./udf-example-uses.html">UDF 사용 예</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 예</div><div class="content"><p>칭찬해 주셔서 감사합니다!</p><p>잠깐 시간을 내어 좋았던 부분을 알려 주시면 더 열심히 만들어 보겠습니다.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 아니요</div><div class="content"><p>이 페이지에 작업이 필요하다는 점을 알려 주셔서 감사합니다. 실망시켜 드려 죄송합니다.</p><p>잠깐 시간을 내어 설명서를 향상시킬 수 있는 방법에 대해 말씀해 주십시오.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

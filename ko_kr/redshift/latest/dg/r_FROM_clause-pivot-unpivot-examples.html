@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ko-KR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>PIVOT 및 UNPIVOT 예 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="r_FROM_clause-pivot-unpivot-examples" /><meta name="default_state" content="r_FROM_clause-pivot-unpivot-examples" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" /><meta name="description" content="PIVOT을 사용하여 행을 열로 출력하거나 UNPIVOT을 사용하여 열을 행으로 출력하는 예가 포함되어 있습니다." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="데이터베이스 개발자 안내서" /><meta name="abstract" content="페타바이트 규모의 엔터프라이즈급 완전관리형 데이터 웨어하우징 서비스인 Amazon Redshift로 데이터 웨어하우스를 생성하고 관리합니다." /><meta name="guide-locale" content="ko_kr" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="데이터베이스 개발자 안내서" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="데이터베이스 개발자 안내서" /><meta id="panorama-serviceConsolePage" value="PIVOT 및 UNPIVOT 예" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>PIVOT 및 UNPIVOT 예 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#r_FROM_clause-pivot-unpivot-examples" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,데이터 웨어하우스,샘플 데이터,데이터베이스,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "데이터베이스 개발자 안내서",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "SQL 참조",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm_chap_SQLCommandRef.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "SQL 명령",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c_SQL_commands.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "SELECT",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_SELECT_synopsis.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "FROM 절",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_FROM_clause30.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 8,
+        "name" : "PIVOT 및 UNPIVOT 예",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_FROM_clause30.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#r_FROM_clause-pivot-unpivot-examples" target="_blank" rel="noopener noreferrer" title="pdf-tooltip"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">aws-documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">데이터베이스 개발자 안내서</a></div><div id="page-toc-src"><a href="#r_FROM_clause-pivot-examples">PIVOT 예</a><a href="#r_FROM_clause-unpivot-examples">UNPIVOT 예</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="r_FROM_clause-pivot-unpivot-examples">PIVOT 및 UNPIVOT 예</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>PIVOT 및 UNPIVOT은 각각 쿼리 출력을 행에서 열로, 열에서 행으로 회전하는 FROM 절의 파라미터입니다. 테이블 쿼리 결과를 읽기 쉬운 형식으로 나타냅니다. 다음 예제에서는 테스트 데이터와 쿼리를 사용하여 사용 방법을 보여줍니다.</p><p>이러한 파라미터 및 기타 파라미터에 대한 자세한 내용은 <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_FROM_clause30.html">FROM 절</a> 단원을 참조하세요.</p>
+               <h2 id="r_FROM_clause-pivot-examples">PIVOT 예</h2>
+               <p>샘플 테이블과 데이터를 설정하고 이를 사용하여 후속 예제 쿼리를 실행합니다.</p>
+
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE part (
+    partname varchar,
+    manufacturer varchar,
+    quality int,
+    price decimal(12, 2)
+);
+
+INSERT INTO part VALUES ('prop', 'local parts co', 2, 10.00);
+INSERT INTO part VALUES ('prop', 'big parts co', NULL, 9.00);
+INSERT INTO part VALUES ('prop', 'small parts co', 1, 12.00);
+
+INSERT INTO part VALUES ('rudder', 'local parts co', 1, 2.50);
+INSERT INTO part VALUES ('rudder', 'big parts co', 2, 3.75);
+INSERT INTO part VALUES ('rudder', 'small parts co', NULL, 1.90);
+
+INSERT INTO part VALUES ('wing', 'local parts co', NULL, 7.50);
+INSERT INTO part VALUES ('wing', 'big parts co', 1, 15.20);
+INSERT INTO part VALUES ('wing', 'small parts co', NULL, 11.80);</code></pre>
+
+               <p><code class="code">price</code>에 대한 <code class="code">AVG</code> 집계가 있는 <code class="code">partname</code>에 대한 PIVOT.</p>
+   
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM (SELECT partname, price FROM part) PIVOT (
+    AVG(price) FOR partname IN ('prop', 'rudder', 'wing')
+);</code></pre>
+               <p>쿼리 결과는 다음과 같이 출력됩니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">  prop   |  rudder  |  wing
+---------+----------+---------
+ 10.33   | 2.71     | 11.50</code></pre>
+               <p>이전 예에서 결과는 열로 변환됩니다. 다음 예는 평균 가격을 열이 아닌 행으로 반환하는 <code class="code">GROUP BY</code> 쿼리를 보여줍니다.</p>
+ 
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT partname, avg(price)
+FROM (SELECT partname, price FROM part)
+WHERE partname IN ('prop', 'rudder', 'wing')
+GROUP BY partname;</code></pre>
+               <p>쿼리 결과는 다음과 같이 출력됩니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> partname |  avg
+----------+-------
+ prop     | 10.33
+ rudder   |  2.71
+ wing     | 11.50</code></pre>
+               <p>암시적 열로 <code class="code">manufacturer</code>가 있는 <code class="code">PIVOT</code> 예.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM (SELECT quality, manufacturer FROM part) PIVOT (
+    count(*) FOR quality IN (1, 2, NULL)
+);</code></pre>
+               <p>쿼리 결과는 다음과 같이 출력됩니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> manufacturer      | 1  | 2  | null
+-------------------+----+----+------
+ local parts co    | 1  | 1  |  1
+ big parts co      | 1  | 1  |  1
+ small parts co    | 1  | 0  |  2</code></pre>
+               <p> <code class="code">PIVOT</code> 정의에서 참조되지 않는 입력 테이블 열은 암시적으로 결과 테이블에 추가됩니다. 이는 앞의 예에서 <code class="code">manufacturer</code> 열의 경우입니다. 이 예는 또한 <code class="code">NULL</code>이 <code class="code">IN</code> 연산자에 유효한 값임을 보여줍니다.</p>
+               <p>위의 예에서 <code class="code">PIVOT</code>은 <code class="code">GROUP BY</code>가 포함된 다음 쿼리와 유사한 정보를 반환합니다. 차이점은 <code class="code">PIVOT</code>이 열 <code class="code">2</code>와 제조업체 <code class="code">small parts co</code>에 대해 값 <code class="code">0</code>을 반환한다는 것입니다. <code class="code">GROUP BY</code> 쿼리에는 해당 행이 없습니다. 대부분의 경우 행에 지정된 열에 대한 입력 데이터가 없으면 <code class="code">PIVOT</code>은 <code class="code">NULL</code>을 삽입합니다. 그러나 count 집계는 <code class="code">NULL</code>을 반환하지 않고 <code class="code">0</code>이 기본값입니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT manufacturer, quality, count(*)
+FROM (SELECT quality, manufacturer FROM part)
+WHERE quality IN (1, 2) OR quality IS NULL
+GROUP BY manufacturer, quality
+ORDER BY manufacturer;</code></pre>
+               <p>쿼리 결과는 다음과 같이 출력됩니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> manufacturer        | quality | count
+---------------------+---------+-------
+ big parts co        |         |     1
+ big parts co        |       2 |     1
+ big parts co        |       1 |     1
+ local parts co      |       2 |     1
+ local parts co      |       1 |     1
+ local parts co      |         |     1
+ small parts co      |       1 |     1
+ small parts co      |         |     2</code></pre>
+               <p> PIVOT 연산자는 집계 표현식과 <code class="code">IN</code> 연산자의 각 값에 대한 선택적 별칭을 허용합니다. 별칭을 사용하여 열 이름을 사용자 지정합니다. 집계 별칭이 없는 경우 <code class="code">IN</code> 목록 별칭이 사용됩니다. 그렇지 않으면 이름을 구분하기 위해 집계 별칭이 밑줄과 함께 열 이름에 추가됩니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM (SELECT quality, manufacturer FROM part) PIVOT (
+    count(*) AS count FOR quality IN (1 AS high, 2 AS low, NULL AS na)
+);</code></pre>
+               <p>쿼리 결과는 다음과 같이 출력됩니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> manufacturer      | high_count  | low_count | na_count
+-------------------+-------------+-----------+----------
+ local parts co    |           1 |         1 |        1
+ big parts co      |           1 |         1 |        1
+ small parts co    |           1 |         0 |        2</code></pre>
+               
+               
+               
+    <p>다음 샘플 테이블과 데이터를 설정하고 이를 사용하여 후속 예제 쿼리를 실행합니다. 데이터는 여러 호텔의 예약 날짜를 나타냅니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE bookings (
+    booking_id int,
+    hotel_code char(8),
+    booking_date date,
+    price decimal(12, 2)
+);
+
+INSERT INTO bookings VALUES (1, 'FOREST_L', '02/01/2023', 75.12);
+INSERT INTO bookings VALUES (2, 'FOREST_L', '02/02/2023', 75.00);
+INSERT INTO bookings VALUES (3, 'FOREST_L', '02/04/2023', 85.54);
+
+INSERT INTO bookings VALUES (4, 'FOREST_L', '02/08/2023', 75.00);
+INSERT INTO bookings VALUES (5, 'FOREST_L', '02/11/2023', 75.00);
+INSERT INTO bookings VALUES (6, 'FOREST_L', '02/14/2023', 90.00);
+
+INSERT INTO bookings VALUES (7, 'FOREST_L', '02/21/2023', 60.00);
+INSERT INTO bookings VALUES (8, 'FOREST_L', '02/22/2023', 85.00);
+INSERT INTO bookings VALUES (9, 'FOREST_L', '02/27/2023', 90.00);
+
+INSERT INTO bookings VALUES (10, 'DESERT_S', '02/01/2023', 98.00);
+INSERT INTO bookings VALUES (11, 'DESERT_S', '02/02/2023', 75.00);
+INSERT INTO bookings VALUES (12, 'DESERT_S', '02/04/2023', 85.00);
+
+INSERT INTO bookings VALUES (13, 'DESERT_S', '02/05/2023', 75.00);
+INSERT INTO bookings VALUES (14, 'DESERT_S', '02/06/2023', 34.00);
+INSERT INTO bookings VALUES (15, 'DESERT_S', '02/09/2023', 85.00);
+
+INSERT INTO bookings VALUES (16, 'DESERT_S', '02/12/2023', 23.00);
+INSERT INTO bookings VALUES (17, 'DESERT_S', '02/13/2023', 76.00);
+INSERT INTO bookings VALUES (18, 'DESERT_S', '02/14/2023', 85.00);
+
+INSERT INTO bookings VALUES (19, 'OCEAN_WV', '02/01/2023', 98.00);
+INSERT INTO bookings VALUES (20, 'OCEAN_WV', '02/02/2023', 75.00);
+INSERT INTO bookings VALUES (21, 'OCEAN_WV', '02/04/2023', 85.00);
+
+INSERT INTO bookings VALUES (22, 'OCEAN_WV', '02/06/2023', 75.00);
+INSERT INTO bookings VALUES (23, 'OCEAN_WV', '02/09/2023', 34.00);
+INSERT INTO bookings VALUES (24, 'OCEAN_WV', '02/12/2023', 85.00);
+
+INSERT INTO bookings VALUES (25, 'OCEAN_WV', '02/13/2023', 23.00);
+INSERT INTO bookings VALUES (26, 'OCEAN_WV', '02/14/2023', 76.00);
+INSERT INTO bookings VALUES (27, 'OCEAN_WV', '02/16/2023', 85.00);
+
+INSERT INTO bookings VALUES (28, 'CITY_BLD', '02/01/2023', 98.00);
+INSERT INTO bookings VALUES (29, 'CITY_BLD', '02/02/2023', 75.00);
+INSERT INTO bookings VALUES (30, 'CITY_BLD', '02/04/2023', 85.00);
+
+INSERT INTO bookings VALUES (31, 'CITY_BLD', '02/12/2023', 75.00);
+INSERT INTO bookings VALUES (32, 'CITY_BLD', '02/13/2023', 34.00);
+INSERT INTO bookings VALUES (33, 'CITY_BLD', '02/17/2023', 85.00);
+
+INSERT INTO bookings VALUES (34, 'CITY_BLD', '02/22/2023', 23.00);
+INSERT INTO bookings VALUES (35, 'CITY_BLD', '02/23/2023', 76.00);
+INSERT INTO bookings VALUES (36, 'CITY_BLD', '02/24/2023', 85.00);</code></pre>       
+               
+               <p> 이 샘플 쿼리에서는 예약 기록을 집계하여 각 주의 합계를 산출합니다. 각 주의 종료일은 열 이름이 됩니다.</p>
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT * FROM
+    (SELECT
+       booking_id,
+       (date_trunc('week', booking_date::date) + '5 days'::interval)::date as enddate,
+       hotel_code AS "hotel code"
+FROM bookings
+) PIVOT (
+    count(booking_id) FOR enddate IN ('2023-02-04','2023-02-11','2023-02-18') 
+);</code></pre>
+               <p>쿼리 결과는 다음과 같이 출력됩니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> hotel code | 2023-02-04  | 2023-02-11 | 2023-02-18
+------------+-------------+------------+----------
+ FOREST_L   |           3 |          2 |        1
+ DESERT_S   |           4 |          3 |        2
+ OCEAN_WV   |           3 |          3 |        3
+ CITY_BLD   |           3 |          1 |        2</code></pre>
+               
+              
+              
+              
+               <p> Amazon Redshift는 여러 열에서 피벗하기 위한 CROSSTAB을 지원하지 않습니다. 그러나 다음과 같은 쿼리를 사용하여 PIVOT을 사용한 집계와 유사한 방식으로 행 데이터를 열로 변경할 수 있습니다. 이전 예와 동일한 예약 샘플 데이터를 사용합니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT 
+  booking_date,
+  MAX(CASE WHEN hotel_code = 'FOREST_L' THEN 'forest is booked' ELSE '' END) AS FOREST_L,
+  MAX(CASE WHEN hotel_code = 'DESERT_S' THEN 'desert is booked' ELSE '' END) AS DESERT_S,
+  MAX(CASE WHEN hotel_code = 'OCEAN_WV' THEN 'ocean is booked' ELSE '' END)  AS OCEAN_WV
+FROM bookings
+GROUP BY booking_date
+ORDER BY booking_date asc;</code></pre>
+               <p>샘플 쿼리를 실행하면 예약된 호텔을 나타내는 짧은 문구 옆에 예약 날짜가 표시됩니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> booking_date  | forest_l         | desert_s         | ocean_wv
+---------------+------------------+------------------+--------------------
+ 2023-02-01    | forest is booked | desert is booked |  ocean is booked
+ 2023-02-02    | forest is booked | desert is booked |  ocean is booked
+ 2023-02-04    | forest is booked | desert is booked |  ocean is booked
+ 2023-02-05    |                  | desert is booked |        
+ 2023-02-06    |                  | desert is booked |         </code></pre>
+
+               <p>다음은 <code class="code">PIVOT</code>에 대한 사용 참고 사항입니다.</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem"><p><code class="code">PIVOT</code>은 테이블, 하위 쿼리 및 공통 테이블 표현식(CTE)에 적용할 수 있습니다. <code class="code">JOIN</code> 표현식, 재귀 CTE, <code class="code">PIVOT</code> 또는 <code class="code">UNPIVOT</code> 표현식에는 <code class="code">PIVOT</code>을 적용할 수 없습니다. 또한 <code class="code">SUPER</code> 비중척 표현식과 Redshift Spectrum 중첩 테이블은 지원되지 않습니다.</p></li><li class="listitem"><p> <code class="code">PIVOT</code>에서는 <code class="code">COUNT</code>, <code class="code">SUM</code>, <code class="code">MIN</code>, <code class="code">MAX</code> 및 <code class="code">AVG</code> 집계 함수를 지원합니다.</p></li><li class="listitem"><p><code class="code">PIVOT</code> 집계 표현식은 지원되는 집계 함수의 호출이어야 합니다. 집계 위의 복잡한 표현식은 지원되지 않습니다. 집계 인수는 <code class="code">PIVOT</code> 입력 테이블 이외의 테이블에 대한 참조를 포함할 수 없습니다. 상위 쿼리에 대한 상관 관계가 있는 참조도 지원되지 않습니다. 집계 인수에는 하위 쿼리가 포함될 수 있습니다. 이들은 내부적으로 또는 <code class="code">PIVOT</code> 입력 테이블에서 상관될 수 있습니다.</p></li><li class="listitem"><p> <code class="code">PIVOT IN</code> 목록 값은 열 참조 또는 하위 쿼리일 수 없습니다. 각 값은 <code class="code">FOR</code> 열 참조와 호환되는 유형이어야 합니다.</p></li><li class="listitem"><p> <code class="code">IN</code> 목록 값에 별칭이 없으면 <code class="code">PIVOT</code>은 기본 열 이름을 생성합니다. 'abc' 또는 5와 같은 상수 <code class="code">IN</code> 값의 경우 기본 열 이름은 상수 자체입니다. 복잡한 표현식의 경우 열 이름은 <code class="code">?column?</code>와 같은 표준 Amazon Redshift 기본 이름입니다.</p></li></ul></div>
+
+
+             
+               <h2 id="r_FROM_clause-unpivot-examples">UNPIVOT 예</h2>
+               <p>샘플 데이터를 설정하고 이를 사용하여 후속 예제를 실행합니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE count_by_color (quality varchar, red int, green int, blue int);
+
+INSERT INTO count_by_color VALUES ('high', 15, 20, 7);
+INSERT INTO count_by_color VALUES ('normal', 35, NULL, 40);
+INSERT INTO count_by_color VALUES ('low', 10, 23, NULL);</code></pre>
+               <p>빨간색, 녹색 및 파란색 입력 열의 <code class="code">UNPIVOT</code>.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM (SELECT red, green, blue FROM count_by_color) UNPIVOT (
+    cnt FOR color IN (red, green, blue)
+);</code></pre>
+               <p>쿼리 결과는 다음과 같이 출력됩니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> color | cnt
+-------+-----
+ red   |  15
+ red   |  35
+ red   |  10
+ green |  20
+ green |  23
+ blue  |   7
+ blue  |  40</code></pre>
+               <p>기본적으로 입력 열의 <code class="code">NULL</code> 값은 건너뛰고 결과 행을 생성하지 않습니다.</p>
+               <p>다음은 <code class="code">INCLUDE NULLS</code>가 있는 <code class="code">UNPIVOT</code>의 예입니다.</p>
+
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM (
+    SELECT red, green, blue
+    FROM count_by_color
+) UNPIVOT INCLUDE NULLS (
+    cnt FOR color IN (red, green, blue)
+);</code></pre>
+               <p>결과 출력값은 다음과 같습니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> color | cnt
+-------+-----
+ red   |  15
+ red   |  35
+ red   |  10
+ green |  20
+ green |
+ green |  23
+ blue  |   7
+ blue  |  40
+ blue  |  </code></pre>
+               <p><code class="code">INCLUDING NULLS</code> 파라미터가 설정되면 <code class="code">NULL</code> 입력 값이 결과 행을 생성합니다.</p>
+               <p>암시적 열로 <code class="code">quality</code>가 있는 <code class="code">The following query shows UNPIVOT</code>.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM count_by_color UNPIVOT (
+    cnt FOR color IN (red, green, blue)
+);</code></pre>
+               <p>쿼리 결과는 다음과 같이 출력됩니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> quality | color | cnt
+---------+-------+-----
+ high    | red   |  15
+ normal  | red   |  35
+ low     | red   |  10
+ high    | green |  20
+ low     | green |  23
+ high    | blue  |   7
+ normal  | blue  |  40</code></pre>
+               <p><code class="code">UNPIVOT</code> 정의에서 참조되지 않는 입력 테이블의 열은 암시적으로 결과 테이블에 추가됩니다. 이 예에서는 <code class="code">quality</code> 열의 경우입니다.</p>
+               <p>다음 예는 <code class="code">IN</code> 목록의 값에 대한 별칭이 있는 <code class="code">UNPIVOT</code>을 보여줍니다.</p>
+
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT *
+FROM count_by_color UNPIVOT (
+    cnt FOR color IN (red AS r, green AS g, blue AS b)
+);</code></pre>
+               <p>이전 쿼리 결과는 다음과 같이 출력됩니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> quality | color | cnt
+---------+-------+-----
+ high    | r     |  15
+ normal  | r     |  35
+ low     | r     |  10
+ high    | g     |  20
+ low     | g     |  23
+ high    | b     |   7
+ normal  | b     |  40</code></pre>
+               <p><code class="code">UNPIVOT</code> 연산자는 각 <code class="code">IN</code> 목록 값에서 선택적 별칭을 허용합니다. 각 별칭을 통해 각 <code class="code">value</code> 열의 데이터를 사용자 지정할 수 있습니다.</p>
+               <p>다음은 <code class="code">UNPIVOT</code>에 대한 사용 참고 사항입니다.</p>
+
+               <div class="itemizedlist">
+                   
+
+                   
+
+                   
+
+               <ul class="itemizedlist"><li class="listitem"><p><code class="code">UNPIVOT</code>은 테이블, 하위 쿼리 및 공통 테이블 표현식(CTE)에 적용할 수 있습니다. <code class="code">JOIN</code> 표현식, 재귀 CTE, <code class="code">UNPIVOT</code> 또는 <code class="code">UNPIVOT</code> 표현식에는 <code class="code">PIVOT</code>을 적용할 수 없습니다. 또한 <code class="code">SUPER</code> 비중척 표현식과 Redshift Spectrum 중첩 테이블은 지원되지 않습니다.</p></li><li class="listitem"><p><code class="code">UNPIVOT IN</code> 목록에는 입력 테이블 열 참조만 포함되어야 합니다. <code class="code">IN</code> 목록 열에는 모두 호환되는 공통 유형이 있어야 합니다. <code class="code">UNPIVOT</code> 값 열에는 이러한 공통 유형이 있습니다. <code class="code">UNPIVOT</code> 이름 열은 <code class="code">VARCHAR</code>유형입니다.</p></li><li class="listitem"><p><code class="code">IN</code> 목록 값에 별칭이 없으면 <code class="code">UNPIVOT</code>은 열 이름을 기본값으로 사용합니다.</p></li></ul></div>
+
+
+
+
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="주의" /> <strong>javascript가 브라우저에서 비활성화되거나 사용이 불가합니다.</strong></p><p>AWS 설명서를 사용하려면 Javascript가 활성화되어야 합니다. 지침을 보려면 브라우저의 도움말 페이지를 참조하십시오.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">문서 규칙</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_FROM_clause30.html">FROM 절</div><div id="next" class="next-link" accesskey="n" href="./r_Join_examples.html">JOIN 예</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 예</div><div class="content"><p>칭찬해 주셔서 감사합니다!</p><p>잠깐 시간을 내어 좋았던 부분을 알려 주시면 더 열심히 만들어 보겠습니다.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 아니요</div><div class="content"><p>이 페이지에 작업이 필요하다는 점을 알려 주셔서 감사합니다. 실망시켜 드려 죄송합니다.</p><p>잠깐 시간을 내어 설명서를 향상시킬 수 있는 방법에 대해 말씀해 주십시오.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_FROM_clause-pivot-unpivot-examples.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

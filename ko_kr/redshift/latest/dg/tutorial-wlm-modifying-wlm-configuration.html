@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ko-KR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>단원 2: WLM 쿼리 대기열 구성의 수정 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-wlm-modifying-wlm-configuration" /><meta name="default_state" content="tutorial-wlm-modifying-wlm-configuration" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="description" content="대기열의 기본적인 동작에 대해 이해하였므로 이제 수동 WLM을 사용하여 쿼리 대기열을 구성하는 방법에 대해 알아봅니다. 이번 단원에서는 새로운 파라미터 그룹을 생성하여 클러스터에 구성합니다. 또한 사용자 대기열을 2개 더 생성한 후 쿼리의 사용자 그룹 또는 쿼리 그룹 레이블에 따라 쿼리를 허용하도록 구성합니다. 이 두 대기열 중 하나로 라우팅되지 않는 쿼리는 실행 시간에 기본 대기열로 라우팅됩니다." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="데이터베이스 개발자 안내서" /><meta name="abstract" content="페타바이트 규모의 엔터프라이즈급 완전관리형 데이터 웨어하우징 서비스인 Amazon Redshift로 데이터 웨어하우스를 생성하고 관리합니다." /><meta name="guide-locale" content="ko_kr" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="데이터베이스 개발자 안내서" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="데이터베이스 개발자 안내서" /><meta id="panorama-serviceConsolePage" value="단원 2: WLM 쿼리 대기열 구성의 수정" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>단원 2: WLM 쿼리 대기열 구성의 수정 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-wlm-modifying-wlm-configuration" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,데이터 웨어하우스,샘플 데이터,데이터베이스,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "데이터베이스 개발자 안내서",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "워크로드 관리 구현",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "수동 WLM 구현",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-defining-query-queues.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "자습서: 수동 워크로드 관리(WLM) 대기열 구성",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "단원 2: WLM 쿼리 대기열 구성의 수정",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-wlm-modifying-wlm-configuration" target="_blank" rel="noopener noreferrer" title="pdf-tooltip"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">aws-documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">데이터베이스 개발자 안내서</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-wlm-modifying-wlm-configuration">단원 2: WLM 쿼리 대기열 구성의 수정</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>대기열의 기본적인 동작에 대해 이해하였므로 이제 수동 WLM을 사용하여 쿼리 대기열을 구성하는 방법에 대해 알아봅니다. 이번 단원에서는 새로운 파라미터 그룹을 생성하여 클러스터에 구성합니다. 또한 사용자 대기열을 2개 더 생성한 후 쿼리의 사용자 그룹 또는 쿼리 그룹 레이블에 따라 쿼리를 허용하도록 구성합니다. 이 두 대기열 중 하나로 라우팅되지 않는 쿼리는 실행 시간에 기본 대기열로 라우팅됩니다.</p><div class="procedure"><h6>파라미터 그룹의 수동 WLM 구성을 생성하려면</h6><ol><li> <p>AWS Management Console에 로그인한 후 <a href="https://console.aws.amazon.com/redshift/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/redshift/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>에서 Amazon Redshift 콘솔을 엽니다.</p> 
+                    </li><li>
+                        <p>탐색 메뉴에서 <b>구성(Configurations)</b> 및 <b>워크로드 관리(Workload management)</b>를 차례로 선택하여 <b>워크로드 관리(Workload management)</b> 페이지를 표시합니다.</p>
+                    </li><li>
+                        <p><b>생성</b>을 선택하여 <b>파라미터 그룹 생성</b> 창을 표시합니다.</p>
+                    </li><li>
+                        <p><b>Parameter group name(파라미터 그룹 이름)</b>과 <b>Description(설명)</b> 모두에 대해 <code class="userinput">WLMTutorial</code>을 입력한 다음 <b>Create(생성)</b>를 선택하여 파라미터 그룹을 생성합니다.</p>
+                        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>참고</h6></div><div class="awsdocs-note-text"><p><b>파라미터 그룹 이름</b>은 생성 시 모두 소문자 형식으로 변환됩니다.</p></div></div>
+                    </li><li>
+                        <p><b>워크로드 관리</b> 페이지에서 파라미터 그룹 <code class="userinput">wlmtutorial</code>을 선택하여 <b>파라미터</b> 및 <b>워크로드 관리</b> 탭이 있는 세부 정보 페이지를 표시합니다.</p>
+                    </li><li>
+                        <p><b>워크로드 관리</b> 탭에 있는지 확인한 후 <b>Switch WLM mode(WLM 모드 전환)</b>를 선택하여 <b>Concurrency settings(동시성 설정)</b> 창을 표시합니다.</p>
+                    </li><li>
+                        <p><b>Manual WLM(수동 WLM)</b>을 선택한 다음 <b>저장</b>을 선택하여 수동 WLM으로 전환합니다.</p>
+                    </li><li>
+                        <p><b>Edit workload queues(워크로드 대기열 편집)</b>를 선택합니다.</p>
+                    </li><li>
+                        <p><b>대기열 추가</b>를 두 번 선택하여 대기열을 두 개 추가합니다. 이제 <b>대기열 1</b>, <b>대기열 2</b> 및 <b>기본 대기열</b>이 있습니다.</p>
+                    </li><li>
+                        <p>다음과 같이 각 대기열에 대한 정보를 입력합니다.</p>
+                        <div class="itemizedlist">
+                             
+                             
+                             
+                        <ul class="itemizedlist"><li class="listitem">
+                                <p>[<b>대기열 1(Queue 1)</b>]의 경우 [<b>메모리(%)Memory (%)</b>]에 대해 <code class="userinput">30</code>, [<b>기본의 동시성(Concurrency on main)</b>]에 대해 <code class="userinput">2</code>, [<b>쿼리 그룹(Query groups)</b>]에 대해 <code class="userinput">test</code>를 입력합니다. 기타 설정은 기본값을 유지합니다.</p>
+                                
+                            </li><li class="listitem">
+                                <p>[<b>대기열 2(Queue 2)</b>]의 경우 [<b>메모리(%)Memory (%)</b>]에 대해 <code class="userinput">40</code>, [<b>기본의 동시성(Concurrency on main)</b>]에 대해 <code class="userinput">3</code>, [<b>사용자 그룹(User groups)</b>]에 대해 <code class="userinput">admin</code>를 입력합니다. 기타 설정은 기본값을 유지합니다.</p>
+                            </li><li class="listitem">
+                                <p><b>기본 대기열</b>은 아무것도 바꾸지 마십시오. WLM은 기본 대기열에 미할당 메모리를 할당합니다.</p>
+                            </li></ul></div>
+                    </li><li>
+                        <p>설정을 저장하려면 <b>저장</b>을 선택합니다.</p>
+                    </li></ol></div><p>그런 다음 수동 WLM 구성이 있는 파라미터 그룹을 클러스터와 연결합니다.</p><div class="procedure"><h6>수동 WLM 구성이 있는 파라미터 그룹을 클러스터와 연결하려면</h6><ol><li> <p>AWS Management Console에 로그인한 후 <a href="https://console.aws.amazon.com/redshift/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/redshift/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>에서 Amazon Redshift 콘솔을 엽니다.</p> 
+                    </li><li>
+                        <p>탐색 메뉴에서 <b>클러스터(Clusters)</b>를 선택하고 <b>클러스터(Clusters)</b>를 선택하여 클러스터 목록을 표시합니다.</p>
+                    </li><li>
+                        <p><code class="code">examplecluster</code>와 같은 클러스터를 선택하여 클러스터의 세부 정보를 표시합니다. 그런 다음 [<b>속성(Properties)</b>] 탭을 선택하여 해당 클러스터의 속성을 표시합니다.</p>
+                    </li><li>
+                        <p>[<b>데이터베이스 구성(Database configurations)</b>] 섹션에서 [<b>편집(Edit)</b>], [<b>파라미터 그룹 편집(Edit parameter group)</b>]을 클릭하여 파라미터 그룹 창을 표시합니다.</p>
+                    </li><li>
+                        <p>[<b>파라미터 그룹 수(Parameter groups)</b>]에 대해 이전에 생성한 <code class="userinput">wlmtutorial</code> 파라미터 그룹을 선택합니다.</p>
+                    </li><li>
+                        <p>[<b>변경 사항 저장(Save changes)</b>]을 선택하여 파라미터 그룹을 연결합니다.</p>
+                        <p>변경된 파라미터 그룹으로 클러스터가 수정됩니다. 그러나 데이터베이스에 변경 사항을 적용하려면 클러스터를 재부팅해야 합니다.</p>
+                    </li><li>
+                        <p>클러스터를 선택한 [<b>작업(Actions)</b>]에 대해 [<b>재부팅(Reboot)</b>]을 선택합니다.</p>
+                    </li></ol></div><p>클러스터가 재부팅되면 상태가 <b>사용 가능</b>으로 돌아옵니다.</p><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="주의" /> <strong>javascript가 브라우저에서 비활성화되거나 사용이 불가합니다.</strong></p><p>AWS 설명서를 사용하려면 Javascript가 활성화되어야 합니다. 지침을 보려면 브라우저의 도움말 페이지를 참조하십시오.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">문서 규칙</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-wlm-understanding-default-processing.html">단원 1: 기본적인 대기열 처리 동작에 대한 이해</div><div id="next" class="next-link" accesskey="n" href="./tutorial-wlm-routing-queries-to-queues.html">단원 3: 사용자 그룹 및 쿼리 그룹을 기반으로 쿼리를 대기열로 라우팅</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 예</div><div class="content"><p>칭찬해 주셔서 감사합니다!</p><p>잠깐 시간을 내어 좋았던 부분을 알려 주시면 더 열심히 만들어 보겠습니다.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 아니요</div><div class="content"><p>이 페이지에 작업이 필요하다는 점을 알려 주셔서 감사합니다. 실망시켜 드려 죄송합니다.</p><p>잠깐 시간을 내어 설명서를 향상시킬 수 있는 방법에 대해 말씀해 주십시오.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

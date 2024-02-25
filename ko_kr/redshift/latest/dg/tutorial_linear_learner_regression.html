@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ko-KR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>튜토리얼: 선형 학습기를 사용하여 회귀 모델 구축 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_linear_learner_regression" /><meta name="default_state" content="tutorial_linear_learner_regression" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_regression.html" /><meta name="description" content="Amazon Redshift 기계 학습 모델을 생성하고 추론 쿼리를 실행하는 종합적인 예제를 보려면 이 튜토리얼을 사용하세요." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="데이터베이스 개발자 안내서" /><meta name="abstract" content="페타바이트 규모의 엔터프라이즈급 완전관리형 데이터 웨어하우징 서비스인 Amazon Redshift로 데이터 웨어하우스를 생성하고 관리합니다." /><meta name="guide-locale" content="ko_kr" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_regression.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="데이터베이스 개발자 안내서" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="데이터베이스 개발자 안내서" /><meta id="panorama-serviceConsolePage" value="튜토리얼: 선형 학습기를 사용하여 회귀 모델 구축" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>튜토리얼: 선형 학습기를 사용하여 회귀 모델 구축 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_linear_learner_regression" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_regression.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_regression.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_regression.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,데이터 웨어하우스,샘플 데이터,데이터베이스,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "데이터베이스 개발자 안내서",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Amazon Redshift에서 기계 학습 사용",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Amazon Redshift 기계 학습 시작하기",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Amazon Redshift ML 튜토리얼",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "튜토리얼: 선형 학습기를 사용하여 회귀 모델 구축",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_linear_learner_regression" target="_blank" rel="noopener noreferrer" title="pdf-tooltip"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">aws-documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">데이터베이스 개발자 안내서</a></div><div id="page-toc-src"><a href="#tutorial_linear_learner_regression_tasks">사용 사례</a><a href="#tutorial_linear_learner_regression_prereqs">필수 조건</a><a href="#tutorial_linear_learner_regression_step_load_data">1단계: Amazon S3에서 Amazon Redshift로 데이터 로드</a><a href="#tutorial_linear_learner_regression_step_create_model">2단계: 기계 학습 모델 생성</a><a href="#tutorial_linear_learner_regression_step_validate">3단계: 모델 검증</a><a href="#tutorial_linear_learner_regression_related_topics">관련 주제</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_linear_learner_regression">튜토리얼: 선형 학습기를 사용하여 회귀 모델 구축</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>이 튜토리얼에서는 Amazon S3의 데이터로 선형 학습기 모델을 생성하고 Amazon Redshift ML을 사용하여 이 모델로 예측 쿼리를 실행합니다. SageMaker 선형 학습기 알고리즘은 회귀 또는 다중 클래스 분류 문제를 해결합니다. 회귀 및 다중 클래스 분류 문제에 대한 자세한 내용은 Amazon SageMaker 개발자 안내서의 <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/algorithms-choose.html#basic-machine-learning-paradigms">머신러닝 패러다임의 문제 유형</a>을 참조하세요. 이 튜토리얼에서는 회귀 문제를 해결합니다. 선형 학습기 알고리즘은 여러 모델을 병렬로 훈련시키고 가장 최적화된 모델을 자동으로 결정합니다. Amazon Redshift에서 CREATE MODEL 작업을 사용하면 SageMaker를 사용하여 선형 학습기 모델을 생성하고 예측 함수를 Amazon Redshift로 보냅니다. 선형 학습기 알고리즘에 대한 자세한 내용은 Amazon SageMaker 개발자 안내서의 <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/linear-learner.html">Linear Learner Algorithm</a> 섹션을 참조하세요.</p><p>CREATE MODEL 명령을 사용하여 훈련 데이터를 내보내고, 모델을 훈련하고, 모델을 가져오고, Amazon Redshift 예측 함수를 준비할 수 있습니다. CREATE MODEL 스테이트먼트를 사용하여 테이블 또는 SELECT 작업으로 훈련 데이터를 지정합니다.</p><p>선형 학습기 모델은 연속형 목표 또는 이산 목표를 최적화합니다. 연속형 목표는 회귀에 사용되고 이산형 변수는 분류에 사용됩니다. 회귀 방법과 같은 일부 방법은 연속형 목표에 대해서만 솔루션을 제공합니다. 선형 학습기 알고리즘은 Naive Bayes 기법과 같은 단순한 하이퍼파라미터 최적화 기법에 비해 속도를 높입니다. 나이브 최적화 기법에서는 각 입력 변수가 독립적이라고 가정합니다. 선형 학습기 알고리즘을 사용하려면 입력의 차원을 나타내는 열과 관측치를 나타내는 행을 제공해야 합니다. 선형 학습기 알고리즘에 대한 자세한 내용은 Amazon SageMaker 개발자 안내서의 <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/linear-learner.html">Linear Learner Algorithm</a> 섹션을 참조하세요.</p><p>이 튜토리얼에서는 전복의 나이를 예측하는 선형 학습기 모델을 구축합니다. <a href="http://archive.ics.uci.edu/ml/datasets/Abalone" rel="noopener noreferrer" target="_blank"><span>Abalone dataset</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>에서 CREATE MODEL 명령을 사용하여 전복의 물리적 측정값 간의 관계를 결정합니다. 그런 다음 모델을 사용하여 전복의 나이를 결정합니다.</p>
+               <h2 id="tutorial_linear_learner_regression_tasks">사용 사례</h2>
+               <p>선형 학습기 및 Amazon Redshift ML을 사용하여 주택 가격 예측과 같은 다른 회귀 문제를 해결할 수 있습니다. Redshift ML을 사용하여 도시의 자전거 대여 서비스를 이용할 사람의 수도 예측할 수 있습니다.</p>
+            <p><b>작업</b></p><div class="itemizedlist">
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>필수 조건</p>
+               </li><li class="listitem">
+                  <p>1단계: Amazon S3에서 Amazon Redshift로 데이터 로드</p>
+               </li><li class="listitem">
+                  <p>2단계: 기계 학습 모델 생성</p>
+               </li><li class="listitem">
+                  <p>3단계: 모델 검증</p>
+               </li></ul></div>
+               <h2 id="tutorial_linear_learner_regression_prereqs">필수 조건</h2>
+               <p>이 튜토리얼을 완료하려면 Amazon Redshift ML의 <a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">관리 설정</a>을 완료해야 합니다.</p>
+             
+               <h2 id="tutorial_linear_learner_regression_step_load_data">1단계: Amazon S3에서 Amazon Redshift로 데이터 로드</h2>
+               <p><a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">Amazon Redshift 쿼리 편집기 v2</a>를 사용하여 다음 쿼리를 실행합니다. 이 쿼리는 샘플 데이터를 Redshift로 로드하고 데이터를 훈련 세트와 검증 세트로 나눕니다.</p><div class="orderedlist">
+                      
+                      
+                      
+                  <ol><li>
+                        <p>다음 예에서는 <code class="code">abalone_dataset</code> 테이블을 생성합니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE abalone_dataset (
+    id INT IDENTITY(1, 1),
+    Sex CHAR(1),
+    Length float,
+    Diameter float,
+    Height float,
+    Whole float,
+    Shucked float,
+    Viscera float,
+    Shell float,
+    Rings integer
+);</code></pre>
+                     </li><li>
+                        <p>다음 쿼리는 이전에 Amazon Redshift에서 생성한 <code class="code">abalone_dataset</code> 테이블에 Amazon S3의 <a href="http://archive.ics.uci.edu/ml/datasets/Abalone" rel="noopener noreferrer" target="_blank"><span>Abalone dataset</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>에 있는 샘플 데이터를 복사합니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY abalone_dataset
+FROM
+    's3://redshift-ml-multiclass/abalone.csv' REGION 'us-east-1' IAM_ROLE default CSV IGNOREHEADER 1 NULL AS 'NULL';</code></pre>
+                     </li><li>
+                        <p>데이터를 수동으로 분할하면 추가 예측 세트를 할당하여 모델의 정확도를 확인할 수 있습니다. 다음 쿼리는 데이터를 두 세트로 분할합니다. <code class="code">abalone_training</code> 테이블은 훈련용이고 <code class="code">abalone_validation</code> 테이블은 검증용입니다.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE abalone_training as 
+SELECT 
+    *
+FROM
+    abalone_dataset
+WHERE
+    mod(id, 10) &lt; 8;
+
+CREATE TABLE abalone_validation as 
+SELECT 
+    *
+FROM
+    abalone_dataset
+WHERE
+    mod(id, 10) &gt;= 8;</code></pre>
+                     </li></ol></div>
+             
+               <h2 id="tutorial_linear_learner_regression_step_create_model">2단계: 기계 학습 모델 생성</h2>
+               <p>이 단계에서는 CREATE MODEL 스테이트먼트를 사용하여 선형 학습기 알고리즘으로 머신 러닝 모델을 생성합니다.</p>
+               <p>다음 쿼리는 S3 버킷을 사용하여 CREATE MODEL 작업으로 선형 학습기 모델을 생성합니다. <code class="replaceable"><code class="code">DOC-EXAMPLE-BUCKET</code></code>을 사용자의 S3 버킷으로 대체합니다.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL model_abalone_ring_prediction
+FROM
+    (
+        SELECT
+            Sex,
+            Length,
+            Diameter,
+            Height,
+            Whole,
+            Shucked,
+            Viscera,
+            Shell,
+            Rings AS target_label
+        FROM
+            abalone_training
+    ) TARGET target_label FUNCTION f_abalone_ring_prediction IAM_ROLE default MODEL_TYPE LINEAR_LEARNER PROBLEM_TYPE REGRESSION OBJECTIVE 'MSE' SETTINGS (
+        S3_BUCKET '<code class="replaceable">DOC-EXAMPLE-BUCKET</code>',
+        MAX_RUNTIME 15000
+    );</code></pre>
+                
+                  <h3 id="tutorial_linear_learner_regression_show_status">모델 훈련 상태 표시(선택 사항)</h3>
+                  <p>SHOW MODEL 명령을 사용하여 모델이 준비되었는지 알 수 있습니다.</p>
+                  <p>다음 쿼리를 사용하여 모델 훈련의 진행 상황을 모니터링합니다.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL model_abalone_ring_prediction;</code></pre>
+                  <p>모델이 준비되면 이전 작업의 출력은 다음 예시와 비슷할 것입니다. 출력은 평균 제곱 오차를 나타내는 <code class="code">validation:mse</code> 메트릭을 제공합니다. 다음 단계에서 평균 제곱 오차를 사용하여 모델의 정확도를 확인합니다.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------+----------------------------------------------------------------------------------------------------+
+|        Model Name        |                                   model_abalone_ring_prediction                                    |
++--------------------------+----------------------------------------------------------------------------------------------------+
+| Schema Name              | public                                                                                             |
+| Owner                    | awsuser                                                                                            |
+| Creation Time            | Thu, 30.06.2022 18:00:10                                                                           |
+| Model State              | READY                                                                                              |
+| validation:mse           |                                                                                           4.168633 |
+| Estimated Cost           |                                                                                           4.291608 |
+|                          |                                                                                                    |
+| TRAINING DATA:           |                                                                                                    |
+| Query                    | SELECT SEX , LENGTH , DIAMETER , HEIGHT , WHOLE , SHUCKED , VISCERA , SHELL, RINGS AS TARGET_LABEL |
+|                          | FROM ABALONE_TRAINING                                                                              |
+| Target Column            | TARGET_LABEL                                                                                       |
+|                          |                                                                                                    |
+| PARAMETERS:              |                                                                                                    |
+| Model Type               | linear_learner                                                                                     |
+| Problem Type             | Regression                                                                                         |
+| Objective                | MSE                                                                                                |
+| AutoML Job Name          | redshiftml-20220630180010947843                                                                    |
+| Function Name            | f_abalone_ring_prediction                                                                          |
+| Function Parameters      | sex length diameter height whole shucked viscera shell                                             |
+| Function Parameter Types | bpchar float8 float8 float8 float8 float8 float8 float8                                            |
+| IAM Role                 | default-aws-iam-role                                                                               |
+| S3 Bucket                | <code class="replaceable">DOC-EXAMPLE-BUCKET</code>                                                                                 |
+| Max Runtime              |                                                                                              15000 |
++--------------------------+----------------------------------------------------------------------------------------------------+                                     </code></pre>
+             
+               <h2 id="tutorial_linear_learner_regression_step_validate">3단계: 모델 검증</h2>
+               <div class="orderedlist">
+                   
+                   
+                   
+               <ol><li>
+                     <p>다음 예측 쿼리는 평균 제곱 오차 및 제곱 평균 제곱근 오차를 계산하여 <code class="code">abalone_validation</code> 데이터 세트에서 모델의 정확도를 검증합니다.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    ROUND(AVG(POWER((tgt_label - predicted), 2)), 2) mse,
+    ROUND(SQRT(AVG(POWER((tgt_label - predicted), 2))), 2) rmse
+FROM
+    (
+        SELECT
+            Sex,
+            Length,
+            Diameter,
+            Height,
+            Whole,
+            Shucked,
+            Viscera,
+            Shell,
+            Rings AS tgt_label,
+            f_abalone_ring_prediction(
+                Sex,
+                Length,
+                Diameter,
+                Height,
+                Whole,
+                Shucked,
+                Viscera,
+                Shell
+            ) AS predicted,
+            CASE
+                WHEN tgt_label = predicted then 1
+                ELSE 0
+            END AS match,
+            CASE
+                WHEN tgt_label &lt;&gt; predicted then 1
+                ELSE 0
+            END AS nonmatch
+        FROM
+            abalone_validation
+    ) t1;</code></pre>
+                     <p>이전 쿼리의 출력은 다음 예시와 비슷합니다. 평균 제곱 오차 메트릭의 값은 SHOW MODEL 작업의 출력에 표시되는 <code class="code">validation:mse</code> 메트릭과 유사할 것입니다.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">+-----+--------------------+
+| mse |        rmse        |
++-----+--------------------+
+| 5.1 | 2.2600000000000002 |
++-----+--------------------+</code></pre>
+                  </li><li>
+                     <p>다음 쿼리를 사용하여 예측 함수에 EXPLAIN_MODEL 작업을 실행합니다. 이 작업은 모델 설명 가능성 보고서를 반환합니다. EXPLAIN_MODEL 작업에 대한 자세한 내용은 Amazon Redshift 데이터베이스 개발자 안내서의 <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">EXPLAIN_MODEL 함수</a>를 참조하세요.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    EXPLAIN_MODEL ('model_abalone_ring_prediction');</code></pre>
+                     <p>다음 정보는 이전 EXPLAIN_MODEL 작업에서 생성된 모델 설명 가능성 보고서의 예입니다. 각 입력의 값은 Shapley 값입니다. Shapley 값은 각 입력이 모델 예측에 미치는 영향을 나타내며 값이 높을수록 예측에 더 많은 영향을 미칩니다. 이 예에서 입력 값이 높을수록 전복의 나이를 예측하는 데 더 많은 영향을 미칩니다.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span> 
+    "explanations": <span>{</span> 
+        "kernel_shap": <span>{</span> 
+            "label0": <span>{</span> 
+                "expected_value" :10.290688514709473,
+                "global_shap_values": <span>{</span> 
+                    "diameter" :0.6856910187882492,
+                    "height" :0.4415323937124035,
+                    "length" :0.21507476107609084,
+                    "sex" :0.448611774505744,
+                    "shell" :1.70426496893776,
+                    "shucked" :2.1181392924386994,
+                    "viscera" :0.342220754059912,
+                    "whole" :0.6711906974084011 
+                } 
+            } 
+        } 
+    },
+    "version" :"1.0" 
+};</code></pre>
+                  </li><li>
+                     <p>다음 쿼리를 사용하여 모델이 아직 성숙하지 않은 전복에 대해 수행하는 올바른 예측의 백분율을 계산합니다. 미성숙한 전복은 고리가 10개 이하이며 실제 고리 수의 한 고리 내에서까지 정확한 예측이 가능합니다.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    TRUNC(
+        SUM(
+            CASE
+                WHEN ROUND(
+                    f_abalone_ring_prediction(
+                        Sex,
+                        Length,
+                        Diameter,
+                        Height,
+                        Whole,
+                        Shucked,
+                        Viscera,
+                        Shell
+                    ),
+                    0
+                ) BETWEEN Rings - 1
+                AND Rings + 1 THEN 1
+                ELSE 0
+            END
+        ) / CAST(COUNT(SHELL) AS FLOAT),
+        4
+    ) AS prediction_pct
+FROM
+    abalone_validation
+WHERE
+    Rings &lt;= 10;</code></pre>
+                  </li></ol></div>
+             
+               <h2 id="tutorial_linear_learner_regression_related_topics">관련 주제</h2>
+               <p>Amazon Redshift ML에 대한 자세한 내용은 다음 설명서를 참조하세요.</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">Amazon Redshift 기계 학습 사용 비용</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">CREATE MODEL 작업</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">EXPLAIN_MODEL 함수</a></p>
+                  </li></ul></div>
+               <p>기계 학습에 대한 자세한 내용은 다음 설명서를 참조하세요.</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">기계 학습 개요</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">초보자 및 전문가를 위한 기계 학습</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">What Is Fairness and Model Explainability for Machine Learning Predictions?</a></p>
+                  </li></ul></div>
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="주의" /> <strong>javascript가 브라우저에서 비활성화되거나 사용이 불가합니다.</strong></p><p>AWS 설명서를 사용하려면 Javascript가 활성화되어야 합니다. 지침을 보려면 브라우저의 도움말 페이지를 참조하십시오.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">문서 규칙</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial_regression.html">튜토리얼: 회귀 모델 구축</div><div id="next" class="next-link" accesskey="n" href="./tutorial_linear_learner_multi-class_classification.html">튜토리얼: 선형 학습기를 사용하여 다중 클래스 분류 모델 구축</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 예</div><div class="content"><p>칭찬해 주셔서 감사합니다!</p><p>잠깐 시간을 내어 좋았던 부분을 알려 주시면 더 열심히 만들어 보겠습니다.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_regression.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 아니요</div><div class="content"><p>이 페이지에 작업이 필요하다는 점을 알려 주셔서 감사합니다. 실망시켜 드려 죄송합니다.</p><p>잠깐 시간을 내어 설명서를 향상시킬 수 있는 방법에 대해 말씀해 주십시오.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_regression.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

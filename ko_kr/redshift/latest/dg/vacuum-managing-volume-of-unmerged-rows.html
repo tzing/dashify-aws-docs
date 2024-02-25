@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ko-KR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>병합된 행의 볼륨 관리 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="vacuum-managing-volume-of-unmerged-rows" /><meta name="default_state" content="vacuum-managing-volume-of-unmerged-rows" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" /><meta name="description" content="vacuum 작업이 새 행을 테이블의 정렬된 리전에 병합해야 하는 경우, 테이블이 커질수록 vacuum에 필요한 시간이 늘어납니다. 병합해야 하는 행의 수를 줄이면 vacuum 성능을 높일 수 있습니다." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="데이터베이스 개발자 안내서" /><meta name="abstract" content="페타바이트 규모의 엔터프라이즈급 완전관리형 데이터 웨어하우징 서비스인 Amazon Redshift로 데이터 웨어하우스를 생성하고 관리합니다." /><meta name="guide-locale" content="ko_kr" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="데이터베이스 개발자 안내서" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="데이터베이스 개발자 안내서" /><meta id="panorama-serviceConsolePage" value="병합된 행의 볼륨 관리" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>병합된 행의 볼륨 관리 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#vacuum-managing-volume-of-unmerged-rows" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,데이터 웨어하우스,샘플 데이터,데이터베이스,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "데이터베이스 개발자 안내서",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "데이터 로딩",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "테이블 Vacuum",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_Reclaiming_storage_space202.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "vacuum 시간 관리",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/vacuum-managing-vacuum-times.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "병합된 행의 볼륨 관리",
+        "item" : "https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/vacuum-managing-vacuum-times.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#vacuum-managing-volume-of-unmerged-rows" target="_blank" rel="noopener noreferrer" title="pdf-tooltip"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">aws-documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">데이터베이스 개발자 안내서</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="vacuum-managing-volume-of-unmerged-rows">병합된 행의 볼륨 관리</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>vacuum 작업이 새 행을 테이블의 정렬된 리전에 병합해야 하는 경우, 테이블이 커질수록 vacuum에 필요한 시간이 늘어납니다. 병합해야 하는 행의 수를 줄이면 vacuum 성능을 높일 수 있습니다.</p><p>vacuum 전에 테이블은 테이블 헤드에 있는 정렬된 리전과 그 뒤에 오는, 행이 추가되거나 업데이트될 때마다 증가하는 정렬되지 않은 리전으로 구성됩니다. COPY 작업에 의해 행 세트가 추가되면 새로운 행 세트는 테이블 끝에 있는 정렬되지 않은 리전에 추가될 때 정렬 키에서 정렬됩니다. 새 행들은 자체 세트 안에서는 정렬되어 있지만 정렬되지 않은 리전 안에서는 그렇지 않습니다.</p><p>다음 다이어그램은 2회 연속 COPY 작업 후의 정렬되지 않은 리전을 보여 주며, 여기서 정렬 키는 CUSTID입니다. 이 예에는 간단히 하기 위해 복합 정렬 키가 나와 있지만 정렬되지 않은 리전의 효과가 더 크다는 점만 제외하면 인터리브 정렬 키에도 동일한 원리가 적용됩니다.</p><div class="mediaobject">
+                
+                  <img src="images/vacuum-unsorted-region.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                
+            </div><p>vacuum은 2단계로 테이블의 정렬 순서를 복원합니다.</p><div class="orderedlist">
+                
+                
+            <ol><li>
+                  <p>정렬되지 않은 리전을 새로 정렬된 리전으로 정렬합니다.</p>
+                  <p>첫 번째 단계는 비교적 리소스를 적게 사용하는데 정렬되지 않은 리전만 다시 작성되기 때문입니다. 새로 정렬된 리전의 정렬 키 값의 범위가 기존 범위보다 높다면 새 행들만 다시 작성하면 되며, vacuum이 완료됩니다. 예를 들어 정렬된 리전에 ID 값 1~500이 포함되어 있고 후속 복사 작업이 500보다 큰 키 값을 추가하는 경우, 정렬되지 않은 리전을 재작성하면 됩니다.</p>
+               </li><li>
+                  <p>새로 정렬된 리전과 이전에 정렬된 리전을 병합합니다.</p>
+                  <p>새로 정렬된 리전의 키가 정렬된 리전의 키와 중첩되는 경우, VACUUM은 행을 병합해야 합니다. vacuum은 새로 정렬된 리전의 시작 부분(가장 낮은 정렬 키)에서 시작해 이전에 정렬된 리전과 새로 정렬된 리전의 병합된 행들을 새 블록 세트에 작성합니다.</p>
+               </li></ol></div><p>새 정렬 키 범위와 기존 정렬 키의 중첩 정도는 이전에 정렬된 리전을 어느 정도까지 다시 작성해야 하는지 결정합니다. 정렬되지 않은 키가 기존 정렬 범위 전체에 흩어져 있는 경우, vacuum은 테이블의 기존 부분을 다시 작성해야 할 수 있습니다.</p><p>다음 다이어그램은 CUSTID가 정렬 키인 테이블에 추가되는 행들을 vacuum이 어떻게 정렬하고 병합하는지 보여 줍니다. 각각의 복사 작업이 기존 키와 중첩되는 키 값을 가진 새로운 행 세트를 추가하기 때문에 거의 테이블 전체를 다시 작성해야 합니다. 이 다이어그램에는 단일 정렬 및 병합이 나와 있지만 실제로 큰 vacuum은 일련의 증분적 정렬 및 병합 단계로 구성됩니다.</p><div class="mediaobject">
+                
+                  <img src="images/vacuum-unsorted-region-sort-merge.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                
+            </div><p>새로운 행 세트의 정렬 키 범위가 기존 키의 범위와 중첩되는 경우, 병합 단계 비용은 테이블이 커지는 데 따라 테이블 크기에 비례하여 계속 증가하는 반면 정렬 단계의 비용은 정렬되지 않은 리전의 크기에 여전히 비례합니다. 이런 경우, 다음 다이어그램에서 보듯 병합 단계의 비용은 정렬 단계의 비용과의 비교가 무색합니다.</p><div class="mediaobject">
+                
+                  <img src="images/vacuum-example-merge-region-grows.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                
+            </div><p>테이블 중에서 다시 병합된 비율을 확인하려면 vacuum 작업이 완료된 후 SVV_VACUUM_SUMMARY를 쿼리합니다. 다음 쿼리는 시간이 흐르면서 CUSTSALES가 계속 커짐에 따른 6회 연속 vacuum의 효과를 보여 줍니다.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from svv_vacuum_summary
+where table_name = 'custsales';
+
+ table_name | xid  | sort_      | merge_     | elapsed_   | row_  | sortedrow_ | block_  | max_merge_
+            |      | partitions | increments | time       | delta | delta      | delta   | partitions
+ -----------+------+------------+------------+------------+-------+------------+---------+---------------
+  custsales | 7072 |          3 |          2 |  143918314 |     0 |   88297472 |   1524  |      47
+  custsales | 7122 |          3 |          3 |  164157882 |     0 |   88297472 |    772  |      47
+  custsales | 7212 |          3 |          4 |  187433171 |     0 |   88297472 |    767  |      47
+  custsales | 7289 |          3 |          4 |  255482945 |     0 |   88297472 |    770  |      47
+  custsales | 7420 |          3 |          5 |  316583833 |     0 |   88297472 |    769  |      47
+  custsales | 9007 |          3 |          6 |  306685472 |     0 |   88297472 |    772  |      47
+ (6 rows) 
+</code></pre><p>merge_increments 열은 각각의 vacuum 작업을 위해 병합된 데이터 양을 표시합니다. 연속적 vacuum 동안 병합 증분의 수가 테이블 크기 증가에 비례하여 증가하는 경우, 이는 기존의 정렬된 리전과 새로 정렬된 리전이 중첩되기 때문에 각각의 vacuum 작업이 다시 병합하는 이 테이블의 행이 증가하고 있다는 뜻입니다.</p><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="주의" /> <strong>javascript가 브라우저에서 비활성화되거나 사용이 불가합니다.</strong></p><p>AWS 설명서를 사용하려면 Javascript가 활성화되어야 합니다. 지침을 보려면 브라우저의 도움말 페이지를 참조하십시오.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">문서 규칙</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_vacuum_diskspacereqs.html">정렬되지 않은 리전 관리</div><div id="next" class="next-link" accesskey="n" href="./vacuum-load-in-sort-key-order.html">정렬 키 순서로 데이터 로드</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 예</div><div class="content"><p>칭찬해 주셔서 감사합니다!</p><p>잠깐 시간을 내어 좋았던 부분을 알려 주시면 더 열심히 만들어 보겠습니다.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 아니요</div><div class="content"><p>이 페이지에 작업이 필요하다는 점을 알려 주셔서 감사합니다. 실망시켜 드려 죄송합니다.</p><p>잠깐 시간을 내어 설명서를 향상시킬 수 있는 방법에 대해 말씀해 주십시오.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
