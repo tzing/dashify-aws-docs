@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="it-IT"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Esecuzione di una copia completa - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="performing-a-deep-copy" /><meta name="default_state" content="performing-a-deep-copy" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/performing-a-deep-copy.html" /><meta name="description" content="Crea e popola una tabella tramite inserimento in blocco, noto come copia completa, utile per le tabelle con ampie regioni non ordinate." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guida per sviluppatori di database" /><meta name="abstract" content="Creare e gestire un data warehouse con Amazon Redshift, un servizio di data warehouse completamente gestito di livello aziendale e con capacità nell'ordine di più petabyte." /><meta name="guide-locale" content="it_it" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/performing-a-deep-copy.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/performing-a-deep-copy.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/performing-a-deep-copy.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/performing-a-deep-copy.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/performing-a-deep-copy.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/performing-a-deep-copy.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/performing-a-deep-copy.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/performing-a-deep-copy.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/performing-a-deep-copy.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/performing-a-deep-copy.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/performing-a-deep-copy.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/performing-a-deep-copy.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/performing-a-deep-copy.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/performing-a-deep-copy.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/performing-a-deep-copy.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/performing-a-deep-copy.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/performing-a-deep-copy.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/performing-a-deep-copy.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/performing-a-deep-copy.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/performing-a-deep-copy.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/performing-a-deep-copy.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/performing-a-deep-copy.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guida per sviluppatori di database" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guida per sviluppatori di database" /><meta id="panorama-serviceConsolePage" value="Esecuzione di una copia completa" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Esecuzione di una copia completa - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#performing-a-deep-copy" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/it_it/redshift/latest/dg/performing-a-deep-copy.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/it_it/redshift/latest/dg/performing-a-deep-copy.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/it_it/redshift/latest/dg/performing-a-deep-copy.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,sviluppatore,dati campione,database,sviluppatore di database,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guida per sviluppatori di database",
+        "item" : "https://docs.aws.amazon.com/it_it/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Caricamento dei dati",
+        "item" : "https://docs.aws.amazon.com/it_it/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Esecuzione di una copia completa",
+        "item" : "https://docs.aws.amazon.com/it_it/redshift/latest/dg/t_Loading_data.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#performing-a-deep-copy" target="_blank" rel="noopener noreferrer" title="Apri PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentazione</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guida per sviluppatori di database</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Le traduzioni sono generate tramite traduzione automatica. In caso di conflitto tra il contenuto di una traduzione e la versione originale in Inglese, quest'ultima prevarrà.</p></awsui-alert><h1 class="topictitle" id="performing-a-deep-copy">Esecuzione di una copia completa</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Una copia completa ricrea e ripopola una tabella tramite inserimento di massa, che ordina automaticamente la tabella. Se una tabella ha una regione ampia e non ordinata, una copia completa è molto più veloce di un vacuum. Ti consigliamo di effettuare aggiornamenti simultanei durante un'operazione di copia completa solo se riesci a tenerne traccia. Una volta completato il processo, sposta gli aggiornamenti delta nella nuova tabella. Un'operazione VACUUM supporta automaticamente gli aggiornamenti simultanei. </p><p>È possibile scegliere uno dei seguenti metodi per creare una copia della tabella originale: </p><div class="itemizedlist">
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>Utilizza la tabella con DDL originale. </p>
+            <p>Se è disponibile CREATE TABLE DDL, questo è il metodo più veloce e preferito. Se crei una nuova tabella, è possibile specificare tutti gli attributi di tabella e colonna, comprese la chiave primaria e le chiavi esterne. È possibile trovare il DDL originale utilizzando la funzione SHOW TABLE.</p>
+            
+         </li><li class="listitem">
+            <p>Utilizza CREATE TABLE LIKE. </p>
+            <p>Se il DDL originale non è disponibile, è possibile utilizzare CREATE TABLE LIKE per ricreare la tabella originale. La nuova tabella eredita la codifica, la chiave di distribuzione, la chiave di ordinamento e gli attributi non null della tabella padre. La nuova tabella non eredita la chiave primaria e gli attributi di chiave esterna della tabella padre, ma è possibile aggiungerli utilizzando <a href="./r_ALTER_TABLE.html">ALTER TABLE</a>.</p>
+         </li><li class="listitem">
+            <p>Crea una tabella temporanea e tronca la tabella originale. </p>
+            <p>Se è necessario mantenere gli attributi della chiave primaria e della chiave esterna della tabella principale. Se la tabella principale ha dipendenze, puoi usare CREATE TABLE ... AS (CTAS) per creare una tabella temporanea. Quindi troncare la tabella originale e popolarla dalla tabella temporanea. </p>
+            <p>L'utilizzo di una tabella temporanea migliora le prestazioni in modo significativo rispetto all'utilizzo di una tabella permanente, ma c'è il rischio di perdere dati. La tabella temporanea viene automaticamente eliminata alla fine della sessione in cui è stata creata. TRUNCATE viene sottoposto immediatamente al commit, anche se si trova all'interno di un blocco di transazione. Se TRUNCATE ha esito positivo ma la sessione termina prima del completamento del comando INSERT successivo, i dati vengono persi. Se la perdita di dati non è accettabile, utilizza una tabella permanente. </p>
+         </li></ul></div><p>Dopo aver creato una copia di una tabella, potrebbe essere necessario concedere l'accesso alla nuova tabella. È possibile utilizzare <a href="./r_GRANT.html">GRANT</a> per definire i privilegi di accesso. Per visualizzare e concedere tutti i privilegi di accesso di una tabella, devi avere uno dei seguenti ruoli: </p><div class="itemizedlist">
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p> Un utente con privilegi avanzati. </p>
+         </li><li class="listitem">
+            <p> Il proprietario della tabella che si desidera copiare. </p>
+         </li><li class="listitem">
+            <p> Un utente con il privilegio ACCESS SYSTEM TABLE per visualizzare i privilegi della tabella e con il privilegio di concessione per tutte le autorizzazioni pertinenti. </p>
+         </li></ul></div><p>Inoltre, potrebbe essere necessario concedere l'autorizzazione all'utilizzo dello schema in cui si trova la copia completa. È necessario concedere l'autorizzazione all'utilizzo se lo schema della copia completa è diverso dallo schema della tabella originale e inoltre non è lo schema <code class="code">public</code>. Per visualizzare e concedere tutti i privilegi di utilizzo, devi avere uno dei seguenti ruoli:</p><div class="itemizedlist">
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p> Un utente con privilegi avanzati. </p>
+         </li><li class="listitem">
+            <p> Un utente che può concedere l'autorizzazione USAGE per lo schema della copia completa. </p>
+         </li></ul></div><div class="procedure"><h6>Per eseguire una copia completa utilizzando la tabella con DDL originale</h6><ol><li>
+            <p>(Facoltativo) Ricreare la tabella DDL eseguendo uno script chiamato <code class="code">v_generate_tbl_ddl</code>. </p>
+         </li><li>
+            <p>Creare una copia della tabella utilizzando l'originale CREATE TABLE DDL.</p>
+         </li><li>
+            <p>Utilizzare un'istruzione INSERT INTO ... SELECT per popolare la copia con i dati della tabella originale. </p>
+         </li><li>
+            <p>Verifica le autorizzazioni concesse nella tabella precedente. Puoi visualizzare queste autorizzazioni nella vista di sistema SVV_RELATION_PRIVILEGES.</p>
+         </li><li>
+            <p>Se necessario, concedi le autorizzazioni della tabella precedente alla nuova tabella.</p>
+         </li><li>
+            <p>Concedi l'autorizzazione all'utilizzo a tutti i gruppi e utenti con privilegi nella tabella originale. Questo passaggio non è necessario se la tabella di copia completa è nello schema <code class="code">public</code> o nello stesso schema della tabella originale.</p>
+         </li><li>
+            <p>Rilasciare la tabella originale.</p>
+         </li><li>
+            <p>Utilizzare un'istruzione ALTER TABLE per assegnare un nuovo nome alla copia con il nome della tabella originale.</p>
+         </li></ol></div><p>L'esempio seguente esegue una copia completa sulla tabella SAMPLE utilizzando un duplicato di SAMPLE denominato sample_copy.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">--Create a copy of the original table in the sample_namespace namespace using the original CREATE TABLE DDL.
+create table <code class="replaceable">sample_namespace</code>.sample_copy ( … );
+
+--Populate the copy with data from the original table in the public namespace.
+insert into sample_namespace.sample_copy (select * from <code class="replaceable">public</code>.sample);
+
+--Check SVV_RELATION_PRIVILEGES for the original table's privileges.
+select * from svv_relation_privileges where namespace_name = 'public' and relation_name = 'sample' order by identity_type, identity_id, privilege_type;
+
+--Grant the original table's privileges to the copy table.
+grant DELETE on table sample_namespace.sample_copy to group <code class="replaceable">group1</code>;
+grant INSERT, UPDATE on table sample_namespace.sample_copy to group <code class="replaceable">group2</code>;
+grant SELECT on table sample_namespace.sample_copy to <code class="replaceable">user1</code>;
+grant INSERT, SELECT, UPDATE on table sample_namespace.sample_copy to <code class="replaceable">user2</code>;
+         
+--Grant usage permission to every group and user that has privileges in the original table.
+grant USAGE on schema sample_namespace to group group1, group group2, user1, user2;
+
+--Drop the original table.
+drop table public.sample;
+
+--Rename the copy table to match the original table's name.
+alter table sample_namespace.sample_copy rename to sample;</code></pre><div class="procedure"><h6>Per eseguire una copia completa utilizzando CREATE TABLE LIKE</h6><ol><li>
+            <p>Creare un nuovo tabella utilizzando CREATE TABLE LIKE. </p>
+         </li><li>
+            <p>Utilizzare un'istruzione INSERT INTO ... SELECT per copiare le righe dalla tabella attuale nella nuova tabella. </p>
+         </li><li>
+            <p>Verifica le autorizzazioni concesse nella tabella precedente. Puoi visualizzare queste autorizzazioni nella vista di sistema SVV_RELATION_PRIVILEGES.</p>
+         </li><li>
+            <p>Se necessario, concedi le autorizzazioni della tabella precedente alla nuova tabella.</p>
+         </li><li>
+            <p>Concedi l'autorizzazione all'utilizzo a tutti i gruppi e utenti con privilegi nella tabella originale. Questo passaggio non è necessario se la tabella di copia completa è nello schema <code class="code">public</code> o nello stesso schema della tabella originale.</p>
+         </li><li>
+            <p>Rilasciare la tabella attuale. </p>
+         </li><li>
+            <p>Utilizzare un'istruzione ALTER TABLE per assegnare un nuovo nome alla nuova tabella con il nome della tabella originale. </p>
+         </li></ol></div><p>L'esempio seguente esegue una copia completa sulla tabella SAMPLE utilizzando CREATE TABLE LIKE.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">--Create a copy of the original table in the sample_namespace namespace using CREATE TABLE LIKE.
+create table <code class="replaceable">sameple_namespace</code>.sample_copy (like <code class="replaceable">public</code>.sample);
+
+--Populate the copy with data from the original table.
+insert into sample_namespace.sample_copy (select * from public.sample);
+
+--Check SVV_RELATION_PRIVILEGES for the original table's privileges.
+select * from svv_relation_privileges where namespace_name = 'public' and relation_name = 'sample' order by identity_type, identity_id, privilege_type;
+
+--Grant the original table's privileges to the copy table.
+grant DELETE on table sample_namespace.sample_copy to group <code class="replaceable">group1</code>;
+grant INSERT, UPDATE on table sample_namespace.sample_copy to group <code class="replaceable">group2</code>;
+grant SELECT on table sample_namespace.sample_copy to <code class="replaceable">user1</code>;
+grant INSERT, SELECT, UPDATE on table sample_namespace.sample_copy to <code class="replaceable">user2</code>;
+         
+--Grant usage permission to every group and user that has privileges in the original table.
+grant USAGE on schema sample_namespace to group group1, group group2, user1, user2;
+
+--Drop the original table.
+drop table public.sample;
+
+--Rename the copy table to match the original table's name.
+alter table sample_namespace.sample_copy rename to sample;</code></pre><div class="procedure"><h6>Per eseguire una copia completa tramite la creazione di una tabella temporanea e il troncamento della tabella originale</h6><ol><li>
+            <p>Utilizzare CREATE TABLE AS per creare una tabella temporanea con le righe della tabella originale. </p>
+         </li><li>
+            <p>Troncare la tabella attuale. </p>
+         </li><li>
+            <p>Utilizzare un'istruzione INSERT INTO ... SELECT per copiare le righe dalla tabella temporanea nella tabella originale. </p>
+         </li><li>
+            <p>Rilasciare la tabella temporanea. </p>
+         </li></ol></div><p>L'esempio seguente esegue una copia completa sulla tabella SALES tramite la creazione di una tabella temporanea e il troncamento della tabella originale. Poiché la tabella originale resta, non è necessario concedere autorizzazioni alla tabella di copia.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="">--Create a temp table copy using CREATE TABLE AS.
+create temp table salestemp as select * from sales;
+
+--Truncate the original table.
+truncate sales;
+
+--Copy the rows from the temporary table to the original table.
+insert into sales (select * from salestemp);
+
+--Drop the temporary table.
+drop table salestemp;</code></pre><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Avvertimento" /> <strong>JavaScript è disabilitato o non è disponibile nel tuo browser.</strong></p><p>Per usare la documentazione AWS, JavaScript deve essere abilitato. Consulta le pagine della guida del browser per le istruzioni.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenzioni dei documenti</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./merge-examples.html">Esempi di unione</div><div id="next" class="next-link" accesskey="n" href="./t_Analyzing_tables.html">Analisi delle tabelle</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Questa pagina ti è stata utile? - Sì</div><div class="content"><p>Grazie per averci comunicato che stiamo facendo un buon lavoro!</p><p>Se hai un momento, ti invitiamo a dirci che cosa abbiamo fatto che ti è piaciuto così possiamo offrirti altri contenuti simili.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/it_it/redshift/latest/dg/performing-a-deep-copy.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Questa pagina ti è stata utile? - No</div><div class="content"><p>Grazie per averci comunicato che questa pagina ha bisogno di essere modificata. Siamo spiacenti di non aver soddisfatto le tue esigenze.</p><p>Se hai un momento, ti invitiamo a dirci come possiamo migliorare la documentazione.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/it_it/redshift/latest/dg/performing-a-deep-copy.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

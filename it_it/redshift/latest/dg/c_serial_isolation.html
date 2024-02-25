@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="it-IT"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Isolamento serializzabile - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c_serial_isolation" /><meta name="default_state" content="c_serial_isolation" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_serial_isolation.html" /><meta name="description" content="L'isolamento serializzabile mantiene l'illusione che una transazione in esecuzione su una tabella sia l'unica transazione in esecuzione su quella tabella." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guida per sviluppatori di database" /><meta name="abstract" content="Creare e gestire un data warehouse con Amazon Redshift, un servizio di data warehouse completamente gestito di livello aziendale e con capacità nell'ordine di più petabyte." /><meta name="guide-locale" content="it_it" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_serial_isolation.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c_serial_isolation.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c_serial_isolation.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c_serial_isolation.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c_serial_isolation.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c_serial_isolation.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c_serial_isolation.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c_serial_isolation.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c_serial_isolation.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c_serial_isolation.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c_serial_isolation.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_serial_isolation.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_serial_isolation.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_serial_isolation.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_serial_isolation.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c_serial_isolation.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c_serial_isolation.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c_serial_isolation.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c_serial_isolation.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_serial_isolation.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c_serial_isolation.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c_serial_isolation.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guida per sviluppatori di database" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guida per sviluppatori di database" /><meta id="panorama-serviceConsolePage" value="Isolamento serializzabile" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Isolamento serializzabile - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c_serial_isolation" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_serial_isolation.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_serial_isolation.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_serial_isolation.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,sviluppatore,dati campione,database,sviluppatore di database,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guida per sviluppatori di database",
+        "item" : "https://docs.aws.amazon.com/it_it/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Caricamento dei dati",
+        "item" : "https://docs.aws.amazon.com/it_it/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Gestione delle operazioni di scrittura simultanee",
+        "item" : "https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_Concurrent_writes.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Isolamento serializzabile",
+        "item" : "https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_Concurrent_writes.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c_serial_isolation" target="_blank" rel="noopener noreferrer" title="Apri PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentazione</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guida per sviluppatori di database</a></div><div id="page-toc-src"><a href="#c_serial_isolation-serializable-isolation-for-tables">Isolamento serializzabile per tabelle di sistema e tabelle di catalogo</a><a href="#c_serial_isolation-serializable-isolation-troubleshooting">Come correggere errori di isolamento serializzabile</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Le traduzioni sono generate tramite traduzione automatica. In caso di conflitto tra il contenuto di una traduzione e la versione originale in Inglese, quest'ultima prevarrà.</p></awsui-alert><h1 class="topictitle" id="c_serial_isolation">Isolamento serializzabile</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Alcune applicazioni richiedono non solo query e caricamento simultanei, ma anche la possibilità di scrivere simultaneamente su più tabelle o sulla stessa tabella. In questo contesto, <em>simultaneamente</em> significa una sovrapposizione non pianificata per l'esecuzione simultanea. Due transazioni sono considerate simultanee se la seconda inizia prima del primo commit. Le operazioni simultanee possono provenire da sessioni diverse controllate dallo stesso utente o da utenti diversi.</p><div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Nota</h6></div><div class="awsdocs-note-text"><p>Amazon Redshift supporta un comportamento di <em>commit automatico</em> di default in cui viene eseguito singolarmente il commit di ogni comando SQL eseguito separatamente. Se si racchiude un set di comandi in un blocco di transazione (definito dalle istruzioni <a href="./r_BEGIN.html">BEGIN</a> e <a href="./r_END.html">END</a>), viene eseguito il commit del blocco come una transazione, quindi è possibile eseguirne il rollback se necessario. Eccezioni a questo comportamento sono i comandi TRUNCATE e VACUUM, che eseguono automaticamente il commit di tutte le modifiche in sospeso apportate nella transazione corrente. </p><p>Alcuni client SQL eseguono automaticamente i comandi BEGIN e COMMIT, pertanto il client controlla se un gruppo di istruzioni viene eseguito come transazione o se ogni singola istruzione viene eseguita come transazione propria. Controlla la documentazione per l'interfaccia che stai utilizzando. Ad esempio, quando si utilizza il driver JDBC di Amazon Redshift, un'istruzione JDBC <code class="code">PreparedStatement</code> con una stringa di query che contiene più comandi SQL (separati da punto e virgola) esegue tutte le istruzioni come una singola transazione. Al contrario, se si utilizza SQL Workbench/J e si imposta AUTO COMMIT ON, quindi se si eseguono più istruzioni, ogni istruzione viene eseguita come transazione propria. </p></div></div><p>Le operazioni di scrittura simultanee sono supportate in Amazon Redshift in modo protettivo utilizzando i blocchi di scrittura sulle tabelle e il principio di <em>isolamento serializzabile</em>. L'isolamento serializzabile mantiene l'illusione che una transazione in esecuzione su una tabella sia l'unica transazione in esecuzione su quella tabella. Ad esempio, due transazioni in esecuzione simultanea, T1 e T2, devono produrre gli stessi risultati di almeno uno dei seguenti esempi:</p><div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>T1 e T2 vengono eseguite in serie in questo ordine</p>
+            </li><li class="listitem">
+               <p>T2 e T1 vengono eseguite in serie in questo ordine</p>
+            </li></ul></div><p>Le transazioni simultanee sono invisibili l'una all'altra; non possono rilevare le reciproche modifiche. Ogni transazione simultanea creerà una snapshot del database all'inizio della transazione. Una snapshot del database viene creata all'interno di una transazione alla prima occorrenza della maggior parte delle istruzioni SELECT, dei comandi DML come COPY, DELETE, INSERT, UPDATE e TRUNCATE e dei seguenti comandi DDL:</p><div class="itemizedlist">
+             
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>ALTER TABLE (per aggiungere o eliminare colonne)</p>
+            </li><li class="listitem">
+               <p>CREATE TABLE</p>
+            </li><li class="listitem">
+               <p>DROP TABLE</p>
+            </li><li class="listitem">
+               <p>TRUNCATE TABLE</p>
+            </li></ul></div><p>Se qualsiasi esecuzione seriale delle transazioni simultanee produce gli stessi risultati della loro esecuzione simultanea, tali transazioni sono considerate "serializzabili" e possono essere eseguite in modo sicuro. Se nessuna esecuzione seriale di tali transazioni produce gli stessi risultati, la transazione che esegue un'istruzione che potrebbe interrompere la serializzabilità viene arrestata e ne viene eseguito il rollback.</p><p>Le tabelle del catalogo di sistema (PG) e altre tabelle di sistema Amazon Redshift (STL e STV) non sono bloccate in una transazione. Di conseguenza, le modifiche agli oggetti di database che derivano dalle operazioni di DDL e TRUNCATE sono visibili al commit in qualsiasi transazione simultanea.</p><p>Ad esempio, supponiamo che la tabella A esiste nel database quando iniziano due transazioni simultanee, T1 e T2. Supponiamo che T2 restituisca un elenco di tabelle selezionandole dalla tabella catalogo PG_TABLES. Quindi T1 rilascia la tabella A ed esegue il commit, quindi T2 elenca nuovamente le tabelle. La tabella A non è più elencata. Se T2 prova a eseguire una query sulla tabella rilasciata, Amazon Redshift restituisce un errore di relazione inesistente. La query di catalogo che restituisce l'elenco di tabelle a T2 o verifica che la tabella A esista non è soggetta alle stesse regole di isolamento delle operazioni sulle tabelle utente.</p><p>Le transazioni per gli aggiornamenti a queste tabelle vengono eseguite in modalità di isolamento con lettura sottoposta al commit. Le tabelle del catalogo dei prefissi PG non supportano l'isolamento dello snapshot.</p>
+            <h2 id="c_serial_isolation-serializable-isolation-for-tables">Isolamento serializzabile per tabelle di sistema e tabelle di catalogo</h2>
+            <p>Uno snapshot del database viene creato in una transazione per qualsiasi query SELECT che fa riferimento a una tabella creata dall'utente o a una tabella di sistema Amazon Redshift (STL or STV). Le query SELECT che non fanno riferimento ad alcuna tabella non creano un nuovo snapshot del database delle transazioni. Le istruzioni INSERT, DELETE e UPDATE che operano esclusivamente sulle tabelle del catalogo di sistema (PG) non creano un nuovo snapshot del database delle transazioni.</p>
+          
+            <h2 id="c_serial_isolation-serializable-isolation-troubleshooting">Come correggere errori di isolamento serializzabile</h2>
+            
+             
+               <h3 id="c_serial_isolation-serialization-isolation-1023">ERROR:1023 DETAIL: violazione di isolamento serializzabile su una tabella in Redshift</h3>
+               <p>Quando Amazon Redshift rileva un errore di isolamento serializzabile, compare un messaggio di errore simile al seguente.</p>
+               <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">ERROR:1023 DETAIL: Serializable isolation violation on table in Redshift</code></pre>
+               <p>Per risolvere un errore di isolamento serializzabile, si possono tentare i seguenti metodi:</p>
+               <div class="itemizedlist">
+                  
+                   
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p>Riprovare la transazione annullata.</p>
+                     <p> Amazon Redshift ha rilevato che un carico di lavoro simultaneo non è serializzabile. Suggerisce lacune nella logica dell'applicazione, che di solito possono essere risolte provando a eseguire di nuovo la transazione che ha riscontrato l'errore. Se il problema persiste, provare uno degli altri metodi. </p>
+                  </li><li class="listitem">
+                     <p>Spostare al di fuori della transazione tutte le operazioni che non devono essere nella stessa transazione atomica.</p>
+                     <p>Questo metodo si applica quando singole operazioni all'interno di due transazioni fanno riferimento reciprocamente in modo tale da influire sul risultato dell'altra transazione. Ad esempio, ciascuna delle seguenti due sessioni avvia una transazione.  </p>
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">Session1_Redshift=# begin;</code></pre>
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">Session2_Redshift=# begin;</code></pre>
+                     <p>Il risultato di un'istruzione SELECT in una delle transazioni potrebbe essere compromesso da un'istruzione INSERT nell'altra. In altre parole, si presuppone che le seguenti istruzioni vengano eseguite in serie, in qualunque ordine. In ogni caso, il risultato è che una delle istruzioni SELECT restituisce una riga in più rispetto all'esecuzione simultanea delle transazioni. Non esiste un ordine in cui le operazioni in serie possono produrre lo stesso risultato dell'esecuzione simultanea. Di conseguenza, l'ultima operazione eseguita genera un errore di isolamento serializzabile.</p>
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">Session1_Redshift=# select * from tab1;
+Session1_Redshift=# insert into tab2 values (1);</code></pre>
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">Session2_Redshift=# insert into tab1 values (1);
+Session2_Redshift=# select * from tab2;</code></pre>
+                     <p>In molti casi il risultato delle istruzioni SELECT non è importante. In altre parole, l'atomicità delle operazioni nelle transazioni non è importante. In questi casi, occorre spostare le istruzioni SELECT al di fuori delle transazioni, come illustrato nei seguenti esempi.</p>
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">Session1_Redshift=# begin;
+Session1_Redshift=# insert into tab1 values (1)
+Session1_Redshift=# end;
+Session1_Redshift=# select * from tab2;</code></pre>
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">Session2_Redshift # select * from tab1;
+Session2_Redshift=# begin;
+Session2_Redshift=# insert into tab2 values (1)
+Session2_Redshift=# end;</code></pre>
+                     <p>In questi esempi non ci sono riferimenti reciproci nelle transazioni. Le due istruzioni INSERT non si compromettono reciprocamente. In questi esempi c'è almeno un ordine in cui le transazioni possono essere eseguite in serie producendo lo stesso risultato dell'esecuzione simultanea. Ciò vuol dire che le transazioni sono serializzabili.</p>
+                  </li><li class="listitem">
+                     <p>Forzare la serializzazione bloccando tutte le tabelle in ciascuna sessione.</p>
+                     <p>Il comando <a href="./r_LOCK.html">LOCK</a> blocca le operazioni che possono generare errori di isolamento serializzabile. Quando utilizzi il comando LOCK, ricorda di fare quanto segue:</p>
+                     <div class="itemizedlist">
+                         
+                         
+                         
+                     <ul class="itemizedlist"><li class="listitem">
+                           <p>Bloccare tutte le tabelle interessate dalla transazione, incluse quelle interessate dalle istruzioni SELECT di sola lettura all'interno della transazione.</p>
+                        </li><li class="listitem">
+                           <p>Bloccare le tabelle nello stesso ordine, indipendentemente da quello in cui vengono eseguite le operazioni.</p>
+                        </li><li class="listitem">
+                           <p>Bloccare tutte le tabelle all'inizio delle transazione, prima di eseguire qualunque operazione.</p>
+                        </li></ul></div>
+                  </li><li class="listitem"><p>Utilizzo dell'isolamento degli snapshot per le transazioni simultanee</p>
+                  <p>Utilizza un comando ALTER DATABASE con isolamento degli snapshot. Per ulteriori informazioni sul parametro SNAPSHOT per ALTER DATABASE, consulta <a href="./r_ALTER_DATABASE.html#r_ALTER_DATABASE-parameters">Parametri</a>.</p></li></ul></div>
+             
+             
+               <h3 id="c_serial_isolation-serialization-isolation-1018">ERROR:1018 DETAIL: la relazione non esiste</h3>
+               <p>Quando le operazioni simultanee di Amazon Redshift vengono eseguite in sessioni diverse, viene visualizzato un messaggio di errore simile al seguente.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="">ERROR: 1018 DETAIL: Relation does not exist.</code></pre>
+               <p>Le transazioni in Amazon Redshift seguono l'isolamento degli snapshot. Dopo l'inizio di una transazione, Amazon Redshift acquisisce uno snapshot del database. Per l'intero ciclo di vita della transazione, la transazione opera sullo stato del database come indicato nello snapshot. Se la transazione legge da una tabella che non esiste nello snapshot, genera il messaggio di errore 1018 mostrato in precedenza. Anche quando un'altra transazione simultanea crea una tabella dopo che la transazione ha acquisito lo snapshot, la transazione non può leggere dalla tabella appena creata.</p>
+               <p>Per risolvere questo errore di isolamento della serializzazione, è possibile provare a spostare l'inizio della transazione in un punto in cui si sa che la tabella esiste.</p>
+               <p>Se la tabella viene creata da un'altra transazione, questo punto è almeno dopo il commit della transazione. Inoltre, assicurarsi che non sia stata eseguita alcuna transazione simultanea che potrebbe aver eliminato la tabella.</p>
+               <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">session1 = # BEGIN;
+session1 = # DROP TABLE A;
+session1 = # COMMIT;</code></pre>
+               <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">session2 = # BEGIN;</code></pre>
+               <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">session3 = # BEGIN;
+session3 = # CREATE TABLE A (id INT);
+session3 = # COMMIT;</code></pre>
+               <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">session2 = # SELECT * FROM A;</code></pre>
+               <p>Di conseguenza, l'ultima operazione eseguita come operazione di lettura da session2 genera un errore di isolamento serializzabile. Questo errore si verifica quando session2 esegue uno snapshot e la tabella è già stata eliminata da una sessione di commit 1. In altre parole, anche se una session3 simultanea ha creato la tabella, session2 non vede la tabella perché non è nello snapshot.</p>
+               <p>Per risolvere questo errore, è possibile ordinare nuovamente le sessioni come segue.</p>
+               <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">session1 = # BEGIN;
+session1 = # DROP TABLE A;
+session1 = # COMMIT;</code></pre>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="nocopy ">session3 = # BEGIN;
+session3 = # CREATE TABLE A (id INT);
+session3 = # COMMIT;</code></pre>
+               <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">session2 = # BEGIN;
+session2 = # SELECT * FROM A;</code></pre>
+               <p>Ora, quando session2 effettua il suo snapshot, per session3 è già stato eseguito il commit e la tabella è nel database. Session2 può leggere dalla tabella senza alcun errore.</p>
+             
+         <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Avvertimento" /> <strong>JavaScript è disabilitato o non è disponibile nel tuo browser.</strong></p><p>Per usare la documentazione AWS, JavaScript deve essere abilitato. Consulta le pagine della guida del browser per le istruzioni.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenzioni dei documenti</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c_Concurrent_writes.html">Gestione delle operazioni di scrittura simultanee</div><div id="next" class="next-link" accesskey="n" href="./c_write_readwrite.html">Operazioni di scrittura e lettura/scrittura</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Questa pagina ti è stata utile? - Sì</div><div class="content"><p>Grazie per averci comunicato che stiamo facendo un buon lavoro!</p><p>Se hai un momento, ti invitiamo a dirci che cosa abbiamo fatto che ti è piaciuto così possiamo offrirti altri contenuti simili.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_serial_isolation.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Questa pagina ti è stata utile? - No</div><div class="content"><p>Grazie per averci comunicato che questa pagina ha bisogno di essere modificata. Siamo spiacenti di non aver soddisfatto le tue esigenze.</p><p>Se hai un momento, ti invitiamo a dirci come possiamo migliorare la documentazione.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_serial_isolation.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
