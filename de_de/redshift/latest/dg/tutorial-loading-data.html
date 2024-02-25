@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="de-DE"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Tutorial: So laden Sie Daten aus Amazon S3 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-loading-data" /><meta name="default_state" content="tutorial-loading-data" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-data.html" /><meta name="description" content="Erfahren Sie, wie Sie Daten in Amazon-Redshift-Datenbanktabellen aus Datendateien in einem Amazon-S3-Bucket laden." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Datenbankentwicklerhandbuch" /><meta name="abstract" content="Erstellen und verwalten Sie ein Data Warehouse mit Amazon Redshift, einem vollständig verwalteten Petabyte-Data-Warehousing-Service auf Unternehmensniveau." /><meta name="guide-locale" content="de_de" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-data.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-loading-data.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-loading-data.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-data.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-data.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-loading-data.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-loading-data.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-loading-data.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-loading-data.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-loading-data.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-loading-data.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-loading-data.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-loading-data.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-data.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-data.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-data.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-data.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-loading-data.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-loading-data.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-loading-data.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-loading-data.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-loading-data.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Datenbankentwicklerhandbuch" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Datenbankentwicklerhandbuch" /><meta id="panorama-serviceConsolePage" value="Tutorial: So laden Sie Daten aus Amazon S3" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Tutorial: So laden Sie Daten aus Amazon S3 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-loading-data" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-data.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-data.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-data.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,Cluster,Data Warehouse,Developer,Musterdaten,Datenbank,Database Developer,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Datenbankentwicklerhandbuch",
+        "item" : "https://docs.aws.amazon.com/de_de/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Laden von Daten",
+        "item" : "https://docs.aws.amazon.com/de_de/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Tutorial: So laden Sie Daten aus Amazon S3",
+        "item" : "https://docs.aws.amazon.com/de_de/redshift/latest/dg/t_Loading_data.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-loading-data" target="_blank" rel="noopener noreferrer" title="PDF öffnen"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Dokumentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Datenbankentwicklerhandbuch</a></div><div id="page-toc-src"><a href="#tutorial-loading-data-prerequisites">Voraussetzungen</a><a href="#tutorial-loading-data-overview">Übersicht</a><a href="#tutorial-loading-data-steps">Schritte</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Die vorliegende Übersetzung wurde maschinell erstellt. Im Falle eines Konflikts oder eines Widerspruchs zwischen dieser übersetzten Fassung und der englischen Fassung (einschließlich infolge von Verzögerungen bei der Übersetzung) ist die englische Fassung maßgeblich.</p></awsui-alert><h1 class="topictitle" id="tutorial-loading-data">Tutorial: So laden Sie Daten aus Amazon S3</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>In diesem Tutorial durchlaufen Sie den kompletten Prozess des Ladens von Daten in Ihre Amazon-Redshift-Datenbanktabellen aus Datendateien in einem Amazon-S3-Bucket. </p><p>In diesem Tutorial führen Sie folgende Aufgaben aus: </p><div class="itemizedlist">
+         
+         
+         
+         
+         
+    <ul class="itemizedlist"><li class="listitem">
+            <p>Laden Sie Datendateien als kommagetrennte Werte (CSV), als durch bestimmte Zeichen getrennte Werte und Formate mit fester Breite herunter. </p>
+        </li><li class="listitem">
+            <p>Erstellen eines Amazon-S3-Buckets und Upload der Datendateien zu diesem Bucket. </p>
+        </li><li class="listitem">
+            <p>Starten eines Amazon-Redshift-Clusters und Erstellen von Datenbanktabellen. </p>
+        </li><li class="listitem">
+            <p>Verwenden von COPY-Befehlen zum Laden der Tabellen aus den Datendateien auf Amazon S3. </p>
+        </li><li class="listitem">
+            <p>Beheben von Ladefehlern und Modifizieren Ihrer COPY-Befehle zur Behebung der Fehler.</p>
+        </li></ul></div><p><b>Geschätzte Zeit:</b> 60 Minuten</p><p><b>Geschätzte Kosten</b> 1,00 USD pro Stunde für den Cluster</p>
+        <h2 id="tutorial-loading-data-prerequisites">Voraussetzungen</h2>
+
+
+        <p>Sie benötigen die folgenden Voraussetzungen:</p>
+        <div class="itemizedlist">
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p>Ein AWS-Konto, um einen Amazon-Redshift-Cluster zu starten und einen Bucket in Amazon S3 zu erstellen.</p>
+            </li><li class="listitem">
+                <p>Ihre AWS-Anmeldeinformationen (IAM-Rolle) zum Laden von Testdaten aus Amazon S3. Wenn Sie eine neue IAM-Rolle benötigen, wechseln Sie zu <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create.html">Erstellen von IAM-Rollen</a>.</p>
+            </li><li class="listitem">
+                <p>Ein SQL-Client, z. B. der Konsolenabfrage-Editor von Amazon Redshift. </p>
+            </li></ul></div>
+        <p>Dieses Tutorial kann unabhängig von anderen absolviert werden. Zusätzlich zu diesem Tutorial empfehlen wir die folgenden Tutorials, um ein umfassenderes Verständnis vom Entwurf und von der Verwendung von Amazon-Redshift-Datenbanken zu erhalten: </p>
+        <div class="itemizedlist">
+             
+            
+            
+        <ul class="itemizedlist"><li class="listitem">
+                <p>Das Handbuch <a href="https://docs.aws.amazon.com/redshift/latest/gsg/">Erste Schritte mit Amazon Redshift</a> begleitet Sie beim Erstellen eines Amazon-Redshift-Clusters und dem Laden von Beispieldaten. </p>
+            </li></ul></div>
+     
+        <h2 id="tutorial-loading-data-overview">Übersicht</h2>
+
+        <p>Sie können zum Hinzufügen von Daten zu Ihren Amazon-Redshift-Tabellen einen INSERT-Befehl oder einen COPY-Befehl verwenden. Der COPY-Befehl bietet den Umfang und die Geschwindigkeit eines Data Warehouse von Amazon Redshift und ist damit um ein Vielfaches schneller und effizienter als INSERT-Befehle. </p>
+        <p>Der COPY-Befehl nutzt die massive Parallelverarbeitungsarchitektur (Massively Parallel Processing, MPP) von Amazon Redshift, um Daten parallel aus mehreren Datenquellen zu lesen und zu laden. Sie können aus Datendateien in Amazon S3, Amazon EMR oder auf jedem Remote-Host laden, der über eine Secure Shell (SSH)-Verbindung erreichbar ist. Oder Sie können direkt aus einer Amazon-DynamoDB-Tabelle laden. </p>
+        <p>In diesem Tutorial verwenden Sie den Befehl COPY, um Daten aus Amazon S3 zu laden. Viele der hier vorgestellten Prinzipien gelten auch für das Laden aus anderen Datenquellen. </p>
+        <p>Weitere Informationen zur Verwendung des COPY-Befehls finden Sie in diesen Ressourcen: </p>
+        <div class="itemizedlist">
+             
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p><a href="./c_loading-data-best-practices.html">Bewährte Methoden für Amazon Redshift zum Laden von Daten</a></p>
+            </li><li class="listitem">
+                <p><a href="./loading-data-from-emr.html">So laden Sie Daten aus Amazon EMR:</a></p>
+            </li><li class="listitem">
+                <p><a href="./loading-data-from-remote-hosts.html">Laden von Daten aus Remote-Hosts</a></p>
+            </li><li class="listitem">
+                <p><a href="./t_Loading-data-from-dynamodb.html">Laden von Daten aus einer Amazon-DynamoDB-Tabelle</a></p>
+            </li></ul></div>
+
+     
+        <h2 id="tutorial-loading-data-steps">Schritte</h2>
+
+
+        <div class="itemizedlist">
+             
+             
+             
+             
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p><a href="./tutorial-loading-data-launch-cluster.html">Schritt 1: Erstellen eines Clusters</a></p>
+            </li><li class="listitem">
+                <p><a href="./tutorial-loading-data-download-files.html">Schritt 2: Herunterladen der Datendateien</a></p>
+            </li><li class="listitem">
+                <p><a href="./tutorial-loading-data-upload-files.html">Schritt 3: Hochladen der Datei in einen Amazon S3 Bucket</a></p>
+            </li><li class="listitem">
+                <p><a href="./tutorial-loading-data-create-tables.html">Schritt 4: Erstellen der Beispieltabellen</a></p>
+            </li><li class="listitem">
+                <p><a href="./tutorial-loading-run-copy.html">Schritt 5: Ausführen der COPY-Befehle</a></p>
+            </li><li class="listitem">
+                <p><a href="./tutorial-loading-data-vacuum.html">Schritt 6: Bereinigen und Analysieren der Datenbank</a></p>
+            </li><li class="listitem">
+                <p><a href="./tutorial-loading-data-clean-up.html">Schritt 7: Bereinigen Ihrer Ressourcen</a></p>
+            </li></ul></div>
+    <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warnung" /> <strong>JavaScript ist in Ihrem Browser nicht verfügbar oder deaktiviert.</strong></p><p>Zur Nutzung der AWS-Dokumentation muss JavaScript aktiviert sein. Weitere Informationen finden auf den Hilfe-Seiten Ihres Browsers.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Dokumentkonventionen</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_Serializable_isolation_example.html">Beispiele für gleichzeitige Schreibvorgänge</div><div id="next" class="next-link" accesskey="n" href="./tutorial-loading-data-launch-cluster.html">Schritt 1: Erstellen eines Clusters</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Hat Ihnen diese Seite geholfen? – Ja</div><div class="content"><p>Vielen Dank, dass Sie uns mitgeteilt haben, dass wir gute Arbeit geleistet haben!</p><p>Würden Sie sich einen Moment Zeit nehmen, um uns mitzuteilen, was wir richtig gemacht haben, damit wir noch besser werden?</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-data.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Hat Ihnen diese Seite geholfen? – Nein</div><div class="content"><p>Vielen Dank, dass Sie uns mitgeteilt haben, dass diese Seite überarbeitet werden muss. Es tut uns Leid, dass wir Ihnen nicht weiterhelfen konnten.</p><p>Würden Sie sich einen Moment Zeit nehmen, um uns mitzuteilen, wie wir die Dokumentation verbessern können?</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-data.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

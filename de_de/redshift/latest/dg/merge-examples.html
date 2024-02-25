@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="de-DE"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Beispiele für Zusammenführungen - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="merge-examples" /><meta name="default_state" content="merge-examples" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/merge-examples.html" /><meta name="description" content="In den folgenden Beispielen werden Zusammenführungen ausgeführt, um die Tabelle SALES zu aktualisieren. Im ersten Beispiel wird die einfachere Methode verwendet, bei der alle Zeilen in der Zieltabelle gelöscht werden und anschließend alle Zeilen aus der Staging-Tabelle eingefügt werden. Im zweiten Beispiel müssen ausgewählte Spalten in der Zieltabelle aktualisiert werden. Daher enthält es einen zusätzlichen Aktualisierungsschritt." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Datenbankentwicklerhandbuch" /><meta name="abstract" content="Erstellen und verwalten Sie ein Data Warehouse mit Amazon Redshift, einem vollständig verwalteten Petabyte-Data-Warehousing-Service auf Unternehmensniveau." /><meta name="guide-locale" content="de_de" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/merge-examples.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/merge-examples.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/merge-examples.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/merge-examples.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/merge-examples.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/merge-examples.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/merge-examples.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/merge-examples.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/merge-examples.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/merge-examples.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/merge-examples.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/merge-examples.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/merge-examples.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/merge-examples.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/merge-examples.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/merge-examples.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/merge-examples.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/merge-examples.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/merge-examples.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/merge-examples.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/merge-examples.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/merge-examples.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Datenbankentwicklerhandbuch" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Datenbankentwicklerhandbuch" /><meta id="panorama-serviceConsolePage" value="Beispiele für Zusammenführungen" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Beispiele für Zusammenführungen - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#merge-examples" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/merge-examples.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/merge-examples.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/merge-examples.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,Cluster,Data Warehouse,Developer,Musterdaten,Datenbank,Database Developer,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Datenbankentwicklerhandbuch",
+        "item" : "https://docs.aws.amazon.com/de_de/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Laden von Daten",
+        "item" : "https://docs.aws.amazon.com/de_de/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Aktualisieren von Daten und Einfügen neuer Daten",
+        "item" : "https://docs.aws.amazon.com/de_de/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Beispiele für Zusammenführungen",
+        "item" : "https://docs.aws.amazon.com/de_de/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#merge-examples" target="_blank" rel="noopener noreferrer" title="PDF öffnen"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Dokumentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Datenbankentwicklerhandbuch</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Die vorliegende Übersetzung wurde maschinell erstellt. Im Falle eines Konflikts oder eines Widerspruchs zwischen dieser übersetzten Fassung und der englischen Fassung (einschließlich infolge von Verzögerungen bei der Übersetzung) ist die englische Fassung maßgeblich.</p></awsui-alert><h1 class="topictitle" id="merge-examples">Beispiele für Zusammenführungen</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>In den folgenden Beispielen werden Zusammenführungen ausgeführt, um die Tabelle SALES zu aktualisieren. Im ersten Beispiel wird die einfachere Methode verwendet, bei der alle Zeilen in der Zieltabelle gelöscht werden und anschließend alle Zeilen aus der Staging-Tabelle eingefügt werden. Im zweiten Beispiel müssen ausgewählte Spalten in der Zieltabelle aktualisiert werden. Daher enthält es einen zusätzlichen Aktualisierungsschritt. </p><p>In Beispiele für Zusammenführungen wird ein Beispieldatensatz für Amazon Redshift verwendet, der sogenannte TICKIT-Datensatz. Als Voraussetzung können Sie die TICKIT-Tabellen und -Daten einrichten, indem Sie den Anweisungen in der Anleitung <a href="https://docs.aws.amazon.com/redshift/latest/gsg/database-tasks.html">Erste Schritte mit gängigen Datenbankaufgaben</a> folgen. Weitere Informationen zum Beispieldatensatz finden Sie unter <a href="https://docs.aws.amazon.com/redshift/latest/dg/c_sampledb.html">Beispieldatenbank</a>. </p><p><b>Beispieldatenquelle für eine Zusammenführung</b></p><p>Die Beispiele in diesem Abschnitt benötigen eine Beispieldatenquelle, die sowohl Aktualisierungen als auch Einfügungen enthält. Zu diesem Zweck wird eine Beispieltabelle namens SALES_UPDATE erstellt, die Daten aus der Tabelle SALES verwendet. Die neue Tabelle wird mit zufälligen Daten ausgefüllt, die neue Vertriebsaktivitäten für den Dezember darstellen. Die Beispieltabelle SALES_UPDATE wird verwendet, um die Staging-Tabelle in den folgenden Beispielen zu erstellen. </p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">-- Create a sample table as a copy of the SALES table.
+
+create table tickit.sales_update as
+select * from tickit.sales;
+
+-- Change every fifth row to have updates.
+
+update tickit.sales_update
+set qtysold = qtysold*2,
+pricepaid = pricepaid*0.8,
+commission = commission*1.1
+where saletime &gt; '2008-11-30'
+and mod(sellerid, 5) = 0;
+
+-- Add some new rows to have inserts.
+-- This example creates a duplicate of every fourth row.
+
+insert into tickit.sales_update
+select (salesid + 172456) as salesid, listid, sellerid, buyerid, eventid, dateid, qtysold, pricepaid, commission, getdate() as saletime
+from tickit.sales_update
+where saletime &gt; '2008-11-30'
+and mod(sellerid, 4) = 0;</code></pre><p><b>Beispiel für eine Zusammenführung, bei der vorhandene Zeilen basierend auf übereinstimmenden Schlüsseln ersetzt werden</b></p><p>Im folgenden Skript wird die Tabelle SALES_UPDATE verwendet, um für die Tabelle SALES eine Zusammenführungsoperation mit neuen Daten für Vertriebsaktivitäten im Dezember auszuführen. In diesem Beispiel werden Zeilen in der SALES-Tabelle ersetzt, die aktualisiert wurden. In diesem Beispiel aktualisieren wir die Spalten QTYSOLD und PRICEPAID. Die Spalten COMMISSION und SALETIME bleiben unverändert.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">MERGE into tickit.sales 
+USING tickit.sales_update sales_update  
+on ( sales.salesid = sales_update.salesid
+and sales.listid = sales_update.listid
+and sales_update.saletime &gt; '2008-11-30'
+and (sales.qtysold != sales_update.qtysold 
+or sales.pricepaid != sales_update.pricepaid))
+WHEN MATCHED THEN
+update SET qtysold = sales_update.qtysold,
+pricepaid = sales_update.pricepaid
+WHEN NOT MATCHED THEN 
+INSERT (salesid, listid, sellerid, buyerid, eventid, dateid, qtysold , pricepaid, commission, saletime)
+values (sales_update.salesid, sales_update.listid, sales_update.sellerid, sales_update.buyerid, sales_update.eventid, 
+sales_update.dateid, sales_update.qtysold , sales_update.pricepaid, sales_update.commission, sales_update.saletime);
+
+-- Drop the staging table.
+drop table tickit.sales_update;
+
+-- Test to see that commission and salestime were not impacted.
+SELECT sales.salesid, sales.commission, sales.salestime, sales_update.commission, sales_update.salestime 
+FROM tickit.sales 
+INNER JOIN tickit.sales_update sales_update  
+ON 
+sales.salesid = sales_update.salesid
+AND sales.listid = sales_update.listid
+AND sales_update.saletime &gt; '2008-11-30'
+AND (sales.commission != sales_update.commission 
+OR sales.salestime != sales_update.salestime);</code></pre><p><b>Beispiel für eine Zusammenführung, bei der eine Spaltenliste angegeben wird, ohne den Befehl MERGE zu verwenden</b></p><p>Im folgenden Beispiel wird eine Zusammenführungsoperation ausgeführt, um SALES durch neue Daten für Vertriebsaktivitäten im Dezember zu aktualisieren. Die Beispieldaten müssen sowohl Aktualisierungen als auch Einfügungen sowie nicht geänderte Zeilen enthalten. In diesem Beispiel sollen die Spalten QTYSOLD und PRICEPAID aktualisiert werden. Die Spalten COMMISSION und SALETIME sollen dagegen nicht verändert werden. Im folgenden Skript wird die Tabelle SALES_UPDATE verwendet, um für die Tabelle SALES eine Zusammenführungsoperation auszuführen. </p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">-- Create a staging table and populate it with rows from SALES_UPDATE for Dec
+create temp table stagesales as select * from sales_update
+where saletime &gt; '2008-11-30';
+
+-- Start a new transaction
+begin transaction;
+
+-- Update the target table using an inner join with the staging table
+-- The join includes a redundant predicate to collocate on the distribution key –- A filter on saletime enables a range-restricted scan on SALES
+
+update sales
+set qtysold = stagesales.qtysold,
+pricepaid = stagesales.pricepaid
+from stagesales
+where sales.salesid = stagesales.salesid
+and sales.listid = stagesales.listid
+and stagesales.saletime &gt; '2008-11-30'
+and (sales.qtysold != stagesales.qtysold 
+or sales.pricepaid != stagesales.pricepaid);
+ 
+-- Delete matching rows from the staging table 
+-- using an inner join with the target table
+
+delete from stagesales
+using sales
+where sales.salesid = stagesales.salesid
+and sales.listid = stagesales.listid;
+
+-- Insert the remaining rows from the staging table into the target table
+insert into sales
+select * from stagesales;
+
+-- End transaction and commit
+end transaction;
+
+-- Drop the staging table
+drop table stagesales;</code></pre><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warnung" /> <strong>JavaScript ist in Ihrem Browser nicht verfügbar oder deaktiviert.</strong></p><p>Zur Nutzung der AWS-Dokumentation muss JavaScript aktiviert sein. Weitere Informationen finden auf den Hilfe-Seiten Ihres Browsers.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Dokumentkonventionen</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./merge-specify-a-column-list.html">Ausführen einer Zusammenführungsoperation durch Angabe einer Spaltenliste ohne den Befehl MERGE</div><div id="next" class="next-link" accesskey="n" href="./performing-a-deep-copy.html">Ausführen einer Deep Copy-Operation</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Hat Ihnen diese Seite geholfen? – Ja</div><div class="content"><p>Vielen Dank, dass Sie uns mitgeteilt haben, dass wir gute Arbeit geleistet haben!</p><p>Würden Sie sich einen Moment Zeit nehmen, um uns mitzuteilen, was wir richtig gemacht haben, damit wir noch besser werden?</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/merge-examples.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Hat Ihnen diese Seite geholfen? – Nein</div><div class="content"><p>Vielen Dank, dass Sie uns mitgeteilt haben, dass diese Seite überarbeitet werden muss. Es tut uns Leid, dass wir Ihnen nicht weiterhelfen konnten.</p><p>Würden Sie sich einen Moment Zeit nehmen, um uns mitzuteilen, wie wir die Dokumentation verbessern können?</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/merge-examples.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

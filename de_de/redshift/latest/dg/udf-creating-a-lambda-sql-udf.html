@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="de-DE"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Erstellen einer skalaren Lambda-UDF - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="udf-creating-a-lambda-sql-udf" /><meta name="default_state" content="udf-creating-a-lambda-sql-udf" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="description" content="Amazon Redshift kann benutzerdefinierte Funktionen verwenden, die in AWS Lambda als Teil von SQL-Abfragen. Sie können skalare Lambda-UDFs in allen von Lambda unterstützten Programmiersprachen schreiben, z. B. Java, Go, PowerShell, Node.js, C#, Python und Ruby. Sie können auch eine benutzerdefinierte Laufzeit verwenden." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Datenbankentwicklerhandbuch" /><meta name="abstract" content="Erstellen und verwalten Sie ein Data Warehouse mit Amazon Redshift, einem vollständig verwalteten Petabyte-Data-Warehousing-Service auf Unternehmensniveau." /><meta name="guide-locale" content="de_de" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Datenbankentwicklerhandbuch" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Datenbankentwicklerhandbuch" /><meta id="panorama-serviceConsolePage" value="Erstellen einer skalaren Lambda-UDF" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Erstellen einer skalaren Lambda-UDF - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#udf-creating-a-lambda-sql-udf" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,Cluster,Data Warehouse,Developer,Musterdaten,Datenbank,Database Developer,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Datenbankentwicklerhandbuch",
+        "item" : "https://docs.aws.amazon.com/de_de/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Erstellung benutzerdefinierter Funktionen",
+        "item" : "https://docs.aws.amazon.com/de_de/redshift/latest/dg/user-defined-functions.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Erstellen einer skalaren Lambda-UDF",
+        "item" : "https://docs.aws.amazon.com/de_de/redshift/latest/dg/user-defined-functions.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#udf-creating-a-lambda-sql-udf" target="_blank" rel="noopener noreferrer" title="PDF öffnen"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Dokumentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Datenbankentwicklerhandbuch</a></div><div id="page-toc-src"><a href="#udf-lambda-register">Registrieren eine Lambda-UDF</a><a href="#udf-lambda-security">Verwaltung von Lambda-UDF-Sicherheit und -Berechtigungen</a><a href="#udf-lambda-authorization">Konfigurieren des Autorisierungsparameters für Lambda-UDFs</a><a href="#udf-lambda-json">Verwenden der JSON-Schnittstelle zwischen Amazon Redshift und Lambda</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Die vorliegende Übersetzung wurde maschinell erstellt. Im Falle eines Konflikts oder eines Widerspruchs zwischen dieser übersetzten Fassung und der englischen Fassung (einschließlich infolge von Verzögerungen bei der Übersetzung) ist die englische Fassung maßgeblich.</p></awsui-alert><h1 class="topictitle" id="udf-creating-a-lambda-sql-udf">Erstellen einer skalaren Lambda-UDF</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Amazon Redshift kann benutzerdefinierte Funktionen verwenden, die in AWS Lambda als Teil von SQL-Abfragen. Sie können skalare Lambda-UDFs in allen von Lambda unterstützten Programmiersprachen schreiben, z. B. Java, Go, PowerShell, Node.js, C#, Python und Ruby. Sie können auch eine benutzerdefinierte Laufzeit verwenden.</p><p>Lambda-UDFs werden in Lambda definiert und verwaltet, und Sie können die Zugriffsberechtigungen zum Aufrufen dieser UDFs in Amazon Redshift steuern. Sie können mehrere Lambda-Funktionen in derselben Abfrage aufrufen oder die gleiche Funktion mehrmals aufrufen.</p><p>Verwenden Sie Lambda-UDFs in allen Klauseln der SQL-Anweisungen, in denen skalare Funktionen unterstützt werden. Sie können Lambda-UDFs auch in jeder SQL-Anweisung wie SELECT, UPDATE, INSERT oder DELETE verwenden. </p><div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Anmerkung</h6></div><div class="awsdocs-note-text"><p>Die Verwendung von Lambda-UDFs kann zusätzliche Gebühren für den Lambda-Service verursachen. Ob dies geschieht, hängt von Faktoren wie der Anzahl der Lambda-Anforderungen (UDF-Aufrufe) und der Gesamtdauer der Lambda-Programmausführung ab. Es gibt jedoch keine zusätzlichen Gebühren für die Verwendung von Lambda-UDFs in Amazon Redshift. Weitere Informationen zu Preisen von AWS Lambda finden Sie unter <a href="https://aws.amazon.com/lambda/pricing" rel="noopener noreferrer" target="_blank"><span>AWS Lambda-Preise</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p><p>Die Anzahl der Lambda-Anforderungen hängt von der spezifischen SQL-Anweisungsklausel ab, in der die Lambda-UDF verwendet wird. Angenommen, die Funktion wird in einer WHERE-Klausel wie der folgenden verwendet. <code class="code"></code></p><p><code class="code">SELECT a, b FROM t1 WHERE lambda_multiply(a, b) = 64; SELECT a, b FROM t1 WHERE
+               a*b = lambda_multiply(2, 32) </code></p><p>In diesem Fall ruft Amazon Redshift die erste SELECT-Anweisung für jede und ruft die zweite SELECT-Anweisung nur einmal auf.</p><p>Wenn Sie jedoch ein UDF im Projektionsteil der Abfrage verwenden, wird die Lambda-Funktion möglicherweise nur einmal für jede qualifizierte oder aggregierte Zeile in der Ergebnismenge aufgerufen. </p></div></div>
+         <h2 id="udf-lambda-register">Registrieren eine Lambda-UDF</h2>
+      <p> Der Befehl <a href="./r_CREATE_EXTERNAL_FUNCTION.html">CREATE EXTERNAL FUNCTION</a> erstellt die folgenden Parameter:</p>
+      <div class="itemizedlist">
+          
+          
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>(Optional) Eine Liste von Argumenten mit Datentyp. </p>
+         </li><li class="listitem">
+            <p>Ein Rückgabedatentyp</p>
+         </li><li class="listitem">
+            <p>Ein Funktionsname der externen Funktion, die von Amazon Redshift aufgerufen wird. </p>
+         </li><li class="listitem">
+            <p>Eine IAM-Rolle, die der Amazon-Redshift-Cluster übernehmen und Lambda aufrufen darf.</p>
+         </li><li class="listitem">
+            <p>Ein Lambda-Funktionsname, den die Lambda-UDF aufruft.</p>
+         </li></ul></div>
+         <p>Weitere Hinweise zu CREATE EXTERNAL FUNCTION finden Sie unter <a href="./r_CREATE_EXTERNAL_FUNCTION.html">CREATE EXTERNAL FUNCTION</a>.</p>
+      <p>Ein- und Rückgabedaten für diese Funktion können jeden standardmäßigen Amazon-Redshift-Datentyp verwenden.</p>
+      <p>Amazon Redshift stellt sicher, dass die externe Funktion Batch-Argumente und -Ergebnisse senden und empfangen kann. </p>
+       
+         <h2 id="udf-lambda-security">Verwaltung von Lambda-UDF-Sicherheit und -Berechtigungen</h2>
+         <p>Um eine Lambda-UDF zu erstellen, stellen Sie sicher, dass Sie über Berechtigungen für die Verwendung auf LANGUAGE EXFUNC verfügen. Sie müssen USAGE ON LANGUAGE EXFUNC explizit gewähren oder USAGE ON LANGUAGE EXFUNC für bestimmte Benutzer, Gruppen oder öffentliche Benutzer widerrufen.</p>
+            <p>Im folgenden Beispiel wird PUBLIC die Verwendung auf EXFUNC gewährt.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">grant usage on language exfunc to PUBLIC; </code></pre>
+         <p>Im folgenden Beispiel wird die Verwendung auf exfunc von PUBLIC widerrufen. Anschließend wird die Nutzung der Benutzergruppe lambda_udf_devs erlaubt.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">revoke usage on language exfunc from PUBLIC;
+grant usage on language exfunc to group lambda_udf_devs;</code></pre>
+         <p>Stellen Sie zum Ausführen einer Lambda-UDF sicher, dass Sie die Berechtigung für jede aufgerufene Funktion haben. Standardmäßig wird PUBLIC die Ausführungsberechtigung für neue Lambda-UDFs gewährt. Um die Nutzung einzuschränken, widerrufen Sie diese Berechtigung für die Funktion von PUBLIC. Gewähren Sie die Berechtigung anschließend den spezifischen Benutzern oder Gruppen.</p>
+           <p>Beim folgenden Beispiel wird die Ausführung der Funktion exfunc_sum durch Benutzer mit Berechtigungen der Gruppe PUBLIC untersagt. Daraufhin wird die Nutzung der Benutzergruppe lambda_udf_devs erlaubt.</p>
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">revoke execute on function exfunc_sum(int, int) from PUBLIC;
+grant execute on function exfunc_sum(int, int) to group lambda_udf_devs;</code></pre>
+         <p>Superuser haben standardmäßig alle Berechtigungen.</p>
+               <p>Weitere Informationen zum Erteilen und Widerrufen von Berechtigungen finden Sie unter <a href="./r_GRANT.html">GRANT</a> und <a href="./r_REVOKE.html">REVOKE</a>.</p>
+       
+         <h2 id="udf-lambda-authorization">Konfigurieren des Autorisierungsparameters für Lambda-UDFs</h2>
+         
+         <p>Der Befehl CREATE EXTERNAL FUNCTION erfordert die Autorisierung, Lambda-Funktionen in AWS Lambda aufzurufen. Um die Autorisierung zu starten, geben Sie eine AWS Identity and Access Management (IAM)-Rolle an, wenn Sie den Befehl CREATE EXTERNAL FUNCTION ausführen Weitere Informationen zu IAM-Rollen finden Sie unter <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html">IAM-Rollen</a> im <em>IAM-Benutzerhandbuch</em>.</p>
+            <p>Wenn bereits eine IAM-Rolle mit Berechtigungen zum Aufrufen von Lambda-Funktionen vorhanden ist, können Sie den Befehl durch Ihre Rolle Amazon-Ressourcenname (ARN) im Parameter IAM_ROLE ersetzen. Die folgenden Abschnitte beschreiben die Schritte zur Verwendung einer IAM-Rolle im Befehl CREATE EXTERNAL FUNCTION.</p>
+         
+          
+            <h3 id="udf-lambda-create-iam">Erstellen einer IAM-Rolle für Lambda</h3>
+            <p>Die IAM-Rolle erfordert die Berechtigung zum Aufrufen von Lambda-Funktionen. Geben Sie beim Erstellen der IAM-Rolle die Berechtigung auf eine der folgenden Arten an:</p>
+                  <div class="itemizedlist">
+                      
+                      
+                  <ul class="itemizedlist"><li class="listitem"><p>Fügen Sie die <code class="code">AWSLambdaRole</code>-Richtlinie auf der Seite <b>Berechtigungsrichtlinie anfügen</b> an, während Sie eine IAM-Rolle erstellen. Die<code class="code">AWSLambdaRole</code>-Richtlinie erteilt Berechtigungen zum Aufrufen von Lambda-Funktionen, was die minimale Anforderung ist. Weitere Informationen und andere Richtlinien finden Sie unter <a href="https://docs.aws.amazon.com/lambda/latest/dg/access-control-identity-based.html">Identitätsbasierte IAM-Richtlinien für AWS Lambda</a> im <em>AWS Lambda-Entwicklerhandbuch</em>.</p></li><li class="listitem"><p>Erstellen Sie Ihre eigene benutzerdefinierte Richtlinie, die Sie Ihrer IAM-Rolle mit der <code class="code">lambda:InvokeFunction</code>-Berechtigung entweder für alle Ressourcen oder eine bestimmten Lambda-Funktion mit dem ARN dieser Funktion anfügen. Weitere Informationen zum Erstellen von Richtlinien finden Sie unter <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_create.html">Erstellen von IAM-Richtlinien</a> im <em>IAM-Benutzerhandbuch</em>.</p>
+                       <p>Die folgende Beispielrichtlinie ermöglicht das Aufrufen von Lambda für eine bestimmte Lambda-Funktion.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+    "Version": "2012-10-17",
+    "Statement": [
+        <span>{</span>
+            "Sid": "Invoke",
+            "Effect": "Allow",
+            "Action": [
+                "lambda:InvokeFunction"
+            ],
+            "Resource": "arn:aws:lambda:us-west-2:123456789012:function:my-function"
+        }
+    ]
+}</code></pre>
+                        <p>Weitere Informationen zu Ressourcen für Lambda Funktionen finden Sie unter <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-api-permissions-ref.html">Ressourcen und Bedingungen für Lambda-Aktionen</a> in der <em>IAM-API-Referenz</em>.</p>
+                        <p>Nachdem Sie Ihre benutzerdefinierte Richtlinie mit den erforderlichen Berechtigungen erstellt haben, können Sie Ihre Richtlinie der IAM-Rolle auf der Registerkarte <b>Berechtigungsrichtlinie anfügen</b> anfügen, während Sie eine IAM-Rolle erstellen.</p></li></ul></div>
+            <p>Informationen zu Schritten zum Erstellen einer IAM-Rolle finden Sie unter <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/authorizing-redshift-service.html">Amazon Redshift in Ihrem Namen für den Zugriff auf andere AWS-Services autorisieren</a> im <em>Amazon-Redshift-Verwaltungshandbuch</em>.</p>
+              <p>Wenn Sie keine neue IAM-Rolle erstellen möchten, können Sie die zuvor genannten Berechtigungen zu Ihrer vorhandenen IAM-Rolle hinzufügen.</p>
+                
+        
+          
+            <h3 id="udf-lambda-associate-iam">Zuweisen einer IAM-Rolle zum Cluster</h3>
+              <p>Fügen Sie die IAM-Rolle an Ihren Cluster an. Sie können über die Amazon-Redshift-Managementkonsole, die CLI oder eine API einem Cluster eine Rolle hinzufügen oder die Rollen anzeigen, die mit einem Cluster verknüpft sind. Weitere Informationen finden Sie unter <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/copy-unload-iam-role.html">Verknüpfen einer IAM-Rolle mit einem Cluster</a> im <em>Amazon-Redshift-Verwaltungshandbuch</em>.</p>
+          
+            
+             
+               <h3 id="udf-lambda-include-iam">Einschließen der IAM-Rolle in den Befehl</h3>
+               <p>Schließen Sie die IAM-Rolle ARN in den Befehl CREATE EXTERNAL FUNCTION ein. Beim Erstellen einer IAM-Rolle gibt IAM einen Amazon-Ressourcennamen (ARN) für die Rolle zurück. Um eine IAM-Rolle anzugeben, geben Sie für den ARN der Rolle den Parameter <code class="code">IAM_ROLE</code> an. Im Folgenden wird die Syntax für den Parameter <code class="code">IAM_ROLE</code> gezeigt.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">IAM_ROLE 'arn:aws:iam::aws-account-id:role/role-name'</code></pre>
+               <p>Informationen zum Aufrufen von Lambda-Funktionen, die sich in anderen Konten innerhalb derselben Region befinden, finden Sie unter <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/authorizing-redshift-service.html#authorizing-redshift-service-chaining-roles.html">Verketten von IAM-Rollen in Amazon Redshift</a>.</p>
+             
+       
+         <h2 id="udf-lambda-json">Verwenden der JSON-Schnittstelle zwischen Amazon Redshift und AWS Lambda</h2>
+         
+         <p>Amazon Redshift verwendet eine gemeinsame Schnittstelle für alle Lambda-Funktionen, mit denen Amazon Redshift kommuniziert.</p>
+         <p>Die folgende Tabelle zeigt die Liste der Eingabefelder, die die designierten Lambda-Funktionen für die JSON-Payload erwarten können.</p>
+         
+         
+         <div class="table-container"><div class="table-contents"><table id="w319aac17c21c17b7"><thead>
+                  <tr>
+                     <th>Feldname</th>
+                     <th>
+                        <p>Beschreibung</p>
+                     </th>
+                     <th>Wertebereich</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">request_id</td>
+                     <td tabindex="-1">Eine UUID (Universally Unique Identifier), die jede Aufrufanforderung eindeutig identifiziert.</td>
+                     <td tabindex="-1">
+                        <p>Eine gültige UUID.</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>Cluster</p>
+                     </td>
+                     <td tabindex="-1">Der vollständige Amazon-Ressourcenname (ARN) des Clusters.</td>
+                     <td tabindex="-1">
+                        <p>Ein gültiger Cluster-ARN.</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>user</p>
+                     </td>
+                     <td tabindex="-1">Der Name des Benutzers, der den Aufruf ausführt.</td>
+                     <td tabindex="-1">Ein gültiger Benutzername.</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>Datenbank</p>
+                     </td>
+                     <td tabindex="-1">Der Name der -Datenbank, auf der die Abfrage ausgeführt wird.</td>
+                     <td tabindex="-1">Ein gültiger Datenbankname.</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>external_function</p>
+                     </td>
+                     <td tabindex="-1">Der vollqualifizierte Name der externen Funktion, die den Aufruf ausführt.</td>
+                     <td tabindex="-1">Ein gültiger vollqualifizierter Funktionsname.</td>
+                  </tr>
+                 
+                  
+                  <tr>
+                     <td tabindex="-1">
+                        <p>query_id</p>
+                     </td>
+                     <td tabindex="-1">Die Abfrage-ID der Abfrage, die den Aufruf ausführt.</td>
+                     <td tabindex="-1">Eine gültige Abfrage-ID.</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>num_records</p>
+                     </td>
+                     <td tabindex="-1">Die Anzahl der Argumente in der Nutzlast.</td>
+                     <td tabindex="-1">Ein Wert von 1 - 2^64.</td>
+                  </tr>
+                 
+                  <tr>
+                     <td tabindex="-1">
+                        <p>arguments</p>
+                     </td>
+                     <td tabindex="-1">Die Datennutzlast im angegebenen Format.</td>
+                     <td tabindex="-1">Die Daten im Array-Format müssen ein JSON-Array sein. Jedes Element ist ein Datensatz, der ein Array ist, wenn die Anzahl der Argumente größer als 1 ist. Durch die Verwendung eines Arrays behält Amazon Redshift die Reihenfolge der Datensätze in der Nutzlast bei.</td>
+                  </tr>
+               </table></div></div>
+         <p>Die Reihenfolge des JSON-Arrays bestimmt die Reihenfolge der Batch-Verarbeitung. Die Lambda Funktion muss die Argumente iterativ wiederholen und die genaue Anzahl von Datensätzen erzeugen. Im Folgenden sehen Sie ein Beispiel für eine Nutzlast. </p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+  "request_id" : "23FF1F97-F28A-44AA-AB67-266ED976BF40",
+  "cluster" : "arn:aws:redshift:xxxx",
+  "user" : "adminuser",
+  "database" : "db1",
+  "external_function": "public.foo",
+  "query_id" : 5678234,
+  "num_records" : 4,
+  "arguments" : [
+     [ 1, 2 ],
+     [ 3, null],
+     null,
+     [ 4, 6]
+   ]
+ }</code></pre>
+         <p>Die Ausgabe der Lambda-Funktion sollte folgende Felder umfassen.</p>
+         
+         <div class="table-container"><div class="table-contents"><table id="w319aac17c21c17c15"><thead>
+                  <tr>
+                     <th>Feldname</th>
+                     <th>
+                        <p>Beschreibung</p>
+                     </th>
+                     <th>Wertebereich</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">Erfolg</td>
+                     <td tabindex="-1">Der Hinweis auf Erfolg oder Fehlschlag der Funktion.</td>
+                     <td tabindex="-1">
+                        <p>Ein Wert von <code class="code">"true"</code> oder <code class="code">"false"</code>.</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>error_msg</p>
+                     </td>
+
+                     <td tabindex="-1">Die Fehlermeldung, wenn der Erfolgswert <code class="code">"false"</code> ist (wenn die Funktion fehlschlägt); andernfalls wird dieses Feld ignoriert.</td>
+
+                     <td tabindex="-1">
+                        <p>Eine gültige Nachricht.</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>num_records</p>
+                     </td>
+                     <td tabindex="-1">Die Anzahl der Datensätze in der Nutzlast.</td>
+                     <td tabindex="-1">Ein Wert von 1 - 2^64.</td>
+                  </tr>
+                 
+                  <tr>
+                     <td tabindex="-1">
+                        <p>results</p>
+                     </td>
+                     <td tabindex="-1">Die Ergebnisse des Aufrufs im angegebenen Format.</td>
+                     <td tabindex="-1">N/A</td>
+                  </tr>
+               </table></div></div>
+         <p>Im Folgenden sehen Sie ein Beispiel für die Ausgabe der Lambda-Funktion.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+  "success": true,   // true indicates the call succeeded
+  "error_msg" : "my function isn't working",  // shall only exist when success != true
+  "num_records": 4,      // number of records in this payload
+  "results" : [
+     1,
+     4,
+     null,
+     7
+   ]
+}</code></pre>
+         <p>Wenn Sie Lambda-Funktionen aus SQL-Abfragen aufrufen, stellt Amazon Redshift die Sicherheit der Verbindung mit den folgenden Überlegungen sicher:</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem"><p>GRANT- und REVOKE-Berechtigungen. Weitere Informationen zur Sicherheit und zu Berechtigungen von UDFs finden Sie unter <a href="./udf-security-and-privileges.html">UDF-Sicherheit und Rechte</a>.</p></li><li class="listitem"><p>Amazon Redshift sendet nur den Mindestdatensatz an die dafür vorgesehene Lambda-Funktion.</p></li><li class="listitem"><p>Amazon Redshift ruft nur die designierte Lambda-Funktion mit der angegebenen IAM-Rolle auf.</p></li></ul></div>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warnung" /> <strong>JavaScript ist in Ihrem Browser nicht verfügbar oder deaktiviert.</strong></p><p>Zur Nutzung der AWS-Dokumentation muss JavaScript aktiviert sein. Weitere Informationen finden auf den Hilfe-Seiten Ihres Browsers.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Dokumentkonventionen</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./udf-logging-messages.html">Protokollieren von Fehlern und Warnungen</div><div id="next" class="next-link" accesskey="n" href="./udf-example-uses.html">Beispielverwendung von UDFs</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Hat Ihnen diese Seite geholfen? – Ja</div><div class="content"><p>Vielen Dank, dass Sie uns mitgeteilt haben, dass wir gute Arbeit geleistet haben!</p><p>Würden Sie sich einen Moment Zeit nehmen, um uns mitzuteilen, was wir richtig gemacht haben, damit wir noch besser werden?</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Hat Ihnen diese Seite geholfen? – Nein</div><div class="content"><p>Vielen Dank, dass Sie uns mitgeteilt haben, dass diese Seite überarbeitet werden muss. Es tut uns Leid, dass wir Ihnen nicht weiterhelfen konnten.</p><p>Würden Sie sich einen Moment Zeit nehmen, um uns mitzuteilen, wie wir die Dokumentation verbessern können?</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

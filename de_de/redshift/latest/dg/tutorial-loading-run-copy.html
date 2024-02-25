@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="de-DE"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Schritt 5: Ausführen der COPY-Befehle - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-loading-run-copy" /><meta name="default_state" content="tutorial-loading-run-copy" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="description" content="Lernen Sie die grundlegende COPY-Befehlssyntax und führen Sie dann den COPY-Befehl in Ihrem SQL-Client mit verschiedenen Optionen aus, um zu erfahren, wie Sie Tabellen mit verschiedenen Dateiformaten laden." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Datenbankentwicklerhandbuch" /><meta name="abstract" content="Erstellen und verwalten Sie ein Data Warehouse mit Amazon Redshift, einem vollständig verwalteten Petabyte-Data-Warehousing-Service auf Unternehmensniveau." /><meta name="guide-locale" content="de_de" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-run-copy.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-loading-run-copy.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Datenbankentwicklerhandbuch" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Datenbankentwicklerhandbuch" /><meta id="panorama-serviceConsolePage" value="Schritt 5: Ausführen der COPY-Befehle" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Schritt 5: Ausführen der COPY-Befehle - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-loading-run-copy" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-run-copy.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,Cluster,Data Warehouse,Developer,Musterdaten,Datenbank,Database Developer,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Datenbankentwicklerhandbuch",
+        "item" : "https://docs.aws.amazon.com/de_de/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Laden von Daten",
+        "item" : "https://docs.aws.amazon.com/de_de/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Tutorial: So laden Sie Daten aus Amazon S3",
+        "item" : "https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Schritt 5: Ausführen der COPY-Befehle",
+        "item" : "https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-data.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-loading-run-copy" target="_blank" rel="noopener noreferrer" title="PDF öffnen"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Dokumentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Datenbankentwicklerhandbuch</a></div><div id="page-toc-src"><a href="#tutorial-loading-data-copy-syntax">COPY-Befehlssyntax</a><a href="#tutorial-loading-run-copy-load-tables">Laden der SSB-Tabellen</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Die vorliegende Übersetzung wurde maschinell erstellt. Im Falle eines Konflikts oder eines Widerspruchs zwischen dieser übersetzten Fassung und der englischen Fassung (einschließlich infolge von Verzögerungen bei der Übersetzung) ist die englische Fassung maßgeblich.</p></awsui-alert><h1 class="topictitle" id="tutorial-loading-run-copy">Schritt 5: Ausführen der COPY-Befehle</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Sie führen COPY-Befehle aus, um jede der Tabellen im SSB-Schema zu laden. Die Beispiele für COPY-Befehle demonstrieren das Laden aus unterschiedlichen Dateiformaten unter Verwendung verschiedener COPY-Befehlsoptionen sowie die Behebung von Ladefehlern.</p><div class="highlights" id="inline-topiclist"><h6>Themen</h6><ul><li><a href="#tutorial-loading-data-copy-syntax">COPY-Befehlssyntax</a></li><li><a href="#tutorial-loading-run-copy-load-tables">Laden der SSB-Tabellen</a></li></ul></div>
+            <h2 id="tutorial-loading-data-copy-syntax">COPY-Befehlssyntax</h2>
+
+
+            <p>Die grundlegende <a href="./r_COPY.html">COPY</a>-Befehlssyntax ist wie folgt. </p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY table_name [ column_list ] FROM data_source CREDENTIALS access_credentials [options] </code></pre>
+            <p>Zur Ausführung eines COPY-Befehls geben Sie die folgenden Werte an. </p>
+             
+                <h6>Tabellenname </h6>
+                <p>Die Zieltabelle für den COPY-Befehl. Die Tabelle muss in der Datenbank bereits vorhanden sein. Die Tabelle kann temporär oder persistent sein. Der COPY-Befehl fügt die neuen Eingabedaten den vorhandenen Zeilen in der Tabelle an. </p>
+             
+             
+                <h6>Spaltenliste</h6>
+                <p>Standardmäßig lädt COPY Felder aus den Quelldaten in ihrer Reihenfolge in die Tabellenspalten. Sie können optional eine <em>Spaltenliste</em> angeben, d. h. eine durch Kommas getrennte Liste von Spaltennamen, um Datenfelder bestimmten Spalten zuzuordnen. In diesem Tutorial verwenden Sie keine Spaltenlisten. Weitere Informationen finden Sie unter <a href="./copy-parameters-column-mapping.html#copy-column-list">Column List</a> in der Referenz zum COPY-Befehl.</p>
+             
+            <p><span class="topcon">Datenquelle</span></p>
+            <p>Sie können den COPY-Befehl verwenden, um Daten aus einem Amazon-S3-Bucket, aus einem Amazon-EMR-Cluster, über eine SSH-Verbindung aus einem Remote-Host oder aus einer Amazon-DynamoDB-Tabelle zu laden. Für dieses Tutorial laden Sie Datendateien in einen Amazon-S3-Bucket. Beim Laden von Amazon S3 müssen Sie den Namen des Buckets und den Speicherort der Datendateien angeben. Dazu geben Sie entweder einen Objektpfad für die Datendateien oder den Speicherort einer Manifestdatei an, die jede Datendatei und ihren Speicherort explizit auflistet. </p>
+            <div class="itemizedlist">
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem">
+                    <p>Schlüsselpräfix </p>
+                    <p>Ein in Amazon S3 gespeichertes Objekt wird durch einen Objektschlüssel eindeutig definiert, der den Bucketnamen, eventuelle Ordnernamen sowie den Objektnamen enthält. Ein <em>Schlüsselpräfix </em>bezieht sich auf eine Reihe von Objekten, die das gleiche Präfix haben. Der Objektpfad ist ein Schlüsselpräfix, das der COPY-Befehl verwendet, um alle Objekte mit dem gleichen Schlüsselpräfix zu laden. Beispielsweise kann sich das Schlüsselpräfix <code class="code">custdata.txt</code> auf eine einzelne Datei oder auf einen Satz von Dateien einschließlich <code class="code">custdata.txt.001</code>, <code class="code">custdata.txt.002</code> und so weiter beziehen. </p>
+                </li><li class="listitem">
+                    <p>Manifestdatei</p>
+                    <p>In einigen Fällen müssen Sie möglicherweise Dateien mit unterschiedlichen Präfixen laden, z. B. aus mehreren Buckets oder Ordnern. In anderen Fällen müssen Sie möglicherweise Dateien ausschließen, die ein Präfix verwenden. In diesen Fällen können Sie eine Manifestdatei verwenden. Eine <em>Manifestdatei</em> führt alle Ladedateien und ihre eindeutigen Objektschlüssel explizit auf. Sie verwenden eine Manifestdatei, um die PART-Tabelle später in diesem Tutorial zu laden. </p>
+                </li></ul></div>
+             
+                <h6>Anmeldeinformationen</h6>
+                <p>Um auf die AWS-Ressourcen zuzugreifen, die die zu ladenden Daten enthalten, müssen Sie AWS-Zugriffsanmeldeinformationen für einen Benutzer mit ausreichenden Berechtigungen bereitstellen. Diese Anmeldeinformationen enthalten einen Amazon-Ressourcennamen (ARN) für die IAM-Rolle. Um Daten aus Amazon S3 zu laden, müssen die Anmeldeinformationen die Berechtigungen  ListBucket und GetObject enthalten. Weitere Anmeldeinformationen sind erforderlich, wenn Ihre Daten verschlüsselt sind. Weitere Informationen finden Sie unter <a href="./copy-parameters-authorization.html">Autorisierungsparameter</a> in der Referenz zum COPY-Befehl. Weitere Informationen zur Verwaltung des Zugriffs finden Sie unter <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-access-control.html">Managing access permissions to your Amazon S3 resources</a> (Verwaltung von Zugriffsberechtigungen für Ihre Amazon-S3-Ressourcen). </p>
+             
+            <p><span class="topcon">Optionen</span></p>
+            <p>Sie können mit dem COPY-Befehl eine Reihe von Parametern angeben, um Dateiformate anzugeben, Datenformate zu verwalten, mit Fehlern umzugehen und andere Features zu steuern. In diesem Tutorial verwenden Sie die folgenden COPY-Befehlsoptionen und -Funktionen: </p>
+            <div class="itemizedlist">
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem">
+                    <p>Schlüsselpräfix</p>
+                    <p>Informationen zum Laden von mehreren Dateien durch Angabe eines Schlüsselpräfixes finden Sie unter <a href="#tutorial-loading-load-part">Laden der Tabelle PART mit NULL AS</a>.</p>
+                </li><li class="listitem">
+                    <p>CSV-Format</p>
+                    <p>Informationen zum Laden von Daten im CSV-Format finden Sie unter <a href="#tutorial-loading-load-part">Laden der Tabelle PART mit NULL AS</a>.</p>
+                </li><li class="listitem">
+                    <p>NULL AS</p>
+                    <p>Hinweise zum Laden von PART mit der Option NULL AS finden Sie unter <a href="#tutorial-loading-load-part">Laden der Tabelle PART mit NULL AS</a>.</p>
+                </li><li class="listitem">
+                    <p>Zeichengetrenntes Format</p>
+                    <p>Hinweise zur Verwendung der Option DELIMITER finden Sie unter <a href="#tutorial-loading-load-supplier">Laden der Tabelle SUPPLIER mit REGION</a>.</p>
+                </li><li class="listitem">
+                    <p>REGION</p>
+                    <p>Informationen zur Verwendung der Option REGION finden Sie unter <a href="#tutorial-loading-load-supplier">Laden der Tabelle SUPPLIER mit REGION</a>.</p>
+                </li><li class="listitem">
+                    <p>Breite des festen Formats</p>
+                    <p>Informationen zum Laden der Tabelle CUSTOMER aus Daten mit fester Breite finden Sie unter <a href="#tutorial-loading-load-customer">Laden der Tabelle CUSTOMER mit MANIFEST</a>.</p>
+                </li><li class="listitem">
+                    <p>MAXERROR</p>
+                    <p>Hinweise zur Verwendung der Option MAXERROR finden Sie unter <a href="#tutorial-loading-load-customer">Laden der Tabelle CUSTOMER mit MANIFEST</a>.</p>
+                </li><li class="listitem">
+                    <p>ACCEPTINVCHARS</p>
+                    <p>Hinweise zur Verwendung der Option ACCEPTINVCHARS finden Sie unter <a href="#tutorial-loading-load-customer">Laden der Tabelle CUSTOMER mit MANIFEST</a>.</p>
+                </li><li class="listitem">
+                    <p>MANIFEST</p>
+                    <p>Hinweise zur Verwendung der Option MANIFEST finden Sie unter <a href="#tutorial-loading-load-customer">Laden der Tabelle CUSTOMER mit MANIFEST</a>.</p>
+                </li><li class="listitem">
+                    <p>DATEFORMAT</p>
+                    <p>Hinweise zur Verwendung der Option DATEFORMAT finden Sie unter <a href="#tutorial-loading-load-dwdate">Laden der Tabelle DWDATE mit DATEFORMAT</a>.</p>
+                </li><li class="listitem">
+                    <p>GZIP, LZOP und BZIP2</p>
+                    <p>Informationen zum Komprimieren von Dateien finden Sie unter <a href="#tutorial-loading-load-lineorder">Laden der Tabelle LINEORDER unter Verwendung mehrerer Tabellen</a>.</p>
+                </li><li class="listitem">
+                    <p>COMPUPDATE</p>
+                    <p>Hinweise zur Verwendung der Option COMPUPDATE finden Sie unter <a href="#tutorial-loading-load-lineorder">Laden der Tabelle LINEORDER unter Verwendung mehrerer Tabellen</a>.</p>
+                </li><li class="listitem">
+                    <p>Mehrere Dateien</p>
+                    <p>Informationen zum Laden mehrerer Dateien finden Sie unter <a href="#tutorial-loading-load-lineorder">Laden der Tabelle LINEORDER unter Verwendung mehrerer Tabellen</a>.</p>
+                </li></ul></div>
+         
+            <h2 id="tutorial-loading-run-copy-load-tables">Laden der SSB-Tabellen</h2>
+
+            <p>Mit den folgenden COPY-Befehlen laden Sie jede der Tabellen im SSB-Schema. Der Befehl für jede Tabelle demonstriert unterschiedliche COPY-Optionen und Fehlerbehebungstechniken.</p>
+            <p>Gehen Sie zum Laden der SSB-Tabellen wie folgt vor: </p>
+            <div class="orderedlist">
+                 
+                 
+                 
+                 
+                 
+                 
+            <ol><li>
+                    <p><a href="#tutorial-loading-run-copy-replaceables">Ersetzen des Bucket-Namens und der AWS-Anmeldeinformationen</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-part">Laden der Tabelle PART mit NULL AS</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-supplier">Laden der Tabelle SUPPLIER mit REGION</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-customer">Laden der Tabelle CUSTOMER mit MANIFEST</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-dwdate">Laden der Tabelle DWDATE mit DATEFORMAT</a></p>
+
+                </li><li>
+                    <p><a href="#tutorial-loading-load-lineorder">Laden der Tabelle LINEORDER unter Verwendung mehrerer Tabellen</a></p>
+
+                </li></ol></div>
+             
+                <h3 id="tutorial-loading-run-copy-replaceables">Ersetzen des Bucket-Namens und der AWS-Anmeldeinformationen</h3>
+
+                <p>Die COPY-befehle in diesem Tutorial werden im folgenden Format angegeben.</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy table from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/<em>key_prefix</em>' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>'
+options;</code></pre>
+                
+                <p>Gehen Sie für jeden COPY-Befehl wie folgt vor:</p>
+                <div class="orderedlist">
+                     
+                     
+                <ol><li>
+                        <p>Ersetzen Sie <code class="replaceable">&lt;your-bucket-name&gt;</code> durch den Namen eines Buckets in derselben Region wie Ihr Cluster. </p>
+                        <p>Für diesen Schritt wird davon ausgegangen, dass Bucket und Cluster sich in derselben Region befinden. Alternativ können Sie die Region mittels der Option <a href="./copy-parameters-data-source-s3.html#copy-region">REGION</a> mit dem Befehl COPY angeben. </p>
+                    </li><li>
+                        <p>Ersetzen Sie <code class="replaceable">&lt;aws-account-id&gt;</code> und <code class="replaceable">&lt;role-name&gt;</code> durch Ihre eigene AWS-Konto und IAM-Rolle. Das Segment der Anmeldedatenzeichenfolge, das in einfachen Anführungszeichen eingeschlossen ist, darf keine Leerzeichen oder Zeilenumbrüche enthalten. Beachten Sie, dass sich das Format des ARNs geringfügig von dem im Beispiel verwendeten Format unterscheiden kann. Am besten kopieren Sie den ARN für die Rolle aus der IAM-Konsole, um sicherzustellen, dass er korrekt ist, wenn Sie die COPY-Befehle ausführen. </p>
+                        
+                    </li></ol></div>
+             
+             
+                <h3 id="tutorial-loading-load-part">Laden der Tabelle PART mit NULL AS</h3>
+
+                <p>In diesem Schritt verwenden Sie die Optionen CSV und NULL AS, um die PART-Tabelle zu laden. </p>
+                <p>Der COPY-Befehl kann Daten aus mehreren Dateien parallel laden, was viel schneller ist als das Laden aus einer einzelnen Datei. Zur Demonstration dieses Prinzips sind die Daten für jede Tabelle in diesem Tutorial in acht Dateien unterteilt, obwohl die Dateien sehr klein sind. In einem späteren Schritt vergleichen Sie den Zeitunterschied zwischen dem Laden aus einer einzelnen Datei und dem Laden aus mehreren Dateien. Weitere Informationen finden Sie unter <a href="./c_best-practices-use-multiple-files.html">Laden von Datendateien</a>. </p>
+                 
+                    <h6>Schlüsselpräfix</h6>
+                    <p>Sie können aus mehreren Dateien durch die Angabe eines Schlüsselpräfixes den Dateiensatz oder durch die explizite Auflistung der Dateien in einer Manifestdatei laden. In diesem Schritt verwenden Sie ein Schlüsselpräfix. In einem späteren Schritt verwenden Sie eine Manifestdatei. Das Schlüsselpräfix <code class="code">'s3://mybucket/load/part-csv.tbl'</code> lädt den folgenden Satz der Dateien im Ordner <code class="code">load</code>. </p>
+                 
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">part-csv.tbl-000
+part-csv.tbl-001
+part-csv.tbl-002
+part-csv.tbl-003
+part-csv.tbl-004
+part-csv.tbl-005
+part-csv.tbl-006
+part-csv.tbl-007
+</code></pre>
+                 
+                    <h6>CSV-Format</h6>
+                    <p>CSV (Comma Separated Values) ist ein für den Import und den Export von Spreadsheet-Daten häufig verwendetes Format. CSV ist flexibler als das Comma-Delimited Format, da es den Einschluss von Zeichenfolgen mit Anführungszeichen in Feldern erlaubt. Das Standard-Anführungszeichen für COPY aus dem CSV-Format ist das doppelte Anführungszeichen ("), Sie können aber mit der Option QUOTE AS ein anderes Zeichen angeben. Wenn Sie das Anführungszeichen innerhalb des Feldes verwenden, verwenden Sie ein weiteres Anführungszeichen als Escape-Zeichen.</p>
+                 
+                <p>Der folgende Auszug aus einer CSV-formatierten Datendatei für die PART-Tabelle zeigt Zeichenfolgen, die in doppelte Anführungszeichen () eingeschlossen sind. (<code class="code">"LARGE ANODIZED
+                    BRASS"</code>). Er zeigt außerdem eine Zeichenfolge, die in zwei doppelte Anführungszeichen innerhalb einer Zeichenfolge mit Anführungszeichen eingeschlossen () ist. (<code class="code">"MEDIUM ""BURNISHED"" TIN"</code>).</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">15,dark sky,MFGR#3,MFGR#47,MFGR#3438,indigo,"LARGE ANODIZED BRASS",45,LG CASE
+22,floral beige,MFGR#4,MFGR#44,MFGR#4421,medium,"PROMO, POLISHED BRASS",19,LG DRUM
+23,bisque slate,MFGR#4,MFGR#41,MFGR#4137,firebrick,"MEDIUM ""BURNISHED"" TIN",42,JUMBO JAR</code></pre>
+                <p>Die Daten für die PART-Tabelle enthalten Zeichen, die dazu führen, dass COPY fehlschlägt. In dieser Übung finden Sie die Fehler und beheben sie. </p>
+                <p>Um Daten im CSV-Format zu laden, fügen Sie Ihrem COPY-Befehl <code class="code">csv</code> hinzu. Führen Sie den folgenden Befehl aus, um die PART-Tabelle zu laden. </p>
+                
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy part from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/part-csv.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>'
+csv;</code></pre>
+                
+                <p>Sie könnten eine Fehlermeldung ähnlich der folgenden erhalten.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">An error occurred when executing the SQL command:
+copy part from 's3://mybucket/load/part-csv.tbl' 
+credentials' ...
+
+ERROR: Load into table 'part' failed.  Check 'stl_load_errors' system table for details. [SQL State=XX000] 
+
+Execution time: 1.46s
+
+1 statement(s) failed.
+1 statement(s) failed.</code></pre>
+                <p>Um mehr Informationen zu dem Fehler zu erhalten, fragen Sie die Tabelle STL_LOAD_ERRORS ab. Die folgende Abfrage verwendet die Funktion SUBSTRING zum Kürzen von Spalten zur besseren Lesbarkeit sowie LIMIT 10, um die Anzahl der ausgegebenen Zeilen zu reduzieren. Sie können die Werte in <code class="code">substring(filename,22,25)</code> an die Länge Ihres Bucketnamens anpassen.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select query, substring(filename,22,25) as filename,line_number as line, 
+substring(colname,0,12) as column, type, position as pos, substring(raw_line,0,30) as line_text,
+substring(raw_field_value,0,15) as field_text, 
+substring(err_reason,0,45) as reason
+from stl_load_errors 
+order by query desc
+limit 10;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> query  |    filename      | line |  column   |    type    | pos |      
+--------+-------------------------+-----------+------------+------------+-----+----
+ 333765 | part-csv.tbl-000 |    1 |           |            |   0 |
+
+ line_text        | field_text |                    reason
+------------------+------------+----------------------------------------------
+ 15,NUL next,     |            | Missing newline: Unexpected character 0x2c f</code></pre>
+
+
+                 
+                    <h6>NULL AS</h6>
+                    <p>Die <code class="code">part-csv.tbl</code>-Datendateien verwenden das NUL-Begrenzungszeichen (<code class="code">\x000</code> oder <code class="code">\x0</code>) zur Anzeige von NULL-Werten.</p>
+                 
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Anmerkung</h6></div><div class="awsdocs-note-text"><p>Trotz ihrer sehr ähnlichen Schreibweise sind NUL und NULL nicht identisch. NUL ist ein UTF-8-Zeichen mit Codepunkt <code class="code">x000</code>, das oft zur Kennzeichnen des Datensatzendes (End of Record, EOR) verwendet wird. NULL ist ein SQL-Wert, der für die Abwesenheit von Daten steht. </p></div></div>
+                <p>Standardmäßig behandelt COPY das Begrenzungszeichen NUL als EOR-Zeichen und beendet den Datensatz, was oft zu unerwarteten Ergebnissen oder einem Fehler führt. Es gibt keine einzige Standardmethode, um NULL in Textdaten anzuzeigen. Mit der Befehlsoption NULL AS COPY können Sie also angeben, welches Zeichen beim Laden der Tabelle durch NULL ersetzt werden soll. In diesem Beispiel soll COPY das NUL-Begrenzungszeichen als NULL-Wert behandeln.</p>
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Anmerkung</h6></div><div class="awsdocs-note-text"><p>Die Tabellenspalte, die den NULL-Wert erhält, muss als <em>nullfähig</em> konfiguriert sein. Das bedeutet, dass sie die NOT NULL-Einschränkung in der CREATE TABLE-Spezifikation nicht enthalten darf.</p></div></div>
+                <p>Führen Sie den folgenden COPY-Befehl aus, um PART mit der Option NULL AS zu laden.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy part from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/part-csv.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+csv
+null as '\000';</code></pre>
+                
+                <p>Um zu prüfen, ob COPY NULL-Werte geladen hat, führen Sie den folgenden Befehl aus, um nur die Zeilen auszuwählen, die NULL enthalten.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select p_partkey, p_name, p_mfgr, p_category from part where p_mfgr is null;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> p_partkey |  p_name  | p_mfgr | p_category
+-----------+----------+--------+------------
+        15 | NUL next |        | MFGR#47
+        81 | NUL next |        | MFGR#23
+       133 | NUL next |        | MFGR#44 
+(2 rows)</code></pre>
+             
+
+             
+                <h3 id="tutorial-loading-load-supplier">Laden der Tabelle SUPPLIER mit REGION</h3>
+
+                <p>In diesem Schritt verwenden Sie die Optionen DELIMITER und REGION, um die Tabelle SUPPLIER zu laden.</p>
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Anmerkung</h6></div><div class="awsdocs-note-text"><p>Die Daten zum Laden der Tabelle SUPPLIER werden im AWS-Beispielbucket bereitgestellt. Für diesen Schritt müssen Sie keine Daten hochladen.</p></div></div>
+                 
+                    <h6>Zeichengetrenntes Format</h6>
+                    <p>Die Felder in einer zeichengetrennten Datei werden von einem speziellen Teichen, etwa einem senkrechten Strich (|), einem Komma (,) oder einem Tabulatorzeichen (\t) abgetrennt. Dafür können alle einzelnen ASCII-Zeichen verwendet werden, auch nicht gedruckte ASCII-Zeichen. Sie geben das Trennzeichen mit der Option DELIMITER an. Das Standardtrennzeichen ist der senkrechte Strich (|). </p>
+                 
+                <p>Der folgende Auszug aus den Daten für die Tabelle SUPPLIER verwendet den senkrechten Strich als Trennzeichen. </p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">1|1|257368|465569|41365|19950218|2-HIGH|0|17|2608718|9783671|4|2504369|92072|2|19950331|TRUCK
+1|2|257368|201928|8146|19950218|2-HIGH|0|36|6587676|9783671|9|5994785|109794|6|19950416|MAIL</code></pre>
+
+                
+                 
+                    <h6>REGION</h6>
+                    <p>Wann immer möglich sollten Sie Ihre Ladedaten in derselben AWS-Region haben, in der sich auch Ihr Amazon-Redshift-Cluster befindet. Wenn sich Ihre Daten und Ihr Cluster in derselben Region befinden, reduzieren Sie die Latenz und vermeiden Kosten für den regionenübergreifenden Datentransfer. Weitere Informationen finden Sie unter <a href="./c_loading-data-best-practices.html">Bewährte Methoden für Amazon Redshift zum Laden von Daten</a> </p>
+                 
+                <p>Wenn Sie Daten aus einer anderen AWS-Region laden müssen, verwenden Sie die Option REGION, um die AWS-Region anzugeben, in der sich die Ladedaten befinden. Wenn Sie eine Region angeben, müssen sich alle Ladedaten, einschließlich der Manifestdateien, in der benannten Region befinden. Weitere Informationen finden Sie unter <a href="./copy-parameters-data-source-s3.html#copy-region">REGION</a>. </p>
+                <p>Wenn sich Ihr Cluster in der Region USA Ost (Nord-Virginia) befindet, führen Sie den folgenden Befehl aus, um die Tabelle SUPPLIER aus mit | getrennten Daten in einem Amazon S3 Bucket in der Region USA West (Oregon) zu laden. Ändern Sie für dieses Beispiel den Namen des Buckets nicht. </p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy supplier from 's3://awssampledbuswest2/ssbgz/supplier.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+delimiter '|' 
+gzip
+region 'us-west-2';</code></pre>
+                
+                <p>Wenn sich Ihr Cluster <em>nicht</em> in der Region USA Ost (Nord-Virginia) befindet, führen Sie den folgenden Befehl aus, um die Tabelle SUPPLIER aus durch | getrennten Daten in einem Amazon S3 Bucket zu laden, der sich in der Region USA Ost (Nord-Virginia) befindet. Ändern Sie für dieses Beispiel den Namen des Buckets nicht.</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy supplier from 's3://awssampledb/ssbgz/supplier.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+delimiter '|' 
+gzip
+region 'us-east-1';
+</code></pre>
+                
+             
+
+             
+                <h3 id="tutorial-loading-load-customer">Laden der Tabelle CUSTOMER mit MANIFEST</h3>
+
+                <p>In diesem Schritt laden Sie die Tabelle CUSTOMER mit den Optionen FIXEDWIDTH, MAXERROR, ACCEPTINVCHARS und MANIFEST.</p>
+                <p>Die Beispieldaten für diese Übung enthalten Zeichen, die beim Laden durch COPY Fehler verursachen. Mit der Option MAXERRORS und der Systemtabelle STL_LOAD_ERRORS können Sie die Ladefehler ausfindig machen und mit den Optionen ACCEPTINVCHARS und MANIFEST die Fehler beheben.</p>
+                 
+                    <h6>Format mit fester Breite</h6>
+                    <p>Das Format mit fester Breite definiert jedes Feld mit einer festen Anzahl von Zeichen, anstatt die Felder durch Trennzeichen voneinander zu scheiden. Der folgende Auszug aus den Daten für die Tabelle CUSTOMER verwendet das Format mit fester Breite.</p>
+                 
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">1   Customer#000000001   IVhzIApeRb           MOROCCO  0MOROCCO  AFRICA      25-705 
+2   Customer#000000002   XSTf4,NCwDVaWNe6tE   JORDAN   6JORDAN   MIDDLE EAST 23-453
+3   Customer#000000003   MG9kdTD              ARGENTINA5ARGENTINAAMERICA     11-783</code></pre>
+
+                <p>Die Reihenfolge der Paare aus Bezeichnung/Breite muss exakt mit der Reihenfolge der Tabellenspalten übereinstimmen. Weitere Informationen finden Sie unter <a href="./copy-parameters-data-format.html#copy-fixedwidth">FIXEDWIDTH</a>.</p>
+                <p>Die Spezifikationszeichenfolge für die feste Breite der Daten für die Tabelle CUSTOMER ist die folgende.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, 
+c_region :12, c_phone:15,c_mktsegment:10'</code></pre>
+                <p>Um die Tabelle CUSTOMER aus Daten mit fester Breite zu laden, führen Sie den folgenden Befehl aus.</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy customer
+from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, c_region :12, c_phone:15,c_mktsegment:10';</code></pre>
+                
+                <p>Sie sollten eine Fehlermeldung ähnlich der folgenden erhalten.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">An error occurred when executing the SQL command:
+copy customer
+from 's3://mybucket/load/customer-fw.tbl'
+credentials'...
+
+ERROR: Load into table 'customer' failed.  Check 'stl_load_errors' system table for details. [SQL State=XX000] 
+
+Execution time: 2.95s
+
+1 statement(s) failed.</code></pre>
+                 
+                    <h6>MAXERROR</h6>
+                    <p>Standardmäßig schlägt der COPY-Befehl beim ersten Auftreten eines Fehlers fehl und gibt eine Fehlermeldung aus. Um beim testen Zeit zu sparen, können Sie die Option MAXERROR verwenden, damit COPY eine bestimmte Anzahl von Fehlern übergeht, bevor der Befehl fehlschlägt. Da wir beim ersten Test des Ladens der Daten der Tabelle CUSTOMER Fehler erwarten, fügen Sie dem COPY-Befehl <code class="code">maxerror 10</code> hinzu. </p>
+                 
+                <p>Führen Sie zum Test mit den Optionen FIXEDWIDTH und MAXERROR den folgenden Befehl aus.</p>
+                
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy customer
+from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, c_region :12, c_phone:15,c_mktsegment:10'
+maxerror 10;</code></pre>
+                
+                <p>Diesmal erhalten Sie statt einer Fehlermeldung eine Warnmeldung, ähnlich der folgenden.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Warnings:
+Load into table 'customer' completed, 112497 record(s) loaded successfully.
+Load into table 'customer' completed, 7 record(s) could not be loaded.  Check 'stl_load_errors' system table for details.</code></pre>
+                <p>Die Warnung gibt an, dass COPY auf sieben Fehler gestoßen ist. Fragen Sie zur Prüfung der Fehler die Tabelle STL_LOAD_ERRORS ab, wie im folgenden Beispiel gezeigt.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select query, substring(filename,22,25) as filename,line_number as line, 
+substring(colname,0,12) as column, type, position as pos, substring(raw_line,0,30) as line_text,
+substring(raw_field_value,0,15) as field_text, 
+substring(err_reason,0,45) as error_reason
+from stl_load_errors 
+order by query desc, filename 
+limit 7;</code></pre>
+                <p>Das Ergebnis der Abfrage von STL_LOAD_ERRORS sollte ähnlich wie folgt aussehen.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> query  |         filename          | line |  column   |    type    | pos |           line_text           | field_text |              error_reason
+--------+---------------------------+------+-----------+------------+-----+-------------------------------+------------+----------------------------------------------
+ 334489 | customer-fw.tbl.log       |    2 | c_custkey | int4       |  -1 | customer-fw.tbl               | customer-f | Invalid digit, Value 'c', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    6 | c_custkey | int4       |  -1 | Complete                      | Complete   | Invalid digit, Value 'C', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    3 | c_custkey | int4       |  -1 | #Total rows                   | #Total row | Invalid digit, Value '#', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    5 | c_custkey | int4       |  -1 | #Status                       | #Status    | Invalid digit, Value '#', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl.log       |    1 | c_custkey | int4       |  -1 | #Load file                    | #Load file | Invalid digit, Value '#', Pos 0, Type: Integ
+ 334489 | customer-fw.tbl000        |    1 | c_address | varchar    |  34 | 1         Customer#000000001  | .Mayag.ezR | String contains invalid or unsupported UTF8
+ 334489 | customer-fw.tbl000        |    1 | c_address | varchar    |  34 | 1         Customer#000000001  | .Mayag.ezR | String contains invalid or unsupported UTF8
+(7 rows)</code></pre>
+                <p>Bei der Untersuchung der Ergebnisse sehen Sie zwei Meldungen in der Spalte <code class="code">error_reasons</code>:</p>
+                <div class="itemizedlist">
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Invalid digit, Value '#', Pos 0, Type: Integ </code></pre>
+                        <p>Diese Fehler wurden von der Datei <code class="code">customer-fw.tbl.log</code> verursacht. Das Problem besteht darin, dass es sich um eine Protokolldatei und nicht um eine Datendatei handelt, die daher nicht geladen werden sollte. Sie können eine Manifestdatei verwenden, um das Laden falscher Dateien zu vermeiden. </p>
+                    </li><li class="listitem">
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">String contains invalid or unsupported UTF8 </code></pre>
+                        <p>Der Datentyp VARCHAR unterstützt Multibyte-UTF-8-Zeichen mit bis zu drei Byte. Wenn die Ladedaten nicht unterstützte oder ungültige Zeichen enthalten, können Sie jedes ungültige Zeichen mit der Option ACCEPTINVCHARS gegen ein angegebenes Alternativzeichen austauschen.</p>
+                    </li></ul></div>
+                <p>Ein weiteres Problem mit der Last ist schwieriger zu erkennen – die Last führte zu unerwarteten Ergebnissen. Fragen Sie mit dem folgenden Befehl die Tabelle CUSTOMER ab, um dieses Problem zu untersuchen.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select c_custkey, c_name, c_address        
+from customer
+order by c_custkey
+limit 10;
+</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class=""> c_custkey |          c_name           |         c_address
+-----------+---------------------------+---------------------------
+         2 | Customer#000000002        | XSTf4,NCwDVaWNe6tE
+         2 | Customer#000000002        | XSTf4,NCwDVaWNe6tE
+         3 | Customer#000000003        | MG9kdTD
+         3 | Customer#000000003        | MG9kdTD
+         4 | Customer#000000004        | XxVSJsL
+         4 | Customer#000000004        | XxVSJsL
+         5 | Customer#000000005        | KvpyuHCplrB84WgAi
+         5 | Customer#000000005        | KvpyuHCplrB84WgAi
+         6 | Customer#000000006        | sKZz0CsnMD7mp4Xd0YrBvx
+         6 | Customer#000000006        | sKZz0CsnMD7mp4Xd0YrBvx
+(10 rows)</code></pre>
+                <p>Die Zeilen sollten eindeutig sein, es gibt jedoch Duplikate. </p>
+                <p>Eine weitere Möglichkeit zur Untersuchung unerwarteter Ergebnisse besteht darin, die Anzahl der geladenen Zeilen zu prüfen. In unserem Fall sollten 100000 Zeilen geladen werden, die Lademeldung gab 112497 geladene Datensätze an. Die zusätzlichen Zeilen wurden geladen, weil COPY eine überzählige Datei, , geladen hat., <code class="code">customer-fw.tbl0000.bak</code>. </p>
+                <p>In dieser Übung verwenden Sie eine Manifestdatei, um das Laden der falschen Dateien zu vermeiden. </p>
+                 
+                    <h6>ACCEPTINVCHARS</h6>
+                    <p>Standardmäßig gilt, dass COPY beim Treffen auf eine von dem Datentyp der Spalte nicht unterstütztes Zeichen die Zeile überspringt und einen Fehler ausgibt. Informationen zu ungültigen UTF-8-Zeichen finden Sie unter <a href="./multi-byte-character-load-errors.html">Fehler beim Laden von Multibyte-Zeichen</a>. </p>
+                 
+                <p>Sie können die Option MAXERRORS verwenden, um Fehler zu ignorieren und den Ladevorgang fortzusetzen, dann STL_LOAD_ERRORS abfragen, um die ungültigen Zeichen zu finden und anschließend die Datendateien korrigieren. MAXERRORS wird jedoch sinnvollerweise für die Behebung von Ladeproblemen verwendet und sollte generell nicht in einer Produktionsumgebung genutzt werden. </p>
+                <p>Die Option ACCEPTINVCHARS ist normalerweise die bessere Wahl für den Umgang mit ungültigen Zeichen. ACCEPTINVCHARS instruiert COPY dazu, jedes ungültige Zeichen durch ein festgelegtes gültiges Zeichen zu ersetzen und den Ladevorgang fortzusetzen. Sie können jedes gültige ASCII-Zeichen, ausgenommen NULL, als Austauschzeichen festlegen. Das Standard-Austauschzeichen ist ein Fragezeichen (?). COPY ersetzt Multibyte-Zeichen durch eine Austauschzeichenfolge gleicher Länge. Ein 4-Byte-Zeichen wird etwa durch  ersetzt <code class="code">'????'</code>. </p>
+                <p>COPY gibt die Anzahl der Zeilen zurück, die ungültige UTF-8-Zeichen enthielten. Außerdem wird für jede betroffene Zeile ein Eintrag in die Systemtabelle STL_REPLACEMENTS hinzugefügt (bis zu maximal 100 Zeilen pro Knotenebene). Zusätzliche ungültige UTF-8-Zeichen werden ebenfalls ersetzt. Diese Ersetzungsereignisse werden jedoch nicht aufgezeichnet. </p>
+                <p>ACCEPTINVCHARS ist nur für VARCHAR-Spalten gültig. </p>
+                <p>Für diesen Schritt fügen Sie die ACCEPTINVCHARS mit dem Ersetzungszeichen <code class="code">'^'</code> hinzu. </p>
+                 
+                    <h6>MANIFEST</h6>
+                    <p>Wenn Sie von Amazon S3 mit einem Schlüsselpräfix kopieren, besteht die Gefahr, dass Sie unerwünschte Tabellen laden. Beispielsweise enthält der Ordner <code class="code">'s3://mybucket/load/</code> acht Datendateien, die das Schlüsselpräfix <code class="code">customer-fw.tbl</code> gemeinsam haben: <code class="code">customer-fw.tbl0000</code>, <code class="code">customer-fw.tbl0001</code> usw. Dieser Ordner enthält aber auch die überschüssigen Dateien <code class="code">customer-fw.tbl.log</code> und <code class="code">customer-fw.tbl-0001.bak</code>. </p>
+                 
+                <p>Um sicherzustellen, dass Sie alle und nur die korrekten Dateien laden, verwenden Sie eine Manifestdatei. Das Manifest ist eine Textdatei im JSON-Format, die den eindeutigen Objektschlüssel für jede zu ladende Quelldatei ausdrücklich aufführt. Die Dateiobjekte können sich in verschiedenen Ordnern oder Buckets, müssen sich aber in derselben Region befinden. Weitere Informationen finden Sie unter <a href="./copy-parameters-data-source-s3.html#copy-manifest">MANIFEST</a>.</p>
+                <p>Nachfolgend sehen Sie den <code class="code">customer-fw-manifest</code>-Text. </p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight"><span>{</span>
+  "entries": [
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-000"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-001"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-002"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-003"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-004"},    
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-005"},
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-006"}, 
+    <span>{</span>"url":"s3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw.tbl-007"} 
+    ]
+}</code></pre>
+                <div class="procedure"><h6>So laden Sie die Daten für die Tabelle CUSTOMER mit der Manifestdatei:</h6><ol><li>
+                        <p>Öffnen Sie die Datei <code class="code">customer-fw-manifest</code> in einem Text-Editor.</p>
+                    </li><li>
+                        <p>Ersetzen Sie <code class="replaceable">&lt;your-bucket-name&gt;</code> durch den Namen Ihres Buckets.</p>
+                    </li><li>
+                        <p>Speichern Sie die Datei.</p>
+                    </li><li>
+                        <p>Laden Sie die Datei in den Ladeordner in Ihrem Bucket.</p>
+                    </li><li>
+                        <p>Führen Sie den folgenden COPY-Befehl aus.</p>
+                        
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy customer from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/customer-fw-manifest'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+fixedwidth 'c_custkey:10, c_name:25, c_address:25, c_city:10, c_nation:15, c_region :12, c_phone:15,c_mktsegment:10'
+maxerror 10 
+acceptinvchars as '^'
+manifest;</code></pre>
+                        
+                    </li></ol></div>
+             
+             
+                <h3 id="tutorial-loading-load-dwdate">Laden der Tabelle DWDATE mit DATEFORMAT</h3>
+
+                <p>In diesem Schritt verwenden Sie die Optionen DELIMITER und DATEFORMAT, um die Tabelle DWDATE zu laden.</p>
+                
+                <p>Beim Laden der Spalten DATE und TIMESTAMP erwartet COPY das Standardformat, s. h. JJJJ-MM-TT für Datumsangaben und JJJJ-MM-TT-HH:MI:SS für Zeitstempel. Wenn die Ladedaten das Standardformat nicht verwenden, können Sie das Format mithilfe von DATEFORMAT und TIMEFORMAT angeben. </p>
+                <p>Der folgende Auszug zeigt Datumsformate in der Tabelle DWDATE. Beachten Sie, dass die Datumsformate in Spalte zwei nicht konsistent sind.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">19920104	1992-01-04          Sunday		January	1992	199201	Jan1992	1	4	4	1...
+19920112	January 12, 1992	Monday		January	1992	199201	Jan1992	2	12	12	1...
+19920120	January 20, 1992	Tuesday	    January	1992	199201	Jan1992	3	20	20	1...</code></pre>
+                 
+                    <h6>DATEFORMAT</h6>
+                    <p>Sie können nur ein Datumsformat angeben. Wenn die Ladedaten inkonsistente Formate enthalten, möglicherweise in verschiedenen Spalten, oder wenn das Format zum Zeitpunkt des Ladevorgangs nicht bekannt ist, verwenden Sie DATEFORMAT mit dem Argument <code class="code">'auto'</code>. Wenn <code class="code">'auto'</code> angegeben ist, erkennt COPY jedes gültige Datums- oder Zeitformat und konvertiert es in das Standardformat. Die Option <code class="code">'auto'</code> erkennt verschiedene Formate, die bei der Verwendung einer DATEFORMAT- und TIMEFORMAT-Zeichenfolge nicht unterstützt werden. Weitere Informationen finden Sie unter <a href="./automatic-recognition.html">Verwenden der automatischen Erkennung bei DATEFORMAT und TIMEFORMAT</a>. </p>
+                 
+                <p>Führen Sie den folgenden COPY-Befehl aus, um die Tabelle DWDATE zu laden.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy dwdate from 's3://<code class="replaceable">&lt;your-bucket-name&gt;</code>/load/dwdate-tab.tbl'
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+delimiter '\t' 
+dateformat 'auto';</code></pre>
+                
+             
+             
+                <h3 id="tutorial-loading-load-lineorder">Laden der Tabelle LINEORDER unter Verwendung mehrerer Tabellen</h3>
+
+                <p>Dieser Schritt verwendet die Optionen GZIP und COMPUPDATE zum Laden der Tabelle LINEORDER.</p>
+                <p>In dieser Übung laden Sie die Tabelle LINEORDER aus einer einzigen Datendatei und laden sie dann erneut aus mehreren Dateien. Auf diese Weise können Sie die Ladezeiten der beiden Methoden vergleichen. </p>
+                <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Anmerkung</h6></div><div class="awsdocs-note-text"><p>Die Daten zum Laden der Tabelle LINEORDER werden im AWS-Beispielbucket bereitgestellt. Für diesen Schritt müssen Sie keine Daten hochladen.</p></div></div>
+                 
+                    <h6>GZIP, LZOP und BZIP2</h6>
+                    <p>Sie können Ihre Dateien mit den Kompressionsformaten gzip, lzop und bzip2 komprimieren. Beim laden aus komprimierten Dateien dekomprimiert COPY diese während des Ladevorgangs. Die Komprimierung Ihrer Dateien spart Speicherplatz und verkürzt die Ladezeiten. </p>
+                 
+                 
+                    <h6>COMPUPDATE</h6>
+                    <p>Wenn COPY eine leere Tabelle ohne Kompressionskodierungen lädt, analysiert der Befehl die Ladedaten, um die optimalen Kodierungen zu bestimmen. Anschließend ändert er die Tabelle, um diese Kodierungen vor dem beginn des Ladevorgangs anzuwenden. Diese Analyse nimmt Zeit in Anspruch, findet aber höchstens einmal pro Tabelle statt. Um Zeit zu sparen, können Sie diesen Schritt überspringen, indem Sie COMPUPDATE ausschalten. Um eine genaue Auswertung der COPY-Zeiten zu ermöglichen, schalten Sie COMPUPDATE für diesen Schritt aus.</p>
+                 
+                 
+                    <h6>Mehrere Dateien</h6>
+                    <p>Der Befehl COPY kann Daten sehr effizient laden, wenn er aus mehreren Dateien parallel statt aus einer einzigen Datei lädt. Sie können Ihre Daten in Dateien aufteilen, sodass die Anzahl der Dateien ein Vielfaches der Anzahl der Schichten in Ihrem Cluster beträgt. In diesem Fall teilt Amazon Redshift den Workload auf und verteilt die Daten gleichmäßig auf die Schichten. Die Anzahl der Slices pro Knoten ist von der Knotengröße des Clusters abhängig. Weitere Informationen zur Anzahl der Slices für die einzelnen Knotengrößen finden Sie unter <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#rs-about-clusters-and-nodes">About Clusters and Nodes</a> (Informationen zu Clustern und Knoten) im <em>Amazon-Redshift-Verwaltungshandbuch</em>.</p>
+                 
+                <p>Beispiel: Die in diesem Tutorial verwendeten Datenverarbeitungsknoten der Größe dc2.large haben jeweils zwei Slices, der aus vier Knoten bestehende Cluster hat also acht Slices. In früheren Schritten waren die Ladedaten in acht Dateien enthalten, obwohl diese sehr klein waren. In diesem Schritt vergleichen Sie den Zeitunterschied zwischen dem Laden aus einer einzigen großen Datei und dem Laden aus mehreren Dateien. </p>
+                <p>Die Dateien, die Sie für dieses Tutorial verwenden, enthalten etwa 15 Millionen Datensätze und belegen etwa 1,2 GB. Für Amazon Redshift sind dies sehr kleine Dateien, sie reichen jedoch aus, um den Leistungsvorteil des Ladens aus mehreren Dateien zu illustrieren. Die Dateien sind so groß, dass zu viel Zeit erforderlich ist, um sie im Rahmen dieses Tutorials herunterzuladen und dann zu Amazon S3 hochzuladen. Somit laden Sie die Dateien direkt aus einem AWS-Beispiel-Bucket. </p>
+                <p>Das folgende Bildschirmfoto zeigt die Datendateien für LINEORDER.</p>
+
+                <div class="mediaobject">
+                     
+                        <img src="images/tutorial-load-lineorder-files.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                     
+                </div>
+                <div class="procedure"><h6>So evaluieren Sie die Leistung von COPY mit mehreren Dateien:</h6><ol><li>
+                        <p>Führen Sie den folgenden COPY-Befehl aus, um aus einer einzelnen Datei zu kopieren. Ändern Sie den Namen des Buckets nicht.</p>
+                        
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy lineorder from 's3://awssampledb/load/lo/lineorder-single.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+gzip
+compupdate off
+region 'us-east-1';</code></pre>
+                        
+                    </li><li>
+                        <p>Ihre Ergebnisse sollten wie folgt aussehen. Beachten Sie die Ausführungszeit.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Warnings:
+Load into table 'lineorder' completed, 14996734 record(s) loaded successfully.
+
+0 row(s) affected.
+copy executed successfully
+
+Execution time: 51.56s</code></pre>
+                    </li><li>
+                        <p>Führen Sie den folgenden COPY-Befehl aus, um aus mehreren Dateien zu kopieren. Ändern Sie den Namen des Buckets nicht.</p>
+                        
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">copy lineorder from 's3://awssampledb/load/lo/lineorder-multi.tbl' 
+credentials 'aws_iam_role=arn:aws:iam::<code class="replaceable">&lt;aws-account-id&gt;</code>:role/<code class="replaceable">&lt;role-name&gt;</code>' 
+gzip
+compupdate off
+region 'us-east-1';
+</code></pre>
+                        
+                    </li><li>
+                        <p>Ihre Ergebnisse sollten wie folgt aussehen. Beachten Sie die Ausführungszeit.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">Warnings:
+Load into table 'lineorder' completed, 14996734 record(s) loaded successfully.
+
+0 row(s) affected.
+copy executed successfully
+
+Execution time: 17.7s</code></pre>
+                    </li><li>
+                        <p>Vergleichen Sie die Ausführungszeiten.</p>
+                        <p>In unserem Beispiel sank die Zeit für das Ladern von 15 Millionen Datensätzen von 51,56 Sekunden auf 17,7 Sekunden, d. h. um 65,7 Prozent. </p>
+                        <p>Diese Ergebnisse basieren auf der Verwendung eines Clusters mit vier Knoten. Wenn Ihr Cluster mehr Knoten hat, vervielfachen sich die Zeiteinsparungen. Bei typischen Amazon-Redshift-Clustern mit manchmal Hunderten von Knoten ist der Unterschied noch viel deutlicher. Wenn Sie einen Cluster mit nur einem Knoten haben, besteht nur ein geringer Unterschied zwischen den Ausführungszeiten. </p>
+                    </li></ol></div>
+             
+             
+                <h3 id="tutorial-loading-next-step6">Nächster Schritt</h3>
+
+                <p><a href="./tutorial-loading-data-vacuum.html">Schritt 6: Bereinigen und Analysieren der Datenbank</a></p>
+             
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warnung" /> <strong>JavaScript ist in Ihrem Browser nicht verfügbar oder deaktiviert.</strong></p><p>Zur Nutzung der AWS-Dokumentation muss JavaScript aktiviert sein. Weitere Informationen finden auf den Hilfe-Seiten Ihres Browsers.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Dokumentkonventionen</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-loading-data-create-tables.html">Schritt 4: Erstellen der Beispieltabellen</div><div id="next" class="next-link" accesskey="n" href="./tutorial-loading-data-vacuum.html">Schritt 6: Bereinigen und Analysieren der Datenbank</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Hat Ihnen diese Seite geholfen? – Ja</div><div class="content"><p>Vielen Dank, dass Sie uns mitgeteilt haben, dass wir gute Arbeit geleistet haben!</p><p>Würden Sie sich einen Moment Zeit nehmen, um uns mitzuteilen, was wir richtig gemacht haben, damit wir noch besser werden?</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-run-copy.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Hat Ihnen diese Seite geholfen? – Nein</div><div class="content"><p>Vielen Dank, dass Sie uns mitgeteilt haben, dass diese Seite überarbeitet werden muss. Es tut uns Leid, dass wir Ihnen nicht weiterhelfen konnten.</p><p>Würden Sie sich einen Moment Zeit nehmen, um uns mitzuteilen, wie wir die Dokumentation verbessern können?</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-loading-run-copy.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
