@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>教程：使用 Amazon Redshift Spectrum 查询嵌套数据 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-query-nested-data" /><meta name="default_state" content="tutorial-query-nested-data" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="description" content="使用 Amazon Redshift Spectrum 查询嵌套数据。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-query-nested-data.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="教程：使用 Amazon Redshift Spectrum 查询嵌套数据" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>教程：使用 Amazon Redshift Spectrum 查询嵌套数据 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-query-nested-data" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "使用 Amazon Redshift Spectrum 查询外部数据",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-using-spectrum.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "教程：使用 Amazon Redshift Spectrum 查询嵌套数据",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-using-spectrum.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-query-nested-data" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#tutorial-nested-data-overview">概述</a><a href="#tutorial-nested-data-create-table">步骤 1：创建包含嵌套数据的外部表</a><a href="#tutorial-query-nested-data-sqlextensions">步骤 2：使用 SQL 扩展在 Amazon S3 中查询嵌套数据</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-query-nested-data">教程：使用 Amazon Redshift Spectrum 查询嵌套数据</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div>
+        <h2 id="tutorial-nested-data-overview">概述</h2>
+                
+        <p>Amazon Redshift Spectrum 支持以 Parquet、ORC、JSON 和 Ion 文件格式查询嵌套数据。Redshift Spectrum 使用外部表访问数据。可以创建使用复杂数据类型 <code class="code">struct</code>、<code class="code">array</code> 和 <code class="code">map</code> 的外部表。</p>
+        <p>例如，假定您的数据文件在名为 <code class="code">customers</code> 的文件夹中包含 Amazon S3 中的以下数据。尽管没有单个根元素，但此示例数据中的每个 JSON 对象都表示表中的一行。</p>
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>"id": 1,
+ "name": <span>{</span>"given": "John", "family": "Smith"},
+ "phones": ["123-457789"],
+ "orders": [<span>{</span>"shipdate": "2018-03-01T11:59:59.000Z", "price": 100.50},
+            <span>{</span>"shipdate": "2018-03-01T09:10:00.000Z", "price": 99.12}]
+}
+<span>{</span>"id": 2,
+ "name": <span>{</span>"given": "Jenny", "family": "Doe"},
+ "phones": ["858-8675309", "415-9876543"],
+ "orders": []
+}
+<span>{</span>"id": 3,
+ "name": <span>{</span>"given": "Andy", "family": "Jones"},
+ "phones": [],
+ "orders": [<span>{</span>"shipdate": "2018-03-02T08:02:15.000Z", "price": 13.50}]
+}  </code></pre>        
+   
+        
+        <p>您可以使用 Amazon Redshift Spectrum 来查询文件中的嵌套数据。下面的教程将向您展示如何使用 Apache Parquet 数据实现这一功能。</p> 
+        <p>有关教程先决条件、步骤和嵌套数据使用案例，请参阅以下主题：</p>
+        <div class="itemizedlist">
+             
+             
+             
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p><a href="#tutorial-nested-data-prereq">先决条件</a></p>
+            </li><li class="listitem">
+                <p><a href="#tutorial-nested-data-create-table">步骤 1：创建包含嵌套数据的外部表</a></p>
+            </li><li class="listitem">
+                <p><a href="#tutorial-query-nested-data-sqlextensions">步骤 2：使用 SQL 扩展在 Amazon S3 中查询嵌套数据</a></p>
+            </li><li class="listitem">
+                <p><a href="./nested-data-use-cases.html">嵌套数据使用案例 </a></p>
+            </li><li class="listitem">
+                <p><a href="./nested-data-restrictions.html">嵌套数据限制（预览版）</a></p>
+            </li><li class="listitem">
+                <p><a href="./serializing-complex-JSON.html">序列化复杂嵌套 JSON</a></p>
+            </li></ul></div>
+        
+        
+
+
+         
+            <h3 id="tutorial-nested-data-prereq">先决条件</h3>
+            
+            <p>如果您尚未使用 Redshift Spectrum，请按照 <a href="./c-getting-started-using-spectrum.html">Amazon Redshift Spectrum 入门</a>中的步骤操作，然后继续。</p>
+            
+            <p>要创建外部架构，请将以下命令中的 IAM 角色 ARN 替换为您在<a href="./c-getting-started-using-spectrum-create-role.html">创建 IAM 角色</a>中创建的角色 ARN。然后在 SQL 客户端中运行该命令。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create external schema spectrum 
+from data catalog 
+database 'myspectrum_db' 
+iam_role 'arn:aws:iam::123456789012:role/myspectrum_role'
+create external database if not exists;</code></pre>
+         
+
+     
+        <h2 id="tutorial-nested-data-create-table">步骤 1：创建包含嵌套数据的外部表</h2>
+        <p>您可以通过从 Amazon S3 进行下载来查看<a href="https://s3.amazonaws.com/redshift-downloads/tickit/spectrum/customers/customer_file1" rel="noopener noreferrer" target="_blank"><span>源数据</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p>
+
+        <p>要创建本教程所需的外部表，请运行以下命令。</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE EXTERNAL TABLE spectrum.customers (
+  id     int,
+  name   struct&lt;given:varchar(20), family:varchar(20)&gt;,
+  phones array&lt;varchar(20)&gt;,
+  orders array&lt;struct&lt;shipdate:timestamp, price:double precision&gt;&gt;
+)
+STORED AS PARQUET
+LOCATION 's3://redshift-downloads/tickit/spectrum/customers/';     </code></pre>
+        
+        <p>在前述示例中，外部表 <code class="code">spectrum.customers</code> 使用 <code class="code">struct</code> 和 <code class="code">array</code> 数据类型定义具有嵌套数据的列。Amazon Redshift Spectrum 支持以 Parquet、ORC、JSON 和 Ion 文件格式查询嵌套数据。<code class="code">STORED AS</code> 参数是适用于 Apache Parquet 文件的 <code class="code">PARQUET</code>。<code class="code">LOCATION</code> 参数必须引用包含嵌套数据或文件的 Amazon S3 文件夹。有关更多信息，请参阅<a href="./r_CREATE_EXTERNAL_TABLE.html">CREATE EXTERNAL TABLE</a>。</p>
+        
+        
+        <p>可以在任何级别嵌套 <code class="code">array</code> 和 <code class="code">struct</code> 类型。例如，您可以定义一个名为 <code class="code">toparray</code> 的列，如以下示例所示。</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">toparray array&lt;struct&lt;nestedarray:
+         array&lt;struct&lt;morenestedarray: 
+         array&lt;string&gt;&gt;&gt;&gt;&gt;</code></pre>
+        <p>您也可以为 <code class="code">struct</code> 列嵌套 <code class="code">x</code> 类型，如以下示例所示。</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">x struct&lt;a: string,
+         b: struct&lt;c: integer,
+                   d: struct&lt;e: string&gt;
+                  &gt;
+        &gt;</code></pre>
+   
+     
+                <h2 id="tutorial-query-nested-data-sqlextensions">步骤 2：使用 SQL 扩展在 Amazon S3 中查询嵌套数据</h2>
+                <p>Redshift Spectrum 支持通过对 Amazon Redshift SQL 语法的扩展来查询 <code class="code">array</code>、<code class="code">map</code> 和 <code class="code">struct</code> 复杂类型。</p>
+                 
+                    <h3 id="nested-data-sqlextension1">扩展 1：访问 struct 列</h3>
+                    <p>您可以使用将字段名称与路径相连的点表示法从 <code class="code">struct</code> 列提取数据。例如，以下查询返回客户的姓氏和名字。名字通过长路径 <code class="code">c.name.given</code> 进行访问。姓氏通过长路径 <code class="code">c.name.family</code> 进行访问。</p>    
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, c.name.given, c.name.family
+FROM   spectrum.customers c;</code></pre>
+                    <p>前述的查询返回以下数据。</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">id | given | family
+---|-------|-------
+1  | John  | Smith
+2  | Jenny | Doe
+3  | Andy  | Jones
+(3 rows)</code></pre>
+                    <p><code class="code">struct</code> 可以是另一个 <code class="code">struct</code> 的列，而后者可能是任何级别的另一个 <code class="code">struct</code> 的列。访问如此深的嵌套 <code class="code">struct</code> 的路径可以是任意长度。例如，请查看以下示例中的 <code class="code">x</code> 列的定义。</p>     
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">x struct&lt;a: string,
+         b: struct&lt;c: integer, 
+                      d: struct&lt;e: string&gt;
+                  &gt;
+        &gt;</code></pre>        
+        <p>您可以按 <code class="code">x.b.d.e</code> 方式访问 <code class="code">e</code> 中的数据。</p>
+    
+                    
+                    
+                   
+                 
+                    <h3 id="nested-data-sqlextension2">扩展 2：FROM 子句中的范围扩展数组</h3>
+                    <p>您可以通过在 <code class="code">FROM</code> 子句中指定 <code class="code">array</code> 列来代替表名称，以提取 <code class="code">array</code> 列（扩展后包括 <code class="code">map</code> 列）中的数据。扩展应用于主查询的 <code class="code">FROM</code> 子句，也应用于子查询的 <code class="code">FROM</code> 子句。</p>
+                        
+                <p>您可以按位置（例如 <code class="code">c.orders[0]</code>）引用 <code class="code">array</code> 元素。（预览版）</p>
+                    <p>通过将范围扩展 <code class="code">arrays</code> 与联接结合使用，您可以实现各种取消嵌套，如下面的使用案例中所述。</p>
+                     
+                        <h4 id="unnest-inner-joins">使用内部联接取消嵌套</h4>
+                        <p>以下查询为具有订单的客户选择客户 ID 和订单发货日期。FROM 子句中的 SQL 扩展 <code class="code">c.orders
+                        o</code> 取决于别名 <code class="code">c</code>。</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, o.shipdate
+FROM   spectrum.customers c, c.orders o </code></pre> 
+                        <p>对于具有订单的每个客户 <code class="code">c</code>，<code class="code">FROM</code> 子句为客户 <code class="code">c</code> 的每个订单 <code class="code">o</code> 返回一行。该行将客户行 <code class="code">c</code> 和订单行 <code class="code">o</code> 合并起来。然后，<code class="code">SELECT</code> 子句只保留 <code class="code">c.id</code> 和 <code class="code">o.shipdate</code>。结果如下所示。</p>
+                         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">id|      shipdate
+--|----------------------
+1 |2018-03-01  11:59:59
+1 |2018-03-01  09:10:00
+3 |2018-03-02  08:02:15
+(3 rows) </code></pre>   
+                        <p>别名 <code class="code">c</code> 提供对客户字段的访问，而别名 <code class="code">o</code> 提供对订单字段的访问。</p>
+                        <p>语义类似于标准 SQL。您可以将 <code class="code">FROM</code> 子句视为执行以下嵌套循环，然后 <code class="code">SELECT</code> 选择要输出的字段。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">for each customer c in spectrum.customers
+  for each order o in c.orders
+     output c.id and o.shipdate </code></pre>
+                        <p>因此，如果客户没有订单，则客户不会显示在结果中。</p>
+                        <p>您还可以将其视为对 <code class="code">customers</code> 表和 <code class="code">orders</code> 数组执行 <code class="code">JOIN</code> 的 <code class="code">FROM</code> 子句。实际上，您还可以编写查询，如下面的示例所示。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, o.shipdate
+FROM   spectrum.customers c INNER JOIN c.orders o ON true </code></pre>
+                        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>如果存在名为 <code class="code">c</code> 的 schema 且具有名为 <code class="code">orders</code> 的表，则 <code class="code">c.orders</code> 引用表 <code class="code">orders</code>，而不是 <code class="code">customers</code> 的数组列。</p></div></div>
+                 
+                 
+                    <h4 id="unnest-left-joins">使用左侧联接取消嵌套</h4>
+                    <p>以下查询输出所有客户名称及其订单。如果客户未下订单，则仍返回客户的名称。但在这种情况下，订单列为 NULL，如下面 Jenny Doe 的示例所示。</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, c.name.given, c.name.family, o.shipdate, o.price
+FROM   spectrum.customers c LEFT JOIN c.orders o ON true</code></pre>
+                    
+                    <p>前述的查询返回以下数据。</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">id  |  given  | family  |    shipdate          | price
+----|---------|---------|----------------------|--------
+ 1  |  John   | Smith   | 2018-03-01  11:59:59 | 100.5
+ 1  |  John   | Smith   | 2018-03-01  09:10:00 |  99.12
+ 2  |  Jenny  | Doe     |                      |
+ 3  |  Andy   | Jones   | 2018-03-02  08:02:15 |  13.5
+ (4 rows)</code></pre>
+                 
+                
+                 
+                    <h3 id="nested-data-sqlextension3">扩展 3：使用别名直接访问标量数组 </h3>
+                    <p>当 <code class="code">FROM</code> 子句中的别名 <code class="code">p</code> 范围扩展到标量数组时，查询将 <code class="code">p</code> 的值视为 <code class="code">p</code>。例如，以下查询生成成对的客户名称和电话号码。</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.name.given, c.name.family, p AS phone
+FROM   spectrum.customers c LEFT JOIN c.phones p ON true  </code></pre>
+                    <p>前述的查询返回以下数据。</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">given  |  family  |  phone
+-------|----------|-----------
+John   | Smith    | 123-4577891
+Jenny  | Doe      | 858-8675309
+Jenny  | Doe      | 415-9876543
+Andy   | Jones    | 
+(4 rows) </code></pre>
+                     
+                 
+                    <h3 id="nested-data-sqlextension4">扩展 4：访问映射的元素 </h3>
+                    <p>Redshift Spectrum 将 <code class="code">map</code> 数据类型视为 <code class="code">array</code> 类型，其中包含具有 <code class="code">key</code> 列和 <code class="code">value</code> 列的 <code class="code">struct</code> 类型。<code class="code">key</code> 必须是 <code class="code">scalar</code>；值可以是任何数据类型。</p>
+                    <p>例如，以下代码使用 <code class="code">map</code> 创建外部表来存储电话号码。</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE EXTERNAL TABLE spectrum.customers2 (
+  id     int,
+  name   struct&lt;given:varchar(20), family:varchar(20)&gt;,
+  phones map&lt;varchar(20), varchar(20)&gt;,
+  orders array&lt;struct&lt;shipdate:timestamp, price:double precision&gt;&gt;
+)
+STORED AS PARQUET
+LOCATION 's3://redshift-downloads/tickit/spectrum/customers/';</code></pre>
+                    <p>由于 <code class="code">map</code> 类型的行为类似于具有 <code class="code">key</code> 和 <code class="code">value</code> 列的 <code class="code">array</code> 类型，因此您可以将前面的 schema 视为如下内容。</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE EXTERNAL TABLE spectrum.customers3 (
+  id     int,
+  name   struct&lt;given:varchar(20), family:varchar(20)&gt;,
+  phones array&lt;struct&lt;key:varchar(20), value:varchar(20)&gt;&gt;,
+  orders array&lt;struct&lt;shipdate:timestamp, price:double precision&gt;&gt;
+)
+STORED AS PARQUET
+LOCATION 's3://redshift-downloads/tickit/spectrum/customers/';   </code></pre>
+                    
+                    <p>以下查询返回具有手机号码的客户名称，并返回每个名称对应的号码。映射查询被视为等同于查询 <code class="code">struct</code> 类型的嵌套 <code class="code">array</code>。仅当您按前面的说明创建了外部表时，以下查询才返回数据。</p>   
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="">SELECT c.name.given, c.name.family, p.value 
+FROM   spectrum.customers c, c.phones p 
+WHERE  p.key = 'mobile';  </code></pre>   
+                  <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p><code class="code">map</code> 的 <code class="code">key</code> 是 Ion 和 JSON 文件类型的 <code class="code">string</code>。</p></div></div>      
+                    
+                    
+                     
+                <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c-spectrum-troubleshooting.html">查询故障排除</div><div id="next" class="next-link" accesskey="n" href="./nested-data-use-cases.html">嵌套数据使用案例 </div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-query-nested-data.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-query-nested-data.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>在 Amazon Redshift 上使用 Apache Iceberg 表 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="querying-iceberg" /><meta name="default_state" content="querying-iceberg" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/querying-iceberg.html" /><meta name="description" content="使用 Amazon Redshift，通过在数据目录中编目的 Apache Parquet 数据文件查询 Apache Iceberg 表。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/querying-iceberg.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/querying-iceberg.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/querying-iceberg.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/querying-iceberg.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/querying-iceberg.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/querying-iceberg.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/querying-iceberg.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/querying-iceberg.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/querying-iceberg.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/querying-iceberg.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/querying-iceberg.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/querying-iceberg.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/querying-iceberg.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/querying-iceberg.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/querying-iceberg.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/querying-iceberg.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/querying-iceberg.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/querying-iceberg.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/querying-iceberg.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/querying-iceberg.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/querying-iceberg.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/querying-iceberg.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="在 Amazon Redshift 上使用 Apache Iceberg 表" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>在 Amazon Redshift 上使用 Apache Iceberg 表 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#querying-iceberg" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/querying-iceberg.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/querying-iceberg.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/querying-iceberg.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL,Apache Iceberg,Parquet" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "使用 Amazon Redshift Spectrum 查询外部数据",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-using-spectrum.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "在 Amazon Redshift 上使用 Apache Iceberg 表",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-using-spectrum.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#querying-iceberg" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#querying-iceberg-considerations">使用 Apache Iceberg 表时的注意事项</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="querying-iceberg">在 Amazon Redshift 上使用 Apache Iceberg 表</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>您可以使用 Redshift Spectrum 或 Redshift Serverless 来查询在 AWS Glue Data Catalog 中编目的 Apache Iceberg 表。Apache Iceberg 是一种用于数据湖的开源表格式。有关更多信息，请参阅 Apache Iceberg 文档中的 <a href="https://iceberg.apache.org/" rel="noopener noreferrer" target="_blank"><span>Apache Iceberg</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p><p>Amazon Redshift 为查询 Apache Iceberg 表提供事务一致性。在使用 Amazon Redshift 运行查询时，您可以使用符合 ACID（原子性、一致性、隔离、持久性）的服务（例如 Amazon Athena 和 Amazon EMR）来操作表中的数据。Amazon Redshift 可以使用存储在 Apache Iceberg 元数据中的表统计数据，来优化查询计划并减少查询处理期间的文件扫描。使用 Amazon Redshift SQL，您可以将 Redshift 表与数据湖表联接起来。</p><p>开始在 Amazon Redshift 上使用 Iceberg 表：</p><div class="orderedlist">
+         
+         
+         
+        
+         
+         
+        
+    <ol><li><p>使用兼容的服务（如 Amazon Athena 或 Amazon EMR）在 AWS Glue Data Catalog 数据库上创建 Apache Iceberg 表。要使用 Athena 创建 Iceberg 表，请参阅《Amazon Athena User Guide》<em></em>中的<a href="https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg.html">Using Apache Iceberg tables</a>。</p></li><li><p>使用允许访问您的数据湖的关联 IAM 角色，创建一个 Amazon Redshift 集群或 Redshift Serverless 工作组。有关如何创建集群或工作组的信息，请参阅《Amazon Redshift 入门指南》<em></em>中的 <a href="https://docs.aws.amazon.com/redshift/latest/gsg/new-user.html">Amazon Redshift 预置集群</a>和 <a href="https://docs.aws.amazon.com/redshift/latest/gsg/new-user-serverless.html">Redshift Serverless</a>。</p></li><li><p>使用查询编辑器 v2 或第三方 SQL 客户端连接到您的集群或工作组。有关如何使用查询编辑器 v2 进行连接的信息，请参阅《Amazon Redshift 管理指南》<em></em>中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html#query-editor-v2-connecting">连接到 Amazon Redshift 数据库</a>。</p></li><li><p>在 Amazon Redshift 数据库中为包含 Iceberg 表的特定数据目录数据库创建外部架构。有关创建外部架构的信息，请参阅<a href="./c-spectrum-external-schemas.html">为 Amazon Redshift Spectrum 创建外部 schema</a>。</p></li><li><p>运行 SQL 查询以访问您创建的外部架构中的 Iceberg 表。</p></li></ol></div>
+        <h2 id="querying-iceberg-considerations">在 Amazon Redshift 上使用 Apache Iceberg 表时的注意事项</h2>
+        <p>在将 Amazon Redshift 与 Iceberg 表一起使用时，请考虑以下事项：</p>
+        <div class="itemizedlist">
+            
+            
+             
+             
+                                  
+             
+           
+            
+             
+             
+             
+             
+             
+             
+            
+            
+            
+        <ul class="itemizedlist"><li class="listitem">
+                <p><span class="topcom">Iceberg 版本支持</span> – Amazon Redshift 支持对以下版本的 Iceberg 表运行查询：</p>
+                <div class="itemizedlist">
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem"><p>版本 1 定义了如何使用不可变数据文件管理大型分析表。</p></li><li class="listitem"><p>版本 2 增加了支持行级更新和删除的功能，同时保持现有数据文件不变，并使用删除文件处理表数据更改。</p></li></ul></div>                   
+                    <p> 有关版本 1 表和版本 2 表之间的区别，请参阅 Apache Iceberg 文档中的<a href="https://iceberg.apache.org/spec/#appendix-e-format-version-changes" rel="noopener noreferrer" target="_blank"><span>Format version changes</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p>
+            </li><li class="listitem">
+                <p><span class="topcom">仅限查询</span> – Amazon Redshift 支持对 Apache Iceberg 表进行只读访问。它支持事务一致性选择查询。您可以在 AWS Glue Data Catalog 中使用像 Amazon Athena 这样的服务来定义和更新 Iceberg 表的架构。</p>
+            </li><li class="listitem">
+                <p><span class="topcom">添加分区</span> – 您无需为 Apache Iceberg 表手动添加分区。Amazon Redshift 会自动检测到 Apache Iceberg 表中的新分区，无需手动操作即可更新表定义中的分区。分区规格的任何更改也将自动应用于您的查询，无需任何用户干预。</p>
+            </li><li class="listitem">
+                <p><span class="topcom">将 Iceberg 数据摄取到 Amazon Redshift 中</span> – 您可以使用 INSERT INTO 或 CREATE TABLE AS 命令，将数据从 Iceberg 表导入到本地 Amazon Redshift 表中。您目前无法使用 COPY 命令将 Apache Iceberg 表的内容摄取到本地 Amazon Redshift 表中。</p>
+            </li><li class="listitem">
+                <p><span class="topcom">实体化视图</span> – 您可以在 Apache Iceberg 表上创建实体化视图，就像在 Amazon Redshift 中为任何其他外部表创建实体化视图一样。其他数据湖表格式的相同注意事项也适用于 Apache Iceberg 表。目前不支持对数据湖表执行增量更新、自动刷新、自动查询重写和自动 MV。</p>
+            </li><li class="listitem">
+                <p><span class="topcom">AWS Lake Formation 精细访问控制</span> – Amazon Redshift 支持对 Apache Iceberg 表进行 AWS Lake Formation 精细访问控制。</p>
+            </li><li class="listitem">
+                <p><span class="topcom">用户定义的数据处理参数</span> – Amazon Redshift 支持对 Apache Iceberg 表使用用户定义的数据处理参数。您可以在现有文件上使用用户定义的数据处理参数，来定制要在外部表中查询的数据，以避免扫描错误。这些参数提供了处理表架构与文件中实际数据之间不匹配的功能。您也可以在 Apache Iceberg 表上使用用户定义的数据处理参数。</p>
+            </li><li class="listitem">
+                <p><span class="topcom">数据共享</span> – Amazon Redshift 数据共享目前不支持数据湖表，包括 Apache Iceberg 表。</p>
+            </li><li class="listitem">
+                <p><span class="topcom">时空旅行查询</span> – Apache Iceberg 表目前不支持时空旅行查询。</p>
+            </li><li class="listitem">
+                <p><span class="topcom">定价</span> – 当您从集群访问 Iceberg 表时，您需要按照 Redshift Spectrum 定价付费。当您从工作组访问 Iceberg 表时，您需要按 Redshift Serverless 定价付费。有关 Redshift Spectrum 和 Redshift Serverless 定价的信息，请参阅 <a href="https://aws.amazon.com/redshift/pricing/" rel="noopener noreferrer" target="_blank"><span>Amazon Redshift 定价</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p>
+            </li></ul></div>
+        
+    <div class="highlights"><h6>主题</h6><ul><li><a href="./querying-iceberg-supported-data-types.html">Apache Iceberg 表支持的数据类型</a></li></ul></div><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c-spectrum-external-tables.html">创建外部表</div><div id="next" class="next-link" accesskey="n" href="./querying-iceberg-supported-data-types.html">支持的  数据类型</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/querying-iceberg.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/querying-iceberg.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>教程：构建客户流失模型 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_customer_churn" /><meta name="default_state" content="tutorial_customer_churn" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_customer_churn.html" /><meta name="description" content="使用本教程获取创建 Amazon Redshift 机器学习模型和运行推理查询的端到端示例。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_customer_churn.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_customer_churn.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_customer_churn.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_customer_churn.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_customer_churn.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_customer_churn.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_customer_churn.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_customer_churn.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_customer_churn.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_customer_churn.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_customer_churn.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_customer_churn.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_customer_churn.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_customer_churn.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_customer_churn.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_customer_churn.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_customer_churn.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_customer_churn.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_customer_churn.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_customer_churn.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_customer_churn.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_customer_churn.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="教程：构建客户流失模型" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>教程：构建客户流失模型 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_customer_churn" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_customer_churn.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_customer_churn.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_customer_churn.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "在 Amazon Redshift 中使用机器学习",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Amazon Redshift ML 入门",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Amazon Redshift ML 的教程",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "教程：构建客户流失模型",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_customer_churn" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#tutorial_customer_churn_tasks">使用案例示例</a><a href="#tutorial_customer_churn_prereqs">先决条件</a><a href="#tutorial_customer_churn_step_load">步骤 1：将数据从 Amazon S3 加载到 Amazon Redshift</a><a href="#tutorial_customer_churn_step_create_model">步骤 2：创建机器学习模型</a><a href="#tutorial_customer_churn_step_perform_predictions">步骤 3：使用模型执行预测</a><a href="#tutorial_customer_churn_related_topics">相关主题</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_customer_churn">教程：构建客户流失模型</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>在本教程中，您使用 Amazon Redshift ML 通过 CREATE MODEL 命令创建客户流失模型，并针对用户场景运行预测查询。然后，您可以使用 CREATE MODEL 命令生成的 SQL 函数来实施查询。</p><p>您可以使用简单的 CREATE MODEL 命令导出训练数据、训练模型、导入模型以及准备 Amazon Redshift 预测函数。使用 CREATE MODEL 语句将训练数据指定为表或 SELECT 语句。</p><p>该示例使用历史信息构建一个有关移动运营商客户流失的机器学习模型。首先，SageMaker 训练您的机器学习模型，然后使用任意客户的资料信息测试您的模型。模型经过验证后，Amazon SageMaker 会将模型和预测函数部署到 Amazon Redshift。您可以使用预测函数来预测客户是否会流失。</p>
+            <h2 id="tutorial_customer_churn_tasks">使用案例示例</h2>
+            <p>您可以使用 Amazon Redshift ML 解决其他二进制分类问题，例如预测销售机会是否会关闭。您还可以预测金融交易是否具有欺诈性。</p>
+            <p><b>任务</b></p><div class="itemizedlist">
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>先决条件</p>
+               </li><li class="listitem">
+                  <p>步骤 1：将数据从 Amazon S3 加载到 Amazon Redshift</p>
+               </li><li class="listitem">
+                  <p>步骤 2：创建机器学习模型</p>
+               </li><li class="listitem">
+                  <p>步骤 3：使用模型执行预测</p>
+               </li></ul></div>
+          
+            <h2 id="tutorial_customer_churn_prereqs">先决条件</h2>
+            <p>要完成本教程，您需要满足以下先决条件：</p>
+            
+            
+            <div class="itemizedlist">
+               
+                
+                
+                
+               
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>您必须为 Amazon Redshift ML 设置 Amazon Redshift 集群。为此，请使用<a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">适用于 Amazon Redshift ML 管理的集群和配置设置</a>文档。</p>
+               </li><li class="listitem">
+                  <p>您用于创建模型的 Amazon Redshift 集群和用于暂存训练数据和存储模型构件的 Amazon S3 桶必须位于同一个 AWS 区域中。</p>
+               </li><li class="listitem">
+                  <p>要下载本文档中使用的 SQL 命令和示例数据集，请执行以下操作之一：</p>
+                  <div class="itemizedlist">
+                      
+                      
+                  <ul class="itemizedlist"><li class="listitem">
+                        <p>下载 <a href="https://s3.amazonaws.com/redshift-downloads/redshift-ml/tutorial-scripts/redshift-ml-tutorial.sql" rel="noopener noreferrer" target="_blank"><span>SQL 命令</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>、<a href="https://s3.amazonaws.com/redshift-downloads/redshift-ml/customer_activity/customer_activity.csv" rel="noopener noreferrer" target="_blank"><span>客户活动文件</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>和<a href="https://s3.amazonaws.com/redshift-downloads/redshift-ml/abalone_xg/abalone.csv" rel="noopener noreferrer" target="_blank"><span>鲍鱼文件</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p>
+                     </li><li class="listitem">
+                        <p>将 AWS CLI 用于 Simple Storage Service（Amazon S3），运行以下命令。您可以使用自己的目标路径。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">aws s3 cp s3://redshift-downloads/redshift-ml/tutorial-scripts/redshift-ml-tutorial.sql <code class="replaceable">&lt;/target/path&gt;</code>
+aws s3 cp s3://redshift-downloads/redshift-ml/customer_activity/customer_activity.csv <code class="replaceable">&lt;/target/path&gt;</code>
+aws s3 cp s3://redshift-downloads/redshift-ml/abalone_xgb/abalone_xgb.csv <code class="replaceable">&lt;/target/path&gt;</code></code></pre>
+                     </li></ul></div>
+               </li></ul></div>
+          
+            <h2 id="tutorial_customer_churn_step_load">步骤 1：将数据从 Amazon S3 加载到 Amazon Redshift</h2>
+            <p>使用 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">Amazon Redshift 查询器 v2</a> 编辑和运行查询并可视化结果。</p>
+            <p>运行以下查询将创建一个名为 <code class="code">customer_activity</code> 的表，并从 Amazon S3 获取示例数据集。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">DROP TABLE IF EXISTS customer_activity;
+
+CREATE TABLE customer_activity (
+state varchar(2),
+account_length int,
+area_code int,
+phone varchar(8),
+intl_plan varchar(3),
+vMail_plan varchar(3),
+vMail_message int,
+day_mins float,
+day_calls int,
+day_charge float,
+total_charge float,
+eve_mins float,
+eve_calls int,
+eve_charge float,
+night_mins float,
+night_calls int,
+night_charge float,
+intl_mins float,
+intl_calls int,
+intl_charge float,
+cust_serv_calls int,
+churn varchar(6),
+record_date date
+);
+
+COPY customer_activity
+FROM 's3://redshift-downloads/redshift-ml/customer_activity/'
+REGION 'us-east-1' IAM_ROLE default
+FORMAT AS CSV IGNOREHEADER 1;</code></pre>
+          
+            <h2 id="tutorial_customer_churn_step_create_model">步骤 2：创建机器学习模型</h2>
+            
+            <p>在这个模型中，流失是我们的目标输入。模型的所有其他输入是一些属性，它们可帮助创建用于预测流失的函数。</p>
+            <p>下面的示例使用 CREATE MODEL 操作来提供一个模型，该模型使用诸如客户的年龄、邮政编码、支出和案例等输入来预测客户是否将成为活跃客户。在以下示例中，将 <code class="replaceable"><code class="code">DOC-EXAMPLE-BUCKET</code></code> 替换为您自己的 Amazon S3 桶。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL customer_churn_auto_model
+FROM
+    (
+      SELECT state,
+             account_length,
+             area_code,
+             total_charge/account_length AS average_daily_spend,
+             cust_serv_calls/account_length AS average_daily_cases,
+             churn
+      FROM customer_activity
+      WHERE  record_date &lt; '2020-01-01'
+     )
+TARGET churn FUNCTION ml_fn_customer_churn_auto
+IAM_ROLE default SETTINGS (
+  S3_BUCKET '<code class="replaceable">&lt;DOC-EXAMPLE-BUCKET&gt;</code>'
+);</code></pre>
+            <p>前一个示例中的 SELECT 查询将创建训练数据。TARGET 子句指定哪一列是 CREATE MODEL 操作用于学习如何进行预测的机器学习标签。目标列“流失”表示客户是否仍具有有效会员资格或已暂停会员资格。S3_BUCKET 字段是您之前创建的 Amazon S3 桶的名称。Amazon S3 桶用于在 Amazon Redshift 和 Amazon SageMaker 之间共享训练数据和构件。其余列是用于预测的功能。</p>
+            <p>有关 CREATE MODEL 命令的基本使用案例的语法和特性的摘要，请参阅<a href="https://docs.aws.amazon.com/redshift/latest/dg/r_create_model_use_cases.html#r_simple_create_model">简单 CREATE MODEL</a>。</p>
+             
+               <h3 id="tutorial_customer_churn_encryption">添加服务器端加密的权限（可选）</h3>
+               <p>原定设置情况下，Amazon Redshift 使用 Amazon SageMaker Autopilot 进行训练。特别是，Amazon Redshift 将训练数据安全地导出到客户指定的 Amazon S3 桶。如果不指定 <code class="code">KMS_KEY_ID</code>，则原定设置情况下，会使用服务器端加密 SSE-S3 对数据进行加密。</p>
+               <p>如果您使用服务器端加密及 AWS KMS 托管式密钥 (SSE-KMS) 对您的输入进行加密，则添加以下权限：</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+    "Effect": "Allow",
+    "Action": [
+    "kms:Encrypt"
+    "kms:Decrypt"
+    ]
+}</code></pre>
+               <p>有关 Amazon SageMaker 角色的更多信息，请参阅《Amazon SageMaker 开发人员指南》中的 <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html">Amazon SageMaker 角色</a>。</p>
+               
+             
+             
+               <h3 id="tutorial_customer_churn_check_status">检查模型训练的状态（可选）</h3>
+               <p>您可以使用 SHOW MODEL 命令来了解模型何时准备就绪。</p><p>使用以下操作检查模型的状态。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL customer_churn_auto_model;</code></pre><p>以下是上一个操作的输出示例。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|           Key            |                                                                             Value                                                                             |
++--------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|        Model Name        |                                                                   customer_churn_auto_model                                                                   |
+|       Schema Name        |                                                                            public                                                                             |
+|          Owner           |                                                                            awsuser                                                                            |
+|      Creation Time       |                                                                   Tue, 14.06.2022 17:15:52                                                                    |
+|       Model State        |                                                                           TRAINING                                                                            |
+|                          |                                                                                                                                                               |
+|      TRAINING DATA:      |                                                                                                                                                               |
+|          Query           | SELECT STATE, ACCOUNT_LENGTH, AREA_CODE, TOTAL_CHARGE / ACCOUNT_LENGTH AS AVERAGE_DAILY_SPEND, CUST_SERV_CALLS / ACCOUNT_LENGTH AS AVERAGE_DAILY_CASES, CHURN |
+|                          |                                                                    FROM CUSTOMER_ACTIVITY                                                                     |
+|                          |                                                               WHERE RECORD_DATE &lt; '2020-01-01'                                                                |
+|      Target Column       |                                                                             CHURN                                                                             |
+|                          |                                                                                                                                                               |
+|       PARAMETERS:        |                                                                                                                                                               |
+|        Model Type        |                                                                             auto                                                                              |
+|       Problem Type       |                                                                                                                                                               |
+|        Objective         |                                                                                                                                                               |
+|     AutoML Job Name      |                                                                redshiftml-20220614171552640901                                                                |
+|      Function Name       |                                                                   ml_fn_customer_churn_auto                                                                   |
+|   Function Parameters    |                                            state account_length area_code average_daily_spend average_daily_cases                                             |
+| Function Parameter Types |                                                                 varchar int4 int4 float8 int4                                                                 |
+|         IAM Role         |                                                                     default-aws-iam-role                                                                      |
+|        S3 Bucket         |                                                                        <code class="replaceable">DOC-EXAMPLE-BUCKET</code>                                                                     |
+|       Max Runtime        |                                                                             5400                                                                              |
++--------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------+</code></pre><p>模型训练完成后，<code class="code">model_state</code> 变量变为 <code class="code">Model is Ready</code>，预测函数变为可用。</p>
+             
+            
+            
+            
+            
+          
+            <h2 id="tutorial_customer_churn_step_perform_predictions">步骤 3：使用模型执行预测</h2>
+            <p>您可以使用 SQL 语句来查看预测模型所做的预测。在此示例中，由 CREATE MODEL 操作创建的预测函数名为 <code class="code">ml_fn_customer_churn_auto</code>。预测函数的输入参数对应于功能的类型，如 varchar 对应于 <code class="code">state</code>，而 integer 对应于 <code class="code">account_length</code>。预测函数的输出类型与 CREATE MODEL 语句的 TARGET 列相同。</p><div class="orderedlist">
+                   
+                   
+                   
+               <ol><li>
+                     <p>您根据 2020 年 1 月 1 日之前的数据对模型进行了训练，因此，现在您可以对测试集使用预测函数。以下查询显示了 2020 年 1 月 1 日之后注册的客户是否会经历流失的预测。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    phone,
+    ml_fn_customer_churn_auto(
+        state,
+        account_length,
+        area_code,
+        total_charge / account_length,
+        cust_serv_calls / account_length
+    ) AS active
+FROM
+    customer_activity
+WHERE
+    record_date &gt; '2020-01-01';</code></pre>
+                  </li><li>
+                     <p>以下示例将相同的预测函数用于不同的使用案例。在此案例中，Amazon Redshift 预测记录日期晚于 2020 年 1 月 1 日的各州客户的流失者和非流失者的比例。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">WITH predicted AS (
+    SELECT
+        state,
+        ml_fn_customer_churn_auto(
+            state,
+            account_length,
+            area_code,
+            total_charge / account_length,
+            cust_serv_calls / account_length
+        ) :: varchar(6) AS active
+    FROM
+        customer_activity
+    WHERE
+        record_date &gt; '2020-01-01'
+)
+SELECT
+    state,
+    SUM(
+        CASE
+            WHEN active = 'True.' THEN 1
+            ELSE 0
+        END
+    ) AS churners,
+    SUM(
+        CASE
+            WHEN active = 'False.' THEN 1
+            ELSE 0
+        END
+    ) AS nonchurners,
+    COUNT(*) AS total_per_state
+FROM
+    predicted
+GROUP BY
+    state
+ORDER BY
+    state;</code></pre>
+                  </li><li>
+                     <p>以下示例将预测函数用于预测某州客户流失百分比的使用案例。在此案例中，Amazon Redshift 预测记录日期晚于 2020 年 1 月 1 日的流失百分比。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">WITH predicted AS (
+    SELECT
+        state,
+        ml_fn_customer_churn_auto(
+            state,
+            account_length,
+            area_code,
+            total_charge / account_length,
+            cust_serv_calls / account_length
+        ) :: varchar(6) AS active
+    FROM
+        customer_activity
+    WHERE
+        record_date &gt; '2020-01-01'
+)
+SELECT
+    state,
+    CAST((CAST((SUM(
+        CASE
+            WHEN active = 'True.' THEN 1
+            ELSE 0
+        END
+    )) AS FLOAT) / CAST(COUNT(*) AS FLOAT)) AS DECIMAL (3, 2)) AS pct_churn,
+    COUNT(*) AS total_customers_per_state
+FROM
+    predicted
+GROUP BY
+    state
+ORDER BY
+    3 DESC;</code></pre>
+                  </li></ol></div>
+          
+            <h2 id="tutorial_customer_churn_related_topics">相关主题</h2>
+            <p>有关 Amazon Redshift ML 的更多信息，请参阅以下文档：</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">使用 Amazon Redshift ML 的成本</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">CREATE MODEL 命令</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">EXPLAIN_MODEL 函数</a></p>
+                  </li></ul></div>
+            <p>有关机器学习的更多信息，请参阅以下文档：</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">机器学习概览</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">面向新手和专家的机器学习</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">机器学习预测的公平性和模型可解释性是什么？</a></p>
+                  </li></ul></div>
+         <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorials_for_amazon_redshift_ml.html">Amazon Redshift ML 的教程</div><div id="next" class="next-link" accesskey="n" href="./tutorial_remote_inference.html">教程：构建远程推理模型</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_customer_churn.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_customer_churn.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

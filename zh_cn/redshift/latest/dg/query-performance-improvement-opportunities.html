@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>提高查询性能 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="query-performance-improvement-opportunities" /><meta name="default_state" content="query-performance-improvement-opportunities" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/query-performance-improvement-opportunities.html" /><meta name="description" content="本主题确定了影响查询性能的常见问题、如何诊断这些问题以及如何解决这些问题。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/query-performance-improvement-opportunities.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/query-performance-improvement-opportunities.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="提高查询性能" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>提高查询性能 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#query-performance-improvement-opportunities" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/query-performance-improvement-opportunities.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/query-performance-improvement-opportunities.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/query-performance-improvement-opportunities.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "优化查询性能",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-optimizing-query-performance.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "分析和改进查询",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-tuning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "提高查询性能",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-tuning.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#query-performance-improvement-opportunities" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#table-statistics-missing-or-out-of-date">表统计数据缺失或过时</a><a href="#nested-loop">嵌套循环</a><a href="#hash-join">哈希联接</a><a href="#ghost-rows-or-uncommitted-rows">虚影行或未提交的行</a><a href="#unsorted-or-mis-sorted-rows">未排序或排序错乱的行</a><a href="#suboptimal-data-distribution">非最优数据分配</a><a href="#insufficient-memory-allocated-to-the-query">分配给查询的内存不足</a><a href="#suboptimal-WHERE-clause">非最优 WHERE 子句</a><a href="#insufficiently-restrictive-predicate">谓词限制性不足</a><a href="#very-large-result-set">极大结果集</a><a href="#large-SELECT-list">大型 SELECT 列表</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="query-performance-improvement-opportunities">提高查询性能</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>以下是影响查询性能的一些常见问题，以及有关诊断和解决这些问题的方法的说明。</p><div class="highlights" id="inline-topiclist"><h6>主题</h6><ul><li><a href="#table-statistics-missing-or-out-of-date">表统计数据缺失或过时</a></li><li><a href="#nested-loop">嵌套循环</a></li><li><a href="#hash-join">哈希联接</a></li><li><a href="#ghost-rows-or-uncommitted-rows">虚影行或未提交的行</a></li><li><a href="#unsorted-or-mis-sorted-rows">未排序或排序错乱的行</a></li><li><a href="#suboptimal-data-distribution">非最优数据分配</a></li><li><a href="#insufficient-memory-allocated-to-the-query">分配给查询的内存不足</a></li><li><a href="#suboptimal-WHERE-clause">非最优 WHERE 子句</a></li><li><a href="#insufficiently-restrictive-predicate">谓词限制性不足</a></li><li><a href="#very-large-result-set">极大结果集</a></li><li><a href="#large-SELECT-list">大型 SELECT 列表</a></li></ul></div><h2 id="table-statistics-missing-or-out-of-date">表统计数据缺失或过时</h2>
+            
+            <p>如果表统计信息缺失或过期，您可能会看到以下内容：</p>
+            <div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>EXPLAIN 命令结果中存在警告消息。</p>
+               </li><li class="listitem">
+                  <p>STL_ALERT_EVENT_LOG 中存在缺失统计数据提醒事件。有关更多信息，请参阅<a href="./c-reviewing-query-alerts.html">查看查询警报</a>。</p>
+               </li></ul></div>
+            <p>要修复此问题，请运行 <a href="./r_ANALYZE.html">ANALYZE</a>。</p>
+         <h2 id="nested-loop">嵌套循环</h2>
+            
+            <p>如果存在嵌套循环，您可能会在 STL_ALERT_EVENT_LOG 中看到嵌套循环提示事件。此外，您还可以通过运行<a href="./diagnostic-queries-for-query-tuning.html#identify-queries-with-nested-loops">确定具有嵌套循环的查询</a>中的查询来识别此类事件。有关更多信息，请参阅<a href="./c-reviewing-query-alerts.html">查看查询警报</a>。</p>
+            <p>要修复这一问题，请检查查询是否存在交叉联接，尽量将其删除。交叉联接是无联接条件的联接，它会导致对两个表执行笛卡尔积操作。它们通常作为嵌套循环联接运行，这是最慢的可能联接类型。</p>
+         <h2 id="hash-join">哈希联接</h2>
+            
+            <p>如果存在哈希联接，您可能会看到以下内容：</p>
+            <div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>查询计划中的哈希和哈希联接操作。有关更多信息，请参阅<a href="./c-analyzing-the-query-plan.html">分析查询计划</a>。</p>
+               </li><li class="listitem">
+                  <p>SVL_QUERY_SUMMARY 中 maxtime 值最大的段中的 HJOIN 步骤。有关更多信息，请参阅<a href="./using-SVL-Query-Summary.html">使用 SVL_QUERY_SUMMARY 视图</a>。</p>
+               </li></ul></div>
+            <p>要修复这一问题，您可以采取以下几种方法：</p>
+            <div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>重写查询，尽可能使用合并联接。为此，您可以指定既是分配键又是排序键的联接列。</p>
+               </li><li class="listitem">
+                  <p>如果 SVL_QUERY_SUMMARY 中 HJOIN 步骤的行数字段值较查询中最终 RETURN 步骤中的行数值大得多，请确认您能否重写查询以基于唯一的列进行联接。当查询未联接唯一列（如主键）时，该列会增加联接中涉及的行数。</p>
+               </li></ul></div>
+         <h2 id="ghost-rows-or-uncommitted-rows">虚影行或未提交的行</h2>
+            
+            <p>如果存在虚影行或未提交的行，您可能会在 STL_ALERT_EVENT_LOG 中看到一个提示事件，指示虚影行过多。有关更多信息，请参阅<a href="./c-reviewing-query-alerts.html">查看查询警报</a>。</p>
+            <p>要修复这一问题，您可以采取以下几种方法：</p>
+            <div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>检查 Amazon Redshift 控制台的<b>加载</b>选项卡，以便对任何查询表进行活动加载操作。如果您发现有处于活动状态的加载操作，请等待这些操作完成，然后再执行操作。</p>
+               </li><li class="listitem">
+                  <p>如果没有活动加载操作，请对查询表运行 <a href="./r_VACUUM_command.html">VACUUM</a> 以移除已删除的行。</p>
+               </li></ul></div>
+         <h2 id="unsorted-or-mis-sorted-rows">未排序或排序错乱的行</h2>
+            
+            <p>如果存在未排序或排序错误的行，您可能会在 STL_ALERT_EVENT_LOG 中看到一个非常有选择性的筛选提示事件。有关更多信息，请参阅<a href="./c-reviewing-query-alerts.html">查看查询警报</a>。</p>
+            <p>您也可以运行<a href="./diagnostic-queries-for-query-tuning.html#identify-tables-with-data-skew-or-unsorted-rows">确定具有数据偏斜或未排序行的表</a>中的查询以检查查询中的任意表是否包含大片未排序的区域。</p>
+            <p>要修复这一问题，您可以采取以下几种方法：</p>
+            <div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>对查询表运行 <a href="./r_VACUUM_command.html">VACUUM</a> 以重新排序行。</p>
+               </li><li class="listitem">
+                  <p>检查查询表的排序键，看看有无可以改进之处。在进行任何更改之前，请务必权衡查询的性能及其他重要查询和系统的整体性能。有关更多信息，请参阅<a href="./t_Sorting_data.html">使用排序键</a>。</p>
+               </li></ul></div>
+         <h2 id="suboptimal-data-distribution">非最优数据分配</h2>
+            
+            <p>如果数据分配不佳，您可能会看到以下内容：</p>
+            <div class="itemizedlist">
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>STL_ALERT_EVENT_LOG 中存在顺序执行、大型广播或大型分配提醒事件。有关更多信息，请参阅<a href="./c-reviewing-query-alerts.html">查看查询警报</a>。</p>
+               </li><li class="listitem">
+                  <p>对于给定步骤，处理的切片数与行数相差较大。有关更多信息，请参阅<a href="./using-SVL-Query-Report.html">使用 SVL_QUERY_REPORT 视图</a>。</p>
+               </li><li class="listitem">
+                  <p>对于给定步骤，切片的处理时间相差较大。有关更多信息，请参阅<a href="./using-SVL-Query-Report.html">使用 SVL_QUERY_REPORT 视图</a>。</p>
+               </li></ul></div>
+            <p>如果上述条件均未满足，您还可以查看查询中是否有任意表存在数据偏斜（运行<a href="./diagnostic-queries-for-query-tuning.html#identify-tables-with-data-skew-or-unsorted-rows">确定具有数据偏斜或未排序行的表</a>中的查询）。</p>
+            <p>要修复这一问题，请查看查询中表的分布方式，看看有无任何可以改进之处。在进行任何更改之前，请务必权衡查询的性能及其他重要查询和系统的整体性能。有关更多信息，请参阅<a href="./t_Distributing_data.html">使用数据分配样式</a>。</p>
+         <h2 id="insufficient-memory-allocated-to-the-query">分配给查询的内存不足</h2>
+            
+            <p>如果为查询分配到的内存不足，您可能会看到 SVL_QUERY_SUMMARY 中存在一个 <code class="code">is_diskbased</code> 值为真的步骤。有关更多信息，请参阅<a href="./using-SVL-Query-Summary.html">使用 SVL_QUERY_SUMMARY 视图</a>。</p>
+            <p>要修复这一问题，请临时增加查询使用的查询槽的数目，以向其分配更多的内存。工作负载管理 (WLM) 在查询队列中预留与为查询设置的并发级别相等的槽数。例如，并发级别为 5 的队列拥有 5 个槽。分配给队列的内存平均分配到每个槽。将多个槽分配给一个查询可使该查询访问所有这些槽的内存。有关如何临时增加查询的插槽的更多信息，请参阅<a href="./r_wlm_query_slot_count.html">wlm_query_slot_count</a>。</p>
+         <h2 id="suboptimal-WHERE-clause">非最优 WHERE 子句</h2>
+            
+            <p>如果 WHERE 子句导致表扫描过多，您可能会在分段中看到在 SVL_QUERY_SUMMARY 中具有最高 <code class="code">maxtime</code> 值的 SCAN 步骤。有关更多信息，请参阅<a href="./using-SVL-Query-Summary.html">使用 SVL_QUERY_SUMMARY 视图</a>。</p>
+            <p>要修复这一问题，请根据最大的表的主排序列向查询添加 WHERE 子句。这种方法有助于尽量减少扫描时间。有关更多信息，请参阅<a href="./c_designing-tables-best-practices.html">设计表的 Amazon Redshift 最佳实践</a>。</p>
+         <h2 id="insufficiently-restrictive-predicate">谓词限制性不足</h2>
+            
+            <p>如果您的查询具有限制性不足的谓词，您可能会在分段中看到在 SVL_QUERY_SUMMARY 中具有最高 <code class="code">maxtime</code> SCAN 步骤，且它的 <code class="code">rows</code> 值比查询的最终 RETURN 步骤中的 <code class="code">rows</code> 值高很多。有关更多信息，请参阅<a href="./using-SVL-Query-Summary.html">使用 SVL_QUERY_SUMMARY 视图</a>。</p>
+            <p>若要解决此问题，请尝试向查询添加谓词或使现有谓词更具限制性，以缩小输出范围。</p>
+         <h2 id="very-large-result-set">极大结果集</h2>
+            
+            <p>如果查询返回极大的结果集，请考虑重写查询，使用 <a href="./r_UNLOAD.html">UNLOAD</a> 将结果写入 Amazon S3。这种方法可充分利用并行处理的优势，从而提高 RETURN 步骤的性能。有关检查极大结果集的更多信息，请参阅<a href="./using-SVL-Query-Summary.html">使用 SVL_QUERY_SUMMARY 视图</a>。</p>
+         <h2 id="large-SELECT-list">大型 SELECT 列表</h2>
+            
+            <p>如果您的查询有一个异常大的 SELECT 列表，您可能会看到 SVL_QUERY_SUMMARY 中的任何步骤的 <code class="code">bytes</code> 值（与其他步骤相比）相对于 <code class="code">rows</code> 值较高。<code class="code">bytes</code> 值较大说明您选择了大量列。有关更多信息，请参阅<a href="./using-SVL-Query-Summary.html">使用 SVL_QUERY_SUMMARY 视图</a>。</p>
+            <p>要解决此问题，请查看您正在选择的列，并查看是否可以删除任何列。</p>
+         <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./query-plan-summary-map.html">将查询计划映射到查询摘要</div><div id="next" class="next-link" accesskey="n" href="./diagnostic-queries-for-query-tuning.html">用于优化查询的诊断查询</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/query-performance-improvement-opportunities.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/query-performance-improvement-opportunities.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

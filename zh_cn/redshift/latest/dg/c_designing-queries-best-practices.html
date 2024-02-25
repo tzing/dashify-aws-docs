@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>设计查询的 Amazon Redshift 最佳实践 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c_designing-queries-best-practices" /><meta name="default_state" content="c_designing-queries-best-practices" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_designing-queries-best-practices.html" /><meta name="description" content="要最大程度地提高查询性能，请在创建查询时遵循这些建议：" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_designing-queries-best-practices.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c_designing-queries-best-practices.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="设计查询的 Amazon Redshift 最佳实践" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>设计查询的 Amazon Redshift 最佳实践 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c_designing-queries-best-practices" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_designing-queries-best-practices.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_designing-queries-best-practices.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_designing-queries-best-practices.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Amazon Redshift 最佳实践",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/best-practices.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "设计查询的 Amazon Redshift 最佳实践",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/best-practices.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c_designing-queries-best-practices" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="c_designing-queries-best-practices">设计查询的 Amazon Redshift 最佳实践</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>要最大程度地提高查询性能，请在创建查询时遵循这些建议：</p><div class="itemizedlist">
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>根据最佳实践设计表，为查询性能提供坚固的基础。有关更多信息，请参阅<a href="./c_designing-tables-best-practices.html">设计表的 Amazon Redshift 最佳实践</a>。</p>
+         </li><li class="listitem">
+            <p>避免使用 <code class="code">select *</code>。仅包含您需要的列。</p>
+         </li><li class="listitem">
+            <p>使用 <a href="./r_CASE_function.html">CASE 条件表达式</a> 执行复杂聚合，而不是从同一表多次选择。</p>
+         </li><li class="listitem">
+            <p>除非绝对必要，否则，不要使用交叉联接。这些没有联接条件的联接会导致两个表的笛卡尔积。交叉联接通常作为嵌套循环联接运行，这是最慢的联接类型。</p>
+         </li><li class="listitem">
+            <p>如果查询中有一个表只用于谓词条件并且子查询返回的行数较少 (不足 200 行)，可以使用子查询。下面的示例使用子查询来避免联接 LISTING 表。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select sum(sales.qtysold)
+from sales
+where salesid in (select listid from listing where listtime &gt; '2008-12-26');</code></pre>
+         </li><li class="listitem">
+            <p>使用谓词尽可能限制数据集。</p>
+         </li><li class="listitem">
+            <p>在谓词中，尽可能使用成本最低的运算符。<a href="./r_comparison_condition.html">比较条件</a> 运算符优先于 <a href="./r_patternmatching_condition_like.html">LIKE</a> 运算符。LIKE 运算符优先于 <a href="./pattern-matching-conditions-similar-to.html">SIMILAR TO</a> 或 <a href="./pattern-matching-conditions-posix.html">POSIX 运算符</a>。</p>
+         </li><li class="listitem">
+            <p>避免在查询谓词中使用函数。如果使用函数，则需要大量的行来解析查询的中间步骤，从而增加查询成本。</p>
+         </li><li class="listitem">
+            <p>如果可能，请使用 WHERE 子句限制数据集。查询计划程序可以使用行顺序来帮助确定哪些记录与条件匹配，从而不必扫描大量磁盘数据块。如果没有它，查询执行引擎必须完全扫描参与的列。</p>
+         </li><li class="listitem">
+            <p>添加谓词以筛选参与联接的表（即使谓词应用相同的筛选条件）。查询返回相同的结果集，但 Amazon Redshift 能够在扫描步骤前筛选联接表，然后高效地跳过对这些表数据块的扫描。如果对在联接条件中使用的列进行筛选，则无需指定冗余筛选条件。</p>
+            <p>例如，假设您需要联接 <code class="code">SALES</code> 和 <code class="code">LISTING</code> 来查找在 12 月之后列出的票的销售数据并按卖家分组。两个表都按日期排序。下面的查询使用表的公共键联接这两个表，并筛选晚于 12 月 1 日的 <code class="code">listing.listtime</code> 值。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select listing.sellerid, sum(sales.qtysold)
+from sales, listing
+where sales.salesid = listing.listid
+and listing.listtime &gt; '2008-12-01'
+group by 1 order by 1;</code></pre>
+            <p>WHERE 子句不包含针对 <code class="code">sales.saletime</code> 的谓词，因此，执行引擎必须扫描整个 <code class="code">SALES</code> 表。如果您知道哪些筛选条件能够减少参与联接操作的行数，则也请添加这些筛选条件。下面的示例明显地减少了执行时间。</p>
+
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select listing.sellerid, sum(sales.qtysold)
+from sales, listing
+where sales.salesid = listing.listid
+and listing.listtime &gt; '2008-12-01'
+and sales.saletime &gt; '2008-12-01'
+group by 1 order by 1;</code></pre>
+
+         </li><li class="listitem">
+            <p>在 GROUP BY 子句中使用排序键，以便查询计划程序可以使用更高效的聚合。如果查询的 GROUP BY 列表只包含排序键列，并且其中一列也是分配键，则查询可能适合单阶段聚合。GROUP BY 列表中的排序键列必须包含第一个排序键，然后按排序键顺序包含其他需要使用的排序键。例如，可以使用第一个排序键，第一个和第二个排序键，第一个、第二个和第三个排序键，依此类推。不能使用第一个和第三个排序键。</p>
+            <p>您可以通过在查询的聚合步骤中运行 <a href="./r_EXPLAIN.html">EXPLAIN</a> 命令和查找 <code class="code">XN
+                  GroupAggregate</code> 来确认使用单阶段聚合。</p>
+         </li><li class="listitem">
+            <p>如果同时使用 GROUP BY 和 ORDER BY 子句，两个子句中各列的顺序必须相同。也就是，使用下面的方法。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">group by a, b, c
+order by a, b, c</code></pre>
+            <p>不要使用以下方法。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">group by b, c, a
+order by a, b, c</code></pre>
+         </li></ul></div><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c_best-practices-avoid-maintenance.html">计划维护时段</div><div id="next" class="next-link" accesskey="n" href="./advisor.html">使用 Advisor</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_designing-queries-best-practices.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_designing-queries-best-practices.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

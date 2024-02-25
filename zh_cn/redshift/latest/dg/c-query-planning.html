@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>查询计划和执行工作流程 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c-query-planning" /><meta name="default_state" content="c-query-planning" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-planning.html" /><meta name="description" content="下图概要介绍查询计划和执行工作流程。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-planning.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-query-planning.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-query-planning.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-query-planning.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-query-planning.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-query-planning.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-query-planning.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-query-planning.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-query-planning.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-query-planning.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-query-planning.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-query-planning.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-query-planning.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-query-planning.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-query-planning.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-planning.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-planning.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-query-planning.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-query-planning.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-planning.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-query-planning.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-query-planning.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="查询计划和执行工作流程" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>查询计划和执行工作流程 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c-query-planning" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-planning.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-planning.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-planning.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "优化查询性能",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-optimizing-query-performance.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "查询处理",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-processing.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "查询计划和执行工作流程",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-processing.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c-query-planning" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="c-query-planning">查询计划和执行工作流程</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>下图概要介绍查询计划和执行工作流程。</p><div class="mediaobject">
+             
+               <img src="images/07-QueryPlanning.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+             
+         </div><p>查询计划和执行工作流程遵循以下步骤：</p><div class="orderedlist">
+             
+             
+             
+             
+             
+             
+         <ol><li>
+               <p>领导节点接收查询并解析 SQL。</p>
+            </li><li>
+               <p>分析程序生成初步查询树，后者是原始查询的逻辑表示。然后，Amazon Redshift 将该查询树输入到查询优化程序中。</p>
+            </li><li>
+               <p>优化程序评估并在必要时重写查询以最大限度地提高查询的效率。此过程有时会导致创建多个相关查询来替换单个查询。</p>
+            </li><li>
+               <p>优化程序会生成一个查询计划以最佳性能进行执行（如果上一步导致多个查询，则生成多个查询计划）。查询计划指定执行选项，如联接类型、联接顺序、聚合选项和数据分配要求。</p>
+               <p>您可以使用 <a href="./r_EXPLAIN.html">EXPLAIN</a> 命令查看查询计划。查询计划是分析和优化复杂查询的基本工具。有关更多信息，请参阅<a href="./c-the-query-plan.html">查询计划</a>。</p>
+            </li><li>
+               <p>执行引擎将查询计划转换为<em>步骤</em>、<em>分段</em>和<em>流</em>：</p>
+               <div class="variablelist">
+                   
+                   
+                   
+               <dl>
+                     <dt><b><span class="term">步骤</span></b></dt>
+                     <dd>
+                        <p>每个步骤都是查询执行过程中需要的单独操作。可以组合步骤以允许计算节点执行查询、联接或其他数据库操作。</p>
+                     </dd>
+                  
+                     <dt><b><span class="term">Segment</span></b></dt>
+                     <dd>
+                        <p>可以通过单个进程完成的几个步骤的组合，也是由计算节点切片执行的最小编译单元。<em>切片</em>是 Amazon Redshift 中并行处理的单元。流中的分段并行运行。</p>
+                     </dd>
+                  
+                     <dt><b><span class="term">流</span></b></dt>
+                     <dd>
+                        <p>要分配到可用计算节点切片上的分段的集合。</p>
+                     </dd>
+                  </dl></div>
+               <p>执行引擎基于步骤、段和流生成编译后的代码。编译的代码运行速度比解释的代码快，并且使用的计算容量更少。然后，将此编译的代码广播到计算节点。</p>
+               <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>在对查询进行基准测试时，您应始终比较查询第二次执行的时间，因为第一次执行时间包括编译代码的开销。有关更多信息，请参阅<a href="./c-query-performance.html">影响查询性能的因素</a>。</p></div></div>
+            </li><li>
+               <p>计算节点切片并行运行查询分段。在该流程中，Amazon Redshift 利用优化的网络通信、内存和磁盘管理，将中间结果从一个查询计划步骤传递到下一个。这还有助于加快查询执行速度。</p>
+            </li></ol></div><p>步骤 5 和 6 针对每个流执行一次。引擎为一个流创建可执行分段并将其发送到计算节点。当该流的分段完成时，引擎会生成下一个流的分段。通过这种方式，引擎可以分析先前流中发生的情况（例如，操作是否基于磁盘），以影响下一个流中分段的生成。</p><p>计算节点完成后，它们会将查询结果返回到领导节点以进行最终处理。领导节点将数据合并到单个结果集中，并解决任何需要的排序或聚合。然后，领导节点将结果返回至客户端。</p><div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>如有必要，计算节点可能会在查询执行期间将某些数据返回到领导节点。例如，如果您有一个包含 LIMIT 子句的子查询，则在数据在集群间重新分配以进一步处理前会在领导节点上应用该限制。</p></div></div><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c-query-processing.html">查询处理</div><div id="next" class="next-link" accesskey="n" href="./c-the-query-plan.html">查询计划</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-planning.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-planning.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

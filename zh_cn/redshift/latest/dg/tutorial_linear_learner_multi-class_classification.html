@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>教程：使用线性学习器构建多类别分类模型 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_linear_learner_multi-class_classification" /><meta name="default_state" content="tutorial_linear_learner_multi-class_classification" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" /><meta name="description" content="使用本教程获取创建 Amazon Redshift 机器学习模型和运行推理查询的端到端示例。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="教程：使用线性学习器构建多类别分类模型" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>教程：使用线性学习器构建多类别分类模型 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_linear_learner_multi-class_classification" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "在 Amazon Redshift 中使用机器学习",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Amazon Redshift ML 入门",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Amazon Redshift ML 的教程",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "教程：使用线性学习器构建多类别分类模型",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_linear_learner_multi-class_classification" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#tutorial_linear_learner_multi-class_classification_tasks">使用案例示例</a><a href="#tutorial_linear_learner_multi-class_classification_prereqs">先决条件</a><a href="#tutorial_linear_learner_multi-class_classification_step_load">步骤 1：将数据从 Amazon S3 加载到 Amazon Redshift</a><a href="#tutorial_linear_learner_multi-class_classification_step_create_model">步骤 2：创建机器学习模型</a><a href="#tutorial_linear_learner_multi-class_classification_step_validate">步骤 3：验证模型</a><a href="#tutorial_linear_learner_multi-class_classification_related_topics">相关主题</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_linear_learner_multi-class_classification">教程：使用线性学习器构建多类别分类模型</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>在本教程中，您使用来自 Amazon S3 的数据创建线性学习器模型，然后使用 Amazon Redshift ML 对模型运行预测查询。SageMaker 线性学习器算法可解决回归或分类问题。要了解有关回归和多类别分类问题的更多信息，请参阅《Amazon SageMaker 开发人员指南》中的<a href="https://docs.aws.amazon.com/sagemaker/latest/dg/algorithms-choose.html#basic-machine-learning-paradigms">机器学习范式的问题类型</a>。在本教程中，您将解决一个多类别分类问题。线性学习器算法并行训练许多模型，并自动确定最优化的模型。您可以在 Amazon Redshift 中使用 CREATE MODEL 操作，该操作使用 SageMaker 创建线性学习器模型，并将预测函数发送到 Amazon Redshift。有关线性学习器算法的更多信息，请参阅《Amazon SageMaker 开发人员指南》中的<a href="https://docs.aws.amazon.com/sagemaker/latest/dg/linear-learner.html">线性学习器算法</a>。</p><p>您可以使用 CREATE MODEL 命令导出训练数据、训练模型、导入模型以及准备 Amazon Redshift 预测函数。使用 CREATE MODEL 操作将训练数据指定为表或 SELECT 语句。</p><p>线性学习器模型可以优化连续目标或离散目标。连续目标用于回归，而离散变量用于分类。一些方法仅为连续目标提供解决方案，例如回归方法。线性学习器算法提供了比朴素超参数优化技术（如朴素贝叶斯技术）更快的速度。朴素优化技术假定每个输入变量都是独立的。线性学习器算法并行训练许多模型，并选择最优化的模型。一种类似的算法是 XGBoost，它将来自一组更简单和更弱模型的估计值结合起来进行预测。要了解有关 XGBoost 的更多信息，请参阅《Amazon SageMaker 开发人员指南》中的 <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/xgboost.html">XGBoost 算法</a>。</p><p>要使用线性学习器算法，必须提供表示输入维度的列和表示观察值的行。有关线性学习器算法的更多信息，请参阅《Amazon SageMaker 开发人员指南》中的<a href="https://docs.aws.amazon.com/sagemaker/latest/dg/linear-learner.html">线性学习器算法</a>。</p><p>在本教程中，您将构建一个线性学习器模型，用于预测给定区域的覆盖类型。对 UCI 机器学习存储库中的<a href="https://archive.ics.uci.edu/ml/datasets/covertype" rel="noopener noreferrer" target="_blank"><span>覆盖类型数据集</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>使用 CREATE MODEL 命令。然后，您可以使用由该命令创建的预测函数来确定荒野区域的覆盖类型。森林覆盖类型通常是一种树木。Redshift ML 将用于创建模型的输入包括土壤类型、到道路的距离和荒野区域指定范围。有关数据集的更多信息，请参阅 UCI 机器学习存储库中的<a href="https://archive.ics.uci.edu/ml/datasets/covertype" rel="noopener noreferrer" target="_blank"><span>覆盖类型数据集</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p>
+            <h2 id="tutorial_linear_learner_multi-class_classification_tasks">使用案例示例</h2>
+            <p>您可以使用线性学习器及 Amazon Redshift ML 解决其他多类别分类问题，例如从图像中预测植物的种类。您还可以预测客户将要购买的商品的数量。</p>
+            <p><b>任务</b></p><div class="itemizedlist">
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>先决条件</p>
+               </li><li class="listitem">
+                  <p>步骤 1：将数据从 Amazon S3 加载到 Amazon Redshift</p>
+               </li><li class="listitem">
+                  <p>步骤 2：创建机器学习模型</p>
+               </li><li class="listitem">
+                  <p>步骤 3：验证模型</p>
+               </li></ul></div>
+            <h2 id="tutorial_linear_learner_multi-class_classification_prereqs">先决条件</h2>
+               <p>要完成此教程，必须完成 Amazon Redshift ML 的<a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">管理设置</a>。</p>
+             
+            <h2 id="tutorial_linear_learner_multi-class_classification_step_load">步骤 1：将数据从 Amazon S3 加载到 Amazon Redshift</h2>
+               <p>使用 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">Amazon Redshift 查询器 v2</a> 运行以下查询。这些查询将示例数据加载到 Redshift 中，然后将数据划分为训练集和验证集。</p><div class="orderedlist">
+                      
+                      
+                      
+                  <ol><li>
+                        <p>以下查询将创建 <code class="code">covertype_data</code> 表。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE public.covertype_data (
+    elevation bigint ENCODE az64,
+    aspect bigint ENCODE az64,
+    slope bigint ENCODE az64,
+    horizontal_distance_to_hydrology bigint ENCODE az64,
+    vertical_distance_to_hydrology bigint ENCODE az64,
+    horizontal_distance_to_roadways bigint ENCODE az64,
+    hillshade_9am bigint ENCODE az64,
+    hillshade_noon bigint ENCODE az64,
+    hillshade_3pm bigint ENCODE az64,
+    horizontal_distance_to_fire_points bigint ENCODE az64,
+    wilderness_area1 bigint ENCODE az64,
+    wilderness_area2 bigint ENCODE az64,
+    wilderness_area3 bigint ENCODE az64,
+    wilderness_area4 bigint ENCODE az64,
+    soil_type1 bigint ENCODE az64,
+    soil_type2 bigint ENCODE az64,
+    soil_type3 bigint ENCODE az64,
+    soil_type4 bigint ENCODE az64,
+    soil_type5 bigint ENCODE az64,
+    soil_type6 bigint ENCODE az64,
+    soil_type7 bigint ENCODE az64,
+    soil_type8 bigint ENCODE az64,
+    soil_type9 bigint ENCODE az64,
+    soil_type10 bigint ENCODE az64,
+    soil_type11 bigint ENCODE az64,
+    soil_type12 bigint ENCODE az64,
+    soil_type13 bigint ENCODE az64,
+    soil_type14 bigint ENCODE az64,
+    soil_type15 bigint ENCODE az64,
+    soil_type16 bigint ENCODE az64,
+    soil_type17 bigint ENCODE az64,
+    soil_type18 bigint ENCODE az64,
+    soil_type19 bigint ENCODE az64,
+    soil_type20 bigint ENCODE az64,
+    soil_type21 bigint ENCODE az64,
+    soil_type22 bigint ENCODE az64,
+    soil_type23 bigint ENCODE az64,
+    soil_type24 bigint ENCODE az64,
+    soil_type25 bigint ENCODE az64,
+    soil_type26 bigint ENCODE az64,
+    soil_type27 bigint ENCODE az64,
+    soil_type28 bigint ENCODE az64,
+    soil_type29 bigint ENCODE az64,
+    soil_type30 bigint ENCODE az64,
+    soil_type31 bigint ENCODE az64,
+    soil_type32 bigint ENCODE az64,
+    soil_type33 bigint ENCODE az64,
+    soil_type34 bigint ENCODE az64,
+    soil_type35 bigint ENCODE az64,
+    soil_type36 bigint ENCODE az64,
+    soil_type37 bigint ENCODE az64,
+    soil_type38 bigint ENCODE az64,
+    soil_type39 bigint ENCODE az64,
+    soil_type40 bigint ENCODE az64,
+    cover_type bigint ENCODE az64
+) DISTSTYLE AUTO;</code></pre>
+                     </li><li>
+                        <p>下面的查询将 Amazon S3 的<a href="https://archive.ics.uci.edu/ml/datasets/covertype" rel="noopener noreferrer" target="_blank"><span>覆盖类型数据集</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>中的示例数据复制到您之前在 Amazon Redshift 中创建的 <code class="code">covertype_data</code> 表中。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY public.covertype_data
+FROM
+    's3://redshift-ml-multiclass/covtype.data.gz' IAM_ROLE DEFAULT gzip DELIMITER ',' REGION 'us-east-1';</code></pre>
+                     </li><li>
+                        <p>通过手动拆分数据，您将能够通过分配额外的测试集来验证模型的准确性。以下查询将数据拆分为三个集。<code class="code">covertype_training</code> 表用于训练，<code class="code">covertype_validation</code> 表用于验证，而 <code class="code">covertype_test</code> 表用于测试模型。您将使用训练集来训练模型，并使用验证集来验证模型的开发。然后，您可以使用测试集来测试模型的性能，并查看模型对数据集是过拟合还是欠拟合。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE public.covertype_data_prep AS
+SELECT
+    a.*,
+    CAST (random() * 100 AS int) AS data_group_id
+FROM
+    public.covertype_data a;
+
+--training dataset
+ CREATE TABLE public.covertype_training as
+SELECT
+    *
+FROM
+    public.covertype_data_prep
+WHERE
+    data_group_id &lt; 80;
+
+--validation dataset
+ CREATE TABLE public.covertype_validation AS
+SELECT
+    *
+FROM
+    public.covertype_data_prep
+WHERE
+    data_group_id BETWEEN 80
+    AND 89;
+
+--test dataset
+ CREATE TABLE public.covertype_test AS
+SELECT
+    *
+FROM
+    public.covertype_data_prep
+WHERE
+    data_group_id &gt; 89;</code></pre>
+                     </li></ol></div>
+             
+            <h2 id="tutorial_linear_learner_multi-class_classification_step_create_model">步骤 2：创建机器学习模型</h2>
+               <p>在此步骤中，您将使用 CREATE MODEL 语句，通过线性学习器算法创建机器学习模型。</p>
+               <p>以下查询使用您的 S3 桶通过 CREATE MODEL 操作创建线性学习器模型。将 <code class="replaceable"><code class="code">DOC-EXAMPLE-BUCKET</code></code> 替换为您自己的 S3 桶。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE MODEL forest_cover_type_model
+FROM
+    (
+        SELECT
+            Elevation,
+            Aspect,
+            Slope,
+            Horizontal_distance_to_hydrology,
+            Vertical_distance_to_hydrology,
+            Horizontal_distance_to_roadways,
+            HIllshade_9am,
+            Hillshade_noon,
+            Hillshade_3pm,
+            Horizontal_Distance_To_Fire_Points,
+            Wilderness_Area1,
+            Wilderness_Area2,
+            Wilderness_Area3,
+            Wilderness_Area4,
+            soil_type1,
+            Soil_Type2,
+            Soil_Type3,
+            Soil_Type4,
+            Soil_Type5,
+            Soil_Type6,
+            Soil_Type7,
+            Soil_Type8,
+            Soil_Type9,
+            Soil_Type10,
+            Soil_Type11,
+            Soil_Type12,
+            Soil_Type13,
+            Soil_Type14,
+            Soil_Type15,
+            Soil_Type16,
+            Soil_Type17,
+            Soil_Type18,
+            Soil_Type19,
+            Soil_Type20,
+            Soil_Type21,
+            Soil_Type22,
+            Soil_Type23,
+            Soil_Type24,
+            Soil_Type25,
+            Soil_Type26,
+            Soil_Type27,
+            Soil_Type28,
+            Soil_Type29,
+            Soil_Type30,
+            Soil_Type31,
+            Soil_Type32,
+            Soil_Type33,
+            Soil_Type34,
+            Soil_Type36,
+            Soil_Type37,
+            Soil_Type38,
+            Soil_Type39,
+            Soil_Type40,
+            Cover_type
+        from
+            public.covertype_training
+    ) TARGET cover_type FUNCTION predict_cover_type IAM_ROLE default MODEL_TYPE LINEAR_LEARNER PROBLEM_TYPE MULTICLASS_CLASSIFICATION OBJECTIVE 'Accuracy' SETTINGS (
+        S3_BUCKET '&lt;DOC-EXAMPLE-BUCKET&gt;',
+        S3_GARBAGE_COLLECT OFF,
+        MAX_RUNTIME 15000
+    );</code></pre>
+             
+               <h3 id="tutorial_linear_learner_multi-class_classification_show_status">显示模型训练的状态（可选）</h3>
+                  <p>您可以使用 SHOW MODEL 命令来了解模型何时准备就绪。</p><p>使用以下查询监控模型训练的进度。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL forest_cover_type_model;</code></pre>
+               <p>模型准备就绪后，上一个操作的输出内容应类似于以下示例。请注意，输出提供了 <code class="code">validation:multiclass_accuracy</code> 指标，您可以在以下示例的右侧查看该指标。多类别准确性用于衡量由模型正确分类的数据点的百分比。在下一步中，您将使用多类别准确性来验证模型的准确性。</p>
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|              Key               |                                                                                                                                                                                                                                                                                                                                                                                                             Value                                                                                                                                                                                                                                                                                                                                                                                                              |
++--------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Model Name                     | forest_cover_type_model                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Schema Name                    | public                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Owner                          | awsuser                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Creation Time                  | Tue, 12.07.2022 20:24:32                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Model State                    | READY                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| validation:multiclass_accuracy |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       0.724952 |
+| Estimated Cost                 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       5.341750 |
+|                                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| TRAINING DATA:                 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Query                          | SELECT ELEVATION, ASPECT, SLOPE, HORIZONTAL_DISTANCE_TO_HYDROLOGY, VERTICAL_DISTANCE_TO_HYDROLOGY, HORIZONTAL_DISTANCE_TO_ROADWAYS, HILLSHADE_9AM, HILLSHADE_NOON, HILLSHADE_3PM , HORIZONTAL_DISTANCE_TO_FIRE_POINTS, WILDERNESS_AREA1, WILDERNESS_AREA2, WILDERNESS_AREA3, WILDERNESS_AREA4, SOIL_TYPE1, SOIL_TYPE2, SOIL_TYPE3, SOIL_TYPE4, SOIL_TYPE5, SOIL_TYPE6, SOIL_TYPE7, SOIL_TYPE8, SOIL_TYPE9, SOIL_TYPE10 , SOIL_TYPE11, SOIL_TYPE12 , SOIL_TYPE13 , SOIL_TYPE14, SOIL_TYPE15, SOIL_TYPE16, SOIL_TYPE17, SOIL_TYPE18, SOIL_TYPE19, SOIL_TYPE20, SOIL_TYPE21, SOIL_TYPE22, SOIL_TYPE23, SOIL_TYPE24, SOIL_TYPE25, SOIL_TYPE26, SOIL_TYPE27, SOIL_TYPE28, SOIL_TYPE29, SOIL_TYPE30, SOIL_TYPE31, SOIL_TYPE32, SOIL_TYPE33, SOIL_TYPE34, SOIL_TYPE36, SOIL_TYPE37, SOIL_TYPE38, SOIL_TYPE39, SOIL_TYPE40, COVER_TYPE |
+|                                | FROM PUBLIC.COVERTYPE_TRAINING                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Target Column                  | COVER_TYPE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|                                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| PARAMETERS:                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Model Type                     | linear_learner                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Problem Type                   | MulticlassClassification                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Objective                      | Accuracy                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| AutoML Job Name                | redshiftml-20220712202432187659                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Function Name                  | predict_cover_type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Function Parameters            | elevation aspect slope horizontal_distance_to_hydrology vertical_distance_to_hydrology horizontal_distance_to_roadways hillshade_9am hillshade_noon hillshade_3pm horizontal_distance_to_fire_points wilderness_area1 wilderness_area2 wilderness_area3 wilderness_area4 soil_type1 soil_type2 soil_type3 soil_type4 soil_type5 soil_type6 soil_type7 soil_type8 soil_type9 soil_type10 soil_type11 soil_type12 soil_type13 soil_type14 soil_type15 soil_type16 soil_type17 soil_type18 soil_type19 soil_type20 soil_type21 soil_type22 soil_type23 soil_type24 soil_type25 soil_type26 soil_type27 soil_type28 soil_type29 soil_type30 soil_type31 soil_type32 soil_type33 soil_type34 soil_type36 soil_type37 soil_type38 soil_type39 soil_type40                                                                            |
+| Function Parameter Types       | int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8 int8                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| IAM Role                       | default-aws-iam-role                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| S3 Bucket                      | <code class="replaceable">DOC-EXAMPLE-BUCKET</code>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Max Runtime                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          15000 |
++--------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+         </code></pre>
+             
+            <h2 id="tutorial_linear_learner_multi-class_classification_step_validate">步骤 3：验证模型</h2>
+               <div class="orderedlist">
+                   
+                   
+                   
+               <ol><li>
+                     <p>以下预测查询通过计算多类别准确性来验证模型对于 <code class="code">covertype_validation</code> 数据集的准确性。多类别准确性是模型的预测中属于正确预测的百分比。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    CAST(sum(t1.match) AS decimal(7, 2)) AS predicted_matches,
+    CAST(sum(t1.nonmatch) AS decimal(7, 2)) AS predicted_non_matches,
+    CAST(sum(t1.match + t1.nonmatch) AS decimal(7, 2)) AS total_predictions,
+    predicted_matches / total_predictions AS pct_accuracy
+FROM
+    (
+        SELECT
+            Elevation,
+            Aspect,
+            Slope,
+            Horizontal_distance_to_hydrology,
+            Vertical_distance_to_hydrology,
+            Horizontal_distance_to_roadways,
+            HIllshade_9am,
+            Hillshade_noon,
+            Hillshade_3pm,
+            Horizontal_Distance_To_Fire_Points,
+            Wilderness_Area1,
+            Wilderness_Area2,
+            Wilderness_Area3,
+            Wilderness_Area4,
+            soil_type1,
+            Soil_Type2,
+            Soil_Type3,
+            Soil_Type4,
+            Soil_Type5,
+            Soil_Type6,
+            Soil_Type7,
+            Soil_Type8,
+            Soil_Type9,
+            Soil_Type10,
+            Soil_Type11,
+            Soil_Type12,
+            Soil_Type13,
+            Soil_Type14,
+            Soil_Type15,
+            Soil_Type16,
+            Soil_Type17,
+            Soil_Type18,
+            Soil_Type19,
+            Soil_Type20,
+            Soil_Type21,
+            Soil_Type22,
+            Soil_Type23,
+            Soil_Type24,
+            Soil_Type25,
+            Soil_Type26,
+            Soil_Type27,
+            Soil_Type28,
+            Soil_Type29,
+            Soil_Type30,
+            Soil_Type31,
+            Soil_Type32,
+            Soil_Type33,
+            Soil_Type34,
+            Soil_Type36,
+            Soil_Type37,
+            Soil_Type38,
+            Soil_Type39,
+            Soil_Type40,
+            Cover_type AS actual_cover_type,
+            predict_cover_type(
+                Elevation,
+                Aspect,
+                Slope,
+                Horizontal_distance_to_hydrology,
+                Vertical_distance_to_hydrology,
+                Horizontal_distance_to_roadways,
+                HIllshade_9am,
+                Hillshade_noon,
+                Hillshade_3pm,
+                Horizontal_Distance_To_Fire_Points,
+                Wilderness_Area1,
+                Wilderness_Area2,
+                Wilderness_Area3,
+                Wilderness_Area4,
+                soil_type1,
+                Soil_Type2,
+                Soil_Type3,
+                Soil_Type4,
+                Soil_Type5,
+                Soil_Type6,
+                Soil_Type7,
+                Soil_Type8,
+                Soil_Type9,
+                Soil_Type10,
+                Soil_Type11,
+                Soil_Type12,
+                Soil_Type13,
+                Soil_Type14,
+                Soil_Type15,
+                Soil_Type16,
+                Soil_Type17,
+                Soil_Type18,
+                Soil_Type19,
+                Soil_Type20,
+                Soil_Type21,
+                Soil_Type22,
+                Soil_Type23,
+                Soil_Type24,
+                Soil_Type25,
+                Soil_Type26,
+                Soil_Type27,
+                Soil_Type28,
+                Soil_Type29,
+                Soil_Type30,
+                Soil_Type31,
+                Soil_Type32,
+                Soil_Type33,
+                Soil_Type34,
+                Soil_Type36,
+                Soil_Type37,
+                Soil_Type38,
+                Soil_Type39,
+                Soil_Type40
+            ) AS predicted_cover_type,
+            CASE
+                WHEN actual_cover_type = predicted_cover_type THEN 1
+                ELSE 0
+            END AS match,
+            CASE
+                WHEN actual_cover_type &lt;&gt; predicted_cover_type THEN 1
+                ELSE 0
+            END AS nonmatch
+        FROM
+            public.covertype_validation
+    ) t1;</code></pre>
+                     <p>上一个查询的输出应类似于以下示例。多类别准确性指标的值应类似于由 SHOW MODEL 操作的输出所显示的 <code class="code">validation:multiclass_accuracy</code> 指标。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">+-------------------+-----------------------+-------------------+--------------+
+| predicted_matches | predicted_non_matches | total_predictions | pct_accuracy |
++-------------------+-----------------------+-------------------+--------------+
+|             41211 |                 16324 |             57535 |   0.71627704 |
++-------------------+-----------------------+-------------------+--------------+</code></pre>
+                  </li><li>
+                     <p>下面的查询预测了 <code class="code">wilderness_area2</code> 的最常见覆盖类型。该数据集包括四个荒野区域和七种覆盖类型。荒野区域可以有多种覆盖类型。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT t1. predicted_cover_type, COUNT(*) 
+FROM 
+(     
+SELECT 
+   Elevation, 
+   Aspect,  
+   Slope,  
+   Horizontal_distance_to_hydrology,  
+   Vertical_distance_to_hydrology,   
+   Horizontal_distance_to_roadways,  
+   HIllshade_9am,  
+   Hillshade_noon,  
+   Hillshade_3pm , 
+   Horizontal_Distance_To_Fire_Points,  
+   Wilderness_Area1,  
+   Wilderness_Area2,   
+   Wilderness_Area3,  
+   Wilderness_Area4,  
+   soil_type1,
+   Soil_Type2,
+   Soil_Type3, 
+   Soil_Type4, 
+   Soil_Type5,  
+   Soil_Type6, 
+   Soil_Type7,  
+   Soil_Type8, 
+   Soil_Type9, 
+   Soil_Type10 , 
+   Soil_Type11,  
+   Soil_Type12 , 
+   Soil_Type13 ,
+   Soil_Type14, 
+   Soil_Type15, 
+   Soil_Type16,  
+   Soil_Type17, 
+   Soil_Type18,  
+   Soil_Type19,  
+   Soil_Type20,  
+   Soil_Type21,  
+   Soil_Type22,  
+   Soil_Type23,  
+   Soil_Type24, 
+   Soil_Type25,  
+   Soil_Type26, 
+   Soil_Type27,  
+   Soil_Type28,  
+   Soil_Type29,  
+   Soil_Type30,  
+   Soil_Type31, 
+   Soil_Type32, 
+   Soil_Type33,  
+   Soil_Type34, 
+   Soil_Type36, 
+   Soil_Type37,  
+   Soil_Type38,  
+   Soil_Type39, 
+   Soil_Type40,
+   predict_cover_type( Elevation, 
+   Aspect,  
+   Slope,  
+   Horizontal_distance_to_hydrology,  
+   Vertical_distance_to_hydrology,   
+   Horizontal_distance_to_roadways,  
+   HIllshade_9am,  
+   Hillshade_noon,  
+   Hillshade_3pm , 
+   Horizontal_Distance_To_Fire_Points,  
+   Wilderness_Area1,  
+   Wilderness_Area2,   
+   Wilderness_Area3,  
+   Wilderness_Area4,  
+   soil_type1,
+   Soil_Type2,
+   Soil_Type3, 
+   Soil_Type4, 
+   Soil_Type5,  
+   Soil_Type6, 
+   Soil_Type7,  
+   Soil_Type8, 
+   Soil_Type9, 
+   Soil_Type10,
+   Soil_Type11,  
+   Soil_Type12, 
+   Soil_Type13,
+   Soil_Type14, 
+   Soil_Type15, 
+   Soil_Type16,  
+   Soil_Type17, 
+   Soil_Type18,  
+   Soil_Type19,  
+   Soil_Type20,  
+   Soil_Type21,  
+   Soil_Type22,  
+   Soil_Type23,  
+   Soil_Type24, 
+   Soil_Type25,  
+   Soil_Type26, 
+   Soil_Type27,  
+   Soil_Type28,  
+   Soil_Type29,  
+   Soil_Type30,  
+   Soil_Type31, 
+   Soil_Type32, 
+   Soil_Type33,  
+   Soil_Type34, 
+   Soil_Type36, 
+   Soil_Type37,  
+   Soil_Type38,  
+   Soil_Type39, 
+   Soil_Type40) AS predicted_cover_type 
+
+FROM public.covertype_test
+WHERE wilderness_area2 = 1)
+t1
+GROUP BY 1;</code></pre>
+                     <p>前一个操作的输出内容应类似如下示例。这一输出意味着，该模型预测大部分覆盖为覆盖类型 1，并且存在一些覆盖类型为 2 和 7 的覆盖。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">+----------------------+-------+
+| predicted_cover_type | count |
++----------------------+-------+
+|                    2 |   564 |
+|                    7 |    97 |
+|                    1 |  2309 |
++----------------------+-------+</code></pre>
+                  </li><li>
+                     <p>以下查询显示了单个荒野区域中最常见的覆盖类型。该查询将显示该覆盖类型的数量和覆盖类型的荒野区域。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT t1. predicted_cover_type, COUNT(*), wilderness_area 
+FROM 
+(     
+SELECT 
+   Elevation, 
+   Aspect,  
+   Slope,  
+   Horizontal_distance_to_hydrology,  
+   Vertical_distance_to_hydrology,   
+   Horizontal_distance_to_roadways,  
+   HIllshade_9am,  
+   Hillshade_noon,  
+   Hillshade_3pm , 
+   Horizontal_Distance_To_Fire_Points,  
+   Wilderness_Area1,  
+   Wilderness_Area2,   
+   Wilderness_Area3,  
+   Wilderness_Area4,  
+   soil_type1,
+   Soil_Type2,
+   Soil_Type3, 
+   Soil_Type4, 
+   Soil_Type5,  
+   Soil_Type6, 
+   Soil_Type7,  
+   Soil_Type8, 
+   Soil_Type9, 
+   Soil_Type10 , 
+   Soil_Type11,  
+   Soil_Type12 , 
+   Soil_Type13 ,
+   Soil_Type14, 
+   Soil_Type15, 
+   Soil_Type16,  
+   Soil_Type17, 
+   Soil_Type18,  
+   Soil_Type19,  
+   Soil_Type20,  
+   Soil_Type21,  
+   Soil_Type22,  
+   Soil_Type23,  
+   Soil_Type24, 
+   Soil_Type25,  
+   Soil_Type26, 
+   Soil_Type27,  
+   Soil_Type28,  
+   Soil_Type29,  
+   Soil_Type30,  
+   Soil_Type31, 
+   Soil_Type32, 
+   Soil_Type33,  
+   Soil_Type34, 
+   Soil_Type36, 
+   Soil_Type37,  
+   Soil_Type38,  
+   Soil_Type39, 
+   Soil_Type40,
+   predict_cover_type( Elevation, 
+   Aspect,  
+   Slope,  
+   Horizontal_distance_to_hydrology,  
+   Vertical_distance_to_hydrology,   
+   Horizontal_distance_to_roadways,  
+   HIllshade_9am,  
+   Hillshade_noon,  
+   Hillshade_3pm , 
+   Horizontal_Distance_To_Fire_Points,  
+   Wilderness_Area1,  
+   Wilderness_Area2,   
+   Wilderness_Area3,  
+   Wilderness_Area4,  
+   soil_type1,
+   Soil_Type2,
+   Soil_Type3, 
+   Soil_Type4, 
+   Soil_Type5,  
+   Soil_Type6, 
+   Soil_Type7,  
+   Soil_Type8, 
+   Soil_Type9, 
+   Soil_Type10,
+   Soil_Type11,  
+   Soil_Type12, 
+   Soil_Type13,
+   Soil_Type14, 
+   Soil_Type15, 
+   Soil_Type16,  
+   Soil_Type17, 
+   Soil_Type18,  
+   Soil_Type19,  
+   Soil_Type20,  
+   Soil_Type21,  
+   Soil_Type22,  
+   Soil_Type23,  
+   Soil_Type24, 
+   Soil_Type25,  
+   Soil_Type26, 
+   Soil_Type27,  
+   Soil_Type28,  
+   Soil_Type29,  
+   Soil_Type30,  
+   Soil_Type31, 
+   Soil_Type32, 
+   Soil_Type33,  
+   Soil_Type34, 
+   Soil_Type36, 
+   Soil_Type37,  
+   Soil_Type38,  
+   Soil_Type39, 
+   Soil_Type40) AS predicted_cover_type,
+   CASE WHEN Wilderness_Area1 = 1 THEN 1
+        WHEN Wilderness_Area2 = 1 THEN 2
+        WHEN Wilderness_Area3 = 1 THEN 3
+        WHEN Wilderness_Area4 = 1 THEN 4
+        ELSE 0
+   END AS wilderness_area
+
+FROM public.covertype_test)
+t1
+GROUP BY 1, 3
+ORDER BY 2 DESC
+LIMIT 1;</code></pre>
+                     <p>前一个操作的输出内容应类似如下示例。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">+----------------------+-------+-----------------+
+| predicted_cover_type | count | wilderness_area |
++----------------------+-------+-----------------+
+|                    2 | 15738 |               1 |
++----------------------+-------+-----------------+</code></pre>
+                  </li></ol></div>
+             
+            <h2 id="tutorial_linear_learner_multi-class_classification_related_topics">相关主题</h2>
+               <p>有关 Amazon Redshift ML 的更多信息，请参阅以下文档：</p>
+                  <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">使用 Amazon Redshift ML 的成本</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">CREATE MODEL 操作</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">EXPLAIN_MODEL 函数</a></p>
+                  </li></ul></div>
+               <p>有关机器学习的更多信息，请参阅以下文档：</p>
+                  <div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">机器学习概览</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">面向新手和专家的机器学习</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">机器学习预测的公平性和模型可解释性是什么？</a></p>
+                  </li></ul></div>
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial_linear_learner_regression.html">教程：使用线性学习器构建回归模型</div><div id="next" class="next-link" accesskey="n" href="./c-optimizing-query-performance.html">优化查询性能</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_multi-class_classification.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

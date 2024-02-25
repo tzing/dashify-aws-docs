@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>管理合并的行数 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="vacuum-managing-volume-of-unmerged-rows" /><meta name="default_state" content="vacuum-managing-volume-of-unmerged-rows" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" /><meta name="description" content="如果 vacuum 操作需要将新行合并到表的已排序区域，vacuum 所需的时间将随表的增大而增多。您可以通过减少必须合并的行数来提高 vacuum 性能。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="管理合并的行数" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>管理合并的行数 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#vacuum-managing-volume-of-unmerged-rows" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "加载数据",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "对表执行 vacuum 操作",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_Reclaiming_storage_space202.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "管理 vacuum 操作次数",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/vacuum-managing-vacuum-times.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "管理合并的行数",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/vacuum-managing-vacuum-times.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#vacuum-managing-volume-of-unmerged-rows" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="vacuum-managing-volume-of-unmerged-rows">管理合并的行数</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>如果 vacuum 操作需要将新行合并到表的已排序区域，vacuum 所需的时间将随表的增大而增多。您可以通过减少必须合并的行数来提高 vacuum 性能。</p><p>在执行 vacuum 操作之前，表包含一个已排序区域（位于表开头处），后跟一个未排序区域（当添加或更新行时，该区域将增大）。如果 COPY 操作添加一组行，则这组新行在添加到表结尾处的未排序区域时将基于排序键进行排序。新行将在其自己的集合中进行排序，而不是在未排序区域内进行排序。</p><p>下图说明了两次连续 COPY 操作后的未排序区域，其中排序键为 CUSTID。为简便起见，此示例显示一个复合排序键，但相同的原则适用于交错排序键，只不过未排序区域对交错表的影响更大。</p><div class="mediaobject">
+                
+                  <img src="images/vacuum-unsorted-region.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                
+            </div><p>Vacuum 将按两个阶段还原复表的排序顺序：</p><div class="orderedlist">
+                
+                
+            <ol><li>
+                  <p>将未排序区域归入新排序的区域。</p>
+                  <p>第一个阶段的成本相对较低，因为仅重写未排序区域。如果新排序区域的排序键值的范围大于现有范围，则仅需要重写新行即可完成 vacuum。例如，如果已排序区域包含的 ID 值介于 1 和 500 之间，并且后续复制操作将添加大于 500 的键值，则仅需重写未排序区域。</p>
+               </li><li>
+                  <p>将新排序的区域与之前排序的区域合并。</p>
+                  <p>如果新排序的区域中的键与已排序区域中的键重叠，则 VACUUM 需要合并这些行。从新排序区域（最低排序键处）的开头开始，vacuum 会将从之前排序的区域和新排序的区域中的合并行写入一组新数据块。</p>
+               </li></ol></div><p>新排序键范围与现有排序键重叠的程度将决定之前排序的区域需要被重写的程度。如果未排序键遍布于现有排序范围中，则 vacuum 可能需要重写表的现有部分。</p><p>下图说明 vacuum 如何对添加到排序键为 CUSTID 的表中的行进行排序和合并。由于每个复制操作将添加一组键值与现有键重叠的新行，因此几乎需要重写整个表。该图显示单一排序和合并，但在实践中，大型 vacuum 包含一系列增量排序和合并步骤。</p><div class="mediaobject">
+                
+                  <img src="images/vacuum-unsorted-region-sort-merge.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                
+            </div><p>如果一组新行中的排序键范围与现有键的范围重叠，则合并阶段的成本将继续随表的增大与表大小成比例的增长，而排序阶段的成本与未排序区域的大小成正比。在这种情况下，合并阶段的成本远远超过排序阶段的成本，如下图所示。</p><div class="mediaobject">
+                
+                  <img src="images/vacuum-example-merge-region-grows.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                
+            </div><p>要确定已重新合并的表的比例，请在 vacuum 操作完成后查询 SVV_VACUUM_SUMMARY。以下查询表明，在 CUSTSALES 随时间的推移而增大时，六个连续 vacuum 操作的效果。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from svv_vacuum_summary
+where table_name = 'custsales';
+
+ table_name | xid  | sort_      | merge_     | elapsed_   | row_  | sortedrow_ | block_  | max_merge_
+            |      | partitions | increments | time       | delta | delta      | delta   | partitions
+ -----------+------+------------+------------+------------+-------+------------+---------+---------------
+  custsales | 7072 |          3 |          2 |  143918314 |     0 |   88297472 |   1524  |      47
+  custsales | 7122 |          3 |          3 |  164157882 |     0 |   88297472 |    772  |      47
+  custsales | 7212 |          3 |          4 |  187433171 |     0 |   88297472 |    767  |      47
+  custsales | 7289 |          3 |          4 |  255482945 |     0 |   88297472 |    770  |      47
+  custsales | 7420 |          3 |          5 |  316583833 |     0 |   88297472 |    769  |      47
+  custsales | 9007 |          3 |          6 |  306685472 |     0 |   88297472 |    772  |      47
+ (6 rows) 
+</code></pre><p>merge_increments 列指明了为每个 vacuum 操作合并的数据量。如果连续 vacuum 操作的合并增量的数量按表大小增长的比例增加，它表示每个 vacuum 操作重新合并的表中的行数正在增加，因为现有排序区域和新排序区域重叠。</p><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_vacuum_diskspacereqs.html">管理未排序的区域</div><div id="next" class="next-link" accesskey="n" href="./vacuum-load-in-sort-key-order.html">按排序键顺序加载数据</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/vacuum-managing-volume-of-unmerged-rows.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

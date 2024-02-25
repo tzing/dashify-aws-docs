@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>可序列化的隔离 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c_serial_isolation" /><meta name="default_state" content="c_serial_isolation" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_serial_isolation.html" /><meta name="description" content="可序列化的隔离会保留一种错觉，即对某个表运行的事务是对该表运行的唯一事务。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_serial_isolation.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c_serial_isolation.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c_serial_isolation.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c_serial_isolation.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c_serial_isolation.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c_serial_isolation.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c_serial_isolation.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c_serial_isolation.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c_serial_isolation.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c_serial_isolation.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c_serial_isolation.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_serial_isolation.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_serial_isolation.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_serial_isolation.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_serial_isolation.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c_serial_isolation.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c_serial_isolation.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c_serial_isolation.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c_serial_isolation.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_serial_isolation.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c_serial_isolation.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c_serial_isolation.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="可序列化的隔离" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>可序列化的隔离 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c_serial_isolation" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_serial_isolation.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_serial_isolation.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_serial_isolation.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "加载数据",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "管理并发写入操作",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_Concurrent_writes.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "可序列化的隔离",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_Concurrent_writes.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c_serial_isolation" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#c_serial_isolation-serializable-isolation-for-tables">系统表和目录表的可序列化隔离</a><a href="#c_serial_isolation-serializable-isolation-troubleshooting">如何修复可序列化的隔离错误</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="c_serial_isolation">可序列化的隔离</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>某些应用程序不仅需要并发查询和加载，还需要能同时对多个表或同一个表进行写入。在此环境中，<em>并发</em> 指的是重叠，而不是安排在完全相同的时间运行。如果两个事务中的第二个事务在第一个提交前开始，则将两个事务视为并发。并发操作可源自由同一用户或不同用户控制的不同会话。</p><div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>Amazon Redshift 支持默认的<em>自动提交</em>行为，其中，每个单独运行的 SQL 命令都将分别提交。如果您在某个事务数据块中包含一组命令（由 <a href="./r_BEGIN.html">BEGIN</a> 和 <a href="./r_END.html">END</a> 语句定义），则该数据块将作为一个事务提交，以便您在必要时对其进行回滚。此行为的例外是 TRUNCATE 和 VACUUM 命令，这些命令可自动提交当前事务中所做的所有待定更改。</p><p>某些 SQL 客户端会自动发出 BEIN 和 COMMIT 命令，因此客户端控制着是一组语句作为一个事务运行，还是每个单独的语句作为自己的事务运行。检查您正在使用的界面的文档。例如，使用 Amazon Redshift JDBC 驱动程序时，具有包含多个（分号分隔）SQL 命令的查询字符串的 JDBC <code class="code">PreparedStatement</code> 将所有语句作为单个事务运行。相比之下，如果您使用 SQL Workbench/J 并设置 AUTO COMMIT ON，则如果您运行多个语句，每个语句都会作为自己的事务运行。</p></div></div><p>在 Amazon Redshift 中，以保护性方式支持并发写入操作，即对表使用写入锁定和<em>可序列化的隔离</em>原则。可序列化的隔离会保留一种错觉，即对某个表运行的事务是对该表运行的唯一事务。例如，两个同时运行的事务（T1 和 T2）必须生成与以下至少一个项相同的结果：</p><div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>T1 和 T2 依次运行。</p>
+            </li><li class="listitem">
+               <p>T2 和 T1 依次运行。</p>
+            </li></ul></div><p>并发事务彼此不可见；它们不能相互检测对方的更改。每个并发事务将在事务开始时创建数据库快照。在大多数 SELECT 语句、DML 命令（例如 COPY、DELETE、INSERT、UPDATE 和 TRUNCATE）和以下 DDL 命令首次出现时，将在事务中创建数据库快照：</p><div class="itemizedlist">
+             
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>ALTER TABLE（添加或删除列）</p>
+            </li><li class="listitem">
+               <p>CREATE TABLE</p>
+            </li><li class="listitem">
+               <p>DROP TABLE</p>
+            </li><li class="listitem">
+               <p>TRUNCATE TABLE</p>
+            </li></ul></div><p>如果并发事务的任何序列执行产生与它们的并发执行相同的结果，则这些事务将被视为“可序列化的”且可安全运行。如果这些事务的任何序列执行均不产生相同结果，则执行会破坏可序列性的语句的事务将被中止并回滚。</p><p>系统目录表 (PG) 和其他 Amazon Redshift 系统表（STL 和 STV）在事务中未锁定。因此，DDL 和 TRUNCATE 操作引起的数据库对象更改在提交到任何并发事务时均可见。</p><p>例如，假设在两个并发事务（T1 和 T2）开始时，数据库中存在表 A。假设 T2 通过从 PG_TABLES 目录表中进行选择来返回表列表。然后 T1 删除表 A 并提交，T2 再次列出这些表。现在不再列出表 A。如果 T2 尝试查询已删除的表，则 Amazon Redshift 将返回“relation does not exist”错误。向 T2 返回表列表或检查表 A 是否存在的目录查询不受与针对用户表的操作相同的隔离规则的约束。</p><p>更新这些表的事务在读取已提交 隔离模式下运行。前缀为 PG 的目录表不支持快照隔离。</p>
+            <h2 id="c_serial_isolation-serializable-isolation-for-tables">系统表和目录表的可序列化隔离</h2>
+            <p>对于任何引用用户创建的表或 Amazon Redshift 系统表（STL 或 STV）的 SELECT 查询，还将在事务中创建数据库快照。不引用任何表的 SELECT 查询不会创建新的事务数据库快照。仅在系统目录表 (PG) 上操作的 INSERT、DELETE 和 UPDATE 语句也不会创建新的事务数据库快照。</p>
+          
+            <h2 id="c_serial_isolation-serializable-isolation-troubleshooting">如何修复可序列化的隔离错误</h2>
+            
+             
+               <h3 id="c_serial_isolation-serialization-isolation-1023">ERROR:1023 DETAIL：Redshift 中的表上的可序列化隔离冲突</h3>
+               <p>当 Amazon Redshift 检测到可序列化的隔离错误时，您会看到错误消息，如下所示。</p>
+               <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">ERROR:1023 DETAIL: Serializable isolation violation on table in Redshift</code></pre>
+               <p>要解决可序列化的隔离错误，您可以尝试以下方法：</p>
+               <div class="itemizedlist">
+                  
+                   
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p>重试已取消的事务。</p>
+                     <p> Amazon Redshift 检测到并发工作负载不可序列化。它建议使应用程序逻辑中存在差异，而这些差异通常可以通过重试遇到错误的事务来解决。如果问题仍然存在，请尝试使用其他方法之一。</p>
+                  </li><li class="listitem">
+                     <p>将任何不必在同一个原子事务中的操作移到事务之外。</p>
+                     <p>当两个事务内的各个操作以可能影响另一个事务的结果的方式相互交叉引用时，此方法适用。例如，以下两个会话各自启动一个事务。</p>
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">Session1_Redshift=# begin;</code></pre>
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">Session2_Redshift=# begin;</code></pre>
+                     <p>每个事务中的 SELECT 语句的结果可能受另一个事务中的 INSERT 语句影响。换句话说，假设您以任何顺序连续运行以下语句。在每种情况下，如果不是同时运行事务，结果是 SELECT 语句之一另外返回一行。操作顺序运行时，没有哪种顺序可以产生与并发运行时相同的结果。因此，运行的最后一个操作会导致可序列化的隔离错误。</p>
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">Session1_Redshift=# select * from tab1;
+Session1_Redshift=# insert into tab2 values (1);</code></pre>
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">Session2_Redshift=# insert into tab1 values (1);
+Session2_Redshift=# select * from tab2;</code></pre>
+                     <p>在许多情况下，SELECT 语句的结果并不重要。换句话说，事务中操作的原子性并不重要。在这些情况下，将 SELECT 语句移到事务之外，如以下示例所示。</p>
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">Session1_Redshift=# begin;
+Session1_Redshift=# insert into tab1 values (1)
+Session1_Redshift=# end;
+Session1_Redshift=# select * from tab2;</code></pre>
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">Session2_Redshift # select * from tab1;
+Session2_Redshift=# begin;
+Session2_Redshift=# insert into tab2 values (1)
+Session2_Redshift=# end;</code></pre>
+                     <p>在这些示例中，事务中没有交叉引用。两个 INSERT 语句不会相互影响。在这些示例中，至少有一个顺序，其中事务可以顺序运行并产生与并发运行时相同的结果。这意味着事务是可序列化的。</p>
+                  </li><li class="listitem">
+                     <p>通过锁定每个会话中的所有表来强制序列化。</p>
+                     <p><a href="./r_LOCK.html">LOCK</a> 命令阻止可能导致可序列化隔离错误的操作。使用 LOCK 命令时，请确保执行以下操作：</p>
+                     <div class="itemizedlist">
+                         
+                         
+                         
+                     <ul class="itemizedlist"><li class="listitem">
+                           <p>锁定受事务影响的所有表，包括受事务内部的只读 SELECT 语句影响的表。</p>
+                        </li><li class="listitem">
+                           <p>无论执行操作的顺序如何，都以相同的顺序锁定表。</p>
+                        </li><li class="listitem">
+                           <p>在执行任何操作之前，在事务开始时锁定所有表。</p>
+                        </li></ul></div>
+                  </li><li class="listitem"><p>对并发事务使用快照隔离</p>
+                  <p>将 ALTER DATABASE 命令与快照隔离功能结合使用。有关 ALTER DATABASE 的 SNAPSHOT 参数的更多信息，请参阅<a href="./r_ALTER_DATABASE.html#r_ALTER_DATABASE-parameters">参数</a>。</p></li></ul></div>
+             
+             
+               <h3 id="c_serial_isolation-serialization-isolation-1018">ERROR:1018 DETAIL：关系不存在</h3>
+               <p>当您在不同会话中运行 Amazon Redshift 并发操作时，您会看到错误消息，如下所示。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">ERROR: 1018 DETAIL: Relation does not exist.</code></pre>
+               <p>Amazon Redshift 中的事务遵循快照隔离。在事务开始后，Amazon Redshift 将拍摄数据库的快照。对于事务的整个生命周期，事务在快照中反映的数据库状态下运行。如果事务从快照中不存在的表读取，则会引发之前显示的 1018 错误消息。即使另一个并发事务在事务拍摄快照后创建表，该事务也无法从新创建的表中读取。</p>
+               <p>要解决此序列化隔离错误，您可以尝试将事务的起始位置移动到您所知道的该表存在的位置。</p>
+               <p>如果表是由另一个事务创建的，则此位置至少在该事务提交之后。此外，请确保没有提交可能已删除表的并发事务。</p>
+               <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">session1 = # BEGIN;
+session1 = # DROP TABLE A;
+session1 = # COMMIT;</code></pre>
+               <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">session2 = # BEGIN;</code></pre>
+               <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">session3 = # BEGIN;
+session3 = # CREATE TABLE A (id INT);
+session3 = # COMMIT;</code></pre>
+               <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">session2 = # SELECT * FROM A;</code></pre>
+               <p>作为 session2 的读取操作运行的最后一个操作会导致可序列化的隔离错误。当 session2 拍摄快照并且表已被提交的 session1 删除时，会发生此错误。换句话说，即使并发 session3 已创建表，session2 也不会看到该表，因为它不在快照中。</p>
+               <p>要解决此错误，您可以按以下方式对会话重新排序。</p>
+               <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">session1 = # BEGIN;
+session1 = # DROP TABLE A;
+session1 = # COMMIT;</code></pre>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="nocopy ">session3 = # BEGIN;
+session3 = # CREATE TABLE A (id INT);
+session3 = # COMMIT;</code></pre>
+               <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">session2 = # BEGIN;
+session2 = # SELECT * FROM A;</code></pre>
+               <p>现在，当 session2 拍摄快照时，session3 已经提交，并且表位于数据库中。Session2 可以从表中读取，而不会出现任何错误。</p>
+             
+         <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c_Concurrent_writes.html">管理并发写入操作</div><div id="next" class="next-link" accesskey="n" href="./c_write_readwrite.html">写入和读/写操作</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_serial_isolation.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_serial_isolation.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

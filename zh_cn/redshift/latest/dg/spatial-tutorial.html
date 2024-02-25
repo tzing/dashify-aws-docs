@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>教程：将空间 SQL 函数与 Amazon Redshift 配合使用 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="spatial-tutorial" /><meta name="default_state" content="spatial-tutorial" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/spatial-tutorial.html" /><meta name="description" content="使用本教程了解如何在 Amazon Redshift 中使用空间 SQL 函数。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/spatial-tutorial.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/spatial-tutorial.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/spatial-tutorial.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/spatial-tutorial.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/spatial-tutorial.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/spatial-tutorial.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/spatial-tutorial.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/spatial-tutorial.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/spatial-tutorial.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/spatial-tutorial.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/spatial-tutorial.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/spatial-tutorial.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/spatial-tutorial.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/spatial-tutorial.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/spatial-tutorial.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/spatial-tutorial.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/spatial-tutorial.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/spatial-tutorial.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/spatial-tutorial.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/spatial-tutorial.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/spatial-tutorial.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/spatial-tutorial.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="教程：将空间 SQL 函数与 Amazon Redshift 配合使用" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>教程：将空间 SQL 函数与 Amazon Redshift 配合使用 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#spatial-tutorial" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/spatial-tutorial.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/spatial-tutorial.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/spatial-tutorial.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "在 Amazon Redshift 中查询空间数据",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/geospatial-overview.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "教程：将空间 SQL 函数与 Amazon Redshift 配合使用",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/geospatial-overview.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#spatial-tutorial" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#spatial-tutorial-prerequisites">先决条件</a><a href="#spatial-tutorial-test-data">步骤 1：创建表并加载测试数据</a><a href="#spatial-tutorial-query">步骤 2：查询空间数据</a><a href="#spatial-tutorial-clean-up">步骤 3：清理资源</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="spatial-tutorial">教程：将空间 SQL 函数与 Amazon Redshift 配合使用</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>本教程演示了如何在 Amazon Redshift 中使用某些空间 SQL 函数。</p><p>为此，请使用空间 SQL 函数查询两个表。本教程使用公共数据集中的数据，这些数据集将租赁住宿的位置数据与德国柏林的邮政编码相关联。</p><div class="highlights" id="inline-topiclist"><h6>主题</h6><ul><li><a href="#spatial-tutorial-prerequisites">先决条件</a></li><li><a href="#spatial-tutorial-test-data">步骤 1：创建表并加载测试数据</a></li><li><a href="#spatial-tutorial-query">步骤 2：查询空间数据</a></li><li><a href="#spatial-tutorial-clean-up">步骤 3：清理资源</a></li></ul></div>
+        <h2 id="spatial-tutorial-prerequisites">先决条件</h2>
+           
+        <p>在此教程中，您需要以下资源：</p>
+           
+        <div class="itemizedlist">
+             
+             
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                        <p>您可以访问和更新的现有 Amazon Redshift 集群和数据库。在现有集群中，您可以创建表、加载示例数据并运行 SQL 查询以演示空间函数。您的集群应拥有至少两个节点。要了解如何创建集群，请按照 <a href="https://docs.aws.amazon.com/redshift/latest/gsg/">Amazon Redshift 入门指南</a>中的步骤操作。</p>
+            </li><li class="listitem">
+                        <p>要使用 Amazon Redshift 查询编辑器，请确保您的集群位于支持查询编辑器的 AWS 区域。有关更多信息，请参阅《Amazon Redshift 管理指南》<em></em>中的 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor.html">使用查询编辑器查询数据库</a>。</p>
+            </li><li class="listitem">
+                        <p>Amazon Redshift 集群的 AWS 凭证，以允许其从 Amazon S3 加载测试数据。有关如何访问其他 AWS 服务（如 Amazon S3）的信息，请参阅<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/authorizing-redshift-service.html">授权 Amazon Redshift 访问 AWS 服务</a>。</p>
+            </li><li class="listitem">
+                        <p>名为 <code class="code">mySpatialDemoRole</code> 的 AWS Identity and Access Management (IAM) 角色，它具有附加的托管策略 <code class="code">AmazonS3ReadOnlyAccess</code>，用于读取 Amazon S3 数据。要创建具有从 Amazon S3 桶加载数据的权限的角色，请参阅《Amazon Redshift 管理指南》<em></em>中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/copy-unload-iam-role.html">使用 IAM 角色授权 COPY、UNLOAD 和 CREATE EXTERNAL SCHEMA 操作</a>。</p>
+            </li><li class="listitem"><p>创建 IAM 角色 <code class="code">mySpatialDemoRole</code> 后，该角色需要与您的 Amazon Redshift 集群关联。有关如何创建该关联的更多信息，请参阅《Amazon Redshift 管理指南》<em></em>中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/copy-unload-iam-role.html">使用 IAM 角色授权 COPY、UNLOAD 和 CREATE EXTERNAL SCHEMA 操作</a>。</p>    
+            </li></ul></div>   
+
+        
+        <h2 id="spatial-tutorial-test-data">步骤 1：创建表并加载测试数据</h2>
+            
+            
+             
+            <p>本教程使用的源数据是名为 <code>accommodations.csv</code> 和 <code>zipcodes.csv</code> 的文件。</p>
+        <p><code>accommodations.csv</code> 文件是来自 insideairbnb.com 的开源数据。<code>zipcodes.csv</code> 文件提供的邮政编码是德国柏林-勃兰登堡国家统计研究所 (Amt für Statistik Berlin-Brandenburg) 的开源数据。这两个数据源均根据知识共享许可证提供。数据仅限于德国柏林区域。这些文件位于 Amazon S3 公有桶中，可用于本教程。</p>
+            
+            <p>您可以选择从以下 Amazon S3 链接下载源数据：</p> 
+            <div class="itemizedlist">
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem"><p><a href="https://s3.amazonaws.com/redshift-downloads/spatial-data/accommodations.csv" rel="noopener noreferrer" target="_blank"><span><code class="code">accommodations</code> 表的源数据</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p></li><li class="listitem"><p><a href="https://s3.amazonaws.com/redshift-downloads/spatial-data/zipcode.csv" rel="noopener noreferrer" target="_blank"><span><code class="code">zipcode</code> 表的源数据</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p></li></ul></div>
+            
+           <p>使用以下过程创建表并加载测试数据。</p>
+
+            <div class="procedure"><h6>要创建表并加载测试数据</h6><ol><li>
+                    <p>打开 Amazon Redshift 查询编辑器。有关使用查询编辑器的更多信息，请参阅《Amazon Redshift 管理指南》<em></em>中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor.html">使用查询编辑器查询数据库</a>。</p> 
+                </li><li>
+                    <p>删除本教程使用的任何表（如果它们已存在于数据库中）。有关更多信息，请参阅<a href="#spatial-tutorial-clean-up">步骤 3：清理资源</a>。</p>
+                </li><li>
+                    <p>创建 <code class="code">accommodations</code> 表来存储每个住宿地的地理位置（经度和纬度）、列表名称和其他业务数据。</p>
+                <p>本教程将探索德国柏林的房间出租情况。<code class="code">shape</code> 列存储住宿位置的地理点。其他列包含有关租赁的信息。</p>
+                    <p>要创建 <code class="code">accommodations</code> 表，在 Amazon Redshift 查询编辑器中运行以下 SQL 语句。</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">CREATE TABLE public.accommodations (
+  id INTEGER PRIMARY KEY,
+  shape GEOMETRY,
+  name VARCHAR(100),
+  host_name VARCHAR(100),
+  neighbourhood_group VARCHAR(100),
+  neighbourhood VARCHAR(100),
+  room_type VARCHAR(100),
+  price SMALLINT,
+  minimum_nights SMALLINT,
+  number_of_reviews SMALLINT,
+  last_review DATE,
+  reviews_per_month NUMERIC(8,2),
+  calculated_host_listings_count SMALLINT, 
+  availability_365 SMALLINT
+);</code></pre>
+               </li><li>
+                    <p>在查询编辑器中创建 <code class="code">zipcode</code> 表来存储柏林邮政编码。</p>
+                <p><em>邮政编码</em>在 <code class="code">wkb_geometry</code> 列中被定义为多边形。其余列描述了有关邮政编码的其他空间元数据。</p>
+                <p>要创建 <code class="code">zipcode</code> 表，在 Amazon Redshift 查询编辑器中运行以下 SQL 语句。</p>
+                    
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">CREATE TABLE public.zipcode (
+  ogc_field INTEGER PRIMARY KEY NOT NULL,
+  wkb_geometry GEOMETRY,
+  gml_id VARCHAR(256),
+  spatial_name VARCHAR(256),
+  spatial_alias VARCHAR(256),
+  spatial_type VARCHAR(256)
+ );</code></pre>
+                    
+                </li><li>
+                    <p>为这些表加载示例数据。</p>
+                <p>本教程的示例数据位于为所有经过身份验证的 AWS 用户提供读取访问权限的 Amazon S3 桶中。确保您提供了有效的 AWS 凭证，以允许访问 Amazon S3 。</p>
+                <p>要将测试数据加载到表中，请运行以下 COPY 命令。将 <code class="replaceable"><code class="code">account-number</code></code> 替换为您自己的 AWS 账号。用单引号引起来的凭证字符串的区段不能包含任何空格或换行符。</p>
+                    
+                    
+  
+                                                         
+                            
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">COPY public.accommodations 
+FROM 's3://redshift-downloads/spatial-data/accommodations.csv' 
+DELIMITER ';' 
+IGNOREHEADER 1 REGION 'us-east-1'
+CREDENTIALS 'aws_iam_role=arn:aws:iam::<code class="replaceable">account-number</code>:role/mySpatialDemoRole';
+</code></pre>
+                            
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">COPY public.zipcode 
+FROM 's3://redshift-downloads/spatial-data/zipcode.csv' 
+DELIMITER ';' 
+IGNOREHEADER 1 REGION 'us-east-1'
+CREDENTIALS 'aws_iam_role=arn:aws:iam::<code class="replaceable">account-number</code>:role/mySpatialDemoRole';
+</code></pre>  
+ 
+ 
+                            
+                            
+                             
+                            
+                </li><li>
+                    <p>通过运行以下命令验证每个表都已正确加载。</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">select count(*) from accommodations;</code></pre>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">select count(*) from zipcode;</code></pre>
+                    <p>以下结果显示每个测试数据表的行数。</p>
+                    <div class="table-container"><div class="table-contents"><table id="w319aac25c67c11c13c12b9"><thead>
+                                <tr>
+                                    <th>表名称</th>
+                                    <th>行数</th>
+                                </tr>
+                            </thead>
+                                <tr>
+                                    <td tabindex="-1">住宿</td>
+                                    <td tabindex="-1">22,248</td>
+                                </tr>
+                                <tr>
+                                    <td tabindex="-1">邮政编码</td>
+                                    <td tabindex="-1">190</td>
+                                </tr>
+                            </table></div></div>
+                </li></ol></div>                       
+     
+        <h2 id="spatial-tutorial-query">步骤 2：查询空间数据</h2>
+
+        <p>创建并加载表后，可以使用 SQL SELECT 语句对其进行查询。以下查询演示了您可以检索的一些信息。您可以编写许多其他查询，这些查询使用空间函数来满足您的需求。</p>
+        <div class="procedure"><h6>要查询空间数据</h6><ol><li>
+                <p>查询以获取存储在 <code class="code">accommodations</code> 表中的列表总数，如下所示。空间参考系统是世界测地系统 (WGS) 84，它具有唯一的空间参考标识符 4326。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT count(*) FROM public.accommodations WHERE ST_SRID(shape) = 4326;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+ count
+-------
+ 22248</code></pre>                
+            </li><li>
+                <p>获取已知文本 (WKT) 格式的几何体对象以及一些其他属性。此外，您还可以验证此邮政编码数据是否也存储在使用空间参考 ID (SRID) 4326 的世界测地系统 (WGS) 84 中。空间数据必须存储在同一空间参考系统中才能实现互操作。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT ogc_field, spatial_name, spatial_type, ST_SRID(wkb_geometry), ST_AsText(wkb_geometry) 
+FROM public.zipcode 
+ORDER BY spatial_name;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+ogc_field  spatial_name  spatial_type  st_srid  st_astext
+---------------------------------------------------------------
+0           10115        Polygon        4326     POLYGON((...))
+4           10117        Polygon        4326     POLYGON((...))
+8           10119        Polygon        4326     POLYGON((...))
+...
+(190 rows returned)</code></pre>
+                
+            </li><li>
+                <p>以 GeoJSON 格式选择柏林米特 (10117)（柏林的一个区）的面、其维度和此面中的点数。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT ogc_field, spatial_name, ST_AsGeoJSON(wkb_geometry), ST_Dimension(wkb_geometry), ST_NPoints(wkb_geometry)
+FROM public.zipcode 
+WHERE spatial_name='10117';</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+ogc_field  spatial_name  spatial_type                                   st_dimension  st_npoint
+-----------------------------------------------------------------------------------------------
+4           10117         <span>{</span>"type":"Polygon", "coordinates":[[[...]]]}    2             331
+</code></pre>
+                
+            </li><li>
+                <p>运行以下 SQL 命令，查看距离勃兰登堡门 500 米范围内的住宿地数量。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT count(*) 
+FROM public.accommodations 
+WHERE ST_DistanceSphere(shape, ST_GeomFromText('POINT(13.377704 52.516431)', 4326)) &lt; 500;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+count
+------
+  29
+</code></pre>
+                             
+            </li><li>
+                <p>通过运行以下查询，从存储在列为附近的住宿地数据中获取勃兰登堡门的粗略位置。</p>
+                <p>此查询需要一个子选择。它会导致不同的计数，因为请求的位置与之前的查询不同，因为它更接近住宿地。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">WITH poi(loc) as (
+  SELECT st_astext(shape) FROM accommodations WHERE name LIKE '%brandenburg gate%'
+)
+SELECT count(*) 
+FROM accommodations a, poi p
+WHERE ST_DistanceSphere(a.shape, ST_GeomFromText(p.loc, 4326)) &lt; 500;</code></pre>                
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+count
+------
+  60
+</code></pre>  
+                
+              
+            </li><li>
+                <p>运行以下查询以显示勃兰登堡门周围所有住宿地的详细信息，按价格降序排列。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT name, price, ST_AsText(shape) 
+FROM public.accommodations
+WHERE ST_DistanceSphere(shape, ST_GeomFromText('POINT(13.377704 52.516431)', 4326)) &lt; 500
+ORDER BY price DESC;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+name                                                   price  st_astext
+-------------------------------------------------------------------------------------------------------
+DUPLEX APARTMENT/PENTHOUSE in 5* LOCATION! 7583        300    POINT(13.3826510209548 52.5159819722552)
+DUPLEX-PENTHOUSE IN FIRST LOCATION! 7582               300    POINT(13.3799997083855 52.5135918444834)
+... 
+(29 rows returned)
+</code></pre> 
+                
+                             
+            </li><li>
+                <p>运行以下查询以检索最昂贵的住宿地及其邮政编码。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT 
+  a.price, a.name, ST_AsText(a.shape), 
+  z.spatial_name, ST_AsText(z.wkb_geometry) 
+FROM accommodations a, zipcode z 
+WHERE price = 9000 AND ST_Within(a.shape, z.wkb_geometry);</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+price   name                                 st_astext                                  spatial_name      st_astext
+-------------------------------------------------------------------------------------------------------------------------------------------------
+9000    Ueber den Dächern Berlins Zentrum    POINT(13.334436985013 52.4979779501538)    10777             POLYGON((13.3318284987227 52.4956021172799,...
+</code></pre>               
+            </li><li>
+                <p>使用子查询计算住宿的最高、最低或中位价格。</p>
+                <p>以下查询按邮政编码列出住宿的中位价格。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT 
+  a.price, a.name, ST_AsText(a.shape), 
+  z.spatial_name, ST_AsText(z.wkb_geometry) 
+FROM accommodations a, zipcode z 
+WHERE 
+  ST_Within(a.shape, z.wkb_geometry) AND 
+  price = (SELECT median(price) FROM accommodations)
+ORDER BY a.price;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+price name                            st_astext                                   spatial_name   st_astext
+---------------------------------------------------------------------------------------------------------------------------------------------                    
+45    "Cozy room Berlin-Mitte"        POINT(13.3864349535358 52.5292016386514)    10115          POLYGON((13.3658598465795 52.535659581048,...
+...
+(723 rows returned)
+</code></pre> 
+                
+            </li><li>
+                <p>运行以下查询以检索柏林列出的住宿数量。要查找热门点，请按邮政编码对这些热点进行分组，并按供应量排序。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT z.spatial_name as zip, count(*) as numAccommodations 
+FROM public.accommodations a, public.zipcode z
+WHERE ST_Within(a.shape, z.wkb_geometry)
+GROUP BY zip 
+ORDER BY numAccommodations DESC;</code></pre>
+                <pre class="programlisting"><div class="code-btn-container"></div><code class="nohighlight">
+zip  	numaccommodations
+----------------------------
+10245	872
+10247	832
+10437	733
+10115	664
+...
+(187 rows returned)
+</code></pre>
+            </li></ol></div>
+
+
+
+
+     
+           <h2 id="spatial-tutorial-clean-up">步骤 3：清理资源</h2>
+           
+           
+           <p>只要您的集群在运行，就将继续产生费用。完成本教程后，您可以删除您的示例集群。</p>
+           <p>如果您希望保留集群，但恢复测试数据表使用的存储空间，请执行以下命令以删除表。</p>
+           <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">drop table public.accommodations cascade;</code></pre>
+           <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">drop table public.zipcode cascade;</code></pre>
+           
+       <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./geospatial-overview.html">查询空间数据</div><div id="next" class="next-link" accesskey="n" href="./spatial-copy-shapefile.html">加载一个 shapefile</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/spatial-tutorial.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/spatial-tutorial.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

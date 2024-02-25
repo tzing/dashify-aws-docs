@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>教程：使用线性学习器构建回归模型 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_linear_learner_regression" /><meta name="default_state" content="tutorial_linear_learner_regression" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_regression.html" /><meta name="description" content="使用本教程获取创建 Amazon Redshift 机器学习模型和运行推理查询的端到端示例。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_regression.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="教程：使用线性学习器构建回归模型" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>教程：使用线性学习器构建回归模型 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_linear_learner_regression" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_regression.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_regression.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_regression.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "在 Amazon Redshift 中使用机器学习",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Amazon Redshift ML 入门",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Amazon Redshift ML 的教程",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "教程：使用线性学习器构建回归模型",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_linear_learner_regression" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#tutorial_linear_learner_regression_tasks">使用案例示例</a><a href="#tutorial_linear_learner_regression_prereqs">先决条件</a><a href="#tutorial_linear_learner_regression_step_load_data">步骤 1：将数据从 Amazon S3 加载到 Amazon Redshift</a><a href="#tutorial_linear_learner_regression_step_create_model">步骤 2：创建机器学习模型</a><a href="#tutorial_linear_learner_regression_step_validate">步骤 3：验证模型</a><a href="#tutorial_linear_learner_regression_related_topics">相关主题</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_linear_learner_regression">教程：使用线性学习器构建回归模型</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>在本教程中，您使用来自 Amazon S3 的数据创建线性学习器模型，并使用 Amazon Redshift ML 对模型运行预测查询。SageMaker 线性学习器算法可解决回归或多类别分类问题。要了解有关回归和多类别分类问题的更多信息，请参阅《Amazon SageMaker 开发人员指南》中的<a href="https://docs.aws.amazon.com/sagemaker/latest/dg/algorithms-choose.html#basic-machine-learning-paradigms">机器学习范式的问题类型</a>。在本教程中，您将解决一个回归问题。线性学习器算法并行训练许多模型，并自动确定最优化的模型。您可以在 Amazon Redshift 中使用 CREATE MODEL 操作，该操作使用 SageMaker 创建线性学习器模型，并将预测函数发送到 Amazon Redshift。有关线性学习器算法的更多信息，请参阅《Amazon SageMaker 开发人员指南》中的<a href="https://docs.aws.amazon.com/sagemaker/latest/dg/linear-learner.html">线性学习器算法</a>。</p><p>您可以使用 CREATE MODEL 命令导出训练数据、训练模型、导入模型以及准备 Amazon Redshift 预测函数。使用 CREATE MODEL 操作将训练数据指定为表或 SELECT 语句。</p><p>线性学习器模型可以优化连续目标或离散目标。连续目标用于回归，而离散变量用于分类。一些方法仅为连续目标提供解决方案，例如回归方法。线性学习器算法提供了比朴素超参数优化技术（如朴素贝叶斯技术）更快的速度。朴素优化技术假定每个输入变量都是独立的。要使用线性学习器算法，必须提供表示输入维度的列和表示观察值的行。有关线性学习器算法的更多信息，请参阅《Amazon SageMaker 开发人员指南》中的<a href="https://docs.aws.amazon.com/sagemaker/latest/dg/linear-learner.html">线性学习器算法</a>。</p><p>在本教程中，您将构建预测鲍鱼年龄的线性学习器模型。您可以对<a href="http://archive.ics.uci.edu/ml/datasets/Abalone" rel="noopener noreferrer" target="_blank"><span>鲍鱼数据集</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>使用 CREATE MODEL 命令，以确定鲍鱼的物理测量值之间的关系。然后，您可以使用该模型来确定鲍鱼的年龄。</p>
+               <h2 id="tutorial_linear_learner_regression_tasks">使用案例示例</h2>
+               <p>您可以使用线性学习器和 Amazon Redshift ML 解决其他回归问题，例如预测房屋价格。也可以使用 Redshift ML 来预测将使用城市自行车租赁服务的人数。</p>
+            <p><b>任务</b></p><div class="itemizedlist">
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>先决条件</p>
+               </li><li class="listitem">
+                  <p>步骤 1：将数据从 Amazon S3 加载到 Amazon Redshift</p>
+               </li><li class="listitem">
+                  <p>步骤 2：创建机器学习模型</p>
+               </li><li class="listitem">
+                  <p>步骤 3：验证模型</p>
+               </li></ul></div>
+               <h2 id="tutorial_linear_learner_regression_prereqs">先决条件</h2>
+               <p>要完成此教程，必须完成 Amazon Redshift ML 的<a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">管理设置</a>。</p>
+             
+               <h2 id="tutorial_linear_learner_regression_step_load_data">步骤 1：将数据从 Amazon S3 加载到 Amazon Redshift</h2>
+               <p>使用 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">Amazon Redshift 查询器 v2</a> 运行以下查询。这些查询将示例数据加载到 Redshift 中，然后将数据划分为训练集和验证集。</p><div class="orderedlist">
+                      
+                      
+                      
+                  <ol><li>
+                        <p>以下查询将创建 <code class="code">abalone_dataset</code> 表。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE abalone_dataset (
+    id INT IDENTITY(1, 1),
+    Sex CHAR(1),
+    Length float,
+    Diameter float,
+    Height float,
+    Whole float,
+    Shucked float,
+    Viscera float,
+    Shell float,
+    Rings integer
+);</code></pre>
+                     </li><li>
+                        <p>下面的查询将 Amazon S3 的<a href="http://archive.ics.uci.edu/ml/datasets/Abalone" rel="noopener noreferrer" target="_blank"><span>鲍鱼数据集</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>中的示例数据复制到您之前在 Amazon Redshift 中创建的 <code class="code">abalone_dataset</code> 表中。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY abalone_dataset
+FROM
+    's3://redshift-ml-multiclass/abalone.csv' REGION 'us-east-1' IAM_ROLE default CSV IGNOREHEADER 1 NULL AS 'NULL';</code></pre>
+                     </li><li>
+                        <p>通过手动拆分数据，您将能够通过分配额外的预测集来验证模型的准确性。以下查询将数据拆分为两个集。<code class="code">abalone_training</code> 表用于训练，<code class="code">abalone_validation</code> 表用于验证。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE abalone_training as 
+SELECT 
+    *
+FROM
+    abalone_dataset
+WHERE
+    mod(id, 10) &lt; 8;
+
+CREATE TABLE abalone_validation as 
+SELECT 
+    *
+FROM
+    abalone_dataset
+WHERE
+    mod(id, 10) &gt;= 8;</code></pre>
+                     </li></ol></div>
+             
+               <h2 id="tutorial_linear_learner_regression_step_create_model">步骤 2：创建机器学习模型</h2>
+               <p>在此步骤中，您将使用 CREATE MODEL 语句，通过线性学习器算法创建机器学习模型。</p>
+               <p>以下查询使用您的 S3 桶通过 CREATE MODEL 操作创建线性学习器模型。将 <code class="replaceable"><code class="code">DOC-EXAMPLE-BUCKET</code></code> 替换为您自己的 S3 桶。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL model_abalone_ring_prediction
+FROM
+    (
+        SELECT
+            Sex,
+            Length,
+            Diameter,
+            Height,
+            Whole,
+            Shucked,
+            Viscera,
+            Shell,
+            Rings AS target_label
+        FROM
+            abalone_training
+    ) TARGET target_label FUNCTION f_abalone_ring_prediction IAM_ROLE default MODEL_TYPE LINEAR_LEARNER PROBLEM_TYPE REGRESSION OBJECTIVE 'MSE' SETTINGS (
+        S3_BUCKET '<code class="replaceable">DOC-EXAMPLE-BUCKET</code>',
+        MAX_RUNTIME 15000
+    );</code></pre>
+                
+                  <h3 id="tutorial_linear_learner_regression_show_status">显示模型训练的状态（可选）</h3>
+                  <p>您可以使用 SHOW MODEL 命令来了解模型何时准备就绪。</p>
+                  <p>使用以下查询监控模型训练的进度。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL model_abalone_ring_prediction;</code></pre>
+                  <p>模型准备就绪后，上一个操作的输出内容应类似于以下示例。请注意，输出提供了 <code class="code">validation:mse</code> 指标，这是均方误差。在下一个步骤中，您将使用均方误差验证模型的准确性。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------+----------------------------------------------------------------------------------------------------+
+|        Model Name        |                                   model_abalone_ring_prediction                                    |
++--------------------------+----------------------------------------------------------------------------------------------------+
+| Schema Name              | public                                                                                             |
+| Owner                    | awsuser                                                                                            |
+| Creation Time            | Thu, 30.06.2022 18:00:10                                                                           |
+| Model State              | READY                                                                                              |
+| validation:mse           |                                                                                           4.168633 |
+| Estimated Cost           |                                                                                           4.291608 |
+|                          |                                                                                                    |
+| TRAINING DATA:           |                                                                                                    |
+| Query                    | SELECT SEX , LENGTH , DIAMETER , HEIGHT , WHOLE , SHUCKED , VISCERA , SHELL, RINGS AS TARGET_LABEL |
+|                          | FROM ABALONE_TRAINING                                                                              |
+| Target Column            | TARGET_LABEL                                                                                       |
+|                          |                                                                                                    |
+| PARAMETERS:              |                                                                                                    |
+| Model Type               | linear_learner                                                                                     |
+| Problem Type             | Regression                                                                                         |
+| Objective                | MSE                                                                                                |
+| AutoML Job Name          | redshiftml-20220630180010947843                                                                    |
+| Function Name            | f_abalone_ring_prediction                                                                          |
+| Function Parameters      | sex length diameter height whole shucked viscera shell                                             |
+| Function Parameter Types | bpchar float8 float8 float8 float8 float8 float8 float8                                            |
+| IAM Role                 | default-aws-iam-role                                                                               |
+| S3 Bucket                | <code class="replaceable">DOC-EXAMPLE-BUCKET</code>                                                                                 |
+| Max Runtime              |                                                                                              15000 |
++--------------------------+----------------------------------------------------------------------------------------------------+                                     </code></pre>
+             
+               <h2 id="tutorial_linear_learner_regression_step_validate">步骤 3：验证模型</h2>
+               <div class="orderedlist">
+                   
+                   
+                   
+               <ol><li>
+                     <p>以下预测查询通过计算均方误差和均方根误差来验证模型对于 <code class="code">abalone_validation</code> 数据集的准确性。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    ROUND(AVG(POWER((tgt_label - predicted), 2)), 2) mse,
+    ROUND(SQRT(AVG(POWER((tgt_label - predicted), 2))), 2) rmse
+FROM
+    (
+        SELECT
+            Sex,
+            Length,
+            Diameter,
+            Height,
+            Whole,
+            Shucked,
+            Viscera,
+            Shell,
+            Rings AS tgt_label,
+            f_abalone_ring_prediction(
+                Sex,
+                Length,
+                Diameter,
+                Height,
+                Whole,
+                Shucked,
+                Viscera,
+                Shell
+            ) AS predicted,
+            CASE
+                WHEN tgt_label = predicted then 1
+                ELSE 0
+            END AS match,
+            CASE
+                WHEN tgt_label &lt;&gt; predicted then 1
+                ELSE 0
+            END AS nonmatch
+        FROM
+            abalone_validation
+    ) t1;</code></pre>
+                     <p>上一个查询的输出应类似于以下示例。均方误差指标的值应类似于由 SHOW MODEL 操作的输出所显示的 <code class="code">validation:mse</code> 指标。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">+-----+--------------------+
+| mse |        rmse        |
++-----+--------------------+
+| 5.1 | 2.2600000000000002 |
++-----+--------------------+</code></pre>
+                  </li><li>
+                     <p>使用以下查询对预测函数运行 EXPLAIN_MODEL 操作。该操作将返回模型可解释性报告。有关 EXPLAIN_MODEL 操作的更多信息，请参阅《Amazon Redshift 数据库开发人员指南》中的 <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">EXPLAIN_MODEL 函数</a>。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    EXPLAIN_MODEL ('model_abalone_ring_prediction');</code></pre>
+                     <p>以下信息是之前的 EXPLAIN_MODEL 操作生成的模型可解释性报告的示例。每个输入的值都是 Shapley 值。Shapley 值表示每个输入对模型预测的影响，值较高的输入对预测的影响更大。在此示例中，值较高的输入对预测鲍鱼年龄的影响更大。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span> 
+    "explanations": <span>{</span> 
+        "kernel_shap": <span>{</span> 
+            "label0": <span>{</span> 
+                "expected_value" :10.290688514709473,
+                "global_shap_values": <span>{</span> 
+                    "diameter" :0.6856910187882492,
+                    "height" :0.4415323937124035,
+                    "length" :0.21507476107609084,
+                    "sex" :0.448611774505744,
+                    "shell" :1.70426496893776,
+                    "shucked" :2.1181392924386994,
+                    "viscera" :0.342220754059912,
+                    "whole" :0.6711906974084011 
+                } 
+            } 
+        } 
+    },
+    "version" :"1.0" 
+};</code></pre>
+                  </li><li>
+                     <p>使用以下查询计算模型对尚未成熟的鲍鱼进行正确预测的百分比。未成熟的鲍鱼有 10 个或更少的环，正确的预测精确到实际环数的一个环内。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    TRUNC(
+        SUM(
+            CASE
+                WHEN ROUND(
+                    f_abalone_ring_prediction(
+                        Sex,
+                        Length,
+                        Diameter,
+                        Height,
+                        Whole,
+                        Shucked,
+                        Viscera,
+                        Shell
+                    ),
+                    0
+                ) BETWEEN Rings - 1
+                AND Rings + 1 THEN 1
+                ELSE 0
+            END
+        ) / CAST(COUNT(SHELL) AS FLOAT),
+        4
+    ) AS prediction_pct
+FROM
+    abalone_validation
+WHERE
+    Rings &lt;= 10;</code></pre>
+                  </li></ol></div>
+             
+               <h2 id="tutorial_linear_learner_regression_related_topics">相关主题</h2>
+               <p>有关 Amazon Redshift ML 的更多信息，请参阅以下文档：</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">使用 Amazon Redshift ML 的成本</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">CREATE MODEL 操作</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">EXPLAIN_MODEL 函数</a></p>
+                  </li></ul></div>
+               <p>有关机器学习的更多信息，请参阅以下文档：</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">机器学习概览</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">面向新手和专家的机器学习</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">机器学习预测的公平性和模型可解释性是什么？</a></p>
+                  </li></ul></div>
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial_regression.html">教程：构建回归模型</div><div id="next" class="next-link" accesskey="n" href="./tutorial_linear_learner_multi-class_classification.html">教程：使用线性学习器构建多类别分类模型</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_regression.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_regression.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

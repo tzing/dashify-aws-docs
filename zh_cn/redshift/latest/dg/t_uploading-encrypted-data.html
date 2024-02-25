@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>将加密的数据上载到 Amazon S3 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="t_uploading-encrypted-data" /><meta name="default_state" content="t_uploading-encrypted-data" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_uploading-encrypted-data.html" /><meta name="description" content="将加密数据上载到 Amazon S3 桶并使用带有 ENCRYPTED 选项和私有加密密钥的 COPY 命令加载数据，以提供更强的安全性。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_uploading-encrypted-data.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/t_uploading-encrypted-data.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="将加密的数据上载到 Amazon S3" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>将加密的数据上载到 Amazon S3 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#t_uploading-encrypted-data" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_uploading-encrypted-data.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_uploading-encrypted-data.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_uploading-encrypted-data.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "加载数据",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "使用 COPY 命令加载数据",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_Loading_tables_with_the_COPY_command.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "从 Amazon S3 加载数据",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_Loading-data-from-S3.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "将文件上载到 Amazon S3",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_uploading-data-to-S3.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 8,
+        "name" : "将加密的数据上载到 Amazon S3",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_uploading-data-to-S3.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#t_uploading-encrypted-data" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#server-side-encryption">服务器端加密</a><a href="#client-side-encryption">客户端加密</a><a href="#client-side-encryption-example">示例：上传客户端加密数据</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="t_uploading-encrypted-data">将加密的数据上载到 Amazon S3</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Amazon S3 支持服务器端加密和客户端加密。本主题将讨论服务器端加密和客户端加密的区别，并介绍将客户端加密用于 Amazon Redshift 的步骤。服务器端加密对 Amazon Redshift 是透明的。</p>
+                  <h2 id="server-side-encryption">服务器端加密</h2>
+
+                  <p>服务器端加密是静态数据加密，即，Amazon S3 在上载数据时对其进行加密，并在您访问时进行解密。当您使用 COPY 命令加载表时，在 Amazon S3 上从服务器端加密或解密的对象的加载方式没有不同。有关服务器端加密的更多信息，请参阅《Amazon Simple Storage Service 用户指南》<em></em>中的<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingServerSideEncryption.html">使用服务器端加密</a>。</p>
+                
+                  <h2 id="client-side-encryption">客户端加密</h2>
+
+                  <p>在客户端加密中，您的客户端应用程序管理数据的加密、加密密钥和相关的工具。您可以使用客户端加密将数据上载到 Amazon S3 桶，然后使用带有 ENCRYPTED 选项的 COPY 命令和私有加密密钥加载数据，以实现更强的安全性。</p>
+                  <p>您使用信封加密来加密您的数据。借助<em>信封加密</em>，您的应用程序可专门处理所有加密。您的私有加密密钥和未加密的数据从来不会发送到 AWS，因此请您务必妥善管理好您的加密密钥。如果您丢失了加密密钥，您将无法解密数据，而且，您无法从 AWS 找回您的加密密钥。信封加密结合了快速对称加密的性能，同时保持了使用非对称密钥进行密钥管理所获得的更强的安全性。Amazon S3 加密客户端生成一次性对称密钥（信封对称密钥）来加密数据，然后由您的根密钥对其进行加密并与您的数据一起存储在 Amazon S3 中。在加载过程中，当 Amazon Redshift 访问您的数据时，将检索加密的对称密钥并使用您的实际密钥对其进行解密，然后解密数据。</p>
+                  <p>要在 Amazon Redshift 中使用 Amazon S3 客户端加密数据，请按照《Amazon Simple Storage Service 用户指南》<em></em>中的<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingClientSideEncryption.html">使用客户端加密保护数据</a>所列的步骤操作，并满足您使用的其它要求：</p>
+                  <div class="itemizedlist">
+                      
+                     
+                     
+                      
+                      
+                  <ul class="itemizedlist"><li class="listitem">
+                        <p><span class="topcom">对称加密 –</span> AWS SDK for Java <code class="code">AmazonS3EncryptionClient</code> 类使用信封加密，如前所述，信封加密是基于对称密钥加密的。使用此类可创建要上载客户端加密数据的 Amazon S3 客户端。</p>
+                     </li><li class="listitem">
+                        <p><span class="topcom">256 位 AES 根对称密钥 –</span> 根密钥将对信封密钥进行加密。您将根密钥传递给 <code class="code">AmazonS3EncryptionClient</code> 类的实例。保存此密钥，因为您将需要用它来将数据复制到 Amazon Redshift 中。</p>
+                     </li><li class="listitem">
+                        <p><span class="topcom">存储加密信封密钥的对象元数据 –</span> 预设情况下，Amazon S3 将信封密钥存储为 <code class="code">AmazonS3EncryptionClient</code> 类的对象元数据。存储为对象元数据的加密信封密钥将在加密过程中使用。</p>
+                     </li></ul></div>
+                  
+                  <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>首次使用加密 API 时，如果您收到密码加密错误消息，则您的 JDK 版本可能带有一个 Java Cryptography Extension (JCE) 区域策略文件，该文件将加密和解密转换的最大密钥长度限制为 128 位。有关解决此问题的信息，请转到《Amazon Simple Storage Service 用户指南》<em></em>中的<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingClientSideEncryptionUpload.html">使用 AWS SDK for Java 指定客户端加密</a>。</p></div></div>
+                  <p>有关使用 COPY 命令将客户端加密的文件加载到 Amazon Redshift 表中的信息，请参阅<a href="./c_loading-encrypted-files.html">从 Amazon S3 中加载加密的数据文件</a>。</p>
+                
+                  <h2 id="client-side-encryption-example">示例：上传客户端加密数据</h2>
+
+                  <p>有关如何使用 AWS SDK for Java 上载客户端加密数据的示例，请转到《Amazon Simple Storage Service 用户指南》<em></em>中的<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/encrypt-client-side-symmetric-master-key.html">使用客户端加密保护数据</a>。</p>
+                  <p>第二个选项展示了您若要在 Amazon Redshift 中加载数据而必须在客户端加密期间做出的选择。具体来讲，该示例展示了使用对象元数据来存储加密信封密钥和 256 位 AES 根对称密钥的使用。</p>
+                  <p>本示例代码使用 AWS SDK for Java 创建 256 位 AES 对称根密钥并将它保存到文件。然后，本示例使用首先加密客户端上样本数据的 S3 加密客户端将一个对象上传到 Amazon S3。示例还将下载该对象，并验证数据是否相同。</p>
+               <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./managing-data-consistency.html">管理数据一致性</div><div id="next" class="next-link" accesskey="n" href="./verifying-that-correct-files-are-present.html">确认在桶中具有正确的文件</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_uploading-encrypted-data.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_uploading-encrypted-data.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

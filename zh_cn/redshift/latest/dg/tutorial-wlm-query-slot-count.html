@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>第 4 节：使用 wlm_query_slot_count 临时覆盖队列中的并发级别 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-wlm-query-slot-count" /><meta name="default_state" content="tutorial-wlm-query-slot-count" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="description" content="有时，用户可能会为某个特定查询临时需要更多资源。如果是这样的话，他们可以使用 wlm_query_slot_count 配置设置来临时覆盖查询队列中分配槽位的方式。 槽位 是用于处理查询的内存和 CPU 的单位。您可在偶尔使用消耗集群中大量资源的查询时（例如，在数据库中执行 VACUUM 操作时）覆盖槽位计数。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="第 4 节：使用 wlm_query_slot_count 临时覆盖队列中的并发级别" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>第 4 节：使用 wlm_query_slot_count 临时覆盖队列中的并发级别 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-wlm-query-slot-count" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "实施工作负载管理",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "实施手动 WLM",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-defining-query-queues.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "教程：配置手动工作负载管理 (WLM) 队列",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "第 4 节：使用 wlm_query_slot_count 临时覆盖队列中的并发级别",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-wlm-query-slot-count" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#tutorial-wlm-override-slot-count">步骤 1：使用 wlm_query_slot_count 覆盖并发级别</a><a href="#tutorial-wlm-run-queries-from-different-sessions">步骤 2：从不同的会话中运行查询</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-wlm-query-slot-count">第 4 节：使用 wlm_query_slot_count 临时覆盖队列中的并发级别</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>有时，用户可能会为某个特定查询临时需要更多资源。如果是这样的话，他们可以使用 wlm_query_slot_count 配置设置来临时覆盖查询队列中分配槽位的方式。<em>槽位</em> 是用于处理查询的内存和 CPU 的单位。您可在偶尔使用消耗集群中大量资源的查询时（例如，在数据库中执行 VACUUM 操作时）覆盖槽位计数。</p><p>您可能会发现用户经常需要针对特定类型的查询设置 wlm_query_slot_count。如果是，请考虑调整 WLM 配置并为用户提供更适合其查询需求的队列。有关通过使用槽位计数临时覆盖并发级别的更多信息，请参阅<a href="./r_wlm_query_slot_count.html">wlm_query_slot_count</a>。</p>
+            <h2 id="tutorial-wlm-override-slot-count">步骤 1：使用 wlm_query_slot_count 覆盖并发级别</h2>
+
+            <p>在本教程中，我们将运行同一个长时间运行的 SELECT 查询。我们将以 <code class="code">adminwlm</code> 用户的身份运行查询，并使用 wlm_query_slot_count 增加查询的可用槽位数。</p>
+             
+                <h3 id="how-to-wlm-override-slot-count">使用 wlm_query_slot_count 覆盖并发级别</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+                     
+                <ol><li>
+                        <p>提高对查询的限制以确保您有足够的时间来查询 WLM_QUERY_STATE_VW 视图并查看结果。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set wlm_query_slot_count to 3; 
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>现在，可使用管理员用户查询 WLM_QUERY_STATE_VW，以查看查询的运行情况。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;</code></pre>
+                        <p>下面是示例结果。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_170.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>请注意，查询的槽位计数是 3。此计数表示查询正在使用所有三个槽位来处理查询，并将队列中的所有资源分配给查询。</p>
+                    </li><li>
+                        <p>现在，运行以下查询。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from WLM_QUEUE_STATE_VW;</code></pre>
+                        <p>下面是示例结果。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_160.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>wlm_query_slot_count 配置设置仅对当前会话有效。如果会话过期或者另一用户运行查询，则使用 WLM 配置。</p>
+                    </li><li>
+                        <p>重置槽位计数并重新运行测试。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">reset wlm_query_slot_count;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                        <p>以下是示例结果。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_180.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_190.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-run-queries-from-different-sessions">步骤 2：从不同的会话中运行查询</h2>
+
+            <p>接下来，从不同会话中运行查询。</p>
+             
+                <h3 id="how-to-wlm-run-queries-from-different-sessions">从不同的会话中运行查询</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+
+                     
+                <ol><li>
+                        <p>在 RSQL 窗口 1 和 2 中，运行以下查询以使用测试查询组。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set query_group to test;</code></pre>
+                    </li><li>
+                        <p>在 RSQL 窗口 1 中，运行以下长时间运行的查询。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>由于长时间运行的查询仍在 RSQL 窗口 1 中运行，请运行以下查询。这些命令将增加槽位计数，以使用队列的所有槽位，然后开始运行长时间运行的查询。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set wlm_query_slot_count to 2;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>打开第三个 RSQL 窗口并查询视图以查看结果。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;
+select * from wlm_query_state_vw;</code></pre>
+                        <p>以下是示例结果。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_200.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_210.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>请注意，第一个查询正在使用分配给队列 1 的槽位之一来运行查询。此外，请注意，队列中有一个查询正在等待（其中 <code class="code">queued</code> 为 <code class="code">1</code>，<code class="code">state</code> 为 <code class="code">QueuedWaiting</code>）。在第一个查询完成之后，第二个查询即会开始运行。此执行发生的原因在于：两个查询均已路由至 <code class="code">test</code> 查询组，而且第二个查询必须等待有足够多的槽位才能开始进行处理。</p>
+                    </li></ol></div>
+             
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-wlm-routing-queries-to-queues.html">第 3 节：根据用户组和查询组将查询路由到队列</div><div id="next" class="next-link" accesskey="n" href="./tutorial-wlm-cleaning-up-resources.html">第 5 节：清理资源</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-query-slot-count.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-query-slot-count.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

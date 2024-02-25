@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>创建标量 Lambda UDF - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="udf-creating-a-lambda-sql-udf" /><meta name="default_state" content="udf-creating-a-lambda-sql-udf" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="description" content="Amazon Redshift 可以将 AWS Lambda 中定义的自定义函数作为 SQL 查询的一部分。您可以使用 Lambda 支持的任何编程语言编写标量 Lambda UDF，如 Java、Go、PowerShell、Node.js、C#、Python 和 Ruby。或者您可以使用自定义运行时。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="创建标量 Lambda UDF" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>创建标量 Lambda UDF - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#udf-creating-a-lambda-sql-udf" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "创建用户定义的函数",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/user-defined-functions.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "创建标量 Lambda UDF",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/user-defined-functions.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#udf-creating-a-lambda-sql-udf" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#udf-lambda-register">注册 Lambda UDF</a><a href="#udf-lambda-security">管理 Lambda UDF 安全性和权限</a><a href="#udf-lambda-authorization">配置 Lambda UDF 的授权参数</a><a href="#udf-lambda-json">在 Amazon Redshift 和 Lambda 之间使用 JSON 界面</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="udf-creating-a-lambda-sql-udf">创建标量 Lambda UDF</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Amazon Redshift 可以将 AWS Lambda 中定义的自定义函数作为 SQL 查询的一部分。您可以使用 Lambda 支持的任何编程语言编写标量 Lambda UDF，如 Java、Go、PowerShell、Node.js、C#、Python 和 Ruby。或者您可以使用自定义运行时。</p><p>Lambda UDF 在 Lambda 中定义和管理，您可以控制在 Amazon Redshift 中调用这些 UDF 的访问权限。您可以在同一查询中调用多个 Lambda 函数，也可以多次调用相同的函数。</p><p>在支持标量函数的 SQL 语句的任何子句中使用 Lambda UDF。您还可以在任何 SQL 语句（如 SELECT、UPDATE、INSERT 或 DELETE）中使用 Lambda UDF。</p><div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>使用 Lambda UDF 可能会产生来自 Lambda 服务的额外费用。是否这样做取决于 Lambda 请求的数量（UDF 调用）和 Lambda 程序执行的总持续时间等因素。但是，在 Amazon Redshift 中使用 Lambda UDF 不需要支付额外费用。有关 AWS Lambda 定价的信息，请参阅 <a href="https://aws.amazon.com/lambda/pricing" rel="noopener noreferrer" target="_blank"><span>AWS Lambda 定价</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p><p>Lambda 请求的数量取决于使用 Lambda UDF 的特定 SQL 语句子句。例如，假设此函数用于 WHERE 子句，如下所示。<code class="code"></code></p><p><code class="code">SELECT a, b FROM t1 WHERE lambda_multiply(a, b) = 64; SELECT a, b FROM t1 WHERE
+               a*b = lambda_multiply(2, 32) </code></p><p>在这种情况下，Amazon Redshift 为每个语句调用第一个 SELECT 语句，并仅调用第二个 SELECT 语句一次。</p><p>但是，在查询的投影部分中使用 UDF 可能只会为结果集中的每个限定行或聚合行调用一次 Lambda 函数。</p></div></div>
+         <h2 id="udf-lambda-register">注册 Lambda UDF</h2>
+      <p> <a href="./r_CREATE_EXTERNAL_FUNCTION.html">CREATE EXTERNAL FUNCTION</a> 命令创建以下参数：</p>
+      <div class="itemizedlist">
+          
+          
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>（可选）具有数据类型的参数列表。</p>
+         </li><li class="listitem">
+            <p>一个返回数据类型。</p>
+         </li><li class="listitem">
+            <p>由 Amazon Redshift 调用的外部函数的一个函数名称。</p>
+         </li><li class="listitem">
+            <p>Amazon Redshift 集群有权代入并调用 Lambda 的一个 IAM 角色。</p>
+         </li><li class="listitem">
+            <p>Lambda UDF 调用的一个 Lambda 函数名称。</p>
+         </li></ul></div>
+         <p>有关 CREATE EXTERNAL FUNCTION 的更多信息，请参阅<a href="./r_CREATE_EXTERNAL_FUNCTION.html">CREATE EXTERNAL FUNCTION</a>。</p>
+      <p>此函数的输入和返回数据类型可以是任何标准 Amazon Redshift 数据类型。</p>
+      <p>Amazon Redshift 确保外部函数可以发送和接收批量参数和结果。</p>
+       
+         <h2 id="udf-lambda-security">管理 Lambda UDF 安全性和权限</h2>
+         <p>要创建 Lambda UDF，请确保您具有在 LANGUAGE EXFUNC 上使用的权限。您必须将 USAGE ON LANGUAGE EXFUNC 明确授予给特定用户、组或公众，或撤销其 USAGE ON LANGUAGE EXFUNC。</p>
+            <p>以下示例将 EXFUNC 的使用权限授予 PUBLIC。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">grant usage on language exfunc to PUBLIC; </code></pre>
+         <p>以下示例将从 PUBLIC 撤销对 exfunc 的使用权限，然后向用户组 lambda_udf_devs 授予使用权限。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">revoke usage on language exfunc from PUBLIC;
+grant usage on language exfunc to group lambda_udf_devs;</code></pre>
+         <p>要运行 Lambda UDF，请确保您对每个调用的函数都拥有权限。预设情况下，向 PUBLIC 授予运行新 Lambda UDF 的权限。要限制使用，请从 PUBLIC 撤销该函数的此权限。然后向特定用户或组授予权限。</p>
+           <p>以下示例从 PUBLIC 撤销对函数 exfunc_sum 的执行权限。然后它会向用户组 lambda_udf_devs 授予使用权限。</p>
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">revoke execute on function exfunc_sum(int, int) from PUBLIC;
+grant execute on function exfunc_sum(int, int) to group lambda_udf_devs;</code></pre>
+         <p>默认情况下，超级用户拥有全部权限。</p>
+               <p>有关授予和撤消权限的更多信息，请参阅<a href="./r_GRANT.html">GRANT</a>和<a href="./r_REVOKE.html">REVOKE</a>。</p>
+       
+         <h2 id="udf-lambda-authorization">配置 Lambda UDF 的授权参数</h2>
+         
+         <p>CREATE EXTERNAL FUNCTION 命令需要授权才能在 AWS Lambda 中调用 Lambda 函数。要启动授权，请在您运行 CREATE EXTERNAL FUNCTION 命令时指定 AWS Identity and Access Management (IAM) 角色。有关 IAM 角色的更多信息，请参阅《IAM 用户指南》<em></em>中的 <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html">IAM 角色</a>。</p>
+            <p>如果现有 IAM 角色具有调用附加到集群的 Lambda 函数的权限，则您可以在命令的 IAM_ROLE 参数中替代您的角色 Amazon Resource Name (ARN)。以下部分介绍了在 CREATE EXTERNAL FUNCTION 命令中使用 IAM 角色的步骤。</p>
+         
+          
+            <h3 id="udf-lambda-create-iam">为 Lambda 创建 IAM 角色</h3>
+            <p>IAM 角色需要调用 Lambda 函数的权限。创建 IAM 角色时，请通过以下方式之一提供权限：</p>
+                  <div class="itemizedlist">
+                      
+                      
+                  <ul class="itemizedlist"><li class="listitem"><p>创建 IAM 角色时将 <code class="code">AWSLambdaRole</code> 策略附加到 <b>Attach permissions policy</b>（附加权限策略）页面上。<code class="code">AWSLambdaRole</code> 策略授予调用 Lambda 函数的权限，这是最低要求。有关更多信息和其他策略，请参阅 <em>AWS Lambda 开发人员指南</em>中的<a href="https://docs.aws.amazon.com/lambda/latest/dg/access-control-identity-based.html">AWS Lambda 的基于身份的 IAM 策略</a>。</p></li><li class="listitem"><p>创建您自己的自定义策略以附加到您的 IAM 角色，该角色具有对所有资源或具有该函数 ARN 的特定 Lambda 函数的 <code class="code">lambda:InvokeFunction</code> 权限。有关如何创建策略的更多信息，请参阅 <em>IAM 用户指南</em>中的<a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_create.html">创建 IAM 策略</a>。</p>
+                       <p>以下示例策略允许在特定 Lambda 函数上调用 Lambda。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+    "Version": "2012-10-17",
+    "Statement": [
+        <span>{</span>
+            "Sid": "Invoke",
+            "Effect": "Allow",
+            "Action": [
+                "lambda:InvokeFunction"
+            ],
+            "Resource": "arn:aws:lambda:us-west-2:123456789012:function:my-function"
+        }
+    ]
+}</code></pre>
+                        <p>有关 Lambda 函数的资源的更多信息，请参阅 <em>IAM API 参考</em>中的 <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-api-permissions-ref.html">Lambda 操作的资源和条件</a>。</p>
+                        <p>创建具有所需权限的自定义策略后，您可以在创建 IAM 角色的同时在 <b>Attach permissions policy</b>（附加权限策略）页面上将策略附加到该 IAM 角色。</p></li></ul></div>
+            <p>有关创建 IAM 角色的步骤，请参阅《Amazon Redshift 管理指南》中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/authorizing-redshift-service.html">授权 Amazon Redshift 代表您访问其他 AWS 服务</a>。</p>
+              <p>如果您不想创建新的 IAM 角色，您可以将之前提到的权限添加到现有 IAM 角色。</p>
+                
+        
+          
+            <h3 id="udf-lambda-associate-iam">将 IAM 角色与集群关联</h3>
+              <p>将 IAM 角色附加到您的集群。通过使用 Amazon Redshift 管理控制台、CLI 或 API，您可将角色添加到集群或查看与集群关联的角色。有关更多信息，请参阅《Amazon Redshift 管理指南》中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/copy-unload-iam-role.html">将 IAM 角色与集群关联</a>。</p>
+          
+            
+             
+               <h3 id="udf-lambda-include-iam">在命令中包含 IAM 角色</h3>
+               <p>在 CREATE EXTERNAL FUNCTION 命令中包含 IAM 角色 ARN。当您创建 IAM 角色时，IAM 将返回该角色的 Amazon Resource Name (ARN)。要指定 IAM 角色，请利用 <code class="code">IAM_ROLE</code> 参数提供角色 ARN。以下显示 <code class="code">IAM_ROLE</code> 参数的语法。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">IAM_ROLE 'arn:aws:iam::aws-account-id:role/role-name'</code></pre>
+               <p>要调用位于同一区域内的其他账户中的 Lambda 函数，请参阅<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/authorizing-redshift-service.html#authorizing-redshift-service-chaining-roles.html">在 Amazon Redshift 中串联 IAM 角色</a>。</p>
+             
+       
+         <h2 id="udf-lambda-json">在 Amazon Redshift 和 AWS Lambda 之间使用 JSON 界面</h2>
+         
+         <p>Amazon Redshift 对于 Amazon Redshift 通信的所有 Lambda 函数使用通用界面。</p>
+         <p>下表显示了预计将用于 JSON 负载的指定 Lambda 函数的输入字段列表。</p>
+         
+         
+         <div class="table-container"><div class="table-contents"><table id="w319aac17c21c17b7"><thead>
+                  <tr>
+                     <th>字段名称</th>
+                     <th>
+                        <p>描述</p>
+                     </th>
+                     <th>值范围</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">request_id</td>
+                     <td tabindex="-1">通用唯一标识符 (UUID)，用于唯一标识每个调用请求。</td>
+                     <td tabindex="-1">
+                        <p>有效的 UUID。</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>集群</p>
+                     </td>
+                     <td tabindex="-1">集群的完整 Amazon Resource Name (ARN)。</td>
+                     <td tabindex="-1">
+                        <p>有效的集群 ARN。</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>user</p>
+                     </td>
+                     <td tabindex="-1">进行调用的用户的名称。</td>
+                     <td tabindex="-1">有效用户名。</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>数据库</p>
+                     </td>
+                     <td tabindex="-1">正在运行查询的数据库的名称。</td>
+                     <td tabindex="-1">有效的数据库名称。</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>external_function</p>
+                     </td>
+                     <td tabindex="-1">进行调用的外部函数的完全限定名称。</td>
+                     <td tabindex="-1">有效的完全限定函数名称。</td>
+                  </tr>
+                 
+                  
+                  <tr>
+                     <td tabindex="-1">
+                        <p>query_id</p>
+                     </td>
+                     <td tabindex="-1">正在进行调用的查询的查询 ID。</td>
+                     <td tabindex="-1">有效的查询 ID。</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>num_records</p>
+                     </td>
+                     <td tabindex="-1">负载中的参数数量。</td>
+                     <td tabindex="-1">值为 1 - 2^64。</td>
+                  </tr>
+                 
+                  <tr>
+                     <td tabindex="-1">
+                        <p>arguments</p>
+                     </td>
+                     <td tabindex="-1">指定格式的数据负载。</td>
+                     <td tabindex="-1">数组格式的数据必须是 JSON 数组。如果参数的数量大于 1，则每个元素都是一个数组的记录。通过使用数组，Amazon Redshift 可以保留记录在负载中的顺序。</td>
+                  </tr>
+               </table></div></div>
+         <p>JSON 数组的顺序决定了批处理的顺序。Lambda 函数必须以迭代方式处理参数并生成确切的记录数量。以下是负载的示例。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+  "request_id" : "23FF1F97-F28A-44AA-AB67-266ED976BF40",
+  "cluster" : "arn:aws:redshift:xxxx",
+  "user" : "adminuser",
+  "database" : "db1",
+  "external_function": "public.foo",
+  "query_id" : 5678234,
+  "num_records" : 4,
+  "arguments" : [
+     [ 1, 2 ],
+     [ 3, null],
+     null,
+     [ 4, 6]
+   ]
+ }</code></pre>
+         <p>Lambda 函数的返回输出包含以下字段。</p>
+         
+         <div class="table-container"><div class="table-contents"><table id="w319aac17c21c17c15"><thead>
+                  <tr>
+                     <th>字段名称</th>
+                     <th>
+                        <p>描述</p>
+                     </th>
+                     <th>值范围</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">success</td>
+                     <td tabindex="-1">函数成功或失败的指示。</td>
+                     <td tabindex="-1">
+                        <p>值为 <code class="code">"true"</code> 或者 <code class="code">"false"</code>。</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>error_msg</p>
+                     </td>
+
+                     <td tabindex="-1">如果成功值为 <code class="code">"false"</code>（如果函数失败），则出现错误消息；否则，此字段将被忽略。</td>
+
+                     <td tabindex="-1">
+                        <p>一个有效的消息。</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">
+                        <p>num_records</p>
+                     </td>
+                     <td tabindex="-1">负载中的记录数。</td>
+                     <td tabindex="-1">值为 1 - 2^64。</td>
+                  </tr>
+                 
+                  <tr>
+                     <td tabindex="-1">
+                        <p>results</p>
+                     </td>
+                     <td tabindex="-1">指定格式的调用结果。</td>
+                     <td tabindex="-1">不适用</td>
+                  </tr>
+               </table></div></div>
+         <p>以下是 Lambda 函数输出的示例。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
+  "success": true,   // true indicates the call succeeded
+  "error_msg" : "my function isn't working",  // shall only exist when success != true
+  "num_records": 4,      // number of records in this payload
+  "results" : [
+     1,
+     4,
+     null,
+     7
+   ]
+}</code></pre>
+         <p>当您通过 SQL 查询调用 Lambda 函数时，Amazon Redshift 会根据以下注意事项确保连接的安全性：</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem"><p>GRANT 和 REVOKE 权限。有关 UDF 安全性和权限的更多信息，请参阅<a href="./udf-security-and-privileges.html">UDF 安全性和权限</a>。</p></li><li class="listitem"><p>Amazon Redshift 仅向指定的 Lambda 函数提交最小数据集。</p></li><li class="listitem"><p>Amazon Redshift 只调用具有指定 IAM 角色的指定 Lambda 函数。</p></li></ul></div>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./udf-logging-messages.html">记录错误和警告</div><div id="next" class="next-link" accesskey="n" href="./udf-example-uses.html">UDF 的示例使用案例</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/udf-creating-a-lambda-sql-udf.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

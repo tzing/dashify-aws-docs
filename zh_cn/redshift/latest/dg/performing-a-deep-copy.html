@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>执行深层复制 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="performing-a-deep-copy" /><meta name="default_state" content="performing-a-deep-copy" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/performing-a-deep-copy.html" /><meta name="description" content="使用批量插入重新创建和重新填充表（也称为“深层复制”），这对具有大型未排序区域的表很有用。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/performing-a-deep-copy.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/performing-a-deep-copy.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/performing-a-deep-copy.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/performing-a-deep-copy.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/performing-a-deep-copy.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/performing-a-deep-copy.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/performing-a-deep-copy.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/performing-a-deep-copy.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/performing-a-deep-copy.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/performing-a-deep-copy.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/performing-a-deep-copy.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/performing-a-deep-copy.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/performing-a-deep-copy.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/performing-a-deep-copy.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/performing-a-deep-copy.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/performing-a-deep-copy.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/performing-a-deep-copy.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/performing-a-deep-copy.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/performing-a-deep-copy.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/performing-a-deep-copy.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/performing-a-deep-copy.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/performing-a-deep-copy.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="执行深层复制" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>执行深层复制 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#performing-a-deep-copy" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/performing-a-deep-copy.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/performing-a-deep-copy.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/performing-a-deep-copy.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "加载数据",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "执行深层复制",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_Loading_data.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#performing-a-deep-copy" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="performing-a-deep-copy">执行深层复制</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>深层复制将使用批量插入重新创建和重新填充表，这将自动对表进行排序。如果表具有大型未排序区域，则深层复制比 vacuum 快得多。如果您可以跟踪并发更新，我们建议您仅在深层复制操作期间进行并发更新。该过程完成后，将增量更新移到新表中。VACUUM 操作支持自动并发更新。</p><p>您可以选择四种方法之一来创建原始表的副本：</p><div class="itemizedlist">
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>使用原始表 DDL。</p>
+            <p>如果 CREATE TABLE DDL 可用，那么这是最快且首选的方法。在创建新表时，您可以指定所有表和列属性，包括主键和外键。您可以使用 SHOW TABLE 函数找到原始 DDL。</p>
+            
+         </li><li class="listitem">
+            <p>使用 CREATE TABLE LIKE。</p>
+            <p>如果原始 DDL 不可用，您可以使用 CREATE TABLE LIKE 来重新创建原始表。新表继承父表的编码、分配键、排序键和 not-null 属性。新表不继承父表的主键和外键属性，但您可以使用 <a href="./r_ALTER_TABLE.html">ALTER TABLE</a> 来添加它们。</p>
+         </li><li class="listitem">
+            <p>创建一个临时表并截断原始表。</p>
+            <p>如果您必须保留父表的主键和外键属性。如果父表有依赖关系，您可以使用 CREATE TABLE ... AS (CTAS) 以创建临时表。然后，截断原始表并从临时表填充它。</p>
+            <p>与使用永久表相比，使用临时表可极大地提高性能，但存在丢失数据的风险。在创建临时表的会话结束时将自动删除该临时表。TRUNCATE 将立即提交，即使它在事务块中。如果 TRUNCATE 成功，但会话在接下来的 INSERT 完成前关闭，则数据将丢失。如果数据丢失是不可接受的，请使用永久表。</p>
+         </li></ul></div><p>创建表的副本后，您可能必须授予对新表的访问权限。您可以使用 <a href="./r_GRANT.html">GRANT</a> 来定义访问权限。要查看和授予表的所有访问权限，您必须是以下人员之一：</p><div class="itemizedlist">
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p> 超级用户。</p>
+         </li><li class="listitem">
+            <p> 您想复制的表的拥有者。</p>
+         </li><li class="listitem">
+            <p> 拥有 ACCESS SYSTEM TABLE 权限以查看表的权限且具有所有相关权限的授予权限的用户。</p>
+         </li></ul></div><p>此外，您可能必须授予对于深层复制所在模式的使用权限。如果您的深层复制的模式与原始表的模式不同，也不是 <code class="code">public</code> 模式，则授予使用权限是必需的。要查看和授予使用权限，您必须是以下人员之一：</p><div class="itemizedlist">
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p> 超级用户。</p>
+         </li><li class="listitem">
+            <p> 可以授予对深层复制模式的 USAGE 权限的用户。</p>
+         </li></ul></div><div class="procedure"><h6>使用原始表 DDL 执行深层复制</h6><ol><li>
+            <p>（可选）通过运行名为 <code class="code">v_generate_tbl_ddl</code> 的脚本来重新创建表 DDL。</p>
+         </li><li>
+            <p>使用原始 CREATE TABLE DDL 创建表的副本。</p>
+         </li><li>
+            <p>使用 INSERT INTO … SELECT 语句向副本填充原始表中的数据。</p>
+         </li><li>
+            <p>检查所授予的对于旧表的权限。您可以在 SVV_RELATION_PRIVILEGES 系统视图中查看这些权限。</p>
+         </li><li>
+            <p>如有必要，将旧表的权限授予新表。</p>
+         </li><li>
+            <p>向在原始表中具有权限的每个组和用户授予使用权限。如果您的深层复制表处于 <code class="code">public</code> 模式，或者与原始表处于同一模式，则无需执行此步骤。</p>
+         </li><li>
+            <p>删除原始表。</p>
+         </li><li>
+            <p>使用 ALTER TABLE 语句将副本重命名为原始表名称。</p>
+         </li></ol></div><p>以下示例使用名为 sample_copy 的 SAMPLE 的副本对 SAMPLE 表执行深层复制。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">--Create a copy of the original table in the sample_namespace namespace using the original CREATE TABLE DDL.
+create table <code class="replaceable">sample_namespace</code>.sample_copy ( … );
+
+--Populate the copy with data from the original table in the public namespace.
+insert into sample_namespace.sample_copy (select * from <code class="replaceable">public</code>.sample);
+
+--Check SVV_RELATION_PRIVILEGES for the original table's privileges.
+select * from svv_relation_privileges where namespace_name = 'public' and relation_name = 'sample' order by identity_type, identity_id, privilege_type;
+
+--Grant the original table's privileges to the copy table.
+grant DELETE on table sample_namespace.sample_copy to group <code class="replaceable">group1</code>;
+grant INSERT, UPDATE on table sample_namespace.sample_copy to group <code class="replaceable">group2</code>;
+grant SELECT on table sample_namespace.sample_copy to <code class="replaceable">user1</code>;
+grant INSERT, SELECT, UPDATE on table sample_namespace.sample_copy to <code class="replaceable">user2</code>;
+         
+--Grant usage permission to every group and user that has privileges in the original table.
+grant USAGE on schema sample_namespace to group group1, group group2, user1, user2;
+
+--Drop the original table.
+drop table public.sample;
+
+--Rename the copy table to match the original table's name.
+alter table sample_namespace.sample_copy rename to sample;</code></pre><div class="procedure"><h6>使用 CREATE TABLE LIKE 执行深层复制</h6><ol><li>
+            <p>使用 CREATE TABLE LIKE 创建新表。</p>
+         </li><li>
+            <p>使用 INSERT INTO … SELECT 语句将当前表中的行复制到新表。</p>
+         </li><li>
+            <p>检查所授予的对于旧表的权限。您可以在 SVV_RELATION_PRIVILEGES 系统视图中查看这些权限。</p>
+         </li><li>
+            <p>如有必要，将旧表的权限授予新表。</p>
+         </li><li>
+            <p>向在原始表中具有权限的每个组和用户授予使用权限。如果您的深层复制表处于 <code class="code">public</code> 模式，或者与原始表处于同一模式，则无需执行此步骤。</p>
+         </li><li>
+            <p>删除当前表。</p>
+         </li><li>
+            <p>使用 ALTER TABLE 语句将新表重命名为原始表名称。</p>
+         </li></ol></div><p>以下示例使用 CREATE TABLE LIKE 对 SAMPLE 表执行深层复制。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">--Create a copy of the original table in the sample_namespace namespace using CREATE TABLE LIKE.
+create table <code class="replaceable">sameple_namespace</code>.sample_copy (like <code class="replaceable">public</code>.sample);
+
+--Populate the copy with data from the original table.
+insert into sample_namespace.sample_copy (select * from public.sample);
+
+--Check SVV_RELATION_PRIVILEGES for the original table's privileges.
+select * from svv_relation_privileges where namespace_name = 'public' and relation_name = 'sample' order by identity_type, identity_id, privilege_type;
+
+--Grant the original table's privileges to the copy table.
+grant DELETE on table sample_namespace.sample_copy to group <code class="replaceable">group1</code>;
+grant INSERT, UPDATE on table sample_namespace.sample_copy to group <code class="replaceable">group2</code>;
+grant SELECT on table sample_namespace.sample_copy to <code class="replaceable">user1</code>;
+grant INSERT, SELECT, UPDATE on table sample_namespace.sample_copy to <code class="replaceable">user2</code>;
+         
+--Grant usage permission to every group and user that has privileges in the original table.
+grant USAGE on schema sample_namespace to group group1, group group2, user1, user2;
+
+--Drop the original table.
+drop table public.sample;
+
+--Rename the copy table to match the original table's name.
+alter table sample_namespace.sample_copy rename to sample;</code></pre><div class="procedure"><h6>通过创建临时表并截断原始表来执行深层复制</h6><ol><li>
+            <p>使用 CREATE TABLE AS 创建具有原始表中的行的临时表。</p>
+         </li><li>
+            <p>截断当前表。</p>
+         </li><li>
+            <p>使用 INSERT INTO … SELECT 语句将临时表中的行复制到原始表。</p>
+         </li><li>
+            <p>删除临时表。</p>
+         </li></ol></div><p>以下示例通过创建临时表并截断原始表来对 SALES 表执行深层复制。由于原始表仍然存在，因此您无需授予对副本表的权限。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">--Create a temp table copy using CREATE TABLE AS.
+create temp table salestemp as select * from sales;
+
+--Truncate the original table.
+truncate sales;
+
+--Copy the rows from the temporary table to the original table.
+insert into sales (select * from salestemp);
+
+--Drop the temporary table.
+drop table salestemp;</code></pre><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./merge-examples.html">合并示例</div><div id="next" class="next-link" accesskey="n" href="./t_Analyzing_tables.html">分析表</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/performing-a-deep-copy.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/performing-a-deep-copy.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

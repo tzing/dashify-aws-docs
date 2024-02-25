@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>教程：构建 K 均值聚类模型 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_k-means_clustering" /><meta name="default_state" content="tutorial_k-means_clustering" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_k-means_clustering.html" /><meta name="description" content="使用本教程获取创建 Amazon Redshift 机器学习模型和运行推理查询的端到端示例。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_k-means_clustering.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_k-means_clustering.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="教程：构建 K 均值聚类模型" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>教程：构建 K 均值聚类模型 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_k-means_clustering" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_k-means_clustering.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_k-means_clustering.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_k-means_clustering.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "在 Amazon Redshift 中使用机器学习",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Amazon Redshift ML 入门",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Amazon Redshift ML 的教程",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "教程：构建 K 均值聚类模型",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_k-means_clustering" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#tutorial_k-means_clustering_tasks">使用案例示例</a><a href="#tutorial_k-means_clustering_prereqs">先决条件</a><a href="#tutorial_k-means_clustering_step_load">步骤 1：将数据从 Amazon S3 加载到 Amazon Redshift</a><a href="#tutorial_k-means_clustering_create_model">步骤 2：创建机器学习模型</a><a href="#tutorial_k-means_clustering_step_perform_predictions">步骤 3：使用模型执行预测</a><a href="#tutorial_k-means_clustering_related_topics">相关主题</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_k-means_clustering">教程：构建 K 均值聚类模型</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>在本教程中，您使用 Amazon Redshift ML 基于 <a href="url-sm-dev;k-means.html" rel="noopener noreferrer" target="_blank">K 均值算法</a>，创建、训练和部署一个机器学习模型。此算法可解决需要在数据中发现分组的集群问题。K 均值有助于对尚未标注的数据进行分组。要了解有关 K 均值聚类的更多信息，请参阅《Amazon SageMaker 开发人员指南》中的 <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/algo-kmeans-tech-notes.html">K 均值聚类的工作原理</a>。</p><p>您将使用 CREATE MODEL 操作从 Amazon Redshift 集群创建 K 均值模型。您可以使用 CREATE MODEL 命令导出训练数据、训练模型、导入模型以及准备 Amazon Redshift 预测函数。使用 CREATE MODEL 操作将训练数据指定为表或 SELECT 语句。</p><p>在本教程中，您将对<a href="https://aws.amazon.com/public-datasets/gdelt/" rel="noopener noreferrer" target="_blank"><span>全球事件、语言和语调数据库（GDELT）</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>数据集使用 K 均值，该数据集监控世界各地的全球新闻，并且每天每秒都存储数据。K 均值将对语调、参与者或位置相似的事件进行分组。数据以多个文件的形式存储在 Amazon Simple Storage Service 的两个不同文件夹中。这些文件夹是历史文件夹（涵盖 1979 年 - 2013 年）和每日更新（涵盖 2013 年及以后的年份）。在此示例中，我们使用历史格式并引入 1979 年的数据。</p>
+               <h2 id="tutorial_k-means_clustering_tasks">使用案例示例</h2>
+               <p>您可以使用 Amazon Redshift ML 解决其他聚类问题，例如对在流媒体服务上具有相似观看习惯的客户进行分组。您还可以使用 Redshift ML 来预测配送服务的最佳发货中心数量。</p>
+            <p><b>任务</b></p><div class="itemizedlist">
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>先决条件</p>
+               </li><li class="listitem">
+                  <p>步骤 1：将数据从 Amazon S3 加载到 Amazon Redshift</p>
+               </li><li class="listitem">
+                  <p>步骤 2：创建机器学习模型</p>
+               </li><li class="listitem">
+                  <p>步骤 3：使用模型执行预测</p>
+               </li></ul></div>
+            <h2 id="tutorial_k-means_clustering_prereqs">先决条件</h2>
+               <p>要完成此教程，必须完成 Amazon Redshift ML 的<a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">管理设置</a>。</p>
+          
+               <h2 id="tutorial_k-means_clustering_step_load">步骤 1：将数据从 Amazon S3 加载到 Amazon Redshift</h2>
+               <div class="orderedlist">
+                   
+                   
+               <ol><li>
+                     <p>使用 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">Amazon Redshift 查询器 v2</a> 运行以下查询。查询将剔除公有架构中的 <code class="code">gdelt_data</code> 表（如果存在），并在公有架构中创建同名的表。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">DROP TABLE IF EXISTS gdelt_data CASCADE;
+
+CREATE TABLE gdelt_data (
+    GlobalEventId bigint,
+    SqlDate bigint,
+    MonthYear bigint,
+    Year bigint,
+    FractionDate double precision,
+    Actor1Code varchar(256),
+    Actor1Name varchar(256),
+    Actor1CountryCode varchar(256),
+    Actor1KnownGroupCode varchar(256),
+    Actor1EthnicCode varchar(256),
+    Actor1Religion1Code varchar(256),
+    Actor1Religion2Code varchar(256),
+    Actor1Type1Code varchar(256),
+    Actor1Type2Code varchar(256),
+    Actor1Type3Code varchar(256),
+    Actor2Code varchar(256),
+    Actor2Name varchar(256),
+    Actor2CountryCode varchar(256),
+    Actor2KnownGroupCode varchar(256),
+    Actor2EthnicCode varchar(256),
+    Actor2Religion1Code varchar(256),
+    Actor2Religion2Code varchar(256),
+    Actor2Type1Code varchar(256),
+    Actor2Type2Code varchar(256),
+    Actor2Type3Code varchar(256),
+    IsRootEvent bigint,
+    EventCode bigint,
+    EventBaseCode bigint,
+    EventRootCode bigint,
+    QuadClass bigint,
+    GoldsteinScale double precision,
+    NumMentions bigint,
+    NumSources bigint,
+    NumArticles bigint,
+    AvgTone double precision,
+    Actor1Geo_Type bigint,
+    Actor1Geo_FullName varchar(256),
+    Actor1Geo_CountryCode varchar(256),
+    Actor1Geo_ADM1Code varchar(256),
+    Actor1Geo_Lat double precision,
+    Actor1Geo_Long double precision,
+    Actor1Geo_FeatureID bigint,
+    Actor2Geo_Type bigint,
+    Actor2Geo_FullName varchar(256),
+    Actor2Geo_CountryCode varchar(256),
+    Actor2Geo_ADM1Code varchar(256),
+    Actor2Geo_Lat double precision,
+    Actor2Geo_Long double precision,
+    Actor2Geo_FeatureID bigint,
+    ActionGeo_Type bigint,
+    ActionGeo_FullName varchar(256),
+    ActionGeo_CountryCode varchar(256),
+    ActionGeo_ADM1Code varchar(256),
+    ActionGeo_Lat double precision,
+    ActionGeo_Long double precision,
+    ActionGeo_FeatureID bigint,
+    DATEADDED bigint
+);</code></pre>
+                  </li><li>
+                     <p>以下查询将示例数据加载到 <code class="code">gdelt_data</code> 表。</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY gdelt_data
+FROM 's3://gdelt-open-data/events/1979.csv' 
+REGION 'us-east-1'
+IAM_ROLE default 
+CSV
+DELIMITER '\t';</code></pre>
+                  </li></ol></div>
+                
+                  <h3 id="tutorial_k-means_clustering_examine">检查训练数据（可选）</h3>
+                  <p>要查看将根据哪些数据训练模型，请使用以下查询。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    AvgTone,
+    EventCode,
+    NumArticles,
+    Actor1Geo_Lat,
+    Actor1Geo_Long,
+    Actor2Geo_Lat,
+    Actor2Geo_Long
+FROM
+    gdelt_data LIMIT 100;</code></pre>
+                
+             
+               <h2 id="tutorial_k-means_clustering_create_model">步骤 2：创建机器学习模型</h2>
+               <p>以下示例使用 CREATE MODEL 命令创建一个模型，该模型将数据分组为七个聚类。K 值是数据点划分到的聚类的数量。该模型将数据点分类为数据点彼此更相似的聚类。通过将数据点聚类为组，K 均值算法以迭代方式确定最佳聚类中心。然后，算法将每个数据点分配给最近的聚类中心。离同一聚类中心最近的成员属于同一组。一个组的成员尽可能与同一组中的其它成员相似，并与其它组的成员尽可能不同。K 值是主观的，取决于测量数据点之间相似性的方法。如果聚类分布不均匀，则可以更改 K 值以平滑聚类大小。</p>
+               <p>在以下示例中，将 <code class="replaceable"><code class="code">DOC-EXAMPLE-BUCKET</code></code> 替换为您自己的 Amazon S3 桶。</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL news_data_clusters
+FROM
+    (
+        SELECT
+            AvgTone,
+            EventCode,
+            NumArticles,
+            Actor1Geo_Lat,
+            Actor1Geo_Long,
+            Actor2Geo_Lat,
+            Actor2Geo_Long
+        FROM
+            gdelt_data
+    ) FUNCTION news_monitoring_cluster 
+    IAM_ROLE default 
+    AUTO OFF 
+    MODEL_TYPE KMEANS 
+    PREPROCESSORS 'none' 
+    HYPERPARAMETERS DEFAULT
+    EXCEPT
+    (K '7') 
+    SETTINGS (S3_BUCKET '<code class="replaceable">&lt;DOC-EXAMPLE-BUCKET&gt;</code>');</code></pre>
+                
+                  <h3 id="tutorial_k-means_clustering_check_status">检查模型训练的状态（可选）</h3>
+                  <p>您可以使用 SHOW MODEL 命令来了解模型何时准备就绪。</p>
+                  <p>要检查模型状态，请使用以下 SHOW MODEL 操作，并查明 <code class="code">Model State</code> 是否为 <code class="code">Ready</code>。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL NEWS_DATA_CLUSTERS;</code></pre>
+                  <p>当模型准备就绪时，上一个操作的输出应显示 <code class="code">Model State</code> 为 <code class="code">Ready</code>。以下是 SHOW MODEL 操作的输出示例。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------+------------------------------------------------------------------------------------------------------+
+|        Model Name        |                                          news_data_clusters                                          |
++--------------------------+------------------------------------------------------------------------------------------------------+
+|       Schema Name        |                                                public                                                |
+|          Owner           |                                               awsuser                                                |
+|      Creation Time       |                                       Fri, 17.06.2022 16:32:19                                       |
+|       Model State        |                                                READY                                                 |
+|        train:msd         |                                             2973.822754                                              |
+|      train:progress      |                                              100.000000                                              |
+|     train:throughput     |                                            237114.875000                                             |
+|      Estimated Cost      |                                               0.004983                                               |
+|                          |                                                                                                      |
+|      TRAINING DATA:      |                                                                                                      |
+|          Query           | SELECT AVGTONE, EVENTCODE, NUMARTICLES, ACTOR1GEO_LAT, ACTOR1GEO_LONG, ACTOR2GEO_LAT, ACTOR2GEO_LONG |
+|                          |                                           FROM GDELT_DATA                                            |
+|                          |                                                                                                      |
+|       PARAMETERS:        |                                                                                                      |
+|        Model Type        |                                                kmeans                                                |
+|    Training Job Name     |                                redshiftml-20220617163219978978-kmeans                                |
+|      Function Name       |                                       news_monitoring_cluster                                        |
+|   Function Parameters    |       avgtone eventcode numarticles actor1geo_lat actor1geo_long actor2geo_lat actor2geo_long        |
+| Function Parameter Types |                             float8 int8 int8 float8 float8 float8 float8                             |
+|         IAM Role         |                                         default-aws-iam-role                                         |
+|        S3 Bucket         |                                            <code class="replaceable">DOC-EXAMPLE-BUCKET</code>                                        |
+|       Max Runtime        |                                                 5400                                                 |
+|                          |                                                                                                      |
+|     HYPERPARAMETERS:     |                                                                                                      |
+|       feature_dim        |                                                  7                                                   |
+|            k             |                                                  7                                                   |
++--------------------------+------------------------------------------------------------------------------------------------------+</code></pre>
+                
+             
+               <h2 id="tutorial_k-means_clustering_step_perform_predictions">步骤 3：使用模型执行预测</h2>
+                
+                  <h3 id="tutorial_k-means_clustering_identify_clusters">标识聚类</h3>
+                  <p>您可以找到模型在数据中标识的离散分组，也称为聚类。聚类是指一组数据点，它们离其聚类中心的距离比离任何其他聚类中心都更近。由于 K 值表示模型中的聚类数，因此它也表示聚类中心的数量。以下查询通过显示与每个 <code class="code">globaleventid</code> 关联的聚类来标识聚类。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    globaleventid,
+    news_monitoring_cluster (
+        AvgTone,
+        EventCode,
+        NumArticles,
+        Actor1Geo_Lat,
+        Actor1Geo_Long,
+        Actor2Geo_Lat,
+        Actor2Geo_Long
+    ) AS cluster
+FROM
+    gdelt_data;</code></pre>
+                
+                
+                  <h3 id="tutorial_k-means_clustering_check_distribution">检查数据的分布</h3>
+                  <p>您可以检查数据跨聚类的分布，以查看所选的 K 值是否导致数据在某种程度上均匀分布。使用以下查询来确定数据是否在聚类间均匀分布。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    events_cluster,
+    COUNT(*) AS nbr_events
+FROM
+    (
+        SELECT
+            globaleventid,
+            news_monitoring_cluster(
+                AvgTone,
+                EventCode,
+                NumArticles,
+                Actor1Geo_Lat,
+                Actor1Geo_Long,
+                Actor2Geo_Lat,
+                Actor2Geo_Long
+            ) AS events_cluster
+        FROM
+            gdelt_data
+    )
+GROUP BY
+    1;</code></pre>
+                  <p>请注意，如果聚类分布不均匀，则可以更改 K 值以平滑聚类大小。</p>
+                
+                
+                  <h3 id="tutorial_k-means_clustering_determine_centers">确定聚类中心</h3>
+                  <p>数据点离其聚类中心的距离比它离任何其他聚类中心都更近。因此，找到聚类中心有助于定义聚类。</p>
+                  <p>运行以下查询，以根据事件代码的文章数量确定聚类的中心。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    news_monitoring_cluster (
+        AvgTone,
+        EventCode,
+        NumArticles,
+        Actor1Geo_Lat,
+        Actor1Geo_Long,
+        Actor2Geo_Lat,
+        Actor2Geo_Long
+    ) AS events_cluster,
+    eventcode,
+    SUM(numArticles) AS numArticles
+FROM
+    gdelt_data
+GROUP BY
+    1,
+    2;</code></pre>
+                
+                
+                  <h3 id="tutorial_k-means_clustering_data_points_info">显示有关聚类中的数据点的信息</h3>
+                  <p>使用以下查询返回分配给第五个聚类的点的数据。选定的文章必须有两个参与者。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    news_monitoring_cluster (
+        AvgTone,
+        EventCode,
+        NumArticles,
+        Actor1Geo_Lat,
+        Actor1Geo_Long,
+        Actor2Geo_Lat,
+        Actor2Geo_Long
+    ) AS events_cluster,
+    eventcode,
+    actor1name,
+    actor2name,
+    SUM(numarticles) AS totalarticles
+FROM
+    gdelt_data
+WHERE
+    events_cluster = 5
+    AND actor1name &lt;&gt; ' '
+    AND actor2name &lt;&gt; ' '
+GROUP BY
+    1,
+    2,
+    3,
+    4
+ORDER BY
+    5 desc;</code></pre>
+                
+                
+                  <h3 id="tutorial_k-means_clustering_show_events_data">显示具有相同种族代码的参与者的事件数据</h3>
+                  <p>下面的查询统计了以积极的语调撰写的有关事件的文章数。该查询还要求两个参与者具有相同的种族代码，并返回每个事件分配到哪个聚类。</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    news_monitoring_cluster (
+        AvgTone,
+        EventCode,
+        NumArticles,
+        Actor1Geo_Lat,
+        Actor1Geo_Long,
+        Actor2Geo_Lat,
+        Actor2Geo_Long
+    ) AS events_cluster,
+    SUM(numarticles) AS total_articles,
+    eventcode AS event_code,
+    Actor1EthnicCode AS ethnic_code
+FROM
+    gdelt_data
+WHERE
+    Actor1EthnicCode = Actor2EthnicCode
+    AND Actor1EthnicCode &lt;&gt; ' '
+    AND Actor2EthnicCode &lt;&gt; ' '
+    AND AvgTone &gt; 0
+GROUP BY
+    1,
+    3,
+    4
+HAVING
+    (total_articles) &gt; 4
+ORDER BY
+    1,
+    2 ASC;</code></pre>
+                
+             
+               <h2 id="tutorial_k-means_clustering_related_topics">相关主题</h2>
+               <p>有关 Amazon Redshift ML 的更多信息，请参阅以下文档：</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">使用 Amazon Redshift ML 的成本</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">CREATE MODEL 操作</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">EXPLAIN_MODEL 函数</a></p>
+                  </li></ul></div>
+               <p>有关机器学习的更多信息，请参阅以下文档：</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">机器学习概览</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">面向新手和专家的机器学习</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">机器学习预测的公平性和模型可解释性是什么？</a></p>
+                  </li></ul></div>
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial_remote_inference.html">教程：构建远程推理模型</div><div id="next" class="next-link" accesskey="n" href="./tutorial_multi-class_classification.html">教程：构建多类别分类模型</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_k-means_clustering.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_k-means_clustering.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

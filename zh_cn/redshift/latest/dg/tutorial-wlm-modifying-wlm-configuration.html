@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>第 2 节：修改 WLM 查询队列配置 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-wlm-modifying-wlm-configuration" /><meta name="default_state" content="tutorial-wlm-modifying-wlm-configuration" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="description" content="现在您了解了队列的默认工作方式，您将了解如何使用手动 WLM 配置查询队列。在此节中，您将为集群创建并配置新的参数组。您将创建另外两个用户查询并配置它们以基于查询的用户组或查询组标签接受查询。未路由至这两个队列之一的任何查询在运行时将会路由至默认队列。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="第 2 节：修改 WLM 查询队列配置" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>第 2 节：修改 WLM 查询队列配置 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-wlm-modifying-wlm-configuration" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "实施工作负载管理",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "实施手动 WLM",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-defining-query-queues.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "教程：配置手动工作负载管理 (WLM) 队列",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "第 2 节：修改 WLM 查询队列配置",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-wlm-modifying-wlm-configuration" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-wlm-modifying-wlm-configuration">第 2 节：修改 WLM 查询队列配置</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>现在您了解了队列的默认工作方式，您将了解如何使用手动 WLM 配置查询队列。在此节中，您将为集群创建并配置新的参数组。您将创建另外两个用户查询并配置它们以基于查询的用户组或查询组标签接受查询。未路由至这两个队列之一的任何查询在运行时将会路由至默认队列。</p><div class="procedure"><h6>要在参数组中创建手动 WLM 配置</h6><ol><li> <p>登录到 AWS Management Console并打开 Amazon Redshift 控制台，网址：<a href="https://console.aws.amazon.com/redshift/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/redshift/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p> 
+                    </li><li>
+                        <p>在导航菜单上，选择 <b>Configurations（配置）</b>，然后选择 <b>Workload management（工作负载管理）</b>，以显示 <b>Workload management（工作负载管理）</b>页面。</p>
+                    </li><li>
+                        <p>选择 <b>Create (创建)</b> 显示 <b>Create parameter group (创建参数组)</b> 窗口。</p>
+                    </li><li>
+                        <p>为 <b>Parameter group name</b>（参数组名称）和 <b>Description</b>（描述）输入 <code class="userinput">WLMTutorial</code>，然后选择 <b>Create</b>（创建）以创建参数组。</p>
+                        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p><b>参数组名称</b>会在创建时转换为全部小写格式。</p></div></div>
+                    </li><li>
+                        <p>在 <b>Workload management</b>（工作负载管理）页面上，选择参数组 <code class="userinput">wlmtutorial</code> 以显示详细信息页面，其中包含 <b>Parameters</b>（参数）和 <b>Workload management</b>（工作负载管理）选项卡。</p>
+                    </li><li>
+                        <p>确认您正在 <b>Workload management</b>（工作负载管理）选项卡，然后选择 <b>Switch WLM mode</b>（切换 WLM 模式）以显示 <b>Concurrency settings</b>（并发设置）窗口。</p>
+                    </li><li>
+                        <p>选择 <b>Manual WLM</b>（手动 WLM），然后选择 <b>Save</b>（保存）以切换到手动 WLM。</p>
+                    </li><li>
+                        <p>选择 <b>Edit workload queues</b>（编辑工作负载队列）。</p>
+                    </li><li>
+                        <p>选择 <b>Add queue</b>（添加队列）两次以添加两个队列。现在有三个队列：<b>队列 1</b>、<b>队列 2</b> 和<b>默认队列</b>。</p>
+                    </li><li>
+                        <p>按如下方式输入每个队列的信息：</p>
+                        <div class="itemizedlist">
+                             
+                             
+                             
+                        <ul class="itemizedlist"><li class="listitem">
+                                <p>对于<b>队列 1</b>，为<b>内存 (%)</b> 输入 <code class="userinput">30</code>，为<b>主集群上的并发</b>输入 <code class="userinput">2</code>，并为<b>查询组</b>输入 <code class="userinput">test</code>。将其他设置保留为默认值。</p>
+                                
+                            </li><li class="listitem">
+                                <p>对于<b>队列 2</b>，为<b>内存 (%)</b> 输入 <code class="userinput">40</code>，为<b>主集群上的并发</b>输入 <code class="userinput">3</code>，并为<b>用户组</b>输入 <code class="userinput">admin</code>。将其他设置保留为默认值。</p>
+                            </li><li class="listitem">
+                                <p>不要对<b>默认队列</b>做出任何更改。WLM 将未分配的内存分配给默认队列。</p>
+                            </li></ul></div>
+                    </li><li>
+                        <p>选择 <b>Save (保存)</b> 以保存您的设置。</p>
+                    </li></ol></div><p>接下来，将具有手动 WLM 配置的参数组与集群相关联。</p><div class="procedure"><h6>要将具有手动 WLM 配置的参数组与集群关联</h6><ol><li> <p>登录到 AWS Management Console并打开 Amazon Redshift 控制台，网址：<a href="https://console.aws.amazon.com/redshift/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/redshift/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p> 
+                    </li><li>
+                        <p>在导航菜单上，选择 <b>Clusters（集群）</b>，然后选择 <b>Clusters（集群）</b>以显示集群的列表。</p>
+                    </li><li>
+                        <p>选择您的集群，例如 <code class="code">examplecluster</code>，以显示集群详细信息。然后选择 <b>Properties</b>（属性）选项卡，以显示该集群的属性。</p>
+                    </li><li>
+                        <p>在 <b>Database configurations</b>（数据库配置）部分中，选择 <b>Edit</b>（编辑）、<b>Edit parameter group</b>（编辑参数组）以显示参数组窗口。</p>
+                    </li><li>
+                        <p>对于<b>参数组</b>，选择您之前创建的 <code class="userinput">wlmtutorial</code> 参数组。</p>
+                    </li><li>
+                        <p>选择 <b>Save changes</b>（保存更改）以关联参数组。</p>
+                        <p>使用更改的参数组修改集群。但是，您需要重启集群才能将更改应用于数据库。</p>
+                    </li><li>
+                        <p>选择您的集群，然后为 <b>Actions</b>（操作）选择 <b>Reboot</b>（重启）。</p>
+                    </li></ol></div><p>在重启集群后，状态将返回为 <b>Available</b>（可用）。</p><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-wlm-understanding-default-processing.html">第 1 节：了解默认队列处理行为</div><div id="next" class="next-link" accesskey="n" href="./tutorial-wlm-routing-queries-to-queues.html">第 3 节：根据用户组和查询组将查询路由到队列</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

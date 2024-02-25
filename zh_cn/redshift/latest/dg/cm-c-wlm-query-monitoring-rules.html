@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>WLM 查询监控规则 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="cm-c-wlm-query-monitoring-rules" /><meta name="default_state" content="cm-c-wlm-query-monitoring-rules" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="description" content="在 Amazon Redshift 工作负载管理 (WLM) 中，查询监控规则为 WLM 查询定义基于指标的性能界限，并指定在查询超出这些界限时需要采取的操作。例如，对于短时间运行查询专用的队列，您可创建取消运行超过 60 秒的查询的规则。要跟踪设计不佳的查询，您可创建记录包含嵌套循环的查询的其他规则。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="WLM 查询监控规则" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>WLM 查询监控规则 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#cm-c-wlm-query-monitoring-rules" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "实施工作负载管理",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "WLM 查询监控规则",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#cm-c-wlm-query-monitoring-rules" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#cm-c-wlm-defining-query-monitoring-rules">定义查询监控规则</a><a href="#cm-c-wlm-query-monitoring-metrics">预置的 Amazon Redshift 的查询监控指标</a><a href="#cm-c-wlm-query-monitoring-metrics-serverless">查询 Amazon Redshift Serverless 的监控指标</a><a href="#cm-c-wlm-query-monitoring-templates">查询监控规则模板</a><a href="#cm-c-wlm-qmr-tables-and-views">查询监控规则的系统表和视图</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="cm-c-wlm-query-monitoring-rules">WLM 查询监控规则</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>在 Amazon Redshift 工作负载管理 (WLM) 中，查询监控规则为 WLM 查询定义基于指标的性能界限，并指定在查询超出这些界限时需要采取的操作。例如，对于短时间运行查询专用的队列，您可创建取消运行超过 60 秒的查询的规则。要跟踪设计不佳的查询，您可创建记录包含嵌套循环的查询的其他规则。</p><p>您将在工作负载管理 (WLM) 配置中定义查询监控规则。您最多可以为每个队列定义 25 个规则，而且所有队列的限制为 25 个规则。每个规则最多包括三个条件 (即，谓词) 和一个操作。<em>谓词</em> 包含指标、比较条件（=、&lt; 或 &gt;）和值。如果满足任何规则的所有谓词，则会触发该规则的操作。可能的规则操作有 log、hop 和 abort，如以下所讨论的。</p><p>某个给定队列中的规则只能应用于在该队列中运行的查询。各个规则彼此独立。</p><p>WLM 每 10 秒评估一次指标。如果同一期间内触发了多个规则，WLM 将启动最严厉的操作 — abort、hop、然后是 log。如果操作为 hop 或 abort，则将记录操作且从队列中移出查询。如果操作为 log，则查询将继续在队列中运行。WLM 针对每个规则的每个查询仅启用一个 log 操作。如果队列中包含其他规则，这些规则将保持有效。如果操作为 hop 且将查询路由到其他队列，则将应用新队列的规则。有关对特定查询执行的查询监控和跟踪操作的更多信息，请参阅<a href="./wlm-short-query-acceleration.html">使用短查询加速</a>中的示例集。</p><p>当满足规则的所有谓词时，WLM 会在 <a href="./r_STL_WLM_RULE_ACTION.html">STL_WLM_RULE_ACTION</a> 系统表中写入一行。此外，Amazon Redshift 会将当前运行的查询的查询指标记录到 <a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a>。已完成的查询的指标存储在 <a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a> 中。</p>
+         <h2 id="cm-c-wlm-defining-query-monitoring-rules">定义查询监控规则</h2>
+
+
+         <p>您创建作为您的 WLM 配置的一部分的查询监控规则，您可将该规则定义为您集群的参数组定义的一部分。</p>
+
+
+
+         <p>您可使用 AWS Management Console或以编程方式使用 JSON 来创建规则。</p>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>如果您选择以编程方式创建规则，强烈建议您使用控制台生成包含在参数组定义中的 JSON。有关更多信息，请参阅《Amazon Redshift 管理指南》<em></em>中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-parameter-groups-console.html#parameter-group-modify-qmr-console">使用控制台创建或修改查询监控规则</a>和<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html#configure-parameters-using-the-cli">使用 AWS CLI 配置参数值</a>。</p></div></div>
+
+         <p>要定义查询监控规则，您要指定以下元素：</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>一个规则名称 – 规则名称必须在 WLM 配置内是唯一的。规则名称最多可包含 32 个字母数字字符或下划线，且不能包含空格或引号。您可以让每个队列有最多 25 个规则，并且所有队列的总限制为 25 个规则。</p>
+            </li><li class="listitem">
+               <p>一个或多个谓词 – 您最多可以为每个规则设置三个谓词。如果满足任何规则的所有谓词，则会触发关联操作。谓词由指标名称、运算符（=、&lt; 或 &gt;）和值定义。示例是 <code class="code">query_cpu_time &gt; 100000</code>。有关指标列表以及不同指标值的示例，请参阅本部分中后面的<a href="#cm-c-wlm-query-monitoring-metrics">预置的 Amazon Redshift 的查询监控指标</a>。</p>
+            </li><li class="listitem">
+               <p>操作 – 如果触发了多个操作，则 WLM 会选择具有最严重操作的规则。可能的操作 (按严重性的升序顺序) 包括：</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p>Log – 记录有关 STL_WLM_RULE_ACTION 系统表中查询的信息。在您想要仅写入日志记录时使用 Log 操作。WLM 针对每个规则的每个查询最多创建一个日志。log 操作后，其他规则将保持有效且 WLM 将继续监控查询。</p>
+                  </li><li class="listitem">
+                     <p>Hop（仅适用于手动 WLM）– 记录操作，并让查询跳到下一个匹配的队列中。如果没有其他匹配的队列，则会取消查询。QMR 仅跳过 <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_AS.html">CREATE TABLE AS</a> (CTAS )语句和只读查询，例如 SELECT 语句。有关更多信息，请参阅<a href="./wlm-queue-hopping.html">WLM 查询队列跳过</a>。</p>
+                  </li><li class="listitem">
+                     <p>中止 – 记录操作并取消查询。QMR 不会中止 COPY 语句和维护操作，例如 ANALYZE 和 VACUUM。</p>
+                  </li><li class="listitem">
+                     <p>更改优先级（仅适用于自动 WLM）– 更改查询的优先级。</p>
+                  </li></ul></div>
+            </li></ul></div>
+
+         
+         <p>要限制查询的运行时，我们建议您创建查询监控规则，而不是使用 WLM 超时。例如，您可以将 <code class="code">max_execution_time</code> 设置为 50,000 毫秒，如以下 JSON 代码段所示。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"max_execution_time": 50000</code></pre>
+         <p>但我们建议您定义一个等效的查询监控规则，此规则将 <code class="code">query_execution_time</code> 设置为 50 秒，如下面的 JSON 代码段所示。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"rules": 
+[
+    <span>{</span>
+        "rule_name": "rule_query_execution",
+        "predicate": [
+            <span>{</span>
+                "metric_name": "query_execution_time",
+                "operator": "&gt;",
+                "value": 50
+            }
+        ],
+        "action": "abort"
+    }            
+]</code></pre>
+         
+         <p>有关创建或修改查询监控规则的步骤，请参阅《Amazon Redshift 管理指南》<em></em>中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-parameter-groups-console.html#parameter-group-modify-qmr-console">使用控制台创建或修改查询监控规则</a>和 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/workload-mgmt-config.html#wlm-json-config-properties">wlm_json_configuration 参数中的属性</a>。</p>
+         
+
+         <p>您可以在以下主题中找到有关查询监控规则的更多信息：</p>
+         <div class="itemizedlist">
+             
+
+             
+
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>
+                  <a href="#cm-c-wlm-query-monitoring-metrics">预置的 Amazon Redshift 的查询监控指标</a>
+               </p>
+            </li><li class="listitem">
+               <p>
+                  <a href="#cm-c-wlm-query-monitoring-templates">查询监控规则模板</a>
+               </p>
+            </li><li class="listitem">
+               <p> <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-parameter-groups-console.html#parameter-group-modify-qmr-console">使用控制台创建规则</a> </p>
+            </li><li class="listitem">
+               <p> <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/workload-mgmt-config.html">配置工作负载管理</a> </p>
+            </li><li class="listitem">
+               <p>
+                  <a href="#cm-c-wlm-qmr-tables-and-views">查询监控规则的系统表和视图</a>
+               </p>
+            </li></ul></div>
+       
+         <h2 id="cm-c-wlm-query-monitoring-metrics">预置的 Amazon Redshift 的查询监控指标</h2>
+
+
+         <p>下表描述了查询监控规则中使用的指标。(这些指标与存储在 <a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a> 和 <a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a> 系统表中的指标不同。) </p>
+         <p>对于某个给定指标，将在查询级别或段级别跟踪性能阈值。有关段和步骤的更多信息，请参阅<a href="./c-query-planning.html">查询计划和执行工作流程</a>。</p>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p><a href="./cm-c-defining-query-queues.html#wlm-timeout">WLM 超时</a> 参数与查询监控规则不同。</p></div></div>
+
+         <div class="table-container"><div class="table-contents"><table id="w319aac43c57c15b9"><thead>
+                  <tr>
+                     <th>指标</th>
+                     <th>名称</th>
+                     <th>描述</th>
+
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">查询 CPU 时间</td>
+                     <td tabindex="-1">
+                        <code class="code">query_cpu_time</code>
+                     </td>
+                     <td tabindex="-1">查询使用的 CPU 时间（以秒为单位）。<code class="code">CPU
+                           time</code> 与 <code class="code">Query execution time</code> 不同。<p>有效值为 0–999,999。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">数据块读取</td>
+                     <td tabindex="-1">
+                        <code class="code">query_blocks_read</code>
+                     </td>
+                     <td tabindex="-1">查询读取的 1 MB 数据块的数量。<p>有效值为 0–1,048,575。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">扫描行数</td>
+                     <td tabindex="-1">
+                        <code class="code">scan_row_count</code>
+                     </td>
+                     <td tabindex="-1">
+                        <p>扫描步骤中行的数量。行计数是在筛选标记为删除的行（虚影行）之前和应用用户定义的查询筛选之前发出的行的总数。</p>
+                        <p>有效值为 0–999,999,999,999,999。</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">查询执行时间</td>
+                     <td tabindex="-1">
+                        <code class="code">query_execution_time</code>
+                     </td>
+                     <td tabindex="-1">执行查询所用的时间（以秒为单位）。执行时间不包括在队列中等待的时间。<p>有效值为 0–86,399。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">查询队列时间</td>
+                     <td tabindex="-1">
+                        <code class="code">query_queue_time</code>
+                     </td>
+                     <td tabindex="-1">在队列中等待所花的时间（以秒为单位）。<p>有效值为 0–86,399。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">CPU 使用率</td>
+                     <td tabindex="-1">
+                        <code class="code">query_cpu_usage_percent</code>
+                     </td>
+                     <td tabindex="-1">查询使用的 CPU 容量的百分比。<p>有效值为 0–6,399。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">内存到磁盘</td>
+                     <td tabindex="-1">
+                        <code class="code">query_temp_blocks_to_disk</code>
+                     </td>
+                     <td tabindex="-1">用于写入中间结果的临时磁盘空间（单位为 1 MB 数据块）。<p>有效值为 0–319,815,679。</p></td>  
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">CPU 偏斜</td>
+                     <td tabindex="-1">
+                        <code class="code">cpu_skew</code>
+                     </td>
+                     <td tabindex="-1">任何切片的最大 CPU 使用率与所有切片的平均 CPU 使用率的比率。此指标在段级别进行定义。<p>有效值为 0–99。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">I/O 偏斜</td>
+                     <td tabindex="-1">
+                        <code class="code">io_skew</code>
+                     </td>
+                     <td tabindex="-1">任何切片的最大数据块读取 (I/O) 与所有切片的平均数据块读取的比率。此指标在段级别进行定义。<p>有效值为 0–99。</p></td>
+                  </tr>
+
+                  <tr>
+                     <td tabindex="-1">联接的行</td>
+                     <td tabindex="-1">
+                        <code class="code">join_row_count</code>
+                     </td>
+                     <td tabindex="-1">联接步骤中处理的行数。<p>有效值为 0–999,999,999,999,999。</p></td>
+                  </tr>
+
+                  <tr>
+                     <td tabindex="-1">嵌套循环联接行数</td>
+                     <td tabindex="-1">
+                        <code class="code">nested_loop_join_row_count</code>
+                     </td>
+                     <td tabindex="-1">嵌套循环联接中行的数量。<p>有效值为 0–999,999,999,999,999。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">返回行数</td>
+                     <td tabindex="-1">
+                        <code class="code">return_row_count</code>
+                     </td>
+                     <td tabindex="-1">查询返回的行数。<p> 有效值为 0–999,999,999,999,999。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">段执行时间</td>
+                     <td tabindex="-1">
+                        <code class="code">segment_execution_time</code>
+                     </td>
+                     <td tabindex="-1">执行单个段所用的时间（以秒为单位）。为避免或减少采样错误，请在规则中包括 <code class="code">segment_execution_time
+                           &gt; 10</code>。<p>有效值为 0–86,388。</p></td>
+                  </tr>
+
+                  <tr>
+                     <td tabindex="-1">Spectrum 扫描行数</td>
+                     <td tabindex="-1">
+                        <code class="code">spectrum_scan_row_count</code>
+                     </td>
+                     <td tabindex="-1">Amazon S3 中由 Amazon Redshift Spectrum 查询扫描的数据的行数。<p>有效值为 0–999,999,999,999,999。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Spectrum 扫描大小</td>
+                     <td tabindex="-1">
+                        <code class="code">spectrum_scan_size_mb</code>
+                     </td>
+                     <td tabindex="-1">Amazon S3 中由 Amazon Redshift Spectrum 查询扫描的数据的大小 (MB)。<p>有效值为 0–999,999,999,999,999。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">查询优先级</td>
+                     <td tabindex="-1">
+                        <code class="code">query_priority</code>
+                     </td>
+                     <td tabindex="-1">查询的优先级。<p>有效值为 <code class="code">HIGHEST</code>、<code class="code">HIGH</code>、<code class="code">NORMAL</code>、<code class="code">LOW</code> 和 <code class="code">LOWEST</code>。使用大于 (&gt;) 和小于 (&lt;) 运算符比较 <code class="code">query_priority</code> 时，<code class="code">HIGHEST</code> 大于 <code class="code">HIGH</code>，<code class="code">HIGH</code> 大于 <code class="code">NORMAL</code>，依此类推。</p></td>
+                  </tr>
+               </table></div></div>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem"><p><code class="code">query_queue_time</code> 谓词不支持跳转操作。也就是说，在满足 <code class="code">query_queue_time</code> 谓词时，将忽略定义了跳转的规则。</p></li><li class="listitem">
+            <p>较短的段执行时间可能会导致某些指标（例如 <code class="code">io_skew</code> 和 <code class="code">query_cpu_usage_percent</code>）出现采样错误。为避免或减少采样错误，请在规则中包括段执行时间。<code class="code">segment_execution_time &gt; 10</code> 是一个好起点。</p>
+            </li></ul></div></div></div>
+         <p><a href="./r_SVL_QUERY_METRICS.html">SVL_QUERY_METRICS</a> 视图显示已完成查询的指标。<a href="./r_SVL_QUERY_METRICS_SUMMARY.html">SVL_QUERY_METRICS_SUMMARY</a> 视图显示已完成查询的指标的最大值。使用这些视图中的值帮助确定用于定义查询监控规则的阈值。</p>
+       
+         <h2 id="cm-c-wlm-query-monitoring-metrics-serverless">查询 Amazon Redshift Serverless 的监控指标</h2>
+         <p>下表描述了为 Amazon Redshift Serverless 查询监控规则中使用的指标。</p>
+            
+         
+         <div class="table-container"><div class="table-contents"><table id="w319aac43c57c17b5"><thead>
+                  <tr>
+                     <th>指标</th>
+                     <th>名称</th>
+                     <th>描述</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">查询 CPU 时间</td>
+                     <td tabindex="-1"><code class="code">max_query_cpu_time</code></td>
+                     <td tabindex="-1">查询使用的 CPU 时间（以秒为单位）。<code class="code">CPU time</code> 与 <code class="code">Query execution time</code> 不同。<p>有效值为 0–999,999。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">数据块读取</td>
+                     <td tabindex="-1">
+                        <code class="code">max_query_blocks_read</code>
+                     </td>
+                     <td tabindex="-1">查询读取的 1 MB 数据块的数量。<p>有效值为 0–1,048,575。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">扫描行数</td>
+                     <td tabindex="-1">
+                        <code class="code">max_scan_row_count</code>
+                     </td>
+                     <td tabindex="-1">
+                        <p>扫描步骤中行的数量。行计数是在筛选标记为删除的行（虚影行）之前和应用用户定义的查询筛选之前发出的行的总数。</p>
+                        <p>有效值为 0–999,999,999,999,999。</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">查询执行时间</td>
+                     <td tabindex="-1">max_query_execution_time</td>
+                     <td tabindex="-1">
+                        <p>执行查询所用的时间（以秒为单位）。执行时间不包括在队列中等待的时间。如果查询超出设置的执行时间，Amazon Redshift Serverless 将停止查询。</p>
+                        <p>有效值为 0–86,399。</p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">查询队列时间</td>
+                     <td tabindex="-1"><code class="code">max_query_queue_time</code></td>
+                     <td tabindex="-1">在队列中等待所花的时间（以秒为单位）。<p>有效值为 0–86,399。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">CPU 使用率</td>
+                     <td tabindex="-1">
+                        <code class="code">max_query_cpu_usage_percent</code>
+                     </td>
+                     <td tabindex="-1">查询使用的 CPU 容量的百分比。<p>有效值为 0–6,399。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">内存到磁盘</td>
+                     <td tabindex="-1">
+                        <code class="code">max_query_temp_blocks_to_disk</code>
+                     </td>
+                     <td tabindex="-1">用于写入中间结果的临时磁盘空间（单位为 1 MB 数据块）。<p>有效值为 0–319,815,679。</p></td>  
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">联接的行</td>
+                     <td tabindex="-1">
+                        <code class="code">max_join_row_count</code>
+                     </td>
+                     <td tabindex="-1">联接步骤中处理的行数。<p>有效值为 0–999,999,999,999,999。</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">嵌套循环联接行数</td>
+                     <td tabindex="-1">
+                        <code class="code">max_nested_loop_join_row_count</code>
+                     </td>
+                     <td tabindex="-1">嵌套循环联接中行的数量。<p>有效值为 0–999,999,999,999,999。</p></td>
+                  </tr>
+               </table></div></div>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem"><p><code class="code">max_query_queue_time</code> 谓词不支持跳转操作。也就是说，在满足 <code class="code">max_query_queue_time</code> 谓词时，将忽略定义了跳转的规则。</p></li><li class="listitem">
+                  <p>较短的段执行时间可能会导致某些指标（例如 <code class="code">max_io_skew</code> 和 <code class="code">max_query_cpu_usage_percent</code>）出现采样错误。</p>
+               </li></ul></div></div></div>
+    
+       
+         <h2 id="cm-c-wlm-query-monitoring-templates">查询监控规则模板</h2>
+
+
+
+         <p>当您使用 Amazon Redshift 控制台添加规则时，可以选择从预定义的模板中创建规则。Amazon Redshift 将创建具有一组谓词的新规则，并使用默认值填充这些谓词。默认操作是 log。您可以修改这些谓词和操作以满足您的使用案例。</p>
+         <p>下表列出了可用的模板。</p>
+         <div class="table-container"><div class="table-contents"><table id="w319aac43c57c19b7"><thead>
+                  <tr>
+                     <th>模板名称</th>
+                     <th>Predicates</th>
+                     <th>描述</th>
+
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">嵌套循环联接</td>
+                     <td tabindex="-1">
+                        <code class="code">nested_loop_join_row_count &gt; 100</code>
+                     </td>
+                     <td tabindex="-1">嵌套循环联接可能表示未完成的联接谓词，这通常会产生一个非常大的返回集（笛卡尔积）。请使用一个较小的行数以及早找到潜在的失控查询。</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">查询返回了大量的行</td>
+                     <td tabindex="-1">
+                        <code class="code">return_row_count &gt; 1000000</code>
+                     </td>
+                     <td tabindex="-1">如果您将队列指定为简单的短时间运行查询，则可包含查找返回较大行数的查询的规则。该模板使用 100 万个行的默认值。对于某些系统，您可能认为 100 万个行过大，或者在较大型系统中，100 万或更多个行可能过大。</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">与大量的行联接</td>
+                     <td tabindex="-1">
+                        <code class="code">join_row_count &gt; 1000000000</code>
+                     </td>
+                     <td tabindex="-1">涉及异常过大行数的联接步骤可能表示需要更严格的筛选条件。该模板使用 10 亿个行的默认值。对于旨在快速简单查询的临时（一次性）队列，您可使用较小的行数。</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">写入中间结果时占用大量的磁盘空间</td>
+                     <td tabindex="-1">
+                        <code class="code">query_temp_blocks_to_disk &gt; 100000</code>
+                     </td>
+                     <td tabindex="-1">如果当前正在执行的查询使用多个可用的系统 RAM，则查询执行引擎会将中间结果写入磁盘（溢出的内存）。通常，此条件是恶意查询的结果，通常也是使用大部分磁盘空间的查询。磁盘使用率的可接受阈值因集群节点类型和节点数而异。该模板使用 100000 个数据块或 100 GB 的默认值。对于小型集群，您可使用较小的数字。</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">I/O 偏斜高的查询运行时间长</td>
+                     <td tabindex="-1"><code class="code">segment_execution_time &gt; 120</code>–和–<code class="code">io_skew &gt; 1.30</code> </td>
+                     <td tabindex="-1">I/O 偏斜发生在一个节点切片具有的 I/O 比率要比其他切片的比率高得多的时候。作为起点，1.30 的偏斜（平均 1.3 倍）被认为较高。高 I/O 偏斜并不总是一个问题，但在与长时间运行的查询结合时，它可能表示分配方式或排序键存在问题。</td>
+                  </tr>
+               </table></div></div>
+
+       
+         <h2 id="cm-c-wlm-qmr-tables-and-views">查询监控规则的系统表和视图</h2>
+
+
+
+         <p>当满足规则的所有谓词时，WLM 会在 <a href="./r_STL_WLM_RULE_ACTION.html">STL_WLM_RULE_ACTION</a> 系统表中写入一行。此行包含规则所触发查询的详细信息以及所导致的操作。</p>
+         <p>此外，Amazon Redshift 还将查询指标记录到以下系统表和视图中。</p>
+         <div class="itemizedlist">
+             
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p><a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a> 表显示当前正在运行的查询的指标。</p>
+            </li><li class="listitem">
+               <p><a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a> 表记录已完成的查询的指标。</p>
+            </li><li class="listitem">
+               <p><a href="./r_SVL_QUERY_METRICS.html">SVL_QUERY_METRICS</a> 视图显示已完成查询的指标。</p>
+            </li><li class="listitem">
+               <p><a href="./r_SVL_QUERY_METRICS_SUMMARY.html">SVL_QUERY_METRICS_SUMMARY</a> 视图显示已完成查询的指标的最大值。</p>
+            </li></ul></div>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./cm-c-wlm-dynamic-example.html">动态 WLM 示例</div><div id="next" class="next-link" accesskey="n" href="./cm-c-wlm-system-tables-and-views.html">WLM 系统表和视图</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

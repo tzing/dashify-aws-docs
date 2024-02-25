@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>示例 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="r_HLL-examples" /><meta name="default_state" content="r_HLL-examples" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_HLL-examples.html" /><meta name="description" content="以下示例为名为 Sales 表中的子查询中的每个草图返回基数。 以下示例返回一个表示子查询中各个草图组合的单个 HLLSKETCH 类型。这些草图通过使用 HLL_COMBINE 聚合函数进行组合。 对于以下示例，假设表 page-users 存储用户在给定网站上访问的每个页面的预聚合草图。此表中的每一行都包含一个 HyperLogLog 草图，该草图表示显示所访问页面的所有用户 ID。 以下示例将缓存 HyperLogLog 草图，以避免直接访问 Amazon S3 进行基数估计。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_HLL-examples.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/r_HLL-examples.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/r_HLL-examples.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/r_HLL-examples.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/r_HLL-examples.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/r_HLL-examples.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/r_HLL-examples.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/r_HLL-examples.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/r_HLL-examples.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/r_HLL-examples.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/r_HLL-examples.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/r_HLL-examples.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/r_HLL-examples.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_HLL-examples.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_HLL-examples.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_HLL-examples.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_HLL-examples.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/r_HLL-examples.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/r_HLL-examples.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_HLL-examples.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_HLL-examples.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/r_HLL-examples.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="示例" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>示例 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#r_HLL-examples" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_HLL-examples.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_HLL-examples.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_HLL-examples.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "在 Amazon Redshift 中使用 HyperLogLog 草图",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/hyperloglog-overview.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "示例",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/hyperloglog-overview.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#r_HLL-examples" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#hll-examples-subquery">示例：在子查询中返回基数</a><a href="#hll-examples-combined-subquery">示例：从子查询中的组合草图返回 HLLSKETCH 类型</a><a href="#hll-examples-multiple-sketches">示例：通过合并多个草图返回 HyperLogLog 草图</a><a href="#hll-examples-cache-sketches">示例：使用外部表在 S3 数据上生成 HyperLogLog 草图</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="r_HLL-examples">示例</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div>
+            <h2 id="hll-examples-subquery">示例：在子查询中返回基数</h2>
+            <p>以下示例为名为 <em>Sales</em> 表中的子查询中的每个草图返回基数。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE Sales (customer VARCHAR, country VARCHAR, amount BIGINT);
+INSERT INTO Sales VALUES ('David Joe', 'Greece', 14.5),  ('David Joe', 'Greece', 19.95), ('John Doe', 'USA', 29.95), ('John Doe', 'USA', 19.95), ('George Spanos', 'Greece', 9.95), ('George Spanos', 'Greece', 2.95);</code></pre>
+            
+            <p>以下查询为每个国家/地区的客户生成 HLL 草图并提取基数。这显示了来自每个国家/地区的独特客户。</p>
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT hll_cardinality(sketch), country
+FROM (SELECT hll_create_sketch(customer) AS sketch, country
+        FROM Sales
+        GROUP BY country) AS hll_subquery;
+        
+hll_cardinality | country
+----------------+---------
+            1   | USA
+            2   | Greece
+ ...</code></pre>
+          
+            <h2 id="hll-examples-combined-subquery">示例：从子查询中的组合草图返回 HLLSKETCH 类型</h2>
+            <p>以下示例返回一个表示子查询中各个草图组合的单个 HLLSKETCH 类型。这些草图通过使用 HLL_COMBINE 聚合函数进行组合。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT hll_combine(sketch)
+FROM (SELECT hll_create_sketch(customers) AS sketch
+        FROM Sales
+        GROUP BY country) AS hll_subquery
+       
+                                        hll_combine
+--------------------------------------------------------------------------------------------
+ <span>{</span>"version":1,"logm":15,"sparse":<span>{</span>"indices":[29808639,35021072,47612452],"values":[1,1,1]}}
+(1 row)       
+       </code></pre>
+          
+            <h2 id="hll-examples-multiple-sketches">示例：通过合并多个草图返回 HyperLogLog 草图</h2>
+            <p>对于以下示例，假设表 <code class="code">page-users</code> 存储用户在给定网站上访问的每个页面的预聚合草图。此表中的每一行都包含一个 HyperLogLog 草图，该草图表示显示所访问页面的所有用户 ID。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">page_users
+-- +----------------+-------------+--------------+
+-- | _PARTITIONTIME | page         | sketch |
+-- +----------------+-------------+--------------+
+-- | 2019-07-28     | homepage     | CHAQkAQYA... |
+-- | 2019-07-28     | Product A    | CHAQxPnYB... |
+-- +----------------+-------------+--------------+</code></pre>
+            <p>以下示例将预聚合的多个草图联合起来，并生成单个草图。此草图封装了每个草图封装的集体基数。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT hll_combine(sketch) as sketch
+FROM page_users</code></pre>
+            <p>该输出值看上去类似于以下内容。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">-- +-----------------------------------------+
+-- | sketch |
+-- +-----------------------------------------+
+-- | CHAQ3sGoCxgCIAuCB4iAIBgTIBgqgIAgAwY.... |
+-- +-----------------------------------------+</code></pre>
+            <p>创建新草图时，您可以使用 HLL_CARDINALITY 函数获取集体的不同值，如下所示。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT hll_cardinality(sketch)
+FROM ( 
+  SELECT
+  hll_combine(sketch) as sketch
+  FROM page_users
+) AS hll_subquery
+       </code></pre>
+            <p>该输出值看上去类似于以下内容。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">-- +-------+
+-- | count |
+-- +-------+
+-- | 54356 |
+-- +-------+</code></pre>
+          
+            <h2 id="hll-examples-cache-sketches">示例：使用外部表在 S3 数据上生成 HyperLogLog 草图</h2>
+            <p>以下示例将缓存 HyperLogLog 草图，以避免直接访问 Amazon S3 进行基数估计。</p>
+            <p>您可以在定义为保存 Amazon S3 数据的外部表中预聚合和缓存 HyperLogLog 草图。通过执行此操作，您可以提取基数估计值，而无需访问基础基数数据。</p>
+            <p>例如，假设您已将一组制表符分隔文本文件卸载到 Amazon S3 中。您可以运行以下查询在名为 <code class="code">spectrum</code> 的 Amazon Redshift 外部架构中定义名为 <code class="code">sales</code> 的外部表。</p>
+            
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create external table spectrum.sales(
+salesid integer,
+listid integer,
+sellerid integer,
+buyerid integer,
+eventid integer,
+dateid smallint,
+qtysold smallint,
+pricepaid decimal(8,2),
+commission decimal(8,2),
+saletime timestamp)
+row format delimited
+fields terminated by '\t'stored as textfile
+location 's3://redshift-downloads/tickit/spectrum/sales/';</code></pre>
+            
+            <p>假设您想计算在任意日期购买商品的不同买家。为此，以下示例为一年中的每一天生成买家 ID 草图，并将结果存储在 Amazon Redshift 表中<code class="code">hll_sales</code>。</p>
+            
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE hll_sales AS
+SELECT saletime, hll_create_sketch(buyerid) AS sketch
+FROM spectrum.sales
+GROUP BY saletime;</code></pre>
+            <p>该输出值看上去类似于以下内容。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">-- hll_sales
+
+-- | saletime       | sketch        |
+-- +----------------+---------------+
+-- | 2018-11-23     | "CHAQkAQYA..."
+-- | 2018-11-24     | "TNLMLMLKK..."
+-- | 2018-11-25     | "KMNKLLOKM..."
+-- | 2018-11-26     | "MMKNKLLMO..."
+-- | 2018-11-27     | "MMLSKNLPM..."
+-- +----------------+---------------+</code></pre>
+            
+            
+            <p>以下查询提取了感恩节之后的星期五购买商品的不同买家的估计数量。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT hll_cardinality(sketch) as distinct_buyers
+FROM hll_sales
+WHERE saletime = '2018-11-23';     </code></pre>
+            <p>该输出值看上去类似于以下内容。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">distinct_buyers
+---------------
+1771</code></pre>
+            
+            <p>假设您需要在特定日期范围内购买商品的不同用户数量。例如，从感恩节后的星期五到下一个星期一。为此，以下查询使用 <code class="code">hll_combine</code> 聚合函数。此函数使您能够避免重复计算在选定范围内超过一天购买商品的买家。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT hll_cardinality(hll_combine(sketch)) as distinct_buyers
+FROM hll_sales
+WHERE saletime BETWEEN '2018-11-23' AND '2018-11-26';</code></pre>
+            <p>该输出值看上去类似于以下内容。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">distinct_buyers
+---------------
+232152</code></pre>
+            
+            <p>要保留最新的 <code class="code">hll_sales</code>表，请在每天结束时运行以下查询。这样做会根据今天购买商品的买家的 ID 生成一个 HyperLogLog 草图，并将其添加到 <code class="code">hll_sales</code> 表。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">INSERT INTO hll_sales 
+SELECT saletime, hll_create_sketch(buyerid) 
+FROM spectrum.sales 
+WHERE saletime = to_char(now(), 'YYYY-MM-DD');</code></pre>
+         <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./hyperloglog-functions-limitations.html">限制</div><div id="next" class="next-link" accesskey="n" href="./cross-database-overview.html">跨数据库查询数据</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_HLL-examples.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/r_HLL-examples.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>更新和插入新数据 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="t_updating-inserting-using-staging-tables-" /><meta name="default_state" content="t_updating-inserting-using-staging-tables-" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" /><meta name="description" content="使用 MERGE 命令在现有表中更新或插入新数据。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="更新和插入新数据" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>更新和插入新数据 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#t_updating-inserting-using-staging-tables-" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "加载数据",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_Loading_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "更新和插入新数据",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_Loading_data.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#t_updating-inserting-using-staging-tables-" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#merge-method-replace-existing-rows">合并方法 1：替换现有行</a><a href="#merge-method-specify-column-list">合并方法 2：在不使用 MERGE 的情况下指定列列表</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="t_updating-inserting-using-staging-tables-">更新和插入新数据</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>您可以使用 MERGE 命令高效地向现有表中添加新数据。执行合并操作，方法是创建暂存表，然后使用本节中描述的方法之一从暂存表更新目标表。有关 MERGE 命令的更多信息，请参阅<a href="./r_MERGE.html">MERGE</a>。</p><div class="highlights"><h6>主题</h6><ul><li><a href="#merge-method-replace-existing-rows">合并方法 1：替换现有行</a></li><li><a href="#merge-method-specify-column-list">合并方法 2：在不使用 MERGE 的情况下指定列列表</a></li><li><a href="./merge-create-staging-table.html">创建临时的暂存表</a></li><li><a href="./merge-replacing-existing-rows.html">替换现有行以执行合并操作</a></li><li><a href="./merge-specify-a-column-list.html">通过在不使用 MERGE 的情况下指定列列表执行合并操作</a></li><li><a href="./merge-examples.html">合并示例</a></li></ul></div><p><a href="./merge-examples.html">合并示例</a>使用名为 TICKIT 数据集的 Amazon Redshift 示例数据集。作为先决条件，您可以按照<a href="https://docs.aws.amazon.com/redshift/latest/gsg/database-tasks.html">开始使用常见数据库任务</a>中提供的说明设置 TICKIT 表和数据。有关示例数据集的更多详细信息可在<a href="https://docs.aws.amazon.com/redshift/latest/dg/c_sampledb.html">示例数据库</a>中找到。</p>
+         <h2 id="merge-method-replace-existing-rows">合并方法 1：替换现有行</h2>
+
+         <p>如果您要覆盖目标表中的所有列，执行合并的最快方法是替换现有行。这将通过使用内部联接删除将要更新的行，从而仅需扫描目标表一次。在删除某些行后，通过从暂存表执行单个插入操作即可使用新行来替换它们。</p>
+         <p>请在满足以下所有条件时用此方法：</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>您的目标表和暂存表包含相同的列。</p>
+            </li><li class="listitem">
+               <p>您要将目标表列中的所有数据替换为所有的暂存表列。</p>
+            </li><li class="listitem">
+               <p>您将在合并操作中使用暂存表中的所有行。</p>
+            </li></ul></div>
+         <p>如果未满足以上任一条件，请使用下一节所述的“合并方法 2：在不使用 MERGE 的情况下指定列列表”。</p>
+         <p>如果您不使用暂存表中的所有行，则使用 WHERE 子句筛选 DELETE 和 INSERT 语句，以忽略未更改的行。但是，如果暂存表中的大多数行不会参与合并，我们建议通过单独的步骤中执行 UPDATE 和 INSERT，如本节后面所述。</p>
+       
+         <h2 id="merge-method-specify-column-list">合并方法 2：在不使用 MERGE 的情况下指定列列表</h2>
+
+         <p>使用此方法可更新目标表中的特定列，而不是覆盖所有行。此方法比前一个方法消耗的时间更长，因为它需要执行一个额外的更新步骤，并且不使用 MERGE 命令。请在满足以下所有条件时用此方法：</p>
+         <div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>并非要更新目标表中的所有列。</p>
+            </li><li class="listitem">
+               <p>暂存表中的大多数行在更新中将不会使用。</p>
+            </li></ul></div>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./t_Updating_tables_with_DML_commands.html">使用 DML 进行更新</div><div id="next" class="next-link" accesskey="n" href="./merge-create-staging-table.html">创建临时的暂存表</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_updating-inserting-using-staging-tables-.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

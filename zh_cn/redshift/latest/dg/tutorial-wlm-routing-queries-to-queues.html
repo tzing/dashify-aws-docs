@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>第 3 节：根据用户组和查询组将查询路由到队列 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-wlm-routing-queries-to-queues" /><meta name="default_state" content="tutorial-wlm-routing-queries-to-queues" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="description" content="现在，您的集群已与一个新的参数组相关联，并且您已配置 WLM。接下来，运行一些查询，以了解 Amazon Redshift 如何将查询路由到队列进行处理。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="第 3 节：根据用户组和查询组将查询路由到队列" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>第 3 节：根据用户组和查询组将查询路由到队列 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-wlm-routing-queries-to-queues" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "实施工作负载管理",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "实施手动 WLM",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-defining-query-queues.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "教程：配置手动工作负载管理 (WLM) 队列",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "第 3 节：根据用户组和查询组将查询路由到队列",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-wlm-routing-queries-to-queues" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#tutorial-wlm-view-query-config">步骤 1：在数据库中查看查询队列配置</a><a href="#tutorial-wlm-query-group">步骤 2：使用查询组队列运行查询</a><a href="#tutorial-wlm-create-db-user-and-group">步骤 3：创建数据库用户和组</a><a href="#tutorial-wlm-user-group-query">步骤 4：使用用户组队列运行查询</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-wlm-routing-queries-to-queues">第 3 节：根据用户组和查询组将查询路由到队列</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>现在，您的集群已与一个新的参数组相关联，并且您已配置 WLM。接下来，运行一些查询，以了解 Amazon Redshift 如何将查询路由到队列进行处理。</p>
+            <h2 id="tutorial-wlm-view-query-config">步骤 1：在数据库中查看查询队列配置</h2>
+
+            <p>首先，验证数据库具有您希望的 WLM 配置。</p>
+             
+                <h3 id="how-to-wlm-view-query-config">查看查询队列配置</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                <ol><li>
+                        <p>打开 RSQL 并运行以下查询。此查询使用您在<a href="./tutorial-wlm-understanding-default-processing.html#tutorial-wlm-create-queue-state-view">步骤 1：创建 WLM_QUEUE_STATE_VW 视图</a>中创建的 WLM_QUEUE_STATE_VW 视图。如果您在集群重启之前已将会话连接到数据库，则将需要进行重新连接。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;</code></pre>
+                        <p>下面是示例结果。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_060.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>将这些结果您与<a href="./tutorial-wlm-understanding-default-processing.html#tutorial-wlm-create-queue-state-view">步骤 1：创建 WLM_QUEUE_STATE_VW 视图</a>中获得的结果进行比较。请注意，现在有另外两个队列。队列 1 现在是面向 test 查询组的队列，而队列 2 则是面向 admin 用户组的队列。</p>
+                        <p>队列 3 现在是默认队列。列表中的最后一个队列始终是默认队列。这是在查询中未指定任何用户组或查询组的情况下默认将查询路由至的队列。</p>
+                    </li><li>
+                        <p>运行以下查询以确认您的查询现在在队列 3 中运行。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;</code></pre>
+                        <p>下面是示例结果。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_070.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-query-group">步骤 2：使用查询组队列运行查询</h2>
+
+
+             
+                <h3 id="how-to-wlm-query-group">使用查询组队列运行查询</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+                     
+                     
+                <ol><li>
+                        <p>运行以下查询以将其路由至 <code class="code">test</code> 查询组。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set query_group to test;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>在另一个 RSQL 窗口中，运行以下查询。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;</code></pre>
+                        <p>下面是示例结果。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_080.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>查询已路由至 test 查询组，现在是队列 1。</p>
+                    </li><li>
+                        <p>从队列状态视图中选择全部。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;</code></pre>
+                        <p>您将看到类似以下内容的结果。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_090.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li><li>
+                        <p>现有，重置查询组并再次运行长时间运行的查询：</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">reset query_group;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>针对视图运行查询以查看结果。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;
+select * from wlm_query_state_vw;</code></pre>
+                        <p>以下是示例结果。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_100.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_110.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>结果应是查询现在正在队列 3 中再次运行。</p>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-create-db-user-and-group">步骤 3：创建数据库用户和组</h2>
+
+            <p>在您可以在此队列中运行任何查询之前，需要在数据库中创建用户组并向该组添加用户。然后，您将使用新用户的凭证通过 RSQL 进行登录，然后运行查询。您需要作为超级用户（如管理员用户）运行查询来创建数据库用户。</p>
+             
+                <h3 id="how-to-wlm-create-db-user-and-group">创建新的数据库用户和用户组</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                <ol><li>
+                        <p>在数据库中，通过在 RSQL 窗口中运行以下命令来创建名为 <code class="code">adminwlm</code> 的新数据库用户。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create user adminwlm createuser password '123Admin';</code></pre>
+                    </li><li>
+                        <p>然后，运行以下命令来创建新用户组并将您的新 <code class="code">adminwlm</code> 用户添加到该组。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create group admin;
+alter group admin add user adminwlm;</code></pre>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-user-group-query">步骤 4：使用用户组队列运行查询</h2>
+
+            <p>接下来，您将运行一个查询并将该查询路由至用户组队列。当您想要将查询路由至配置为处理您要运行的查询类型的队列时，可执行此操作。</p>
+             
+                <h3 id="how-to-wlm-user-group-query">使用用户组队列运行查询</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+                     
+                     
+                <ol><li>
+                        <p>在 RSQL 窗口 2 中，运行以下查询以切换至 <code class="code">adminwlm</code> 账户并以该用户的身份运行查询。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set session authorization 'adminwlm';
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>在 RSQL 窗口 1 中，运行以下查询以查看查询路由至的查询队列。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;
+select * from wlm_queue_state_vw;</code></pre>
+                        <p>以下是示例结果。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_120.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_130.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>此查询是在队列 2（<code class="code">admin</code> 用户队列）中运行的。无论何时您以此用户的身份登录来运行查询，这些查询均将在队列 2 中运行，除非您指定要使用另一个查询组。所选队列取决于队列分配规则。有关更多信息，请参阅<a href="./cm-c-wlm-queue-assignment-rules.html">WLM 队列分配规则</a>。</p>
+                    </li><li>
+                        <p>现在，从 RSQL 窗口 2 中运行以下查询。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set query_group to test;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>在 RSQL 窗口 1 中，运行以下查询以查看查询路由至的查询队列。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;
+select * from wlm_query_state_vw;</code></pre>
+                        <p>以下是示例结果。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_140.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_150.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li><li>
+                        <p>当您完成后，请重置查询组。</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">reset query_group;</code></pre>
+                    </li></ol></div>
+             
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-wlm-modifying-wlm-configuration.html">第 2 节：修改 WLM 查询队列配置</div><div id="next" class="next-link" accesskey="n" href="./tutorial-wlm-query-slot-count.html">第 4 节：使用 wlm_query_slot_count 临时覆盖队列中的并发级别</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

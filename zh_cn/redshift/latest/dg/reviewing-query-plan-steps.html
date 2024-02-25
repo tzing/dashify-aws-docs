@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>检查查询计划步骤 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="reviewing-query-plan-steps" /><meta name="default_state" content="reviewing-query-plan-steps" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/reviewing-query-plan-steps.html" /><meta name="description" content="您可以通过运行 EXPLAIN 命令来查看查询计划中的步骤。以下示例显示了 SQL 查询并解释了输出。自下而上阅读该查询计划，您可以了解执行该查询所用的每个逻辑操作。有关更多信息，请参阅 。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/reviewing-query-plan-steps.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/reviewing-query-plan-steps.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="检查查询计划步骤" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>检查查询计划步骤 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#reviewing-query-plan-steps" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/reviewing-query-plan-steps.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/reviewing-query-plan-steps.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/reviewing-query-plan-steps.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "优化查询性能",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-optimizing-query-performance.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "查询处理",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-processing.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "检查查询计划步骤",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-processing.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#reviewing-query-plan-steps" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="reviewing-query-plan-steps">检查查询计划步骤</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>您可以通过运行 EXPLAIN 命令来查看查询计划中的步骤。以下示例显示了 SQL 查询并解释了输出。自下而上阅读该查询计划，您可以了解执行该查询所用的每个逻辑操作。有关更多信息，请参阅<a href="./c-the-query-plan.html">查询计划</a>。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">explain
+select eventname, sum(pricepaid) from sales, event
+where sales.eventid = event.eventid
+group by eventname
+order by 2 desc;</code></pre><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">XN Merge  (cost=1002815366604.92..1002815366606.36 rows=576 width=27)
+  Merge Key: sum(sales.pricepaid)
+  -&gt;  XN Network  (cost=1002815366604.92..1002815366606.36 rows=576 width=27)
+        Send to leader
+        -&gt;  XN Sort  (cost=1002815366604.92..1002815366606.36 rows=576 width=27)
+              Sort Key: sum(sales.pricepaid)
+              -&gt;  XN HashAggregate  (cost=2815366577.07..2815366578.51 rows=576 width=27)
+                    -&gt;  XN Hash Join DS_BCAST_INNER  (cost=109.98..2815365714.80 rows=172456 width=27)
+                          Hash Cond: ("outer".eventid = "inner".eventid)
+                          -&gt;  XN Seq Scan on sales  (cost=0.00..1724.56 rows=172456 width=14)
+                          -&gt;  XN Hash  (cost=87.98..87.98 rows=8798 width=21)
+                                -&gt;  XN Seq Scan on event  (cost=0.00..87.98 rows=8798 width=21)</code></pre><p>作为生成查询计划的一部分，查询优化程序将计划分解为流、分段和步骤。查询优化程序将分解计划，以准备将数据和查询工作负载分配到计算节点。有关流、分段和步骤的更多信息，请参阅<a href="./c-query-planning.html">查询计划和执行工作流程</a>。</p><p>下图显示了前面的查询和关联的查询计划。它显示涉及的查询操作如何映射到 Amazon Redshift 用于为计算节点切片生成编译代码的步骤。每个查询计划操作映射到段中的多个步骤，有时映射到流中的多个段。</p><div class="mediaobject">
+             
+               <img src="images/map-plan-to-streams.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+             
+         </div><p>在此图中，查询优化程序运行查询计划，如下所示：</p><div class="orderedlist">
+              
+             
+             
+         <ol><li><p>在 <code class="code">Stream 0</code> 中，查询通过顺序扫描操作运行 <code class="code">Segment 0</code>，以扫描 <code class="code">events</code> 表。查询继续通过哈希操作运行 <code class="code">Segment 1</code>，以为联接中的内部表创建哈希表。</p></li><li><p>在 <code class="code">Stream 1</code> 中，查询通过顺序扫描操作运行 <code class="code">Segment 2</code>，以扫描 <code class="code">sales</code> 表。它继续使用哈希联接运行 <code class="code">Segment
+                     2</code> 以联接表，其中联接列不是分配键和排序键。它再次继续通过哈希聚合来运行 <code class="code">Segment 2</code>，以聚合结果。然后，查询使用哈希聚合操作运行 <code class="code">Segment
+                     3</code> 来执行未排序的分组聚合函数和排序操作，以评估 ORDER BY 子句和其他排序操作。</p></li><li><p>在 <code class="code">Stream 2</code> 中，查询在 <code class="code">Segment 4</code> 和 <code class="code">Segment 5</code> 中运行网络操作，以将中间结果发送到领导节点以待进一步处理。</p></li></ol></div><p>查询的最后一个分段返回数据。如果聚合或对返回集进行排序，则计算节点将各自的中间结果段发送到领导节点。然后，领导节点合并数据，以便将最终结果发送回请求客户端。</p><p>有关 EXPLAIN 运算符的更多信息，请参阅<a href="./r_EXPLAIN.html">EXPLAIN</a>。</p><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c-the-query-plan.html">查询计划</div><div id="next" class="next-link" accesskey="n" href="./c-query-performance.html">影响查询性能的因素</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/reviewing-query-plan-steps.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/reviewing-query-plan-steps.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

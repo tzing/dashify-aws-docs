@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>查询分析工作流程 - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c-query-analysis-process" /><meta name="default_state" content="c-query-analysis-process" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-analysis-process.html" /><meta name="description" content="如果查询所花费的时间比预期的时间长，请使用以下步骤来确定并纠正可能对查询性能产生负面影响的问题。如果您不确定系统中的哪些查询可能会受益于性能调整，请先运行 中的诊断查询。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="数据库开发人员指南" /><meta name="abstract" content="使用 Amazon Redshift – 一种完全托管的企业 PB 级数据仓库服务 – 创建和管理数据仓库。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-analysis-process.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-query-analysis-process.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-query-analysis-process.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-query-analysis-process.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-query-analysis-process.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-query-analysis-process.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-query-analysis-process.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-query-analysis-process.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-query-analysis-process.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-query-analysis-process.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-query-analysis-process.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-query-analysis-process.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-query-analysis-process.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-query-analysis-process.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-query-analysis-process.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-analysis-process.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-query-analysis-process.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-query-analysis-process.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-query-analysis-process.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-analysis-process.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-query-analysis-process.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-query-analysis-process.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="数据库开发人员指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="数据库开发人员指南" /><meta id="panorama-serviceConsolePage" value="查询分析工作流程" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>查询分析工作流程 - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c-query-analysis-process" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-analysis-process.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-analysis-process.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-analysis-process.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,集群,数据仓库,开发人员,示例数据,数据库,数据库开发人员,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "数据库开发人员指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "优化查询性能",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-optimizing-query-performance.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "分析和改进查询",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-tuning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "查询分析工作流程",
+        "item" : "https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-tuning.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c-query-analysis-process" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="c-query-analysis-process">查询分析工作流程</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>如果查询所花费的时间比预期的时间长，请使用以下步骤来确定并纠正可能对查询性能产生负面影响的问题。如果您不确定系统中的哪些查询可能会受益于性能调整，请先运行 <a href="./diagnostic-queries-for-query-tuning.html#identify-queries-that-are-top-candidates-for-tuning">确定最适合优化的查询</a> 中的诊断查询。</p><div class="orderedlist">
+             
+             
+             
+             
+             
+             
+             
+             
+         <ol><li>
+               <p>确保您的表格按照最佳实践进行设计。有关更多信息，请参阅<a href="./c_designing-tables-best-practices.html">设计表的 Amazon Redshift 最佳实践</a>。</p>
+            </li><li>
+               <p>查看是否可以删除或归档表中的任何不需要的数据。例如，假设您的查询始终以过去 6 个月的数据为目标，但您的表中有最近 18 个月的数据。在这种情况下，您可以删除或归档较旧的数据，以减少必须扫描和分配的记录数。</p>
+            </li><li>
+               <p>对查询中的表运行 <a href="./r_VACUUM_command.html">VACUUM</a> 命令以回收空间并对行进行重新排序。如果未排序的区域很大，并且查询在联接或谓词中使用排序键，则运行 VACUUM 会有所帮助。</p>
+            </li><li>
+               <p>对查询中的表运行 <a href="./r_ANALYZE.html">ANALYZE</a> 命令，以确保统计信息是最新的。如果查询中的任何表最近在大小上发生了很大变化，则运行 ANALYZE 会有所帮助。如果运行完整的 ANALYZE 命令需要过长时间，则对某一列运行 ANALYZE，以减少处理时间。这种方法仍会更新表大小的统计数据；表大小在查询计划中是一个很重要的因素。</p>
+            </li><li>
+               <p>确保查询在每个类型的客户端（基于客户端使用的连接协议的类型）上都运行一次，以便查询得到编译和缓存。该种方法可加快查询的后续运行速度。有关更多信息，请参阅<a href="./c-query-performance.html">影响查询性能的因素</a>。</p>
+            </li><li>
+               <p>检查 <a href="./r_STL_ALERT_EVENT_LOG.html">STL_ALERT_EVENT_LOG</a> 表来识别和纠正查询中可能存在的问题。有关更多信息，请参阅<a href="./c-reviewing-query-alerts.html">查看查询警报</a>。</p>
+            </li><li>
+               <p>运行 <a href="./r_EXPLAIN.html">EXPLAIN</a> 命令以获取查询计划并使用它优化查询。有关更多信息，请参阅<a href="./c-analyzing-the-query-plan.html">分析查询计划</a>。</p>
+            </li><li>
+               <p>使用 <a href="./r_SVL_QUERY_SUMMARY.html">SVL_QUERY_SUMMARY</a> 和 <a href="./r_SVL_QUERY_REPORT.html">SVL_QUERY_REPORT</a> 视图来获取摘要信息并使用它来优化查询。有关更多信息，请参阅<a href="./c-analyzing-the-query-summary.html">分析查询摘要</a>。</p>
+            </li></ol></div><p>有时，应该快速运行的查询要被迫等到另一个运行时间较长的查询完成。在这种情况下，查询本身可能无需改进，但您可以通过为不同类型的查询创建和使用查询队列来提高整体系统性能。要了解查询的队列等待时间，请参阅<a href="./diagnostic-queries-for-query-tuning.html#review-queue-wait-times-for-queries">查看查询的队列等待时间</a>。有关配置查询队列的更多信息，请参阅<a href="./cm-c-implementing-workload-management.html">实施工作负载管理</a>。</p><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c-query-tuning.html">分析和改进查询</div><div id="next" class="next-link" accesskey="n" href="./c-reviewing-query-alerts.html">查看查询警报</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-analysis-process.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-query-analysis-process.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
