@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="es-ES"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Tutorial: Creación de modelos XGBoost - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_xgboost" /><meta name="default_state" content="tutorial_xgboost" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_xgboost.html" /><meta name="description" content="Utilice este tutorial para obtener un ejemplo de extremo a extremo de la creación de un modelo de machine learning de Amazon Redshift y la ejecución de consultas de inferencia." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guía para desarrolladores de bases de datos" /><meta name="abstract" content="Cree y administre un almacenamiento de datos con Amazon Redshift, un servicio de almacenamiento de datos completamente administrado a escala de petabytes de nivel empresarial." /><meta name="guide-locale" content="es_es" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_xgboost.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_xgboost.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_xgboost.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_xgboost.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_xgboost.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_xgboost.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_xgboost.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_xgboost.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_xgboost.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_xgboost.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_xgboost.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_xgboost.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_xgboost.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_xgboost.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_xgboost.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_xgboost.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_xgboost.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_xgboost.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_xgboost.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_xgboost.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_xgboost.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_xgboost.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guía para desarrolladores de bases de datos" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guía para desarrolladores de bases de datos" /><meta id="panorama-serviceConsolePage" value="Tutorial: Creación de modelos XGBoost" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Tutorial: Creación de modelos XGBoost - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_xgboost" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_xgboost.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_xgboost.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_xgboost.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,Clúster,almacenamiento de datos,desarrollador,datos de ejemplo,base de datos,desarrollador de base de datos,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guía para desarrolladores de bases de datos",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Uso de machine learning en Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Introducción a Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Tutoriales de Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "Tutorial: Creación de modelos XGBoost",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_xgboost" target="_blank" rel="noopener noreferrer" title="Abrir PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentación</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guía para desarrolladores de bases de datos</a></div><div id="page-toc-src"><a href="#tutorial_xgboost_tasks">Ejemplos de casos de uso</a><a href="#tutorial_xgboost_prereqs">Requisitos previos</a><a href="#tutorial_xgboost_step_load">Paso 1: Cargar los datos desde Amazon S3 en Amazon Redshift</a><a href="#tutorial_xgboost_step_create_model">Paso 2: Crear el modelo de machine learning</a><a href="#tutorial_xgboost_step_perform_predictions">Paso 3: Realizar predicciones con el modelo</a><a href="#tutorial_xgboost_related_topics">Temas relacionados</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_xgboost">Tutorial: Creación de modelos XGBoost</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>En este tutorial, creará un modelo con datos de Amazon S3 y ejecutará consultas de predicción con el modelo mediante Amazon Redshift ML. El algoritmo XGBoost es una implementación optimizada del algoritmo de árboles aumentados. XGBoost maneja más tipos de datos, relaciones y distribuciones que otros algoritmos de árboles aumentados. Puede usar XGBoost para problemas de regresión, de clasificación binaria, clasificación multiclase) y de ranking. Para obtener más información sobre el algoritmo XGBoost, consulte <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/xgboost.html">Algoritmo XGBoost</a> en la Guía para el desarrollador de Amazon SageMaker.</p><p>Actualmente,la operación <code class="code">CREATE MODEL</code> de Amazon Redshift ML con la opción <code class="code">AUTO OFF</code> es compatible con XGBoost como <code class="code">MODEL_TYPE</code>. Puede proporcionar información relevante, como el objetivo y los hiperparámetros, como parte de <code class="code">CREATE MODEL</code>, en función del caso de uso.</p><p>En este tutorial, se utiliza el <a href="https://archive.ics.uci.edu/ml/datasets/banknote+authentication" rel="noopener noreferrer" target="_blank"><span>conjunto de datos de autenticación de billetes</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>, que es un problema de clasificación binaria para predecir si un billete determinado es auténtico o falso. </p>
+               <h2 id="tutorial_xgboost_tasks">Ejemplos de casos de uso</h2>
+               <p>Puede resolver otros problemas de clasificación binaria con Amazon Redshift ML, como predecir si un paciente está sano o tiene una enfermedad. También puede predecir si un correo electrónico es spam o no.</p>
+            <p><b>Tareas</b></p><div class="itemizedlist">
+                   
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p>Requisitos previos</p>
+                  </li><li class="listitem">
+                     <p>Paso 1: Cargar los datos desde Amazon S3 en Amazon Redshift</p>
+                  </li><li class="listitem">
+                     <p>Paso 2: Crear el modelo de machine learning</p>
+                  </li><li class="listitem">
+                     <p>Paso 3: Realizar predicciones con el modelo</p>
+                  </li></ul></div>
+               <h2 id="tutorial_xgboost_prereqs">Requisitos previos</h2>
+               <p>Para completar este tutorial, debe realizar el procedimiento de <a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">configuración administrativa</a> de Amazon Redshift ML.</p>
+               <h2 id="tutorial_xgboost_step_load">Paso 1: Cargar los datos desde Amazon S3 en Amazon Redshift</h2>
+               <p>Use el <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">editor de consultas de Amazon Redshift v2</a> para ejecutar las siguientes consultas.</p>
+               <p>La siguiente consulta crea dos tablas, carga los datos de Amazon S3 y divide los datos en un conjunto de entrenamiento y un conjunto de pruebas. Utilizará el conjunto de entrenamiento para entrenar su modelo y crear la función de predicción. A continuación, probará la función de predicción en el conjunto de pruebas.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">--create training set table
+CREATE TABLE banknoteauthentication_train(
+    variance FLOAT,
+    skewness FLOAT,
+    curtosis FLOAT,
+    entropy FLOAT,
+    class INT
+);
+
+--Load into training table
+COPY banknoteauthentication_train
+FROM
+    's3://redshiftbucket-ml-sagemaker/banknote_authentication/train_data/' IAM_ROLE default REGION 'us-west-2' IGNOREHEADER 1 CSV;
+
+--create testing set table
+CREATE TABLE banknoteauthentication_test(
+    variance FLOAT,
+    skewness FLOAT,
+    curtosis FLOAT,
+    entropy FLOAT,
+    class INT
+);
+
+--Load data into testing table
+COPY banknoteauthentication_test
+FROM
+    's3://redshiftbucket-ml-sagemaker/banknote_authentication/test_data/' 
+    IAM_ROLE default 
+    REGION 'us-west-2' 
+    IGNOREHEADER 1 
+    CSV;</code></pre>
+             
+               <h2 id="tutorial_xgboost_step_create_model">Paso 2: Crear el modelo de machine learning</h2>
+               <p>La siguiente consulta crea el modelo XGBoost en Amazon Redshift ML a partir del conjunto de entrenamiento que creó en el paso anterior. Reemplace <code class="code">DOC-EXAMPLE-BUCKET</code> con su propio <code class="code">S3_BUCKET</code>, que almacenará sus conjuntos de datos de entrada y otros artefactos de Redshift ML.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL model_banknoteauthentication_xgboost_binary
+FROM
+    banknoteauthentication_train 
+    TARGET class 
+    FUNCTION func_model_banknoteauthentication_xgboost_binary 
+    IAM_ROLE default 
+    AUTO OFF 
+    MODEL_TYPE xgboost 
+    OBJECTIVE 'binary:logistic' 
+    PREPROCESSORS 'none' 
+    HYPERPARAMETERS DEFAULT
+EXCEPT(NUM_ROUND '100') 
+SETTINGS(S3_BUCKET '<code class="replaceable">&lt;DOC-EXAMPLE-BUCKET&gt;</code>');</code></pre>
+                
+                  <h3 id="tutorial_xgboost_show_status">Comprobar el estado del entrenamiento del modelo (opcional)</h3>
+                  <p>Puede utilizar el comando SHOW MODEL para saber cuándo está listo el modelo.</p>
+                  <p>Utilice la siguiente consulta para supervisar el estado del entrenamiento del modelo.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL model_banknoteauthentication_xgboost_binary;</code></pre>
+                  <p>Si el modelo es <code class="code">READY</code>, la operación SHOW MODEL también proporciona la métrica <code class="code">train:error</code>, como se muestra en el siguiente ejemplo de la salida. La métrica <code class="code">train:error</code> es una medida de precisión de su modelo que mide hasta seis decimales. Un valor de 0 es más preciso y un valor de 1 es menos preciso.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------+--------------------------------------------------+
+|        Model Name        |   model_banknoteauthentication_xgboost_binary    |
++--------------------------+--------------------------------------------------+
+| Schema Name              | public                                           |
+| Owner                    | awsuser                                          |
+| Creation Time            | Tue, 21.06.2022 19:07:35                         |
+| Model State              | READY                                            |
+| train:error              |                                         0.000000 |
+| Estimated Cost           |                                         0.006197 |
+|                          |                                                  |
+| TRAINING DATA:           |                                                  |
+| Query                    | SELECT *                                         |
+|                          | FROM "BANKNOTEAUTHENTICATION_TRAIN"              |
+| Target Column            | CLASS                                            |
+|                          |                                                  |
+| PARAMETERS:              |                                                  |
+| Model Type               | xgboost                                          |
+| Training Job Name        | redshiftml-20220621190735686935-xgboost          |
+| Function Name            | func_model_banknoteauthentication_xgboost_binary |
+| Function Parameters      | variance skewness curtosis entropy               |
+| Function Parameter Types | float8 float8 float8 float8                      |
+| IAM Role                 | default-aws-iam-role                             |
+| S3 Bucket                | <code class="replaceable">DOC-EXAMPLE-BUCKET</code>    |
+| Max Runtime              |                                             5400 |
+|                          |                                                  |
+| HYPERPARAMETERS:         |                                                  |
+| num_round                |                                              100 |
+| objective                | binary:logistic                                  |
++--------------------------+--------------------------------------------------+                                       
+                  </code></pre>
+                
+             
+               <h2 id="tutorial_xgboost_step_perform_predictions">Paso 3: Realizar predicciones con el modelo</h2>
+                
+                  <h3 id="tutorial_xgboost_check_accuracy">Comprobar la precisión del modelo</h3>
+                  <p>La siguiente consulta de predicción utiliza la función de predicción creada en el paso anterior para comprobar la precisión del modelo. Ejecute esta consulta en el conjunto de pruebas para asegurarse de que el modelo no se corresponde demasiado con el conjunto de entrenamiento. Esta estrecha correspondencia también se conoce como sobreajuste, y el sobreajuste podría hacer que el modelo hiciera predicciones poco fiables.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">WITH predict_data AS (
+    SELECT
+        class AS label,
+        func_model_banknoteauthentication_xgboost_binary (variance, skewness, curtosis, entropy) AS predicted,
+        CASE
+            WHEN label IS NULL THEN 0
+            ELSE label
+        END AS actual,
+        CASE
+            WHEN actual = predicted THEN 1 :: INT
+            ELSE 0 :: INT
+        END AS correct
+    FROM
+        banknoteauthentication_test
+),
+aggr_data AS (
+    SELECT
+        SUM(correct) AS num_correct,
+        COUNT(*) AS total
+    FROM
+        predict_data
+)
+SELECT
+    (num_correct :: FLOAT / total :: FLOAT) AS accuracy
+FROM
+    aggr_data;</code></pre>
+                
+                
+                  <h3 id="tutorial_xgboost_predict_amount">Predecir la cantidad de billetes auténticos y falsos</h3>
+                  <p>La siguiente consulta de predicción devuelve la cantidad prevista de billetes auténticos y falsos en el conjunto de pruebas.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">WITH predict_data AS (
+    SELECT
+        func_model_banknoteauthentication_xgboost_binary(variance, skewness, curtosis, entropy) AS predicted
+    FROM
+        banknoteauthentication_test
+)
+SELECT
+    CASE
+        WHEN predicted = '0' THEN 'Original banknote'
+        WHEN predicted = '1' THEN 'Counterfeit banknote'
+        ELSE 'NA'
+    END AS banknote_authentication,
+    COUNT(1) AS count
+FROM
+    predict_data
+GROUP BY
+    1;</code></pre>
+                
+                
+                  <h3 id="tutorial_xgboost_find_average_observation">Encontrar la observación promedio de un billete auténtico y uno falso</h3>
+                  <p>La siguiente consulta de predicción devuelve el valor promedio de cada característica para los billetes que se predice que son auténticos y falsos en el conjunto de prueba.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">WITH predict_data AS (
+    SELECT
+        func_model_banknoteauthentication_xgboost_binary(variance, skewness, curtosis, entropy) AS predicted,
+          variance,
+          skewness,
+          curtosis,
+          entropy
+    FROM
+        banknoteauthentication_test
+)
+SELECT
+    CASE
+        WHEN predicted = '0' THEN 'Original banknote'
+        WHEN predicted = '1' THEN 'Counterfeit banknote'
+        ELSE 'NA'
+    END AS banknote_authentication,
+    TRUNC(AVG(variance), 2) AS avg_variance,
+    TRUNC(AVG(skewness), 2) AS avg_skewness,
+    TRUNC(AVG(curtosis), 2) AS avg_curtosis,
+    TRUNC(AVG(entropy), 2) AS avg_entropy
+FROM
+    predict_data
+GROUP BY
+    1
+ORDER BY
+    2;</code></pre>
+                
+             
+               <h2 id="tutorial_xgboost_related_topics">Temas relacionados</h2>
+               <p>Para obtener más información sobre Amazon Redshift ML, consulte la siguiente documentación:</p>
+                  <div class="itemizedlist">
+                      
+                      
+                   
+                  <ul class="itemizedlist"><li class="listitem">
+                        <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">Costos de utilizar Amazon Redshift ML</a></p>
+                     </li><li class="listitem">
+                        <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">Operación CREATE MODEL</a></p>
+                     </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">Función EXPLAIN_MODEL</a></p>
+                  </li></ul></div>
+               <p>Para obtener más información sobre machine learning, consulte la siguiente documentación:</p>
+                  <div class="itemizedlist">
+                      
+                      
+                      
+                  <ul class="itemizedlist"><li class="listitem">
+                        <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">Información general sobre machine learning</a></p>
+                     </li><li class="listitem">
+                        <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">Machine learning para principiantes y expertos</a></p>
+                     </li><li class="listitem">
+                        <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">¿Qué es la equidad y la explicabilidad del modelo para las predicciones de machine learning?</a></p>
+                     </li></ul></div>
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Aviso" /> <strong>JavaScript está desactivado o no está disponible en su navegador.</strong></p><p>Para utilizar la documentación de AWS, debe estar habilitado JavaScript. Para obtener más información, consulte las páginas de ayuda de su navegador.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenciones del documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial_multi-class_classification.html">Tutorial: Creación de modelos de clasificación multiclase</div><div id="next" class="next-link" accesskey="n" href="./tutorial_regression.html">Tutorial: Creación de modelos de regresión</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - Sí</div><div class="content"><p>Gracias por hacernos saber que estamos haciendo un buen trabajo.</p><p>Si tiene un momento, díganos qué es lo que le ha gustado para que podamos seguir trabajando en esa línea.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_xgboost.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - No</div><div class="content"><p>Gracias por informarnos de que debemos trabajar en esta página. Lamentamos haberle defraudado.</p><p>Si tiene un momento, díganos cómo podemos mejorar la documentación.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_xgboost.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

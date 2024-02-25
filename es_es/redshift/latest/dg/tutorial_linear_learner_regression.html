@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="es-ES"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Tutorial: Creación de modelos de regresión con aprendizaje lineal - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial_linear_learner_regression" /><meta name="default_state" content="tutorial_linear_learner_regression" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_regression.html" /><meta name="description" content="Utilice este tutorial para obtener un ejemplo de extremo a extremo de la creación de un modelo de machine learning de Amazon Redshift y la ejecución de consultas de inferencia." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guía para desarrolladores de bases de datos" /><meta name="abstract" content="Cree y administre un almacenamiento de datos con Amazon Redshift, un servicio de almacenamiento de datos completamente administrado a escala de petabytes de nivel empresarial." /><meta name="guide-locale" content="es_es" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_regression.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial_linear_learner_regression.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guía para desarrolladores de bases de datos" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guía para desarrolladores de bases de datos" /><meta id="panorama-serviceConsolePage" value="Tutorial: Creación de modelos de regresión con aprendizaje lineal" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Tutorial: Creación de modelos de regresión con aprendizaje lineal - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial_linear_learner_regression" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_regression.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_regression.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_regression.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,Clúster,almacenamiento de datos,desarrollador,datos de ejemplo,base de datos,desarrollador de base de datos,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guía para desarrolladores de bases de datos",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Uso de machine learning en Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/machine_learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Introducción a Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/getting-started-machine-learning.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Tutoriales de Amazon Redshift ML",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "Tutorial: Creación de modelos de regresión con aprendizaje lineal",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorials_for_amazon_redshift_ml.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial_linear_learner_regression" target="_blank" rel="noopener noreferrer" title="Abrir PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentación</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guía para desarrolladores de bases de datos</a></div><div id="page-toc-src"><a href="#tutorial_linear_learner_regression_tasks">Ejemplos de casos de uso</a><a href="#tutorial_linear_learner_regression_prereqs">Requisitos previos</a><a href="#tutorial_linear_learner_regression_step_load_data">Paso 1: Cargar los datos desde Amazon S3 en Amazon Redshift</a><a href="#tutorial_linear_learner_regression_step_create_model">Paso 2: Crear el modelo de machine learning</a><a href="#tutorial_linear_learner_regression_step_validate">Paso 3: Validar el modelo</a><a href="#tutorial_linear_learner_regression_related_topics">Temas relacionados</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial_linear_learner_regression">Tutorial: Creación de modelos de regresión con aprendizaje lineal</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>En este tutorial, creará un modelo de aprendizaje lineal con datos de Amazon S3 y ejecutará consultas de predicción con el modelo mediante Amazon Redshift ML. El algoritmo de aprendizaje lineal de SageMaker resuelve problemas de regresión o clasificación multiclase. Para obtener más información sobre los problemas de regresión y clasificación multiclase, consulte <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/algorithms-choose.html#basic-machine-learning-paradigms">Tipos de problemas para los paradigmas de machine learning</a> en la Guía para el desarrollador de Amazon SageMaker. En este tutorial, resolverá un problema de regresión. El algoritmo de aprendizaje lineal entrena muchos modelos en paralelo y determina automáticamente el modelo más optimizado. Utilice la operación CREATE MODEL en Amazon Redshift, que crea el modelo de aprendizaje lineal mediante SageMaker y envía una función de predicción a Amazon Redshift. Para obtener más información sobre el algoritmo de aprendizaje lineal, consulte <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/linear-learner.html">Algoritmo de aprendizaje lineal</a> en la Guía para el desarrollador de Amazon SageMaker.</p><p>Se puede utilizar un comando CREATE MODEL para exportar datos de entrenamiento, entrenar un modelo, importar ese modelo y preparar una función de predicción de Amazon Redshift. Utilice la operación CREATE MODEL para especificar los datos de entrenamiento en forma de tabla o con la instrucción SELECT.</p><p>Los modelos de aprendizaje lineal optimizan los objetivos continuos o los objetivos discretos. Los objetivos continuos se utilizan para la regresión, mientras que las variables discretas se utilizan para la clasificación. Algunos métodos proporcionan una solución solo para objetivos continuos, como el método de regresión. El algoritmo de aprendizaje lineal proporciona un aumento de la velocidad comparado con las técnicas de optimización de hiperparámetros ingenua, como la técnica Naive Bayes. La técnica de optimización ingenua supone que cada variable de entrada es independiente. Para utilizar el algoritmo de aprendizaje lineal, debe proporcionar columnas que representan las dimensiones de las entradas y filas que representan las observaciones. Para obtener más información sobre el algoritmo de aprendizaje lineal, consulte <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/linear-learner.html">Algoritmo de aprendizaje lineal</a> en la Guía para el desarrollador de Amazon SageMaker. </p><p>En este tutorial, vamos a crear un modelo de aprendizaje lineal que predice la edad del abulón. Utilice el comando CREATE MODEL en el <a href="http://archive.ics.uci.edu/ml/datasets/Abalone" rel="noopener noreferrer" target="_blank"><span>conjunto de datos del abulón</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> para determinar la relación entre las medidas físicas del abulón. Luego, utilice el modelo para determinar la edad del abulón.</p>
+               <h2 id="tutorial_linear_learner_regression_tasks">Ejemplos de casos de uso</h2>
+               <p>Puede resolver otros problemas de regresión con el aprendizaje lineal y Amazon Redshift ML, como predecir el precio de una casa. También puede usar Redshift ML para predecir la cantidad de personas que usarán el servicio de alquiler de bicicletas de una ciudad.</p>
+            <p><b>Tareas</b></p><div class="itemizedlist">
+                
+                
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>Requisitos previos</p>
+               </li><li class="listitem">
+                  <p>Paso 1: Cargar los datos desde Amazon S3 en Amazon Redshift</p>
+               </li><li class="listitem">
+                  <p>Paso 2: Crear el modelo de machine learning</p>
+               </li><li class="listitem">
+                  <p>Paso 3: Validar el modelo</p>
+               </li></ul></div>
+               <h2 id="tutorial_linear_learner_regression_prereqs">Requisitos previos</h2>
+               <p>Para completar este tutorial, debe realizar el procedimiento de <a href="https://docs.aws.amazon.com/redshift/latest/dg/admin-setup.html">configuración administrativa</a> de Amazon Redshift ML.</p>
+             
+               <h2 id="tutorial_linear_learner_regression_step_load_data">Paso 1: Cargar los datos desde Amazon S3 en Amazon Redshift</h2>
+               <p>Use el <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/query-editor-v2-using.html">editor de consultas de Amazon Redshift v2</a> para ejecutar las siguientes consultas. Estas consultas cargan los datos de muestra en Redshift y los dividen en un conjunto de entrenamiento y un conjunto de validación.</p><div class="orderedlist">
+                      
+                      
+                      
+                  <ol><li>
+                        <p>En la siguiente consulta, se crea la tabla <code class="code">abalone_dataset</code>.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE abalone_dataset (
+    id INT IDENTITY(1, 1),
+    Sex CHAR(1),
+    Length float,
+    Diameter float,
+    Height float,
+    Whole float,
+    Shucked float,
+    Viscera float,
+    Shell float,
+    Rings integer
+);</code></pre>
+                     </li><li>
+                        <p>La siguiente consulta copia los datos de muestra del <a href="http://archive.ics.uci.edu/ml/datasets/Abalone" rel="noopener noreferrer" target="_blank"><span>conjunto de datos de abulón</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> en Amazon S3 en la tabla <code class="code">abalone_dataset</code> que creó anteriormente en Amazon Redshift.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">COPY abalone_dataset
+FROM
+    's3://redshift-ml-multiclass/abalone.csv' REGION 'us-east-1' IAM_ROLE default CSV IGNOREHEADER 1 NULL AS 'NULL';</code></pre>
+                     </li><li>
+                        <p>Al dividir manualmente los datos, podrá verificar la precisión del modelo asignando un conjunto de predicciones adicional. La siguiente consulta divide los datos en dos conjuntos. La tabla <code class="code">abalone_training</code> es para el entrenamiento y la tabla <code class="code">abalone_validation</code>l es para validación.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE TABLE abalone_training as 
+SELECT 
+    *
+FROM
+    abalone_dataset
+WHERE
+    mod(id, 10) &lt; 8;
+
+CREATE TABLE abalone_validation as 
+SELECT 
+    *
+FROM
+    abalone_dataset
+WHERE
+    mod(id, 10) &gt;= 8;</code></pre>
+                     </li></ol></div>
+             
+               <h2 id="tutorial_linear_learner_regression_step_create_model">Paso 2: Crear el modelo de machine learning</h2>
+               <p>En este paso, utilizará la instrucción CREATE MODEL para crear el modelo de machine learning con el algoritmo de aprendizaje lineal. </p>
+               <p>La siguiente consulta crea el modelo de aprendizaje lineal con la operación CREATE MODEL mediante el bucket de S3. Reemplace <code class="replaceable"><code class="code">DOC-EXAMPLE-BUCKET</code></code> por su bucket de S3.</p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE MODEL model_abalone_ring_prediction
+FROM
+    (
+        SELECT
+            Sex,
+            Length,
+            Diameter,
+            Height,
+            Whole,
+            Shucked,
+            Viscera,
+            Shell,
+            Rings AS target_label
+        FROM
+            abalone_training
+    ) TARGET target_label FUNCTION f_abalone_ring_prediction IAM_ROLE default MODEL_TYPE LINEAR_LEARNER PROBLEM_TYPE REGRESSION OBJECTIVE 'MSE' SETTINGS (
+        S3_BUCKET '<code class="replaceable">DOC-EXAMPLE-BUCKET</code>',
+        MAX_RUNTIME 15000
+    );</code></pre>
+                
+                  <h3 id="tutorial_linear_learner_regression_show_status">Comprobar el estado del entrenamiento del modelo (opcional)</h3>
+                  <p>Puede utilizar el comando SHOW MODEL para saber cuándo está listo el modelo.</p>
+                  <p>Utilice la siguiente consulta para supervisar el estado del entrenamiento del modelo.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SHOW MODEL model_abalone_ring_prediction;</code></pre>
+                  <p>Cuando el modelo esté listo, la salida de la operación anterior tendrá un aspecto semejante al del siguiente ejemplo. Tenga en cuenta que la salida proporciona la métrica <code class="code">validation:mse</code>, que es el error cuadrado medio. Utilice el error cuadrado medio para validar la precisión del modelo en el paso siguiente.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">+--------------------------+----------------------------------------------------------------------------------------------------+
+|        Model Name        |                                   model_abalone_ring_prediction                                    |
++--------------------------+----------------------------------------------------------------------------------------------------+
+| Schema Name              | public                                                                                             |
+| Owner                    | awsuser                                                                                            |
+| Creation Time            | Thu, 30.06.2022 18:00:10                                                                           |
+| Model State              | READY                                                                                              |
+| validation:mse           |                                                                                           4.168633 |
+| Estimated Cost           |                                                                                           4.291608 |
+|                          |                                                                                                    |
+| TRAINING DATA:           |                                                                                                    |
+| Query                    | SELECT SEX , LENGTH , DIAMETER , HEIGHT , WHOLE , SHUCKED , VISCERA , SHELL, RINGS AS TARGET_LABEL |
+|                          | FROM ABALONE_TRAINING                                                                              |
+| Target Column            | TARGET_LABEL                                                                                       |
+|                          |                                                                                                    |
+| PARAMETERS:              |                                                                                                    |
+| Model Type               | linear_learner                                                                                     |
+| Problem Type             | Regression                                                                                         |
+| Objective                | MSE                                                                                                |
+| AutoML Job Name          | redshiftml-20220630180010947843                                                                    |
+| Function Name            | f_abalone_ring_prediction                                                                          |
+| Function Parameters      | sex length diameter height whole shucked viscera shell                                             |
+| Function Parameter Types | bpchar float8 float8 float8 float8 float8 float8 float8                                            |
+| IAM Role                 | default-aws-iam-role                                                                               |
+| S3 Bucket                | <code class="replaceable">DOC-EXAMPLE-BUCKET</code>                                                                                 |
+| Max Runtime              |                                                                                              15000 |
++--------------------------+----------------------------------------------------------------------------------------------------+                                     </code></pre>
+             
+               <h2 id="tutorial_linear_learner_regression_step_validate">Paso 3: Validar el modelo</h2>
+               <div class="orderedlist">
+                   
+                   
+                   
+               <ol><li>
+                     <p>La siguiente consulta de predicción valida la precisión del modelo en el conjunto de datos <code class="code">abalone_validation</code>calculando el error cuadrado medio y el error cuadrado medio raíz.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    ROUND(AVG(POWER((tgt_label - predicted), 2)), 2) mse,
+    ROUND(SQRT(AVG(POWER((tgt_label - predicted), 2))), 2) rmse
+FROM
+    (
+        SELECT
+            Sex,
+            Length,
+            Diameter,
+            Height,
+            Whole,
+            Shucked,
+            Viscera,
+            Shell,
+            Rings AS tgt_label,
+            f_abalone_ring_prediction(
+                Sex,
+                Length,
+                Diameter,
+                Height,
+                Whole,
+                Shucked,
+                Viscera,
+                Shell
+            ) AS predicted,
+            CASE
+                WHEN tgt_label = predicted then 1
+                ELSE 0
+            END AS match,
+            CASE
+                WHEN tgt_label &lt;&gt; predicted then 1
+                ELSE 0
+            END AS nonmatch
+        FROM
+            abalone_validation
+    ) t1;</code></pre>
+                     <p>La salida de la consulta anterior tendrá un aspecto semejante al de este ejemplo. El valor de la métrica del error cuadrado medio debe ser similar al valor de la métrica <code class="code">validation:mse</code> que se muestra en la salida de la operación SHOW MODEL.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">+-----+--------------------+
+| mse |        rmse        |
++-----+--------------------+
+| 5.1 | 2.2600000000000002 |
++-----+--------------------+</code></pre>
+                  </li><li>
+                     <p>Utilice la siguiente consulta para ejecutar la operación EXPLAIN_MODEL en la función de predicción. La operación devolverá un informe de explicabilidad del modelo. Para obtener más información sobre la operación EXPLAIN_MODEL, consulte <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">Función EXPLAIN_MODEL</a> en la Guía para desarrolladores de bases de datos de Amazon Redshift.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    EXPLAIN_MODEL ('model_abalone_ring_prediction');</code></pre>
+                     <p>La siguiente información es un ejemplo del informe de explicabilidad del modelo generado por la operación EXPLAIN_MODEL anterior. Los valores de cada una de las entradas son valores de Shapley. Los valores de Shapley representan el efecto que tiene cada entrada en la predicción de su modelo, donde las entradas de mayor valor tienen más impacto en la predicción. En este ejemplo, las entradas de mayor valor tienen más impacto en la predicción de la edad del abulón.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span> 
+    "explanations": <span>{</span> 
+        "kernel_shap": <span>{</span> 
+            "label0": <span>{</span> 
+                "expected_value" :10.290688514709473,
+                "global_shap_values": <span>{</span> 
+                    "diameter" :0.6856910187882492,
+                    "height" :0.4415323937124035,
+                    "length" :0.21507476107609084,
+                    "sex" :0.448611774505744,
+                    "shell" :1.70426496893776,
+                    "shucked" :2.1181392924386994,
+                    "viscera" :0.342220754059912,
+                    "whole" :0.6711906974084011 
+                } 
+            } 
+        } 
+    },
+    "version" :"1.0" 
+};</code></pre>
+                  </li><li>
+                     <p>Utilice la siguiente consulta para calcular el porcentaje de predicciones correctas que el modelo hace sobre los abulones que aún no están maduros. Los abulones inmaduros tienen 10 anillos o menos, y una predicción correcta es precisa dentro de un anillo del número real de anillos.</p>
+                     <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT
+    TRUNC(
+        SUM(
+            CASE
+                WHEN ROUND(
+                    f_abalone_ring_prediction(
+                        Sex,
+                        Length,
+                        Diameter,
+                        Height,
+                        Whole,
+                        Shucked,
+                        Viscera,
+                        Shell
+                    ),
+                    0
+                ) BETWEEN Rings - 1
+                AND Rings + 1 THEN 1
+                ELSE 0
+            END
+        ) / CAST(COUNT(SHELL) AS FLOAT),
+        4
+    ) AS prediction_pct
+FROM
+    abalone_validation
+WHERE
+    Rings &lt;= 10;</code></pre>
+                  </li></ol></div>
+             
+               <h2 id="tutorial_linear_learner_regression_related_topics">Temas relacionados</h2>
+               <p>Para obtener más información sobre Amazon Redshift ML, consulte la siguiente documentación:</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/cost.html">Costos de utilizar Amazon Redshift ML</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_MODEL.html">Operación CREATE MODEL</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/r_explain_model_function.html">Función EXPLAIN_MODEL</a></p>
+                  </li></ul></div>
+               <p>Para obtener más información sobre machine learning, consulte la siguiente documentación:</p><div class="itemizedlist">
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/machine_learning_overview.html">Información general sobre machine learning</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/redshift/latest/dg/novice_expert.html">Machine learning para principiantes y expertos</a></p>
+                  </li><li class="listitem">
+                     <p><a href="https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-fairness-and-explainability.html">¿Qué es la equidad y la explicabilidad del modelo para las predicciones de machine learning?</a></p>
+                  </li></ul></div>
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Aviso" /> <strong>JavaScript está desactivado o no está disponible en su navegador.</strong></p><p>Para utilizar la documentación de AWS, debe estar habilitado JavaScript. Para obtener más información, consulte las páginas de ayuda de su navegador.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenciones del documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial_regression.html">Tutorial: Creación de modelos de regresión</div><div id="next" class="next-link" accesskey="n" href="./tutorial_linear_learner_multi-class_classification.html">Tutorial: Creación de modelos de clasificación multiclase con aprendizaje lineal</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - Sí</div><div class="content"><p>Gracias por hacernos saber que estamos haciendo un buen trabajo.</p><p>Si tiene un momento, díganos qué es lo que le ha gustado para que podamos seguir trabajando en esa línea.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_regression.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - No</div><div class="content"><p>Gracias por informarnos de que debemos trabajar en esta página. Lamentamos haberle defraudado.</p><p>Si tiene un momento, díganos cómo podemos mejorar la documentación.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial_linear_learner_regression.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

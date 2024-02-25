@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="es-ES"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Sección 3: Direccionamiento de consultas a las colas en función de los grupos de usuarios y de consultas - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-wlm-routing-queries-to-queues" /><meta name="default_state" content="tutorial-wlm-routing-queries-to-queues" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="description" content="Ahora tiene el clúster asociado un grupo de parámetros nuevo y ha configurado WLM. A continuación, ejecute algunas consultas para ver cómo Amazon Redshift dirige las consultas a las colas para su procesamiento." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guía para desarrolladores de bases de datos" /><meta name="abstract" content="Cree y administre un almacenamiento de datos con Amazon Redshift, un servicio de almacenamiento de datos completamente administrado a escala de petabytes de nivel empresarial." /><meta name="guide-locale" content="es_es" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guía para desarrolladores de bases de datos" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guía para desarrolladores de bases de datos" /><meta id="panorama-serviceConsolePage" value="Sección 3: Direccionamiento de consultas a las colas en función de los grupos de usuarios y de consultas" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Sección 3: Direccionamiento de consultas a las colas en función de los grupos de usuarios y de consultas - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#tutorial-wlm-routing-queries-to-queues" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,Clúster,almacenamiento de datos,desarrollador,datos de ejemplo,base de datos,desarrollador de base de datos,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guía para desarrolladores de bases de datos",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Implementación de Workload Management",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Implementación de WLM manual",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-defining-query-queues.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Tutorial: Configuración de colas de Administración de carga de trabajo (WLM) manual",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "Sección 3: Direccionamiento de consultas a las colas en función de los grupos de usuarios y de consultas",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#tutorial-wlm-routing-queries-to-queues" target="_blank" rel="noopener noreferrer" title="Abrir PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentación</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guía para desarrolladores de bases de datos</a></div><div id="page-toc-src"><a href="#tutorial-wlm-view-query-config">Paso 1: Vista de la configuración de la cola de consultas en la base de datos</a><a href="#tutorial-wlm-query-group">Paso 2: Ejecución de una consulta mediante la cola de grupo de consultas</a><a href="#tutorial-wlm-create-db-user-and-group">Paso 3: Creación de un usuario y un grupo de base de datos</a><a href="#tutorial-wlm-user-group-query">Paso 4: Ejecución de una consulta mediante la cola de grupo de usuarios</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-wlm-routing-queries-to-queues">Sección 3: Direccionamiento de consultas a las colas en función de los grupos de usuarios y de consultas</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Ahora tiene el clúster asociado un grupo de parámetros nuevo y ha configurado WLM. A continuación, ejecute algunas consultas para ver cómo Amazon Redshift dirige las consultas a las colas para su procesamiento.</p>
+            <h2 id="tutorial-wlm-view-query-config">Paso 1: Vista de la configuración de la cola de consultas en la base de datos</h2>
+
+            <p>Primero, verifique que la base de datos tenga la configuración WLM que espera.</p>
+             
+                <h3 id="how-to-wlm-view-query-config">Para ver la configuración de la cola de consultas</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                <ol><li>
+                        <p>Abra RSQL y ejecute la siguiente consulta. La consulta utiliza la vista WLM_QUEUE_STATE_VW que el usuario creó en <a href="./tutorial-wlm-understanding-default-processing.html#tutorial-wlm-create-queue-state-view">Paso 1: Creación de la vista WLM_QUEUE_STATE_VW</a>. Si ya tenía una sesión conectada a la base de datos antes de reiniciar el clúster, deberá volver a conectarla.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;</code></pre>
+                        <p>A continuación se muestra un resultado de ejemplo.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_060.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>Compare estos resultados con los resultados recibidos en <a href="./tutorial-wlm-understanding-default-processing.html#tutorial-wlm-create-queue-state-view">Paso 1: Creación de la vista WLM_QUEUE_STATE_VW</a>. Observe que ahora hay dos colas adicionales. La cola 1 ahora es la cola para el grupo de consultas de prueba y la cola 2 es la cola para el grupo del usuario administrador.</p>
+                        <p>La cola 3 ahora es la cola predeterminada. La última cola de la lista siempre es la cola predeterminada. Esa es la cola a la que se dirigen las consultas de forma predeterminada si no se especifica ningún grupo de usuarios o de consultas en una consulta.</p>
+                    </li><li>
+                        <p>Ejecute la siguiente consulta para confirmar que la consulta ahora se ejecuta en la cola 3.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;</code></pre>
+                        <p>A continuación se muestra un resultado de ejemplo.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_070.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-query-group">Paso 2: Ejecución de una consulta mediante la cola de grupo de consultas</h2>
+
+
+             
+                <h3 id="how-to-wlm-query-group">Para ejecutar una consulta mediante la cola de grupo de consultas</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+                     
+                     
+                <ol><li>
+                        <p>Ejecute la siguiente consulta para dirigirla al grupo de consultas <code class="code">test</code>.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set query_group to test;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>Desde la otra ventana RSQL, ejecute la siguiente consulta.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;</code></pre>
+                        <p>A continuación se muestra un resultado de ejemplo.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_080.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>La consulta se dirigió al grupo de consultas de prueba, que ahora es la cola 1.</p>
+                    </li><li>
+                        <p>Seleccione todos los elementos de la vista de estado de la cola.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;</code></pre>
+                        <p>Se ve un resultado similar al siguiente.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_090.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li><li>
+                        <p>Ahora, restablezca el grupo de consultas y vuelva a ejecutar la consulta larga:</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">reset query_group;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>Ejecute las consultas en las vistas para ver los resultados.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;
+select * from wlm_query_state_vw;</code></pre>
+                        <p>A continuación se incluyen resultados de ejemplo.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_100.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_110.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>El resultado debe ser que la consulta ahora se ejecute en la cola 3 nuevamente.</p>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-create-db-user-and-group">Paso 3: Creación de un usuario y un grupo de base de datos</h2>
+
+            <p>Antes de poder ejecutar cualquier consulta en esta cola, debe crear el grupo de usuarios en la base de datos y agregar un usuario al grupo. A continuación, inicie sesión con RSQL con las nuevas credenciales de usuario y ejecute las consultas. Debe ejecutar las consultas como superusuario, como por ejemplo, usuario administrador, para crear usuarios de bases de datos.</p>
+             
+                <h3 id="how-to-wlm-create-db-user-and-group">Para crear un usuario y un grupo de usuarios de base de datos nuevos</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                <ol><li>
+                        <p>En la base de datos, cree un usuario de base de datos nuevo denominado <code class="code">adminwlm</code> mediante la ejecución del siguiente comando en una ventana RSQL.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create user adminwlm createuser password '123Admin';</code></pre>
+                    </li><li>
+                        <p>Luego, ejecute los siguientes comandos para crear un nuevo grupo de usuarios y agregue el nuevo usuario <code class="code">adminwlm</code> a él.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create group admin;
+alter group admin add user adminwlm;</code></pre>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-user-group-query">Paso 4: Ejecución de una consulta mediante la cola de grupo de usuarios</h2>
+
+            <p>A continuación, ejecuta una consulta y la dirige a la cola de grupo de usuarios. Esto se hace cuando desea dirigir la consulta a una cola que esté configurada para administrar el tipo de consulta que desea ejecutar.</p>
+             
+                <h3 id="how-to-wlm-user-group-query">Para ejecutar una consulta mediante la cola de grupo de usuarios</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+                     
+                     
+                <ol><li>
+                        <p>En la ventana RSQL 2, ejecute las siguientes consultas para cambiar a la cuenta <code class="code">adminwlm</code> y ejecute una consulta como ese usuario.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set session authorization 'adminwlm';
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>En la ventana RSQL 1, ejecute la siguiente consulta para ver la cola de consultas a la que se dirigen las consultas.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;
+select * from wlm_queue_state_vw;</code></pre>
+                        <p>A continuación se incluyen resultados de ejemplo.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_120.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_130.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>La cola en la que se ejecuta esta consulta es la cola 2, la cola de usuario <code class="code">admin</code>. Cada vez que inicie sesión como este usuario y ejecute consultas, estas se ejecutan en la cola 2 a menos que especifique otro grupo de consultas para utilizar. La cola elegida depende de las reglas de asignación de colas. Para obtener más información, consulte <a href="./cm-c-wlm-queue-assignment-rules.html">Reglas de asignación de colas de WLM</a>. </p>
+                    </li><li>
+                        <p>Ahora ejecute la siguiente consulta desde la ventana RSQL 2.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set query_group to test;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>En la ventana RSQL 1, ejecute la siguiente consulta para ver la cola de consultas a la que se dirigen las consultas.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;
+select * from wlm_query_state_vw;</code></pre>
+                        <p>A continuación se incluyen resultados de ejemplo.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_140.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="images/psql_tutorial_wlm_150.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li><li>
+                        <p>Cuando haya terminado, restablezca el grupo de consultas.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">reset query_group;</code></pre>
+                    </li></ol></div>
+             
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Aviso" /> <strong>JavaScript está desactivado o no está disponible en su navegador.</strong></p><p>Para utilizar la documentación de AWS, debe estar habilitado JavaScript. Para obtener más información, consulte las páginas de ayuda de su navegador.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenciones del documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-wlm-modifying-wlm-configuration.html">Sección 2: Modificación de la configuración de la cola de consultas de WLM</div><div id="next" class="next-link" accesskey="n" href="./tutorial-wlm-query-slot-count.html">Sección 4: Utilización de wlm_query_slot_count para anular de forma temporal el nivel de simultaneidad en una cola</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - Sí</div><div class="content"><p>Gracias por hacernos saber que estamos haciendo un buen trabajo.</p><p>Si tiene un momento, díganos qué es lo que le ha gustado para que podamos seguir trabajando en esa línea.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - No</div><div class="content"><p>Gracias por informarnos de que debemos trabajar en esta página. Lamentamos haberle defraudado.</p><p>Si tiene un momento, díganos cómo podemos mejorar la documentación.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-routing-queries-to-queues.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

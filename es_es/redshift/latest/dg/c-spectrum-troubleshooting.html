@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="es-ES"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Solución de problemas de las consultas en Amazon Redshift Spectrum - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c-spectrum-troubleshooting" /><meta name="default_state" content="c-spectrum-troubleshooting" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-troubleshooting.html" /><meta name="description" content="Si se agota el tiempo de espera de una solicitud de Amazon Redshift Spectrum, esta se cancela y se reenvía. Luego de cinco intentos fallidos, la consulta muestra el siguiente error. Tamaños de archivo grandes (mayores que 1 GB). Verifique los tamaños de los archivos en Amazon S3 y busque archivos grandes y sesgos en el tamaño de los archivos. Divida los archivos grandes en archivos más pequeños, de entre 100 MB y 1 GB. Intente que todos los archivos tengan, aproximadamente, el mismo tamaño." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guía para desarrolladores de bases de datos" /><meta name="abstract" content="Cree y administre un almacenamiento de datos con Amazon Redshift, un servicio de almacenamiento de datos completamente administrado a escala de petabytes de nivel empresarial." /><meta name="guide-locale" content="es_es" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-troubleshooting.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-troubleshooting.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guía para desarrolladores de bases de datos" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guía para desarrolladores de bases de datos" /><meta id="panorama-serviceConsolePage" value="Solución de problemas de las consultas en Amazon Redshift Spectrum" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Solución de problemas de las consultas en Amazon Redshift Spectrum - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#c-spectrum-troubleshooting" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-troubleshooting.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-troubleshooting.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-troubleshooting.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,Clúster,almacenamiento de datos,desarrollador,datos de ejemplo,base de datos,desarrollador de base de datos,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guía para desarrolladores de bases de datos",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Consulta de datos externos mediante Amazon Redshift Spectrum",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-using-spectrum.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Solución de problemas de las consultas en Amazon Redshift Spectrum",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-using-spectrum.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#c-spectrum-troubleshooting" target="_blank" rel="noopener noreferrer" title="Abrir PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentación</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guía para desarrolladores de bases de datos</a></div><div id="page-toc-src"><a href="#spectrum-troubleshooting-retries-exceeded">Cantidad de reintentos superada</a><a href="#spectrum-troubleshooting-access-throttled">Acceso limitado</a><a href="#spectrum-troubleshooting-resource-limit-exceeded">Límite de recursos superado</a><a href="#spectrum-troubleshooting-no-rows-partitioned-table">No se han devuelto filas para una tabla particionada</a><a href="#spectrum-troubleshooting-not-authorized-error">Error de no autorización</a><a href="#spectrum-troubleshooting-incompatible-data-format">Formatos de datos incompatibles</a><a href="#spectrum-troubleshooting-syntax-error-using-hive-ddl">Error de sintaxis al usar el DDL de Hive en Amazon Redshift</a><a href="#spectrum-troubleshooting-permission-to-create-temp-tables">Permiso para crear tablas temporales</a><a href="#spectrum-troubleshooting-invalid-range">Rango no válido </a><a href="#spectrum-troubleshooting-invalid-parquet-version">Número de versión de Parquet no válido </a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="c-spectrum-troubleshooting">Solución de problemas de las consultas en Amazon Redshift Spectrum</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p></p><p>A continuación, puede encontrar una referencia rápida que identifica y aborda algunos problemas comunes que puede enfrentar al realizar consultas en Amazon Redshift Spectrum. Para ver los errores generados por las consultas de Redshift Spectrum, consulte la tabla de sistema <a href="./r_SVL_S3LOG.html">SVL_S3LOG</a>.</p><div class="highlights" id="inline-topiclist"><h6>Temas</h6><ul><li><a href="#spectrum-troubleshooting-retries-exceeded">Cantidad de reintentos superada</a></li><li><a href="#spectrum-troubleshooting-access-throttled">Acceso limitado</a></li><li><a href="#spectrum-troubleshooting-resource-limit-exceeded">Límite de recursos superado</a></li><li><a href="#spectrum-troubleshooting-no-rows-partitioned-table">No se han devuelto filas para una tabla particionada</a></li><li><a href="#spectrum-troubleshooting-not-authorized-error">Error de no autorización</a></li><li><a href="#spectrum-troubleshooting-incompatible-data-format">Formatos de datos incompatibles</a></li><li><a href="#spectrum-troubleshooting-syntax-error-using-hive-ddl">Error de sintaxis al usar el DDL de Hive en Amazon Redshift</a></li><li><a href="#spectrum-troubleshooting-permission-to-create-temp-tables">Permiso para crear tablas temporales</a></li><li><a href="#spectrum-troubleshooting-invalid-range">Rango no válido </a></li><li><a href="#spectrum-troubleshooting-invalid-parquet-version">Número de versión de Parquet no válido </a></li></ul></div>
+         <h2 id="spectrum-troubleshooting-retries-exceeded">Cantidad de reintentos superada</h2>
+
+         <p>Si se agota el tiempo de espera de una solicitud de Amazon Redshift Spectrum, esta se cancela y se reenvía. Luego de cinco intentos fallidos, la consulta muestra el siguiente error.</p>
+         <pre class="screen">error:  Spectrum Scan Error: Retries exceeded</pre>
+         <p>Entre las causas posibles, se incluyen: </p>
+         <div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>Tamaños de archivo grandes (mayores que 1 GB). Verifique los tamaños de los archivos en Amazon S3 y busque archivos grandes y sesgos en el tamaño de los archivos. Divida los archivos grandes en archivos más pequeños, de entre 100 MB y 1 GB. Intente que todos los archivos tengan, aproximadamente, el mismo tamaño. </p>
+            </li><li class="listitem">
+               <p>Rendimiento lento de red. Ejecute la consulta en otro momento. </p>
+            </li></ul></div>
+       
+         <h2 id="spectrum-troubleshooting-access-throttled">Acceso limitado</h2>
+         <p>Amazon Redshift Spectrum está sujeto a las Service Quotas de otros servicios de AWS. En caso de uso excesivo, es posible que las solicitudes de Redshift Spectrum deban procesarse más lento, lo que da como resultado el siguiente error.</p>
+         <pre class="screen">error:  Spectrum Scan Error: Access throttled</pre>
+         <p>Pueden ocurrir dos tipos de limitación:</p>
+         <div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+            <p>Acceso limitado por Amazon S3.</p>
+            </li><li class="listitem">
+            <p>Acceso limitado por AWS KMS.</p>
+            </li></ul></div>
+         <p>El contexto de error proporciona más detalles sobre el tipo de limitación controlada. A continuación, puede encontrar causas y posibles resoluciones para esta limitación controlada.</p>
+
+
+
+          
+            <h3 id="spectrum-troubleshooting-access-throttled-s3">Acceso limitado por Amazon S3</h3>
+            
+            <p>Amazon S3 podría limitar una solicitud de Redshift Spectrum si la tasa de solicitudes de lectura en un <a href="https://docs.aws.amazon.com/glossary/latest/reference/glos-chap.html#keyprefix">prefijo</a> es demasiado alta. Para obtener más información sobre una tasa de solicitudes GET /HEAD que puede alcanzar en Amazon S3, consulte <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/optimizing-performance.html">Optimización del rendimiento de Amazon S3</a> en la <em>Guía del usuario de Amazon Simple Storage Service.</em> La tasa de solicitudes GET/HEAD de Amazon S3 tiene en cuenta todas las solicitudes GET/HEAD en un prefijo para que las diferentes aplicaciones que acceden al mismo prefijo compartan la tasa total de solicitudes.</p>
+            <p>Si Amazon S3 limita sus solicitudes de Redshift Spectrum con frecuencia, reduzca la cantidad de solicitudes GET/HEAD que Redshift Spectrum envía a Amazon S3. Para ello, intente combinar archivos pequeños en archivos más grandes. Le recomendamos utilizar archivos con un tamaño igual o superior a 64 MB.</p>
+         <p>Además, tenga en cuenta la posibilidad de particionar las tablas de Redshift Spectrum para aprovechar el filtrado temprano y reducir la cantidad de archivos a los que se obtiene acceso en Amazon S3. Para obtener más información, consulte <a href="./c-spectrum-external-tables.html#c-spectrum-external-tables-partitioning">Partición de tablas externas de Redshift Spectrum</a>. </p>
+          
+            
+          
+            <h3 id="spectrum-troubleshooting-access-throttled-kms">Acceso limitado por AWS KMS</h3>
+         
+            
+            <p>Si almacena los datos en Amazon S3 con cifrado del lado del servidor (SSE-S3 o SSE-KMS), Amazon S3 llama a una operación de API a AWS KMS para cada archivo al que acceda Redshift Spectrum. Estas solicitudes cuentan para la cuota de operaciones criptográficas; para obtener más información, consulte <a href="https://docs.aws.amazon.com/kms/latest/developerguide/requests-per-second.html">Solicitar cuotas de AWS KMS</a>. Para obtener más información sobre SSE-S3 y SSE-KMS, consulte <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingServerSideEncryption.html">Protección de los datos con el cifrado del lado del servidor</a> y <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html">Protección de los datos con el cifrado del lado del servidor mediante las claves KMS almacenadas en AWS KMS</a> en la <em>Guía del usuario de Amazon Simple Storage Service.</em></p>
+
+            <p>Un primer paso para reducir la cantidad de solicitudes que Redshift Spectrum realiza a AWS KMS consiste en reducir la cantidad de archivos a los que se accede. Para ello, intente combinar archivos pequeños en archivos más grandes. Le recomendamos utilizar archivos con un tamaño igual o superior a 64 MB.</p>
+            <p>Si AWS KMS limita sus solicitudes de Redshift Spectrum con frecuencia, considere la posibilidad de solicitar un aumento en la cuota de su tasa de solicitudes de AWS KMS para las operaciones criptográficas. Para solicitar un aumento de cuota, consulte <a href="https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html">Límites de los servicios de AWS</a> en la <em>Referencia general de Amazon Web Services</em>. </p>
+          
+       
+         <h2 id="spectrum-troubleshooting-resource-limit-exceeded">Límite de recursos superado</h2>
+         <p>Redshift Spectrum aplica un límite superior sobre la cantidad de memoria que puede usar una solicitud. Una solicitud de Redshift Spectrum que requiere más memoria no logra ejecutarse, lo que produce el siguiente error.</p>
+         <pre class="screen">error:  Spectrum Scan Error: Resource limit exceeded</pre>
+            <p>Hay dos razones comunes que pueden hacer que una solicitud de Redshift Spectrum exceda su límite de memoria:</p>
+         <div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>Redshift Spectrum procesa una gran parte de los datos que no se puede dividir en fragmentos más pequeños.</p>
+            </li><li class="listitem">
+               <p>Redshift Spectrum procesa un paso de agrupación grande.</p>
+            </li></ul></div>
+
+         <p>Recomendamos utilizar un formato de archivo que admita lecturas paralelas con tamaños divididos de 128 MB o menos. Consulte <a href="./c-spectrum-data-files.html">Creación de archivos de datos para consultas en Amazon Redshift Spectrum</a> para obtener información sobre formatos de archivo compatibles y directrices genéricas para la creación de archivos de datos. Cuando se utilizan formatos de archivo o algoritmos de compresión que no admiten lecturas paralelas, se recomienda mantener los tamaños de archivo entre 64 MB y 128 MB.</p>
+       
+         <h2 id="spectrum-troubleshooting-no-rows-partitioned-table">No se han devuelto filas para una tabla particionada</h2>
+
+         <p>Si la consulta devuelve cero filas de una tabla externa particionada, controle si se agregó una partición para esta tabla externa. Redshift Spectrum solo analiza los archivos en una ubicación de Amazon S3 que se haya agregado explícitamente con <code class="code">ALTER TABLE … ADD PARTITION</code>. Consulte la vista <a href="./r_SVV_EXTERNAL_PARTITIONS.html">SVV_EXTERNAL_PARTITIONS</a> para encontrar las particiones existentes. Ejecute <code class="code">ALTER TABLE … ADD PARTITION</code> para cada partición que falte. </p>
+       
+         <h2 id="spectrum-troubleshooting-not-authorized-error">Error de no autorización</h2>
+
+         <p>Verifique que el rol de IAM que corresponde al clúster permita acceder a los objetos del archivo de Amazon S3. Si la base de datos externa está en Amazon Athena, verifique que el rol de IAM permite el acceso a los recursos de Athena. Para obtener más información, consulte <a href="./c-spectrum-iam-policies.html">Políticas de IAM para Amazon Redshift Spectrum</a>.</p>
+       
+         <h2 id="spectrum-troubleshooting-incompatible-data-format">Formatos de datos incompatibles</h2>
+
+         <p>Para un formato de archivo en columnas, como Apache Parquet, el tipo de columna está integrado a los datos. El tipo de columna en la definición CREATE EXTERNAL TABLE debe coincidir con el tipo de columna en el archivo de datos. Si no coincide, recibirá un error similar al siguiente:</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">File 'https://s3bucket/location/file has an incompatible Parquet schema
+for column ‘s3://s3bucket/location.col1'. Column type: VARCHAR, Par</code></pre>
+         <p>El mensaje de error puede estar truncado debido a un límite en la longitud del mensaje. Para recuperar el mensaje de error completo, incluidos el nombre y el tipo de columna, consulte la vista de sistema <a href="./r_SVL_S3LOG.html">SVL_S3LOG</a>.</p>
+         <p>En el siguiente ejemplo, se consulta SVL_S3LOG para la última consulta realizada.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">select message 
+from svl_s3log 
+where query = pg_last_query_id() 
+order by query,segment,slice;</code></pre>
+         <p>A continuación, se muestra un ejemplo de un resultado que muestra el mensaje de error completo.</p>
+
+         <pre class="screen">                            message
+–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––-
+Spectrum Scan Error. File 'https://s3bucket/location/file has an incompatible
+Parquet schema for column ' s3bucket/location.col1'. 
+Column type: VARCHAR, Parquet schema:\noptional int64 l_orderkey [i:0 d:1 r:0]\n</pre>
+         <p>Para corregir el error, altere la tabla externa para que coincida con el tipo de columna del archivo Parquet. </p>
+       
+         <h2 id="spectrum-troubleshooting-syntax-error-using-hive-ddl">Error de sintaxis al usar el DDL de Hive en Amazon Redshift</h2>
+
+         <p>Amazon Redshift admite un lenguaje de definición de datos (DDL) para CREATE EXTERNAL TABLE que sea similar al DDL de Hive. No obstante, los dos tipos de DDL no siempre son exactamente iguales. Si copia el DDL de Hive para crear o modificar tablas externas de Amazon Redshift, es posible que enfrente errores de sintaxis. A continuación, se muestran ejemplos de diferencias entre Amazon Redshift y el DDL de Hive: </p>
+         <div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>Amazon Redshift requiere comillas simples ('), mientras que el DDL de Hive admite comillas dobles (").</p>
+            </li><li class="listitem">
+               <p>Amazon Redshift no admite el tipo de datos STRING. Utilice VARCHAR en su lugar.</p>
+            </li></ul></div>
+       
+         <h2 id="spectrum-troubleshooting-permission-to-create-temp-tables">Permiso para crear tablas temporales</h2>
+         <p>Para ejecutar consultas de Redshift Spectrum, el usuario de la base de datos debe tener permiso para crear tablas temporales en ella. En el siguiente ejemplo, se concede un permiso temporal para la base de datos <code class="code">spectrumdb</code> al grupo de usuarios <code class="code">spectrumusers</code>. </p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">grant temp on database spectrumdb  to group spectrumusers;</code></pre>
+         <p>Para obtener más información, consulte <a href="./r_GRANT.html">GRANT</a>.</p>
+       
+      
+      <h2 id="spectrum-troubleshooting-invalid-range">Rango no válido </h2>
+      <p>Redshift Spectrum espera que los archivos de Amazon S3 que pertenecen a una tabla externa no se sobrescriban durante una consulta. Si eso ocurre, puede provocar el siguiente error.</p>
+      <pre class="screen">Error: HTTP response error code: 416 Message: InvalidRange The requested range is not satisfiable</pre>
+      <p>Para evitar el error, asegúrese de que los archivos de Amazon S3 no se sobrescriban mientras se consultan con Redshift Spectrum.</p>    
+    
+         
+         <h2 id="spectrum-troubleshooting-invalid-parquet-version">Número de versión de Parquet no válido </h2>
+         <p>Redshift Spectrum comprueba los metadatos de cada archivo de Apache Parquet al que accede. Si la comprobación falla, puede provocar un error similar al siguiente:</p>
+         <pre class="screen">File 'https://s3.<code class="replaceable">region</code>.amazonaws.com/s3bucket/location/file has an invalid version number</pre>
+         <p>Existen dos razones habituales que pueden hacer que la comprobación falle:</p>
+         <div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>El archivo Parquet se ha sobrescrito durante la consulta (consulte <a href="#spectrum-troubleshooting-invalid-range">Rango no válido </a>).</p>
+            </li><li class="listitem">
+               <p>El archivo de Parquet está dañado.</p>
+            </li></ul></div>   
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Aviso" /> <strong>JavaScript está desactivado o no está disponible en su navegador.</strong></p><p>Para utilizar la documentación de AWS, debe estar habilitado JavaScript. Para obtener más información, consulte las páginas de ayuda de su navegador.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenciones del documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c-spectrum-metrics.html">Supervisión de métricas</div><div id="next" class="next-link" accesskey="n" href="./tutorial-query-nested-data.html">Tutorial: Consulta de datos anidados con Amazon Redshift Spectrum </div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - Sí</div><div class="content"><p>Gracias por hacernos saber que estamos haciendo un buen trabajo.</p><p>Si tiene un momento, díganos qué es lo que le ha gustado para que podamos seguir trabajando en esa línea.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-troubleshooting.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - No</div><div class="content"><p>Gracias por informarnos de que debemos trabajar en esta página. Lamentamos haberle defraudado.</p><p>Si tiene un momento, díganos cómo podemos mejorar la documentación.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-troubleshooting.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

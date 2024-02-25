@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="es-ES"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Reglas de monitoreo de consultas de WLM - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="cm-c-wlm-query-monitoring-rules" /><meta name="default_state" content="cm-c-wlm-query-monitoring-rules" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="description" content="En la administración de cargas de trabajo (WLM) de Amazon Redshift, las reglas de monitoreo de consultas definen los límites de rendimiento basados en métricas para las colas de WLM y especifican la acción que se debe realizar cuando una consulta supere esos límites. Por ejemplo, para una cola dedicada a consultas de ejecución corta, puede crear una regla que cancele las consultas que se ejecuten durante más de 60 segundos. Para hacer un seguimiento de las consultas mal diseñadas, puede disponer de otra regla que registre las consultas que contienen bucles anidados." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guía para desarrolladores de bases de datos" /><meta name="abstract" content="Cree y administre un almacenamiento de datos con Amazon Redshift, un servicio de almacenamiento de datos completamente administrado a escala de petabytes de nivel empresarial." /><meta name="guide-locale" content="es_es" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guía para desarrolladores de bases de datos" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guía para desarrolladores de bases de datos" /><meta id="panorama-serviceConsolePage" value="Reglas de monitoreo de consultas de WLM" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Reglas de monitoreo de consultas de WLM - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#cm-c-wlm-query-monitoring-rules" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,Clúster,almacenamiento de datos,desarrollador,datos de ejemplo,base de datos,desarrollador de base de datos,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guía para desarrolladores de bases de datos",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Implementación de Workload Management",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Reglas de monitoreo de consultas de WLM",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#cm-c-wlm-query-monitoring-rules" target="_blank" rel="noopener noreferrer" title="Abrir PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentación</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guía para desarrolladores de bases de datos</a></div><div id="page-toc-src"><a href="#cm-c-wlm-defining-query-monitoring-rules">Definición de una regla de monitoreo de consultas</a><a href="#cm-c-wlm-query-monitoring-metrics">Métricas de supervisión de consultas para Amazon Redshift aprovisionado</a><a href="#cm-c-wlm-query-monitoring-metrics-serverless">Métricas de supervisión de consultas para Amazon Redshift sin servidor</a><a href="#cm-c-wlm-query-monitoring-templates">Plantillas de reglas de monitoreo de consultas</a><a href="#cm-c-wlm-qmr-tables-and-views">Tablas y vistas de sistema para reglas de monitoreo de consultas</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="cm-c-wlm-query-monitoring-rules">Reglas de monitoreo de consultas de WLM</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>En la administración de cargas de trabajo (WLM) de Amazon Redshift, las reglas de monitoreo de consultas definen los límites de rendimiento basados en métricas para las colas de WLM y especifican la acción que se debe realizar cuando una consulta supere esos límites. Por ejemplo, para una cola dedicada a consultas de ejecución corta, puede crear una regla que cancele las consultas que se ejecuten durante más de 60 segundos. Para hacer un seguimiento de las consultas mal diseñadas, puede disponer de otra regla que registre las consultas que contienen bucles anidados. </p><p>Puede definir las reglas de monitorización de consultas como parte de la configuración de la administración de cargas de trabajo (WLM). Puede definir hasta 25 reglas para cada cola, con un límite de 25 reglas para todas las colas. Cada regla incluye hasta tres condiciones, o predicados, y una acción. Un <em>predicado</em> se compone de una métrica, una condición de comparación (=, &lt; o &gt;) y un valor. Si se cumplen todos los predicados para cualquier regla, se desencadena la acción de esa regla. Las acciones de reglas posibles son log, hop y abort, como se explica a continuación. </p><p>Las reglas de una cola determinada aplican únicamente a las consultas que se ejecuten en esa cola. Una regla es independiente de otras reglas. </p><p>WLM evalúa las métricas cada 10 segundos. Si se desencadena más de una regla durante el mismo periodo, la WLM inicia la acción más severa: anulación, luego, salto y registro. Si la acción es hop o abort, se registra la acción y la consulta se desaloja de la cola. Si la acción es log, la consulta continúa ejecutándose en la cola. WLM inicia solo una acción log por consulta, por regla. Si la cola contiene otras reglas, estas permanecerán en vigor. Si la acción es hop y la consulta se dirige a otra cola, las reglas aplican para la nueva cola. Para obtener más información sobre el monitoreo de consultas y el seguimiento de las acciones realizadas en consultas específicas, consulte la recopilación de ejemplos en <a href="./wlm-short-query-acceleration.html">Trabajo con aceleración de consultas cortas</a>.</p><p>Cuando se cumplen todos los predicados de una regla, WLM escribe una fila a la tabla de sistema <a href="./r_STL_WLM_RULE_ACTION.html">STL_WLM_RULE_ACTION</a>. Además, Amazon Redshift registra en <a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a> las métricas de las consultas que están en ejecución actualmente. Las métricas de consultas completadas se almacenan en <a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a>. </p>
+         <h2 id="cm-c-wlm-defining-query-monitoring-rules">Definición de una regla de monitoreo de consultas</h2>
+
+
+         <p>Las reglas de monitoreo de consultas se crean durante la configuración de WLM, que se establece durante la definición del grupo de parámetros del clúster.</p>
+
+
+
+         <p>Puede crear reglas con la AWS Management Console o mediante programación con JSON. </p>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>Si decide crear reglas mediante programación, recomendamos encarecidamente utilizar la consola para generar el JSON que incluirá en la definición del grupo de parámetros. Para obtener más información, consulte <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-parameter-groups-console.html#parameter-group-modify-qmr-console">Creación o modificación de una regla de monitoreo de consultas mediante la consola</a> y <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html#configure-parameters-using-the-cli">Configuración de los valores de parámetros mediante la AWS CLI</a> en la <em>Guía de administración de Amazon Redshift</em>. </p></div></div>
+
+         <p>Para definir una regla de monitorización de consultas, especifique los elementos siguientes:</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>Un nombre de regla: los nombres de reglas deben ser únicos dentro de la configuración de la WLM. Los nombres de reglas pueden tener un máximo de 32 caracteres alfanuméricos o guiones bajos y no pueden contener espacios ni comillas. Puede tener hasta 25 reglas por cola y el límite total para todas las colas es 25 reglas.</p>
+            </li><li class="listitem">
+               <p>Uno o más predicados: puede tener hasta tres predicados por regla. Si se cumplen todos los predicados para cualquier regla, se desencadena la acción asociada. Un predicado se define mediante un nombre de métrica, un operador (=, &lt;, o &gt;) y un valor. Un ejemplo es <code class="code">query_cpu_time &gt; 100000</code>. Para obtener una lista de métricas y ejemplos de valores para diferentes métricas, consulte <a href="#cm-c-wlm-query-monitoring-metrics">Métricas de supervisión de consultas para Amazon Redshift aprovisionado</a> más adelante en esta sección. </p>
+            </li><li class="listitem">
+               <p>Una acción: si se desencadena más de una regla, la WLM selecciona la regla con la acción más severa. Las acciones posibles, en orden ascendente de gravedad, son:</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p>Registro: registra la información acerca de la consulta en la tabla de sistema STL_WLM_RULE_ACTION. Utilice la acción Log cuando solo desee escribir un registro. WLM crea como máximo un registro por consulta, por regla. Después de llevar a cabo una acción log, las otras reglas permanecen vigentes y WLM continúa monitorizando la consulta. </p>
+                  </li><li class="listitem">
+                     <p>Salto (disponible solo con la WLM manual): registra la acción y transfiere la consulta a la siguiente cola coincidente. Si no existe otra cola coincidente, la consulta se cancela. QMR solo salta instrucciones <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_AS.html">CREATE TABLE AS</a> (CTAS) y consultas de solo lectura, como instrucciones SELECT. Para obtener más información, consulte <a href="./wlm-queue-hopping.html">Salto de cola de consultas de WLM</a>. </p>
+                  </li><li class="listitem">
+                     <p>Anulación: registra la acción y cancela la consulta. QMR no detiene las instrucciones COPY ni las operaciones de mantenimiento, como ANALYZE y VACUUM. </p>
+                  </li><li class="listitem">
+                     <p>Modificación de prioridad (disponible solo con la WLM automática): cambia la prioridad de una consulta. </p>
+                  </li></ul></div>
+            </li></ul></div>
+
+         
+         <p>Para limitar el tiempo de ejecución de consultas, le recomendamos que cree una regla de monitorización de consultas en lugar de usar el tiempo de espera de WLM. Por ejemplo, puede establecer <code class="code">max_execution_time</code> en 50.000 milisegundos como se muestra en el siguiente fragmento JSON.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"max_execution_time": 50000</code></pre>
+         <p>Pero, en su lugar, le recomendamos definir una regla de monitorización de consultas equivalente que establezca <code class="code">query_execution_time</code> en 50 segundos como se muestra en el siguiente fragmento JSON.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"rules": 
+[
+    <span>{</span>
+        "rule_name": "rule_query_execution",
+        "predicate": [
+            <span>{</span>
+                "metric_name": "query_execution_time",
+                "operator": "&gt;",
+                "value": 50
+            }
+        ],
+        "action": "abort"
+    }            
+]</code></pre>
+         
+         <p>Si desea conocer los pasos necesarios para crear o modificar una regla de monitoreo de consultas, consulte <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-parameter-groups-console.html#parameter-group-modify-qmr-console">Creación o modificación de una regla de monitoreo de consultas mediante la consola</a> y <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/workload-mgmt-config.html#wlm-json-config-properties">Propiedades del parámetro wlm_json_configuration</a> en la <em>Guía de administración de Amazon Redshift</em>.</p>
+         
+
+         <p>Puede encontrar más información acerca de las reglas de monitorización de consultas en los temas siguientes: </p>
+         <div class="itemizedlist">
+             
+
+             
+
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>
+                  <a href="#cm-c-wlm-query-monitoring-metrics">Métricas de supervisión de consultas para Amazon Redshift aprovisionado</a>
+               </p>
+            </li><li class="listitem">
+               <p>
+                  <a href="#cm-c-wlm-query-monitoring-templates">Plantillas de reglas de monitoreo de consultas</a>
+               </p>
+            </li><li class="listitem">
+               <p> <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-parameter-groups-console.html#parameter-group-modify-qmr-console">Creación de una regla con la consola</a> </p>
+            </li><li class="listitem">
+               <p> <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/workload-mgmt-config.html">Configuración de la administración de cargas de trabajo</a> </p>
+            </li><li class="listitem">
+               <p>
+                  <a href="#cm-c-wlm-qmr-tables-and-views">Tablas y vistas de sistema para reglas de monitoreo de consultas</a>
+               </p>
+            </li></ul></div>
+       
+         <h2 id="cm-c-wlm-query-monitoring-metrics">Métricas de supervisión de consultas para Amazon Redshift aprovisionado</h2>
+
+
+         <p>En la siguiente tabla se describen las métricas utilizadas en las reglas de monitorización de consultas. (Estas métricas son distintas de las métricas almacenadas en las tablas del sistema <a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a> y <a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a>). </p>
+         <p>Para una métrica determinada, se hace un seguimiento del umbral de rendimiento al nivel de la consulta o del segmento. Para obtener más información acerca de los segmentos y pasos, consulte <a href="./c-query-planning.html">Flujo de trabajo de planificación y ejecución de consultas</a>.</p>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>El parámetro <a href="./cm-c-defining-query-queues.html#wlm-timeout">Tiempo de espera de WLM</a> es distinto de las reglas de monitorización de consultas.</p></div></div>
+
+         <div class="table-container"><div class="table-contents"><table id="w319aac43c57c15b9"><thead>
+                  <tr>
+                     <th>Métrica</th>
+                     <th>Nombre</th>
+                     <th>Descripción</th>
+
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">Query CPU time</td>
+                     <td tabindex="-1">
+                        <code class="code">query_cpu_time</code>
+                     </td>
+                     <td tabindex="-1">Tiempo de CPU, en segundos, que utiliza la consulta. <code class="code">CPU
+                           time</code> es diferente de <code class="code">Query execution time</code>. <p>Los valores válidos son de 0 a 999 999. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Blocks read</td>
+                     <td tabindex="-1">
+                        <code class="code">query_blocks_read</code>
+                     </td>
+                     <td tabindex="-1">Número de bloques de datos de 1 MB leídos por la consulta.<p>Los valores válidos son de 0 a 1 048 575. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Scan row count</td>
+                     <td tabindex="-1">
+                        <code class="code">scan_row_count</code>
+                     </td>
+                     <td tabindex="-1">
+                        <p>La cantidad de filas en un paso del examen. La cantidad de filas es el número total de filas emitidas antes de filtrar las filas marcadas para eliminación (filas fantasma) y antes de aplicar los filtros de consulta definidos por el usuario.</p>
+                        <p>Los valores válidos son de 0 a 999 999 999 999 999. </p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Query execution time</td>
+                     <td tabindex="-1">
+                        <code class="code">query_execution_time</code>
+                     </td>
+                     <td tabindex="-1">Tiempo de ejecución transcurrido para una consulta, en segundos. El tiempo de ejecución no incluye el tiempo de espera empleado en una cola.<p>Los valores válidos son de 0 a 86 399.</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Tiempo de cola de consulta</td>
+                     <td tabindex="-1">
+                        <code class="code">query_queue_time</code>
+                     </td>
+                     <td tabindex="-1">Tiempo de espera en una cola, en segundos. <p>Los valores válidos son de 0 a 86 399. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Uso de la CPU</td>
+                     <td tabindex="-1">
+                        <code class="code">query_cpu_usage_percent</code>
+                     </td>
+                     <td tabindex="-1">Porcentaje de capacidad de la CPU que utilizó la consulta.<p>Los valores válidos son de 0 a 6399. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Memory to disk</td>
+                     <td tabindex="-1">
+                        <code class="code">query_temp_blocks_to_disk</code>
+                     </td>
+                     <td tabindex="-1">Espacio temporal en disco utilizado para escribir resultados intermedios, en bloques de 1 MB.<p>Los valores válidos son de 0 a 319 815 679. </p></td>  
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">CPU skew</td>
+                     <td tabindex="-1">
+                        <code class="code">cpu_skew</code>
+                     </td>
+                     <td tabindex="-1">La proporción entre el uso máximo de la CPU para cualquier sector y el uso promedio de la CPU para todos los sectores. La métrica se define a nivel segmento.<p>Los valores válidos son de 0 a 99. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">I/O skew</td>
+                     <td tabindex="-1">
+                        <code class="code">io_skew</code>
+                     </td>
+                     <td tabindex="-1">La proporción entre la lectura máxima de bloques (E/S) para cualquier sector y la lectura promedio de bloques para todos los sectores. La métrica se define a nivel segmento.<p>Los valores válidos son de 0 a 99. </p></td>
+                  </tr>
+
+                  <tr>
+                     <td tabindex="-1">Rows joined</td>
+                     <td tabindex="-1">
+                        <code class="code">join_row_count</code>
+                     </td>
+                     <td tabindex="-1">La cantidad de filas procesadas en un paso de combinación.<p>Los valores válidos son de 0 a 999 999 999 999 999. </p></td>
+                  </tr>
+
+                  <tr>
+                     <td tabindex="-1">Nested loop join row count</td>
+                     <td tabindex="-1">
+                        <code class="code">nested_loop_join_row_count</code>
+                     </td>
+                     <td tabindex="-1">El número de filas en una combinación de bucle anidado.<p>Los valores válidos son de 0 a 999 999 999 999 999. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Return row count</td>
+                     <td tabindex="-1">
+                        <code class="code">return_row_count</code>
+                     </td>
+                     <td tabindex="-1">La cantidad de filas devueltas por la consulta.<p> Los valores válidos son de 0 a 999 999 999 999 999. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Segment execution time</td>
+                     <td tabindex="-1">
+                        <code class="code">segment_execution_time</code>
+                     </td>
+                     <td tabindex="-1">Tiempo de ejecución transcurrido para un segmento único, en segundos. Para evitar o reducir errores de muestreo, incluya <code class="code">segment_execution_time
+                           &gt; 10</code> en las reglas.<p>Los valores válidos son de 0 a 86 388.</p></td>
+                  </tr>
+
+                  <tr>
+                     <td tabindex="-1">Spectrum scan row count</td>
+                     <td tabindex="-1">
+                        <code class="code">spectrum_scan_row_count</code>
+                     </td>
+                     <td tabindex="-1">El número de filas de datos en Amazon S3 analizadas por una consulta de Amazon Redshift Spectrum. <p>Los valores válidos son de 0 a 999 999 999 999 999. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Spectrum scan size</td>
+                     <td tabindex="-1">
+                        <code class="code">spectrum_scan_size_mb</code>
+                     </td>
+                     <td tabindex="-1">La cantidad de datos en Amazon S3, en MB, analizados por una consulta de Amazon Redshift Spectrum.<p>Los valores válidos son de 0 a 999 999 999 999 999. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Prioridad de consulta</td>
+                     <td tabindex="-1">
+                        <code class="code">query_priority</code>
+                     </td>
+                     <td tabindex="-1">La prioridad de la consulta. <p>Los valores válidos son <code class="code">HIGHEST</code>, <code class="code">HIGH</code>, <code class="code">NORMAL</code>, <code class="code">LOW</code> y <code class="code">LOWEST</code>. Al comparar <code class="code">query_priority</code> utilizando operadores mayor que (&gt;) y menor que (&lt;), <code class="code">HIGHEST</code> es mayor que <code class="code">HIGH</code>, <code class="code">HIGH</code> es mayor que <code class="code">NORMAL</code>, etc. </p></td>
+                  </tr>
+               </table></div></div>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem"><p>La acción de salto no se admite con el predicado <code class="code">query_queue_time</code>. Es decir, se omiten las reglas de salto definidas cuando se cumplen los requisitos del predicado <code class="code">query_queue_time</code>. </p></li><li class="listitem">
+            <p>Los tiempos de ejecución de segmentos cortos pueden ocasionar errores de muestreo con otras métricas, como <code class="code">io_skew</code> y <code class="code">query_cpu_usage_percent</code>. Para evitar o reducir errores de muestreo, incluya el tiempo de ejecución de segmentos en las reglas. Un buen punto de partida es <code class="code">segment_execution_time &gt; 10</code>.</p>
+            </li></ul></div></div></div>
+         <p>La vista <a href="./r_SVL_QUERY_METRICS.html">SVL_QUERY_METRICS</a> muestra las métricas de consultas completadas. La vista <a href="./r_SVL_QUERY_METRICS_SUMMARY.html">SVL_QUERY_METRICS_SUMMARY</a> muestra los valores máximos de métricas de consultas completadas. Utilice los valores de estas vistas como ayuda para determinar los valores de umbral para definir las reglas de monitorización de consultas.</p>
+       
+         <h2 id="cm-c-wlm-query-monitoring-metrics-serverless">Métricas de supervisión de consultas para Amazon Redshift sin servidor</h2>
+         <p>En la siguiente tabla se describen las métricas utilizadas en las reglas de supervisión de consultas para Amazon Redshift sin servidor. </p>
+            
+         
+         <div class="table-container"><div class="table-contents"><table id="w319aac43c57c17b5"><thead>
+                  <tr>
+                     <th>Métrica</th>
+                     <th>Nombre</th>
+                     <th>Descripción</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">Query CPU time</td>
+                     <td tabindex="-1"><code class="code">max_query_cpu_time</code></td>
+                     <td tabindex="-1">Tiempo de CPU, en segundos, que utiliza la consulta. <code class="code">CPU time</code> es diferente de <code class="code">Query execution time</code>. <p>Los valores válidos son de 0 a 999 999. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Blocks read</td>
+                     <td tabindex="-1">
+                        <code class="code">max_query_blocks_read</code>
+                     </td>
+                     <td tabindex="-1">Número de bloques de datos de 1 MB leídos por la consulta.<p>Los valores válidos son de 0 a 1 048 575. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Scan row count</td>
+                     <td tabindex="-1">
+                        <code class="code">max_scan_row_count</code>
+                     </td>
+                     <td tabindex="-1">
+                        <p>La cantidad de filas en un paso del examen. La cantidad de filas es el número total de filas emitidas antes de filtrar las filas marcadas para eliminación (filas fantasma) y antes de aplicar los filtros de consulta definidos por el usuario.</p>
+                        <p>Los valores válidos son de 0 a 999 999 999 999 999. </p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Query execution time</td>
+                     <td tabindex="-1">max_query_execution_time</td>
+                     <td tabindex="-1">
+                        <p>Tiempo de ejecución transcurrido para una consulta, en segundos. El tiempo de ejecución no incluye el tiempo de espera empleado en una cola. Si una consulta supera el tiempo de ejecución establecido, Amazon Redshift Serverless la detiene.</p>
+                        <p>Los valores válidos son de 0 a 86 399. </p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Tiempo de cola de consulta</td>
+                     <td tabindex="-1"><code class="code">max_query_queue_time</code></td>
+                     <td tabindex="-1">Tiempo de espera en una cola, en segundos. <p>Los valores válidos son de 0 a 86 399. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Uso de la CPU</td>
+                     <td tabindex="-1">
+                        <code class="code">max_query_cpu_usage_percent</code>
+                     </td>
+                     <td tabindex="-1">Porcentaje de capacidad de la CPU que utilizó la consulta.<p>Los valores válidos son de 0 a 6399. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Memory to disk</td>
+                     <td tabindex="-1">
+                        <code class="code">max_query_temp_blocks_to_disk</code>
+                     </td>
+                     <td tabindex="-1">Espacio temporal en disco utilizado para escribir resultados intermedios, en bloques de 1 MB.<p>Los valores válidos son de 0 a 319 815 679. </p></td>  
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Rows joined</td>
+                     <td tabindex="-1">
+                        <code class="code">max_join_row_count</code>
+                     </td>
+                     <td tabindex="-1">La cantidad de filas procesadas en un paso de combinación.<p>Los valores válidos son de 0 a 999 999 999 999 999. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Nested loop join row count</td>
+                     <td tabindex="-1">
+                        <code class="code">max_nested_loop_join_row_count</code>
+                     </td>
+                     <td tabindex="-1">El número de filas en una combinación de bucle anidado.<p>Los valores válidos son de 0 a 999 999 999 999 999. </p></td>
+                  </tr>
+               </table></div></div>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem"><p>La acción de salto no se admite con el predicado <code class="code">max_query_queue_time</code>. Es decir, se omiten las reglas de salto definidas cuando se cumplen los requisitos del predicado <code class="code">max_query_queue_time</code>. </p></li><li class="listitem">
+                  <p>Los tiempos de ejecución de segmentos cortos pueden ocasionar errores de muestreo con otras métricas, como <code class="code">max_io_skew</code> y <code class="code">max_query_cpu_usage_percent</code>.</p>
+               </li></ul></div></div></div>
+    
+       
+         <h2 id="cm-c-wlm-query-monitoring-templates">Plantillas de reglas de monitoreo de consultas</h2>
+
+
+
+         <p>Cuando agrega una regla utilizando la consola de Amazon Redshift, puede elegir crear una regla a partir de una plantilla predefinida. Amazon Redshift crea una nueva regla con un conjunto de predicados y completa los predicados con valores predeterminados. La acción predeterminada es log. Puede modificar los predicados y las acciones para que cumplan con el caso de uso. </p>
+         <p>En la tabla siguiente se muestran las plantillas disponibles. </p>
+         <div class="table-container"><div class="table-contents"><table id="w319aac43c57c19b7"><thead>
+                  <tr>
+                     <th>Nombre de la plantilla</th>
+                     <th>Predicados</th>
+                     <th>Descripción</th>
+
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">Combinación de bucle anidado</td>
+                     <td tabindex="-1">
+                        <code class="code">nested_loop_join_row_count &gt; 100</code>
+                     </td>
+                     <td tabindex="-1">Una combinación de bucles anidados puede indicar un predicado de combinación incompleto, que suele ocasionar un conjunto de retorno muy grande (un producto cartesiano). Utilice un número de filas bajo para encontrar una consulta potencialmente descontrolada con rapidez.</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Query returns a high number of rows</td>
+                     <td tabindex="-1">
+                        <code class="code">return_row_count &gt; 1000000</code>
+                     </td>
+                     <td tabindex="-1">Si dedica una cola a consultas de ejecución corta y sencilla, puede incluir una regla que encuentre consultas que devuelvan un número de filas alto. La plantilla utiliza un valor predeterminado de 1 millón de filas. Para algunos sistemas, puede considerar que un millón de filas es un número alto, o en sistemas más grandes, mil millones de consultas o más puede ser alto.</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Join with a high number of rows</td>
+                     <td tabindex="-1">
+                        <code class="code">join_row_count &gt; 1000000000</code>
+                     </td>
+                     <td tabindex="-1">Un paso de combinación que incluya un número de filas inusualmente alto puede indicar la necesidad de más filtros restrictivos. La plantilla utiliza un valor predeterminado de mil millones de filas. Para una cola personalizada (de una única vez) que está destinada a consultas sencillas y rápidas, puede utilizar un número menor. </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">High disk usage when writing intermediate results</td>
+                     <td tabindex="-1">
+                        <code class="code">query_temp_blocks_to_disk &gt; 100000</code>
+                     </td>
+                     <td tabindex="-1">Cuando las consultas en ejecución utilizan más RAM de sistema que la disponible, el motor de ejecución de consultas escribe resultados intermedios en el disco (memoria vertida). Por lo general, esta condición es el resultado de una consulta inadecuada, que normalmente también es la consulta que utiliza el mayor espacio en disco. El umbral aceptable de uso de disco varía en función del tipo y el número de nodos del clúster. La plantilla utiliza un valor predeterminado de 100 000 bloques o 100 GB. Para un clúster pequeño, puede utilizar un número menor. </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Long running query with high I/O skew</td>
+                     <td tabindex="-1"><code class="code">segment_execution_time &gt; 120</code> y <code class="code">io_skew &gt; 1.30</code> </td>
+                     <td tabindex="-1">El sesgo de E/S se produce cuando un sector del nodo tiene una tasa de E/S mucho mayor que los otros sectores. Como punto de partida, un sesgo de 1,30 (1,3 veces el promedio) es considerado alto. El sesgo de E/S alto no siempre es un problema, pero cuando se combina con un tiempo de ejecución de consulta prolongado, puede indicar un problema con el estilo de distribución o la clave de ordenación. </td>
+                  </tr>
+               </table></div></div>
+
+       
+         <h2 id="cm-c-wlm-qmr-tables-and-views">Tablas y vistas de sistema para reglas de monitoreo de consultas</h2>
+
+
+
+         <p>Cuando se cumplen todos los predicados de una regla, WLM escribe una fila a la tabla de sistema <a href="./r_STL_WLM_RULE_ACTION.html">STL_WLM_RULE_ACTION</a>. Esta fila contiene detalles para la consulta que activaron la regla y la acción resultante. </p>
+         <p>Además, Amazon Redshift registra métricas de consultas para las siguientes tablas de sistema y vistas.</p>
+         <div class="itemizedlist">
+             
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>La tabla<a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a> muestra las métricas de consultas en ejecución.</p>
+            </li><li class="listitem">
+               <p>La tabla <a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a> registra las métricas de consultas completadas. </p>
+            </li><li class="listitem">
+               <p>La vista <a href="./r_SVL_QUERY_METRICS.html">SVL_QUERY_METRICS</a> muestra las métricas de consultas completadas. </p>
+            </li><li class="listitem">
+               <p>La vista <a href="./r_SVL_QUERY_METRICS_SUMMARY.html">SVL_QUERY_METRICS_SUMMARY</a> muestra los valores máximos de métricas de consultas completadas.</p>
+            </li></ul></div>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Aviso" /> <strong>JavaScript está desactivado o no está disponible en su navegador.</strong></p><p>Para utilizar la documentación de AWS, debe estar habilitado JavaScript. Para obtener más información, consulte las páginas de ayuda de su navegador.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenciones del documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./cm-c-wlm-dynamic-example.html">Ejemplo de WLM dinámica</div><div id="next" class="next-link" accesskey="n" href="./cm-c-wlm-system-tables-and-views.html">Tablas y vistas de sistema de WLM</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - Sí</div><div class="content"><p>Gracias por hacernos saber que estamos haciendo un buen trabajo.</p><p>Si tiene un momento, díganos qué es lo que le ha gustado para que podamos seguir trabajando en esa línea.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - No</div><div class="content"><p>Gracias por informarnos de que debemos trabajar en esta página. Lamentamos haberle defraudado.</p><p>Si tiene un momento, díganos cómo podemos mejorar la documentación.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

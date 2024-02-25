@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="es-ES"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>COPY de hosts remotos (SSH) - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="copy-parameters-data-source-ssh" /><meta name="default_state" content="copy-parameters-data-source-ssh" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/copy-parameters-data-source-ssh.html" /><meta name="description" content="Puede utilizar el comando COPY para cargar datos en paralelo desde uno o más alojamientos remotos, como instancias de Amazon Elastic Compute Cloud (Amazon EC2) u otros equipos. COPY se conecta a los hosts remotos mediante Secure Shell (SSH) y ejecuta los comandos en los hosts remotos para generar la salida de texto. El alojamiento remoto puede ser una instancia EC2 de Linux u otro equipo Linux o Unix configurada para aceptar conexiones SSH. Amazon Redshift puede conectarse a varios alojamientos y puede establecer varias conexiones SSH en cada alojamiento. Amazon Redshift envía un comando único a través de cada conexión para generar una salida de texto que aparecerá en la salida estándar del alojamiento, la cual Amazon Redshift leerá después como si fuese cualquier otro archivo de texto." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Guía para desarrolladores de bases de datos" /><meta name="abstract" content="Cree y administre un almacenamiento de datos con Amazon Redshift, un servicio de almacenamiento de datos completamente administrado a escala de petabytes de nivel empresarial." /><meta name="guide-locale" content="es_es" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/copy-parameters-data-source-ssh.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-source-ssh.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Guía para desarrolladores de bases de datos" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Guía para desarrolladores de bases de datos" /><meta id="panorama-serviceConsolePage" value="COPY de hosts remotos (SSH)" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>COPY de hosts remotos (SSH) - Amazon Redshift</title><meta name="pdf" content="redshift-dg.pdf#copy-parameters-data-source-ssh" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/copy-parameters-data-source-ssh.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/copy-parameters-data-source-ssh.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/copy-parameters-data-source-ssh.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,Clúster,almacenamiento de datos,desarrollador,datos de ejemplo,base de datos,desarrollador de base de datos,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guía para desarrolladores de bases de datos",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Referencia de SQL",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm_chap_SQLCommandRef.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Comandos SQL",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/c_SQL_commands.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "COPY",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/r_COPY.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "Referencia de parámetros de COPY",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/r_COPY-parameters.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 8,
+        "name" : "Origen de datos",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/copy-parameters-data-source.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 9,
+        "name" : "COPY de hosts remotos (SSH)",
+        "item" : "https://docs.aws.amazon.com/es_es/redshift/latest/dg/copy-parameters-data-source.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#copy-parameters-data-source-ssh" target="_blank" rel="noopener noreferrer" title="Abrir PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentación</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guía para desarrolladores de bases de datos</a></div><div id="page-toc-src"><a href="#copy-parameters-data-source-ssh-syntax">Sintaxis</a><a href="#copy-parameters-data-source-ssh-examples">Ejemplos</a><a href="#copy-parameters-data-source-ssh-parameters">Parámetros</a><a href="#copy-parameters-data-source-ssh-optional-parms">Parámetros opcionales</a><a href="#copy-parameters-data-source-ssh-unsupported-parms">Parámetros no admitidos</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="copy-parameters-data-source-ssh">COPY de hosts remotos (SSH)</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Puede utilizar el comando COPY para cargar datos en paralelo desde uno o más alojamientos remotos, como instancias de Amazon Elastic Compute Cloud (Amazon EC2) u otros equipos. COPY se conecta a los hosts remotos mediante Secure Shell (SSH) y ejecuta los comandos en los hosts remotos para generar la salida de texto. El alojamiento remoto puede ser una instancia EC2 de Linux u otro equipo Linux o Unix configurada para aceptar conexiones SSH. Amazon Redshift puede conectarse a varios alojamientos y puede establecer varias conexiones SSH en cada alojamiento. Amazon Redshift envía un comando único a través de cada conexión para generar una salida de texto que aparecerá en la salida estándar del alojamiento, la cual Amazon Redshift leerá después como si fuese cualquier otro archivo de texto.</p><p>Utilice la cláusula FROM para especificar la clave de objeto de Amazon S3 para el archivo de manifiesto que proporciona la información que COPY utilizará para establecer las conexiones SSH y ejecutar los comandos remotos. </p><div class="highlights" id="inline-topiclist"><h6>Temas</h6><ul><li><a href="#copy-parameters-data-source-ssh-syntax">Sintaxis</a></li><li><a href="#copy-parameters-data-source-ssh-examples">Ejemplos</a></li><li><a href="#copy-parameters-data-source-ssh-parameters">Parámetros</a></li><li><a href="#copy-parameters-data-source-ssh-optional-parms">Parámetros opcionales</a></li><li><a href="#copy-parameters-data-source-ssh-unsupported-parms">Parámetros no admitidos</a></li></ul></div><div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>importante</h6></div><div class="awsdocs-note-text"><p> Si el bucket de S3 que contiene el archivo de manifiesto no se encuentra en la misma región de AWS que el clúster, debe utilizar el parámetro REGION para especificar la región en la que se encuentra el bucket. </p></div></div>
+               <h2 id="copy-parameters-data-source-ssh-syntax">Sintaxis</h2>
+
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">FROM 's3://'<em>ssh_manifest_file</em>' }
+<em>authorization</em>
+SSH
+| <em>optional-parameters</em></code></pre>
+             
+               <h2 id="copy-parameters-data-source-ssh-examples">Ejemplos</h2>
+
+               <p>En el siguiente ejemplo, se utiliza un archivo de manifiesto para cargar datos desde un host remoto mediante SSH. </p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">copy sales
+from 's3://mybucket/ssh_manifest' 
+iam_role 'arn:aws:iam::0123456789012:role/MyRedshiftRole'
+ssh;  </code></pre>
+             
+               <h2 id="copy-parameters-data-source-ssh-parameters">Parámetros</h2>
+
+               <div class="variablelist">
+                   
+                   
+                   
+                   
+               <dl>
+                     <dt><span class="term">FROM</span></dt>
+                     <dd>
+                        <p>El origen de los datos a cargar. </p>
+                     </dd>
+                   
+                     <dt id="copy-ssh-manifest"><span class="term">'s3://<em>copy_from_ssh_manifest_file</em>'</span></dt>
+                     <dd>
+                        <p>El comando COPY puede conectarse con distintos hosts mediante Secure Shell (SSH, Shell seguro) y puede crear distintas conexiones SSH a cada host. COPY ejecuta un comando a través de cada conexión al host y, luego, carga la salida en la tabla desde los comandos en paralelo. El argumento <em>s3://copy_from_ssh_manifest_file</em> especifica la clave de objeto de Amazon S3 del archivo de manifiesto que proporciona la información que COPY utiliza para establecer conexiones SSH y ejecutar los comandos remotos.</p>
+                        <p>El argumento <em>s3://copy_from_ssh_manifest_file</em> debe referenciar de forma explícita un solo archivo y no puede ser un prefijo de clave. A continuación se muestra un ejemplo:</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="">'s3://mybucket/ssh_manifest.txt'</code></pre>
+                        <p>El archivo de manifiesto es un archivo de texto con formato JSON que Amazon Redshift usa para conectarse al alojamiento. En el archivo de manifiesto, se especifican los puntos de conexión del host SSH y los comandos que se ejecutarán en los hosts para devolver datos a Amazon Redshift. De forma opcional, puede incluir la clave pública del host, el nombre de usuario de inicio de sesión y una marca obligatoria para cada entrada. En el siguiente ejemplo, se muestra un archivo de manifiesto que crea dos conexiones SSH: </p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight"><span>{</span> 
+    "entries": [ 
+	    <span>{</span>"endpoint":"&lt;<code class="replaceable">ssh_endpoint_or_IP</code>&gt;", 
+           "command": "&lt;<code class="replaceable">remote_command</code>&gt;",
+           "mandatory":true, 
+           "publickey": "&lt;<code class="replaceable">public_key</code>&gt;", 
+           "username": "<code class="replaceable">&lt;host_user_name</code>&gt;"}, 
+	    <span>{</span>"endpoint":"&lt;<code class="replaceable">ssh_endpoint_or_IP</code>&gt;", 
+           "command": "&lt;<code class="replaceable">remote_command</code>&gt;",
+           "mandatory":true, 
+           "publickey": "&lt;<code class="replaceable">public_key</code>&gt;", 
+           "username": "&lt;<code class="replaceable">host_user_name</code>&gt;"} 
+     ] 
+}</code></pre>
+                        <p>El archivo de manifiesto contiene una construcción <code class="code">"entries"</code> para cada conexión SSH. Puede tener distintas conexiones a un único host o distintas conexiones a distintos hosts. Se requieren caracteres de comillas dobles, como se muestra, para los valores y los nombres de campo. Las comillas deben ser las comillas simples (0x22), no las comillas inclinadas o “inteligentes”. El único valor que no necesita caracteres de comillas dobles es el valor booleano <code class="code">true</code> o <code class="code">false</code> del campo <code class="code">"mandatory"</code>. </p>
+                        <p>En la siguiente lista se describen los campos del archivo de manifiesto. </p>
+                        <div class="variablelist">
+                            
+                            
+                            
+                            
+                            
+                        <dl>
+                              <dt id="copy-ssh-manifest-endpoint"><span class="term">punto de conexión</span></dt>
+                              <dd>
+                                 <p>Se trata de la dirección URL o la dirección IP del alojamiento; por ejemplo, <code class="code">"ec2-111-222-333.compute-1.amazonaws.com"</code> o <code class="code">"198.51.100.0"</code>. </p>
+                              </dd>
+                            
+                              <dt id="copy-ssh-manifest-command"><span class="term">comando</span></dt>
+                              <dd>
+                                 <p>El comando que ejecutará el host para generar la salida de texto o la salida binaria en formato gzip, lzop, bzip2 o zstd. El comando puede ser cualquiera que el usuario <em>"host_user_name" (nombre_de_usuario_del_host)</em> tenga permiso para ejecutar. El comando puede ser tan sencillo como imprimir un archivo, o puede consultar una base de datos o lanzar un script. La salida (archivo de texto o archivos binarios gzip, lzop o bzip2) debe estar en un formato que el comando COPY de Amazon Redshift pueda capturar. Para obtener más información, consulte <a href="./t_preparing-input-data.html">Preparación de los datos de entrada</a>.</p>
+                              </dd>
+                            
+                              <dt id="copy-ssh-manifest-publickey"><span class="term">publickey</span></dt>
+                              <dd>
+                                 <p>(Opcional) La clave pública del host. Si se proporciona la clave pública, Amazon Redshift la usará para identificar el alojamiento. Si no se proporciona la clave pública, Amazon Redshift no intentará identificar el alojamiento. Por ejemplo, si la clave pública del host remoto es <code class="code">ssh-rsa
+                                       AbcCbaxxx…Example root@amazon.com</code>, escriba el siguiente texto en el campo de clave pública: <code class="code">"AbcCbaxxx…Example"</code>.</p>
+                              </dd>
+                            
+                              <dt id="copy-ssh-manifest-mandatory"><span class="term">mandatory</span></dt>
+                              <dd>
+                                 <p>(Opcional) Una cláusula que indica si el comando COPY debe fallar en caso de que el intento de conexión falle. El valor predeterminado es <code class="code">false</code>. Si Amazon Redshift no logra establecer al menos una conexión, el comando COPY presentará error.</p>
+                              </dd>
+                            
+                              <dt id="copy-ssh-manifest-username"><span class="term">username</span></dt>
+                              <dd>
+                                 <p>(Opcional) Se trata del nombre de usuario que se utilizará para iniciar sesión en el sistema de alojamiento y ejecutar el comando remoto. El nombre de inicio de sesión del usuario debe ser el mismo que se utilizó para agregar la clave pública del clúster de Amazon Redshift al archivo de claves autorizadas del alojamiento. El nombre de usuario predeterminado es <code class="code">redshift</code>.</p>
+                              </dd>
+                           </dl></div>
+                        <p>Para obtener más información acerca de la creación de un archivo de manifiesto, consulte <a href="./loading-data-from-remote-hosts.html#load-from-host-process">Proceso de carga de datos</a>.</p>
+                        <p>Para utilizar COPY desde un host remoto, se debe especificar el parámetro SSH con el comando COPY. Si no se especifica el parámetro SSH, COPY supone que el archivo especificado con FROM es un archivo de datos y no se ejecutará correctamente. </p>
+                        <p>Si utiliza la compresión automática, el comando COPY realiza dos operaciones de lectura de los datos, lo que significa que ejecutará el comando remoto dos veces. La primera operación de lectura se realiza para proporcionar una muestra de datos para el análisis de compresión, la segunda operación de lectura es la que carga los datos. Si ejecutar el comando remoto dos veces puede producir un problema, debe deshabilitar la compresión automática. Para deshabilitar la compresión automática, ejecute el comando COPY con el parámetro COMPUPDATE establecido en OFF. Para obtener más información, consulte <a href="./c_Loading_tables_auto_compress.html">Carga de tablas con compresión automática</a>.</p>
+                        <p>Para obtener los procedimientos detallados para utilizar COPY de SSH, consulte <a href="./loading-data-from-remote-hosts.html">Carga de datos desde hosts remotos</a>.</p>
+                     </dd>
+                   
+                     <dt><span class="term"><em>authorization</em></span></dt>
+                     <dd>
+                        <p>El comando COPY necesita autorización para acceder a los datos de otro recurso de AWS, incluidos los recursos de Amazon S3, Amazon EMR, Amazon DynamoDB y Amazon EC2. Puede proporcionar esa autorización referenciando un rol de AWS Identity and Access Management (IAM) que esté adjunto al clúster (control de acceso basado en roles) o proporcionando las credenciales de acceso de un usuario (control de acceso basado en claves). Para mayor seguridad y flexibilidad, le recomendamos utilizar un control de acceso basado en roles de IAM. Para obtener más información, consulte <a href="./copy-parameters-authorization.html">Parámetros de autorización</a>.</p>
+                     </dd>
+                   
+                     <dt id="copy-ssh"><span class="term">SSH</span></dt>
+                     <dd>
+                        <p>Una cláusula que especifica que los datos se van a cargar desde un host remoto mediante el protocolo SSH. Si especifica SSH, también debe proporcionar un archivo de manifiesto mediante el argumento <a href="#copy-ssh-manifest">s3://copy_from_ssh_manifest_file</a>. </p>
+                        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>Si utiliza SSH para copiar datos de un host con una dirección IP privada en una VPC remota, la VPC debe tener habilitado el direccionamiento de VPC mejorado. Para obtener más información sobre el direccionamiento de VPC mejorado, consulte el artículo sobre el <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html">direccionamiento de VPC mejorado en Amazon Redshift</a></p></div></div>
+                     </dd>
+                  </dl></div>
+             
+               <h2 id="copy-parameters-data-source-ssh-optional-parms">Parámetros opcionales</h2>
+
+               <p>Opcionalmente, puede especificar los siguientes parámetros con COPY de SSH: </p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p><a href="./copy-parameters-column-mapping.html">Opciones de mapeo de columnas</a></p>
+                  </li><li class="listitem">
+                     <p><a href="./copy-parameters-data-format.html#copy-data-format-parameters">Parámetros de formato de datos</a></p>
+                  </li><li class="listitem">
+                     <p><a href="./copy-parameters-data-conversion.html">Parámetros de conversión de datos</a></p>
+                  </li><li class="listitem">
+                     <p><a href="./copy-parameters-data-load.html"> Operaciones de carga de datos</a></p>
+                  </li></ul></div>
+             
+               <h2 id="copy-parameters-data-source-ssh-unsupported-parms">Parámetros no admitidos</h2>
+
+               <p>No puede utilizar los siguientes parámetros con COPY de SSH: </p>
+               <div class="itemizedlist">
+                   
+                   
+
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p>ENCRYPTED</p>
+                  </li><li class="listitem">
+                     <p>MANIFEST</p>
+                  </li><li class="listitem">
+                     <p>READRATIO</p>
+                  </li></ul></div>
+            <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Aviso" /> <strong>JavaScript está desactivado o no está disponible en su navegador.</strong></p><p>Para utilizar la documentación de AWS, debe estar habilitado JavaScript. Para obtener más información, consulte las páginas de ayuda de su navegador.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenciones del documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./copy-parameters-data-source-emr.html">COPY de Amazon EMR</div><div id="next" class="next-link" accesskey="n" href="./copy-parameters-data-source-dynamodb.html">COPY de Amazon DynamoDB</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - Sí</div><div class="content"><p>Gracias por hacernos saber que estamos haciendo un buen trabajo.</p><p>Si tiene un momento, díganos qué es lo que le ha gustado para que podamos seguir trabajando en esa línea.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/copy-parameters-data-source-ssh.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - No</div><div class="content"><p>Gracias por informarnos de que debemos trabajar en esta página. Lamentamos haberle defraudado.</p><p>Si tiene un momento, díganos cómo podemos mejorar la documentación.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/copy-parameters-data-source-ssh.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
