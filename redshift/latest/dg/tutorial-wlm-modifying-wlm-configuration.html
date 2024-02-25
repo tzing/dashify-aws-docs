@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Section 2: Modifying the WLM query queue configuration - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-wlm-modifying-wlm-configuration" /><meta name="default_state" content="tutorial-wlm-modifying-wlm-configuration" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="description" content="Now that you understand how queues work by default, you can learn how to configure query queues using manual WLM. In this section, you create and configure a new parameter group for your cluster. You create two additional user queues and configure them to accept queries based on the queries' user group or query group labels. Any queries that don't get routed to one of these two queues are routed to the default queue at runtime." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Database Developer Guide" /><meta name="abstract" content="Create and manage a data warehouse with Amazon Redshift, an enterprise-level, petabyte scale, fully managed data warehousing service." /><meta name="guide-locale" content="en_us" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Database Developer Guide" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Database Developer Guide" /><meta id="panorama-serviceConsolePage" value="Section 2: Modifying the WLM query queue configuration" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Section 2: Modifying the WLM query queue configuration - Amazon Redshift</title><meta name="pdf" content="/pdfs/redshift/latest/dg/redshift-dg.pdf#tutorial-wlm-modifying-wlm-configuration" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,developer,sample data,database,database developer,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Database Developer Guide",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Implementing workload management",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Implementing manual WLM",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/cm-c-defining-query-queues.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Tutorial: Configuring manual workload management (WLM) queues",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "Section 2: Modifying the WLM query queue configuration",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="/pdfs/redshift/latest/dg/redshift-dg.pdf#tutorial-wlm-modifying-wlm-configuration" target="_blank" rel="noopener noreferrer" title="Open PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Database Developer Guide</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-wlm-modifying-wlm-configuration">Section 2: Modifying the WLM
+                query queue configuration</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Now that you understand how queues work by default, you can learn how to configure
+            query queues using manual WLM. In this section, you create and configure a new parameter
+            group for your cluster. You create two additional user queues and configure them to
+            accept queries based on the queries' user group or query group labels. Any queries
+            that don't get routed to one of these two queues are routed to the default queue at
+            runtime.</p><div class="procedure"><h6>To create a manual WLM configuration in a parameter group</h6><ol><li> <p>Sign in to the AWS Management Console and open the Amazon Redshift console at
+         <a href="https://console.aws.amazon.com/redshift/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/redshift/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p> 
+                    </li><li>
+                        <p>On the navigation menu, choose <b>Configurations</b>, then choose <b>Workload management</b> to display the 
+                               <b>Workload management</b> page. </p>
+                    </li><li>
+                        <p>Choose <b>Create</b> to display the <b>Create parameter group</b> window. </p>
+                    </li><li>
+                        <p>Enter <code class="userinput">WLMTutorial</code> for both <b>Parameter
+                                group name</b> and <b>Description</b>, and then
+                            choose <b>Create</b> to create the parameter group. </p>
+                        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Note</h6></div><div class="awsdocs-note-text"><p>The <b>Parameter group name</b> is converted to all lower case format when created. </p></div></div>
+                    </li><li>
+                        <p>On the <b>Workload management</b> page, choose the parameter group <code class="userinput">wlmtutorial</code> to display the details page 
+                            with tabs for <b>Parameters</b> and <b>Workload management</b>. </p>
+                    </li><li>
+                        <p>Confirm that you're on the <b>Workload management</b> tab, then
+                            choose <b>Switch WLM mode</b> to display the <b>Concurrency
+                                settings</b> window. </p>
+                    </li><li>
+                        <p>Choose <b>Manual WLM</b>, then choose <b>Save</b> to switch to manual WLM. </p>
+                    </li><li>
+                        <p>Choose <b>Edit workload queues</b>. </p>
+                    </li><li>
+                        <p>Choose <b>Add queue</b> twice to add two queues. Now there are three queues: 
+                            <b>Queue 1</b>, <b>Queue 2</b>, and <b>Default queue</b>. </p>
+                    </li><li>
+                        <p>Enter information for each queue as follows: </p>
+                        <div class="itemizedlist">
+                             
+                             
+                             
+                        <ul class="itemizedlist"><li class="listitem">
+                                <p>For <b>Queue 1</b>, enter <code class="userinput">30</code> for <b>Memory
+                                    (%)</b>, <code class="userinput">2</code> for <b>Concurrency on
+                                    main</b>, and <code class="userinput">test</code> for <b>Query
+                                        groups</b>. Leave the other settings with their default
+                                    values.</p>
+                                
+                            </li><li class="listitem">
+                                <p>For <b>Queue 2</b>, enter <code class="userinput">40</code> for <b>Memory
+                                    (%)</b>, <code class="userinput">3</code> for <b>Concurrency on
+                                    main</b>, and <code class="userinput">admin</code> for <b>User
+                                        groups</b>. Leave the other settings with their default
+                                    values.</p>
+                            </li><li class="listitem">
+                                <p>Don't make any changes to the <b>Default queue</b>. WLM assigns unallocated memory to the default queue. </p>
+                            </li></ul></div>
+                    </li><li>
+                        <p>Choose <b>Save</b> to save your settings. </p>
+                    </li></ol></div><p>Next, associate the parameter group that has the manual WLM configuration with
+                    a cluster.</p><div class="procedure"><h6>To associate a parameter group with a manual WLM configuration with a
+                        cluster</h6><ol><li> <p>Sign in to the AWS Management Console and open the Amazon Redshift console at
+         <a href="https://console.aws.amazon.com/redshift/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/redshift/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p> 
+                    </li><li>
+                        <p>On the navigation menu, choose <b>Clusters</b>, then
+                            choose <b>Clusters</b> to display a list of your clusters. </p>
+                    </li><li>
+                        <p>Choose your cluster, such as <code class="code">examplecluster</code> to display the details of the cluster.
+                            Then choose the <b>Properties</b> tab to display the properties of that cluster. </p>
+                    </li><li>
+                        <p>In the <b>Database configurations</b> section, choose <b>Edit</b>, 
+                            <b>Edit parameter group</b> to display the parameter groups window. </p>
+                    </li><li>
+                        <p>For <b>Parameter groups</b> choose 
+                            the <code class="userinput">wlmtutorial</code> parameter group that you previously created. </p>
+                    </li><li>
+                        <p>Choose <b>Save changes</b> to associate the parameter group. </p>
+                        <p>The cluster is modified with the changed parameter group.
+                            However, you need to reboot the cluster for the changes to also be applied to the database.</p>
+                    </li><li>
+                        <p>Choose your cluster, and then choose <b>Reboot</b> for <b>Actions</b>. </p>
+                    </li></ol></div><p>After the cluster is rebooted, its status returns to <b>Available</b>. </p><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warning" /> <strong>Javascript is disabled or is unavailable in your browser.</strong></p><p>To use the Amazon Web Services Documentation, Javascript must be enabled. Please refer to your browser's Help pages for instructions.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Document Conventions</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-wlm-understanding-default-processing.html">Section 1: Understanding
+                the default queue processing behavior</div><div id="next" class="next-link" accesskey="n" href="./tutorial-wlm-routing-queries-to-queues.html">Section 3: Routing queries to
+                queues based on user groups and query groups</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Did this page help you? - Yes</div><div class="content"><p>Thanks for letting us know we're doing a good job!</p><p>If you've got a moment, please tell us what we did right so we can do more of it.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Did this page help you? - No</div><div class="content"><p>Thanks for letting us know this page needs work. We're sorry we let you down.</p><p>If you've got a moment, please tell us how we can make the documentation better.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-wlm-modifying-wlm-configuration.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

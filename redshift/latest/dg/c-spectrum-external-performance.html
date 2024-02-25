@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Improving Amazon Redshift Spectrum query performance - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c-spectrum-external-performance" /><meta name="default_state" content="c-spectrum-external-performance" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-external-performance.html" /><meta name="description" content="Look at the query plan to find what steps have been pushed to the Amazon Redshift Spectrum layer." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Database Developer Guide" /><meta name="abstract" content="Create and manage a data warehouse with Amazon Redshift, an enterprise-level, petabyte scale, fully managed data warehousing service." /><meta name="guide-locale" content="en_us" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-external-performance.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-spectrum-external-performance.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Database Developer Guide" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Database Developer Guide" /><meta id="panorama-serviceConsolePage" value="Improving Amazon Redshift Spectrum query performance" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Improving Amazon Redshift Spectrum query performance - Amazon Redshift</title><meta name="pdf" content="/pdfs/redshift/latest/dg/redshift-dg.pdf#c-spectrum-external-performance" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/c-spectrum-external-performance.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/c-spectrum-external-performance.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/c-spectrum-external-performance.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,developer,sample data,database,database developer,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Database Developer Guide",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Querying external data using Amazon Redshift Spectrum",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Improving Amazon Redshift Spectrum query performance",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="/pdfs/redshift/latest/dg/redshift-dg.pdf#c-spectrum-external-performance" target="_blank" rel="noopener noreferrer" title="Open PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Database Developer Guide</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="c-spectrum-external-performance">Improving Amazon Redshift Spectrum query
+            performance</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Look at the query plan to find what steps have been pushed to the Amazon Redshift Spectrum layer. </p><p>The following steps are related to the Redshift Spectrum query:</p><div class="itemizedlist">
+          
+          
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>S3 Seq Scan </p>
+         </li><li class="listitem">
+            <p>S3 HashAggregate </p>
+         </li><li class="listitem">
+            <p>S3 Query Scan</p>
+         </li><li class="listitem">
+            <p>Seq Scan PartitionInfo</p>
+         </li><li class="listitem">
+            <p>Partition Loop </p>
+         </li></ul></div><p>The following example shows the query plan for a query that joins an external table with
+         a local table. Note the S3 Seq Scan and S3 HashAggregate steps that were run against
+         the data on Amazon S3.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">explain
+select top 10 spectrum.sales.eventid, sum(spectrum.sales.pricepaid) 
+from spectrum.sales, event
+where spectrum.sales.eventid = event.eventid
+and spectrum.sales.pricepaid &gt; 30
+group by spectrum.sales.eventid
+order by 2 desc;</code></pre><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">
+QUERY PLAN                                                                                                                                                                                
+-----------------------------------------------------------------------------
+XN Limit  (cost=1001055770628.63..1001055770628.65 rows=10 width=31)                                                                                                                      
+  -&gt;  XN Merge  (cost=1001055770628.63..1001055770629.13 rows=200 width=31)                                                                                                               
+        Merge Key: sum(sales.derived_col2)                                                                                                                                                
+        -&gt;  XN Network  (cost=1001055770628.63..1001055770629.13 rows=200 width=31)                                                                                                       
+              Send to leader                                                                                                                                                              
+              -&gt;  XN Sort  (cost=1001055770628.63..1001055770629.13 rows=200 width=31)                                                                                                    
+                    Sort Key: sum(sales.derived_col2)                                                                                                                                     
+                    -&gt;  XN HashAggregate  (cost=1055770620.49..1055770620.99 rows=200 width=31)                                                                                           
+                          -&gt;  XN Hash Join DS_BCAST_INNER  (cost=3119.97..1055769620.49 rows=200000 width=31)                                                                             
+                                Hash Cond: ("outer".derived_col1 = "inner".eventid)                                                                                                       
+                                -&gt;  XN S3 Query Scan sales  (cost=3010.00..5010.50 rows=200000 width=31)                                                                                  
+                                      -&gt;  S3 HashAggregate  (cost=3010.00..3010.50 rows=200000 width=16)                                                                                  
+                                            -&gt;  S3 Seq Scan spectrum.sales location:"s3://redshift-downloads/tickit/spectrum/sales" format:TEXT  (cost=0.00..2150.00 rows=172000 width=16)
+                                                  Filter: (pricepaid &gt; 30.00)                                                                                                             
+                                -&gt;  XN Hash  (cost=87.98..87.98 rows=8798 width=4)                                                                                                        
+                                      -&gt;  XN Seq Scan on event  (cost=0.00..87.98 rows=8798 width=4)</code></pre><p>Note the following elements in the query plan:</p><div class="itemizedlist">
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>The <code class="code">S3 Seq Scan</code> node shows the filter <code class="code">pricepaid &gt;
+                  30.00</code> was processed in the Redshift Spectrum layer.</p>
+            <p>A filter node under the <code class="code">XN S3 Query Scan</code> node indicates predicate
+               processing in Amazon Redshift on top of the data returned from the Redshift Spectrum
+               layer.</p>
+         </li><li class="listitem">
+            <p>The <code class="code">S3 HashAggregate</code> node indicates aggregation in the Redshift
+               Spectrum layer for the group by clause (<code class="code">group by
+               spectrum.sales.eventid</code>).</p>
+         </li></ul></div><p>Following are ways to improve Redshift Spectrum performance:</p><div class="itemizedlist">
+          
+          
+          
+          
+          
+          
+          
+          
+          
+      <ul class="itemizedlist"><li class="listitem">
+            <p>Use Apache Parquet formatted data files. Parquet stores data in a columnar format,
+               so Redshift Spectrum can eliminate unneeded columns from the scan. When data is in text-file
+               format, Redshift Spectrum needs to scan the entire file.</p>
+         </li><li class="listitem"> 
+            <p>Use multiple files to optimize for parallel processing. Keep your file sizes
+               larger than 64 MB. Avoid data size skew by keeping files about the same size.
+               For information about Apache Parquet files and configuration recommendations, see 
+               <a href="https://parquet.apache.org/docs/file-format/configurations/" rel="noopener noreferrer" target="_blank"><span>File Format: Configurations</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>
+                in the <em>Apache Parquet Documentation</em>.</p>
+         </li><li class="listitem">
+            <p>Use the fewest columns possible in your queries.</p>
+         </li><li class="listitem">
+            <p>Put your large fact tables in Amazon S3 and keep your frequently used, smaller
+               dimension tables in your local Amazon Redshift database.</p>
+         </li><li class="listitem">
+            <p>Update external table statistics by setting the TABLE PROPERTIES numRows
+               parameter. Use <a href="./r_CREATE_EXTERNAL_TABLE.html">CREATE EXTERNAL TABLE</a> or <a href="./r_ALTER_TABLE.html">ALTER TABLE</a> to set the TABLE PROPERTIES numRows parameter to
+               reflect the number of rows in the table. Amazon Redshift doesn't analyze external tables to
+               generate the table statistics that the query optimizer uses to generate a query plan.
+               If table statistics aren't set for an external table, Amazon Redshift generates a query
+               execution plan. Amazon Redshift generates this plan based on the assumption that external tables
+               are the larger tables and local tables are the smaller tables.</p>
+         </li><li class="listitem">
+            <p>The Amazon Redshift query planner pushes predicates and aggregations to the Redshift Spectrum
+               query layer whenever possible. When large amounts of data are returned from Amazon S3, the
+               processing is limited by your cluster's resources. Redshift Spectrum scales
+               automatically to process large requests. Thus, your overall performance improves
+               whenever you can push processing to the Redshift Spectrum layer. </p>
+         </li><li class="listitem">
+            <p>Write your queries to use filters and aggregations that are eligible to be pushed
+               to the Redshift Spectrum layer.</p>
+            <p>The following are examples of some operations that can be pushed to the Redshift
+               Spectrum layer:</p>
+            <div class="itemizedlist">
+                
+                
+                
+
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>GROUP BY clauses</p>
+               </li><li class="listitem">
+                  <p>Comparison conditions and pattern-matching conditions, such as LIKE.</p>
+               </li><li class="listitem">
+                  <p>Aggregate functions, such as COUNT, SUM, AVG, MIN, and MAX.</p>
+               </li><li class="listitem">
+                  <p>String functions.</p>
+               </li></ul></div>
+            <p>Operations that can't be pushed to the Redshift Spectrum layer include DISTINCT
+               and ORDER BY.</p>
+         </li><li class="listitem">
+            <p>Use partitions to limit the data that is scanned. Partition your data based on
+               your most common query predicates, then prune partitions by filtering on partition
+               columns. For more information, see <a href="./c-spectrum-external-tables.html#c-spectrum-external-tables-partitioning">Partitioning Redshift Spectrum external
+               tables</a>.</p>
+            <p>Query <a href="./r_SVL_S3PARTITION.html">SVL_S3PARTITION</a> to
+               view total partitions and qualified partitions.</p>
+         </li><li class="listitem">
+            <p>
+               Use AWS Glue's statistics generator to compute column-level statistics for AWS Glue Data Catalog
+               tables. Once AWS Glue generates statistics for tables in the Data Catalog, Amazon Redshift Spectrum automatically
+               uses those statistics to optimize the query plan. For more information about computing
+               column-level statistics using AWS Glue, see 
+               <a href="https://docs.aws.amazon.com/glue/latest/dg/column-statistics.html">Working with column statistics</a> 
+               in the <em>AWS Glue Developer Guide</em>.
+            </p>
+         </li></ul></div><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warning" /> <strong>Javascript is disabled or is unavailable in your browser.</strong></p><p>To use the Amazon Web Services Documentation, Javascript must be enabled. Please refer to your browser's Help pages for instructions.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Document Conventions</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./querying-iceberg-supported-data-types.html">Supported data types</div><div id="next" class="next-link" accesskey="n" href="./t_setting-data-handling-options.html">Setting data handling options</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Did this page help you? - Yes</div><div class="content"><p>Thanks for letting us know we're doing a good job!</p><p>If you've got a moment, please tell us what we did right so we can do more of it.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/c-spectrum-external-performance.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Did this page help you? - No</div><div class="content"><p>Thanks for letting us know this page needs work. We're sorry we let you down.</p><p>If you've got a moment, please tell us how we can make the documentation better.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/c-spectrum-external-performance.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

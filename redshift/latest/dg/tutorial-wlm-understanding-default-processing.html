@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Section 1: Understanding the default queue processing behavior - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-wlm-understanding-default-processing" /><meta name="default_state" content="tutorial-wlm-understanding-default-processing" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" /><meta name="description" content="Before you start to configure manual WLM, it’s useful to understand the default behavior of queue processing in Amazon Redshift. In this section, you create two database views that return information from several system tables. Then you run some test queries to see how queries are routed by default. For more information about system tables, see" /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Database Developer Guide" /><meta name="abstract" content="Create and manage a data warehouse with Amazon Redshift, an enterprise-level, petabyte scale, fully managed data warehousing service." /><meta name="guide-locale" content="en_us" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Database Developer Guide" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Database Developer Guide" /><meta id="panorama-serviceConsolePage" value="Section 1: Understanding the default queue processing behavior" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Section 1: Understanding the default queue processing behavior - Amazon Redshift</title><meta name="pdf" content="/pdfs/redshift/latest/dg/redshift-dg.pdf#tutorial-wlm-understanding-default-processing" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,developer,sample data,database,database developer,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Database Developer Guide",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Implementing workload management",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Implementing manual WLM",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/cm-c-defining-query-queues.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Tutorial: Configuring manual workload management (WLM) queues",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "Section 1: Understanding the default queue processing behavior",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="/pdfs/redshift/latest/dg/redshift-dg.pdf#tutorial-wlm-understanding-default-processing" target="_blank" rel="noopener noreferrer" title="Open PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Database Developer Guide</a></div><div id="page-toc-src"><a href="#tutorial-wlm-create-queue-state-view">Step 1: Create the
+                    WLM_QUEUE_STATE_VW view</a><a href="#tutorial-wlm-create-query-state-view">Step 2: Create the
+                    WLM_QUERY_STATE_VW view</a><a href="#tutorial-wlm-run-test-queries">Step 3: Run test queries</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-wlm-understanding-default-processing">Section 1: Understanding
+                the default queue processing behavior</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Before you start to configure manual WLM, it’s useful to understand the default behavior of
+            queue processing in Amazon Redshift. In this section, you create two database views that
+            return information from several system tables. Then you run some test queries to see
+            how queries are routed by default. For more information about system tables, see <a href="./cm_chap_system-tables.html">System tables and views reference</a>. </p>
+            <h2 id="tutorial-wlm-create-queue-state-view">Step 1: Create the
+                    WLM_QUEUE_STATE_VW view</h2>
+
+            <p>In this step, you create a view called WLM_QUEUE_STATE_VW. This view returns
+                information from the following system tables.</p>
+            <div class="itemizedlist">
+                 
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem">
+                    <p><a href="./r_STV_WLM_CLASSIFICATION_CONFIG.html">STV_WLM_CLASSIFICATION_CONFIG</a></p>
+                </li><li class="listitem">
+                    <p><a href="./r_STV_WLM_SERVICE_CLASS_CONFIG.html">STV_WLM_SERVICE_CLASS_CONFIG</a></p>
+                </li><li class="listitem">
+                    <p><a href="./r_STV_WLM_SERVICE_CLASS_STATE.html">STV_WLM_SERVICE_CLASS_STATE</a></p>
+                </li></ul></div>
+            <p>You use this view throughout the tutorial to monitor what happens to queues
+                after you change the WLM configuration. The following table describes the data that
+                the WLM_QUEUE_STATE_VW view returns. </p>
+            <div class="table-container"><div class="table-contents"><table id="w323aac62c53c39b5b5b9"><thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                        <tr>
+                            <td tabindex="-1">queue</td>
+                            <td tabindex="-1">The number associated with the row that represents a queue. Queue
+                                number determines the order of the queues in the database.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">description</td>
+                            <td tabindex="-1">A value that describes whether the queue is available only to
+                                certain user groups, to certain query groups, or all types of
+                                queries.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">slots</td>
+                            <td tabindex="-1">The number of slots allocated to the queue.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">mem</td>
+                            <td tabindex="-1">The amount of memory, in MB per slot, allocated to the
+                                queue.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">max_execution_time</td>
+                            <td tabindex="-1">The amount of time a query is allowed to run before it is
+                                terminated.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">user_*</td>
+                            <td tabindex="-1">A value that indicates whether wildcard characters are allowed in
+                                the WLM configuration to match user groups.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">query_*</td>
+                            <td tabindex="-1">A value that indicates whether wildcard characters are allowed in
+                                the WLM configuration to match query groups.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">queued</td>
+                            <td tabindex="-1">The number of queries that are waiting in the queue to be
+                                processed.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">executing</td>
+                            <td tabindex="-1">The number of queries that are currently running.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">executed</td>
+                            <td tabindex="-1">The number of queries that have been run.</td>
+                        </tr>
+                    </table></div></div>
+             
+                <h3 id="how-to-wlm-create-queue-state-view">To create the
+                        WLM_QUEUE_STATE_VW view</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+                <ol><li>
+                        <p>Open <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/rsql-query-tool.html">Amazon Redshift RSQL</a> and connect to your TICKIT sample database. If you do not
+                            have this database, see <a href="./tutorial-configuring-workload-management.html#tutorial-wlm-prereq">Prerequisites</a>.</p>
+                    </li><li>
+                        <p>Run the following query to create the WLM_QUEUE_STATE_VW view.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create view WLM_QUEUE_STATE_VW as
+select (config.service_class-5) as queue
+, trim (class.condition) as description
+, config.num_query_tasks as slots
+, config.query_working_mem as mem
+, config.max_execution_time as max_time
+, config.user_group_wild_card as "user_*"
+, config.query_group_wild_card as "query_*"
+, state.num_queued_queries queued
+, state.num_executing_queries executing
+, state.num_executed_queries executed
+from
+STV_WLM_CLASSIFICATION_CONFIG class,
+STV_WLM_SERVICE_CLASS_CONFIG config,
+STV_WLM_SERVICE_CLASS_STATE state
+where
+class.action_service_class = config.service_class 
+and class.action_service_class = state.service_class 
+and config.service_class &gt; 4
+order by config.service_class;</code></pre>
+                    </li><li>
+                        <p>Run the following query to see the information that the view
+                            contains.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;</code></pre>
+                        <p>The following is an example result.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="/images/redshift/latest/dg/images/psql_tutorial_wlm_010.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-create-query-state-view">Step 2: Create the
+                    WLM_QUERY_STATE_VW view</h2>
+
+            <p>In this step, you create a view called WLM_QUERY_STATE_VW. This view returns
+                information from the <a href="./r_STV_WLM_QUERY_STATE.html">STV_WLM_QUERY_STATE</a> system table.</p>
+            <p>You use this view throughout the tutorial to monitor the queries that are
+                running. The following table describes the data that the WLM_QUERY_STATE_VW view
+                returns.</p>
+            <div class="table-container"><div class="table-contents"><table id="w323aac62c53c39b5b7b7"><thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                        <tr>
+                            <td tabindex="-1">query</td>
+                            <td tabindex="-1">The query ID.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">queue</td>
+                            <td tabindex="-1">The queue number.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">slot_count</td>
+                            <td tabindex="-1">The number of slots allocated to the query.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">start_time</td>
+                            <td tabindex="-1">The time that the query started.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">state</td>
+                            <td tabindex="-1">The state of the query, such as executing.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">queue_time</td>
+                            <td tabindex="-1">The number of microseconds that the query has spent in the
+                                queue.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">exec_time</td>
+                            <td tabindex="-1">The number of microseconds that the query has been
+                                running.</td>
+                        </tr>
+                    </table></div></div>
+             
+                <h3 id="how-to-wlm-create-query-state-view">To create the
+                        WLM_QUERY_STATE_VW view</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                <ol><li>
+                        <p>In RSQL, run the following query to create the WLM_QUERY_STATE_VW
+                            view.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create view WLM_QUERY_STATE_VW as
+select query, (service_class-5) as queue, slot_count, trim(wlm_start_time) as start_time, trim(state) as state, trim(queue_time) as queue_time, trim(exec_time) as exec_time
+from stv_wlm_query_state;</code></pre>
+                    </li><li>
+                        <p>Run the following query to see the information that the view
+                            contains.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;</code></pre>
+                        <p>The following is an example result.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="/images/redshift/latest/dg/images/psql_tutorial_wlm_020.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-run-test-queries">Step 3: Run test queries</h2>
+
+            <p>In this step, you run queries from multiple connections in RSQL and review the
+                system tables to determine how the queries were routed for processing. </p>
+            <p>For this step, you need two RSQL windows open: </p>
+            <div class="itemizedlist">
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem">
+                    <p>In RSQL window 1, you run queries that monitor the state of the queues and
+                        queries using the views you already created in this tutorial.</p>
+                </li><li class="listitem">
+                    <p>In RSQL window 2, you run long-running queries to change the results you
+                        find in RSQL window 1.</p>
+                </li></ul></div>
+             
+                <h3 id="how-to-wlm-run-test-queries">To run the test queries</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+                     
+                <ol><li>
+                        <p>Open two RSQL windows. If you already have one window open, you only
+                            need to open a second window. You can use the same user account for both
+                            of these connections.</p>
+                    </li><li>
+                        <p>In RSQL window 1, run the following query.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;</code></pre>
+                        <p>The following is an example result.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="/images/redshift/latest/dg/images/psql_tutorial_wlm_030.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>This query returns a self-referential result. The query that is
+                            currently running is the SELECT statement from this view. A query on
+                            this view always returns at least one result. Compare this result with
+                            the result that occurs after starting the long-running query in the next
+                            step.</p>
+                    </li><li>
+                        <p>In RSQL window 2, run a query from the TICKIT sample database. This
+                            query should run for approximately a minute so that you have time to
+                            explore the results of the WLM_QUEUE_STATE_VW view and the
+                            WLM_QUERY_STATE_VW view that you created earlier. In some cases, you
+                            might find that the query doesn't run long enough for you to query both
+                            views. In these cases, you can increase the value of the filter on
+                                <code class="code">l.listid </code>to make it run longer.</p>
+                        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Note</h6></div><div class="awsdocs-note-text"><p>To reduce query execution time and improve system performance,
+                                Amazon Redshift caches the results of certain types of queries in memory on the
+                                leader node. When result caching is enabled, subsequent queries run
+                                much faster. To prevent the query from running to quickly, disable
+                                result caching for the current session.</p></div></div>
+                        <p>To turn off result caching for the current session, set the <a href="./r_enable_result_cache_for_session.html">enable_result_cache_for_session</a> parameter to
+                                <code class="code">off</code>, as shown following.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set enable_result_cache_for_session to off;</code></pre>
+                        <p>In RSQL window 2, run the following query.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt; 100000;</code></pre>
+                       </li><li>
+                        <p>In RSQL window 1, query WLM_QUEUE_STATE_VW and WLM_QUERY_STATE_VW and
+                            compare the results to your earlier results.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;
+select * from wlm_query_state_vw;</code></pre>
+                        <p>The following are example results.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="/images/redshift/latest/dg/images/psql_tutorial_wlm_040.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="/images/redshift/latest/dg/images/psql_tutorial_wlm_050.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li></ol></div>
+                <p>Note the following differences between your previous queries and the results
+                    in this step:</p>
+                <div class="itemizedlist">
+                     
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <p>There are two rows now in WLM_QUERY_STATE_VW. One result is the
+                            self-referential query for running a SELECT operation on this view. The
+                            second result is the long-running query from the previous step.</p>
+                    </li><li class="listitem">
+                        <p>The executing column in WLM_QUEUE_STATE_VW has increased from 1 to 2.
+                            This column entry means that there are two queries running in the
+                            queue.</p>
+                    </li><li class="listitem">
+                        <p>The executed column is incremented each time you run a query in the
+                            queue.</p>
+                    </li></ul></div>
+                <p>The WLM_QUEUE_STATE_VW view is useful for getting an overall view of the
+                    queues and how many queries are being processed in each queue. The
+                    WLM_QUERY_STATE_VW view is useful for getting a more detailed view of the
+                    individual queries that are currently running.</p>
+             
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warning" /> <strong>Javascript is disabled or is unavailable in your browser.</strong></p><p>To use the Amazon Web Services Documentation, Javascript must be enabled. Please refer to your browser's Help pages for instructions.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Document Conventions</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-configuring-workload-management.html">Tutorial: Configuring
+            manual WLM queues</div><div id="next" class="next-link" accesskey="n" href="./tutorial-wlm-modifying-wlm-configuration.html">Section 2: Modifying the WLM
+                query queue configuration</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Did this page help you? - Yes</div><div class="content"><p>Thanks for letting us know we're doing a good job!</p><p>If you've got a moment, please tell us what we did right so we can do more of it.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Did this page help you? - No</div><div class="content"><p>Thanks for letting us know this page needs work. We're sorry we let you down.</p><p>If you've got a moment, please tell us how we can make the documentation better.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-wlm-understanding-default-processing.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

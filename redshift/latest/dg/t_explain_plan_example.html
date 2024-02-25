@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Query plan example - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="t_explain_plan_example" /><meta name="default_state" content="t_explain_plan_example" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/t_explain_plan_example.html" /><meta name="description" content="Provides an example of how to evaluate a query plan to find opportunities to optimize the distribution." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Database Developer Guide" /><meta name="abstract" content="Create and manage a data warehouse with Amazon Redshift, an enterprise-level, petabyte scale, fully managed data warehousing service." /><meta name="guide-locale" content="en_us" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/t_explain_plan_example.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/t_explain_plan_example.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/t_explain_plan_example.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/t_explain_plan_example.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/t_explain_plan_example.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/t_explain_plan_example.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/t_explain_plan_example.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/t_explain_plan_example.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/t_explain_plan_example.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/t_explain_plan_example.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/t_explain_plan_example.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/t_explain_plan_example.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/t_explain_plan_example.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/t_explain_plan_example.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/t_explain_plan_example.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_explain_plan_example.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/t_explain_plan_example.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/t_explain_plan_example.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/t_explain_plan_example.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/t_explain_plan_example.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/t_explain_plan_example.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/t_explain_plan_example.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Database Developer Guide" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Database Developer Guide" /><meta id="panorama-serviceConsolePage" value="Query plan example" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Query plan example - Amazon Redshift</title><meta name="pdf" content="/pdfs/redshift/latest/dg/redshift-dg.pdf#t_explain_plan_example" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/t_explain_plan_example.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/t_explain_plan_example.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/t_explain_plan_example.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,developer,sample data,database,database developer,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Database Developer Guide",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Working with automatic table optimization",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/t_Creating_tables.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Working with data distribution styles",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/t_Distributing_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Query plan example",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/t_Distributing_data.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="/pdfs/redshift/latest/dg/redshift-dg.pdf#t_explain_plan_example" target="_blank" rel="noopener noreferrer" title="Open PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Database Developer Guide</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="t_explain_plan_example">Query plan example</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>This example shows how to evaluate a query plan to find opportunities to optimize
+                the distribution.</p><p>Run the following query with an EXPLAIN command to produce a query plan.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">explain
+select lastname, catname, venuename, venuecity, venuestate, eventname, 
+month, sum(pricepaid) as buyercost, max(totalprice) as maxtotalprice
+from category join event on category.catid = event.catid
+join venue on venue.venueid = event.venueid
+join sales on sales.eventid = event.eventid
+join listing on sales.listid = listing.listid
+join date on sales.dateid = date.dateid
+join users on users.userid = sales.buyerid
+group by lastname, catname, venuename, venuecity, venuestate, eventname, month
+having sum(pricepaid)&gt;9999
+order by catname, buyercost desc;
+</code></pre><p>In the TICKIT database, SALES is a fact table and LISTING is its largest
+                dimension. In order to collocate the tables, SALES is distributed on the LISTID,
+                which is the foreign key for LISTING, and LISTING is distributed on its primary key,
+                LISTID. The following example shows the CREATE TABLE commands for SALES and
+                LISTING.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create table sales(
+	salesid integer not null,
+	listid integer not null distkey,
+	sellerid integer not null,
+	buyerid integer not null,
+	eventid integer not null encode mostly16,
+	dateid smallint not null,
+	qtysold smallint not null encode mostly8,
+	pricepaid decimal(8,2) encode delta32k,
+	commission decimal(8,2) encode delta32k,
+	saletime timestamp,
+	primary key(salesid),
+	foreign key(listid) references listing(listid),
+	foreign key(sellerid) references users(userid),
+	foreign key(buyerid) references users(userid),
+	foreign key(dateid) references date(dateid))
+        sortkey(listid,sellerid);
+
+create table listing(
+	listid integer not null distkey sortkey,
+	sellerid integer not null,
+	eventid integer not null encode mostly16,
+	dateid smallint not null,
+	numtickets smallint not null encode mostly8,
+	priceperticket decimal(8,2) encode bytedict,
+	totalprice decimal(8,2) encode mostly32,
+	listtime timestamp,
+	primary key(listid),
+	foreign key(sellerid) references users(userid),
+	foreign key(eventid) references event(eventid),
+	foreign key(dateid) references date(dateid));</code></pre><p>In the following query plan, the Merge Join step for the join on SALES and LISTING
+                shows DS_DIST_NONE, which indicates that no redistribution is required for the step.
+                However, moving up the query plan, the other inner joins show DS_BCAST_INNER, which
+                indicates that the inner table is broadcast as part of the query execution. Because
+                only one pair of tables can be collocated using key distribution, five tables must
+                be rebroadcast.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">QUERY PLAN
+XN Merge  (cost=1015345167117.54..1015345167544.46 rows=1000 width=103)
+  Merge Key: category.catname, sum(sales.pricepaid)
+  -&gt;  XN Network  (cost=1015345167117.54..1015345167544.46 rows=170771 width=103)
+        Send to leader
+        -&gt;  XN Sort  (cost=1015345167117.54..1015345167544.46 rows=170771 width=103)
+              Sort Key: category.catname, sum(sales.pricepaid)
+              -&gt;  XN HashAggregate  (cost=15345150568.37..15345152276.08 rows=170771 width=103)
+                    Filter: (sum(pricepaid) &gt; 9999.00)
+	                    -&gt;  XN Hash Join DS_BCAST_INNER  (cost=742.08..15345146299.10 rows=170771 width=103)
+	                          Hash Cond: ("outer".catid = "inner".catid)
+	                          -&gt;  XN Hash Join DS_BCAST_INNER  (cost=741.94..15342942456.61 rows=170771 width=97)
+	                                Hash Cond: ("outer".dateid = "inner".dateid)
+	                                -&gt;  XN Hash Join DS_BCAST_INNER  (cost=737.38..15269938609.81 rows=170766 width=90)
+	                                      Hash Cond: ("outer".buyerid = "inner".userid)
+	                                      -&gt;  XN Hash Join DS_BCAST_INNER  (cost=112.50..3272334142.59 rows=170771 width=84)
+	                                            Hash Cond: ("outer".venueid = "inner".venueid)
+	                                            -&gt;  XN Hash Join DS_BCAST_INNER  (cost=109.98..3167290276.71 rows=172456 width=47)
+	                                                  Hash Cond: ("outer".eventid = "inner".eventid)
+	                                                  -&gt;  XN Merge Join DS_DIST_NONE  (cost=0.00..6286.47 rows=172456 width=30)
+	                                                        Merge Cond: ("outer".listid = "inner".listid)
+	                                                        -&gt;  XN Seq Scan on listing  (cost=0.00..1924.97 rows=192497 width=14)
+	                                                        -&gt;  XN Seq Scan on sales  (cost=0.00..1724.56 rows=172456 width=24)
+	                                                  -&gt;  XN Hash  (cost=87.98..87.98 rows=8798 width=25)
+	                                                        -&gt;  XN Seq Scan on event  (cost=0.00..87.98 rows=8798 width=25)
+	                                            -&gt;  XN Hash  (cost=2.02..2.02 rows=202 width=41)
+	                                                  -&gt;  XN Seq Scan on venue  (cost=0.00..2.02 rows=202 width=41)
+	                                      -&gt;  XN Hash  (cost=499.90..499.90 rows=49990 width=14)
+	                                            -&gt;  XN Seq Scan on users  (cost=0.00..499.90 rows=49990 width=14)
+	                                -&gt;  XN Hash  (cost=3.65..3.65 rows=365 width=11)
+	                                      -&gt;  XN Seq Scan on date  (cost=0.00..3.65 rows=365 width=11)
+	                          -&gt;  XN Hash  (cost=0.11..0.11 rows=11 width=10)
+	                                -&gt;  XN Seq Scan on category  (cost=0.00..0.11 rows=11 width=10)</code></pre><p>One solution is to alter the tables to have DISTSTYLE ALL.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">ALTER TABLE users ALTER DISTSTYLE ALL;
+ALTER TABLE venue ALTER DISTSTYLE ALL;
+ALTER TABLE category ALTER DISTSTYLE ALL;
+ALTER TABLE date ALTER DISTSTYLE ALL;
+ALTER TABLE event ALTER DISTSTYLE ALL;</code></pre><p>Run the same query with EXPLAIN again, and examine the new query plan. The joins
+                now show DS_DIST_ALL_NONE, indicating that no redistribution is required because the
+                data was distributed to every node using DISTSTYLE ALL.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">QUERY PLAN
+XN Merge  (cost=1000000047117.54..1000000047544.46 rows=1000 width=103)
+  Merge Key: category.catname, sum(sales.pricepaid)
+  -&gt;  XN Network  (cost=1000000047117.54..1000000047544.46 rows=170771 width=103)
+        Send to leader
+        -&gt;  XN Sort  (cost=1000000047117.54..1000000047544.46 rows=170771 width=103)
+              Sort Key: category.catname, sum(sales.pricepaid)
+              -&gt;  XN HashAggregate  (cost=30568.37..32276.08 rows=170771 width=103)
+                    Filter: (sum(pricepaid) &gt; 9999.00)
+                    -&gt;  XN Hash Join DS_DIST_ALL_NONE  (cost=742.08..26299.10 rows=170771 width=103)
+                          Hash Cond: ("outer".buyerid = "inner".userid)
+                          -&gt;  XN Hash Join DS_DIST_ALL_NONE  (cost=117.20..21831.99 rows=170766 width=97)
+                                Hash Cond: ("outer".dateid = "inner".dateid)
+                                -&gt;  XN Hash Join DS_DIST_ALL_NONE  (cost=112.64..17985.08 rows=170771 width=90)
+                                      Hash Cond: ("outer".catid = "inner".catid)
+                                      -&gt;  XN Hash Join DS_DIST_ALL_NONE  (cost=112.50..14142.59 rows=170771 width=84)
+                                            Hash Cond: ("outer".venueid = "inner".venueid)
+                                            -&gt;  XN Hash Join DS_DIST_ALL_NONE  (cost=109.98..10276.71 rows=172456 width=47)
+                                                  Hash Cond: ("outer".eventid = "inner".eventid)
+                                                  -&gt;  XN Merge Join DS_DIST_NONE  (cost=0.00..6286.47 rows=172456 width=30)
+                                                        Merge Cond: ("outer".listid = "inner".listid)
+                                                        -&gt;  XN Seq Scan on listing  (cost=0.00..1924.97 rows=192497 width=14)
+                                                        -&gt;  XN Seq Scan on sales  (cost=0.00..1724.56 rows=172456 width=24)
+                                                  -&gt;  XN Hash  (cost=87.98..87.98 rows=8798 width=25)
+                                                        -&gt;  XN Seq Scan on event  (cost=0.00..87.98 rows=8798 width=25)
+                                            -&gt;  XN Hash  (cost=2.02..2.02 rows=202 width=41)
+                                                  -&gt;  XN Seq Scan on venue  (cost=0.00..2.02 rows=202 width=41)
+                                      -&gt;  XN Hash  (cost=0.11..0.11 rows=11 width=10)
+                                            -&gt;  XN Seq Scan on category  (cost=0.00..0.11 rows=11 width=10)
+                                -&gt;  XN Hash  (cost=3.65..3.65 rows=365 width=11)
+                                      -&gt;  XN Seq Scan on date  (cost=0.00..3.65 rows=365 width=11)
+                          -&gt;  XN Hash  (cost=499.90..499.90 rows=49990 width=14)
+                                -&gt;  XN Seq Scan on users  (cost=0.00..499.90 rows=49990 width=14)</code></pre><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warning" /> <strong>Javascript is disabled or is unavailable in your browser.</strong></p><p>To use the Amazon Web Services Documentation, Javascript must be enabled. Please refer to your browser's Help pages for instructions.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Document Conventions</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c_data_redistribution.html">Evaluating the query plan</div><div id="next" class="next-link" accesskey="n" href="./c_Distribution_examples.html">Distribution examples</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Did this page help you? - Yes</div><div class="content"><p>Thanks for letting us know we're doing a good job!</p><p>If you've got a moment, please tell us what we did right so we can do more of it.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/t_explain_plan_example.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Did this page help you? - No</div><div class="content"><p>Thanks for letting us know this page needs work. We're sorry we let you down.</p><p>If you've got a moment, please tell us how we can make the documentation better.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/t_explain_plan_example.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

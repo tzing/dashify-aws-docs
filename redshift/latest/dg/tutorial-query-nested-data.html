@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Tutorial: Querying nested data with Amazon Redshift Spectrum - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-query-nested-data" /><meta name="default_state" content="tutorial-query-nested-data" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="description" content="Query nested data with Amazon Redshift Spectrum." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Database Developer Guide" /><meta name="abstract" content="Create and manage a data warehouse with Amazon Redshift, an enterprise-level, petabyte scale, fully managed data warehousing service." /><meta name="guide-locale" content="en_us" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-query-nested-data.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-query-nested-data.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Database Developer Guide" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Database Developer Guide" /><meta id="panorama-serviceConsolePage" value="Tutorial: Querying nested data with Amazon Redshift Spectrum" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Tutorial: Querying nested data with Amazon Redshift Spectrum - Amazon Redshift</title><meta name="pdf" content="/pdfs/redshift/latest/dg/redshift-dg.pdf#tutorial-query-nested-data" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-query-nested-data.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,developer,sample data,database,database developer,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Database Developer Guide",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Querying external data using Amazon Redshift Spectrum",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Tutorial: Querying nested data with Amazon Redshift Spectrum",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="/pdfs/redshift/latest/dg/redshift-dg.pdf#tutorial-query-nested-data" target="_blank" rel="noopener noreferrer" title="Open PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Database Developer Guide</a></div><div id="page-toc-src"><a href="#tutorial-nested-data-overview">Overview</a><a href="#tutorial-nested-data-create-table">Step 1: Create an external table
+                that contains nested data</a><a href="#tutorial-query-nested-data-sqlextensions">Step 2: Query your
+                nested data in Amazon S3 with SQL extensions</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-query-nested-data">Tutorial: Querying nested data with Amazon Redshift
+            Spectrum</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div>
+        <h2 id="tutorial-nested-data-overview">Overview</h2>
+                
+        <p>Amazon Redshift Spectrum supports querying nested data in Parquet, ORC, JSON, and Ion file
+            formats. Redshift Spectrum accesses the data using external tables. You can create
+            external tables that use the complex data types <code class="code">struct</code>, <code class="code">array</code>,
+            and <code class="code">map</code>.</p>
+        <p>For example, suppose that your data file contains the following data in Amazon S3 in a
+            folder named <code class="code">customers</code>.
+        Although there isn't a single root element, each JSON object in this sample data represents a row in a table. </p>
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>"id": 1,
+ "name": <span>{</span>"given": "John", "family": "Smith"},
+ "phones": ["123-457789"],
+ "orders": [<span>{</span>"shipdate": "2018-03-01T11:59:59.000Z", "price": 100.50},
+            <span>{</span>"shipdate": "2018-03-01T09:10:00.000Z", "price": 99.12}]
+}
+<span>{</span>"id": 2,
+ "name": <span>{</span>"given": "Jenny", "family": "Doe"},
+ "phones": ["858-8675309", "415-9876543"],
+ "orders": []
+}
+<span>{</span>"id": 3,
+ "name": <span>{</span>"given": "Andy", "family": "Jones"},
+ "phones": [],
+ "orders": [<span>{</span>"shipdate": "2018-03-02T08:02:15.000Z", "price": 13.50}]
+}  </code></pre>        
+   
+        
+        <p>You can use Amazon Redshift Spectrum to query nested data in files. The following tutorial shows you how
+            to do so with Apache Parquet data.</p> 
+        <p>For tutorial prerequisites, steps, and nested data use cases, see the following
+            topics:</p>
+        <div class="itemizedlist">
+             
+             
+             
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p><a href="#tutorial-nested-data-prereq">Prerequisites</a></p>
+            </li><li class="listitem">
+                <p><a href="#tutorial-nested-data-create-table">Step 1: Create an external table
+                that contains nested data</a></p>
+            </li><li class="listitem">
+                <p><a href="#tutorial-query-nested-data-sqlextensions">Step 2: Query your
+                nested data in Amazon S3 with SQL extensions</a></p>
+            </li><li class="listitem">
+                <p><a href="./nested-data-use-cases.html">Nested data use cases </a></p>
+            </li><li class="listitem">
+                <p><a href="./nested-data-restrictions.html">Nested data limitations (preview)</a></p>
+            </li><li class="listitem">
+                <p><a href="./serializing-complex-JSON.html">Serializing complex nested JSON</a></p>
+            </li></ul></div>
+        
+        
+
+
+         
+            <h3 id="tutorial-nested-data-prereq">Prerequisites</h3>
+            
+            <p>If you are not using Redshift Spectrum yet, follow the steps in the <a href="./c-getting-started-using-spectrum.html">Getting started with Amazon Redshift
+            Spectrum</a> before
+                continuing.</p>
+            
+            <p>To create an external schema, replace the IAM role ARN in the following command
+                with the role ARN you created in <a href="./c-getting-started-using-spectrum-create-role.html">Create an IAM role</a>. Then run
+                the command in your SQL client.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">create external schema spectrum 
+from data catalog 
+database 'myspectrum_db' 
+iam_role 'arn:aws:iam::123456789012:role/myspectrum_role'
+create external database if not exists;</code></pre>
+         
+
+     
+        <h2 id="tutorial-nested-data-create-table">Step 1: Create an external table
+                that contains nested data</h2>
+        <p>You can view the  
+            <a href="https://s3.amazonaws.com/redshift-downloads/tickit/spectrum/customers/customer_file1" rel="noopener noreferrer" target="_blank"><span>source data</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> by downloading it from Amazon S3.    
+                </p>
+
+        <p>To create the external table for this tutorial, run the following command. </p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE EXTERNAL TABLE spectrum.customers (
+  id     int,
+  name   struct&lt;given:varchar(20), family:varchar(20)&gt;,
+  phones array&lt;varchar(20)&gt;,
+  orders array&lt;struct&lt;shipdate:timestamp, price:double precision&gt;&gt;
+)
+STORED AS PARQUET
+LOCATION 's3://redshift-downloads/tickit/spectrum/customers/';     </code></pre>
+        
+        <p>In the example preceding, the external table <code class="code">spectrum.customers</code> uses the
+                <code class="code">struct</code> and <code class="code">array</code> data types to define columns with
+            nested data. Amazon Redshift Spectrum supports querying nested data in Parquet, ORC, JSON, and Ion file formats. 
+            The <code class="code">STORED AS</code> parameter is <code class="code">PARQUET</code> for Apache Parquet files. 
+            The <code class="code">LOCATION</code> parameter has to refer to the Amazon S3 folder that contains the nested data or files. 
+            For more information, see 
+            <a href="./r_CREATE_EXTERNAL_TABLE.html">CREATE EXTERNAL TABLE</a>.</p>
+        
+        
+        <p>You can nest <code class="code">array</code> and <code class="code">struct</code> types at any level. For
+            example, you can define a column named <code class="code">toparray</code> as shown in the 
+            following example.</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">toparray array&lt;struct&lt;nestedarray:
+         array&lt;struct&lt;morenestedarray: 
+         array&lt;string&gt;&gt;&gt;&gt;&gt;</code></pre>
+        <p>You can also nest <code class="code">struct</code> types as shown for column <code class="code">x</code> in
+            the following example.</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">x struct&lt;a: string,
+         b: struct&lt;c: integer,
+                   d: struct&lt;e: string&gt;
+                  &gt;
+        &gt;</code></pre>
+   
+     
+                <h2 id="tutorial-query-nested-data-sqlextensions">Step 2: Query your
+                nested data in Amazon S3 with SQL extensions</h2>
+                <p>Redshift Spectrum supports querying <code class="code">array</code>, <code class="code">map</code>, and <code class="code">struct</code> complex types through extensions to the Amazon Redshift SQL syntax. 
+                    
+                </p>
+                 
+                    <h3 id="nested-data-sqlextension1">Extension 1: Access to columns of structs</h3>
+                    <p>You can extract data from <code class="code">struct</code> columns using a dot notation
+                that concatenates field names into paths. For example, the following query returns
+                given and family names for customers. The given name is accessed by the long path
+                    <code class="code">c.name.given</code>. The family name is accessed by the long path
+                    <code class="code">c.name.family</code>. </p>    
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, c.name.given, c.name.family
+FROM   spectrum.customers c;</code></pre>
+                    <p>The preceding query returns the following data.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">id | given | family
+---|-------|-------
+1  | John  | Smith
+2  | Jenny | Doe
+3  | Andy  | Jones
+(3 rows)</code></pre>
+                    <p>A <code class="code">struct</code> can be a column of another <code class="code">struct</code>,
+                which can be a column of another <code class="code">struct</code>, at any level. The paths that
+                access columns in such deeply nested <code class="code">struct</code>s can be arbitrarily long.
+                For example, see the definition for the column <code class="code">x</code> in the following 
+                        example.</p>     
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">x struct&lt;a: string,
+         b: struct&lt;c: integer, 
+                      d: struct&lt;e: string&gt;
+                  &gt;
+        &gt;</code></pre>        
+        <p>You can access the data in <code class="code">e</code> as <code class="code">x.b.d.e</code>.</p>
+    
+                    
+                    
+                   
+                 
+                    <h3 id="nested-data-sqlextension2">Extension 2: Ranging over arrays in a FROM clause</h3>
+                    <p>You can extract data from <code class="code">array</code> columns (and, by extension,
+                    <code class="code">map</code> columns) by specifying the <code class="code">array</code> columns in a
+                    <code class="code">FROM</code> clause in place of table names. The extension applies to the
+                    <code class="code">FROM</code> clause of the main query, and also the <code class="code">FROM</code>
+                clauses of subqueries.</p>
+                        
+                <p>You can reference <code class="code">array</code> elements by position,
+                such as <code class="code">c.orders[0]</code>. (preview)</p>
+                    <p>By combining ranging over <code class="code">arrays</code> with joins, you can achieve various kinds
+                of unnesting, as explained in the following use cases. </p>
+                     
+                        <h4 id="unnest-inner-joins">Unnesting using inner joins</h4>
+                        <p>The following query selects customer IDs and order ship dates for
+                    customers that have orders. The SQL extension in the FROM clause <code class="code">c.orders
+                        o</code> depends on the alias <code class="code">c</code>.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, o.shipdate
+FROM   spectrum.customers c, c.orders o </code></pre> 
+                        <p>For each customer <code class="code">c</code> that has orders, the
+                        <code class="code">FROM</code> clause returns one row for each order <code class="code">o</code> of
+                    the customer <code class="code">c</code>. That row combines the customer row <code class="code">c</code>
+                    and the order row <code class="code">o</code>. Then the <code class="code">SELECT</code> clause keeps only
+                    the <code class="code">c.id</code> and <code class="code">o.shipdate</code>. The result is the
+                    following.</p>
+                         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">id|      shipdate
+--|----------------------
+1 |2018-03-01  11:59:59
+1 |2018-03-01  09:10:00
+3 |2018-03-02  08:02:15
+(3 rows) </code></pre>   
+                        <p>The alias <code class="code">c</code> provides access to the customer fields, and the alias <code class="code">o</code> provides access to the order fields.     
+                        </p>
+                        <p>The semantics are similar to standard SQL. You can think of the
+                        <code class="code">FROM</code> clause as running the following nested loop, which is
+                    followed by <code class="code">SELECT</code> choosing the fields to output. </p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">for each customer c in spectrum.customers
+  for each order o in c.orders
+     output c.id and o.shipdate </code></pre>
+                        <p>Therefore, if a customer doesn't have an order, the customer doesn't appear in the result.</p>
+                        <p>You can also think of this as the <code class="code">FROM</code> clause performing
+                    a <code class="code">JOIN</code> with the <code class="code">customers</code> table and the <code class="code">orders</code> array.
+                    In fact, you can also write the query as shown in the following example.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, o.shipdate
+FROM   spectrum.customers c INNER JOIN c.orders o ON true </code></pre>
+                        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Note</h6></div><div class="awsdocs-note-text"><p>If a schema named <code class="code">c</code> exists with a table named <code class="code">orders</code>, then <code class="code">c.orders</code> refers to the table <code class="code">orders</code>, and not the array column of <code class="code">customers</code>.</p></div></div>
+                 
+                 
+                    <h4 id="unnest-left-joins">Unnesting using left joins</h4>
+                    <p>The following query outputs all customer names and their orders. If a 
+                        customer hasn't placed an order, the customer's name is still returned. However, 
+                        in this case, the order columns are NULL, as shown in the following example 
+                        for Jenny Doe.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.id, c.name.given, c.name.family, o.shipdate, o.price
+FROM   spectrum.customers c LEFT JOIN c.orders o ON true</code></pre>
+                    
+                    <p>The preceding query returns the following data.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">id  |  given  | family  |    shipdate          | price
+----|---------|---------|----------------------|--------
+ 1  |  John   | Smith   | 2018-03-01  11:59:59 | 100.5
+ 1  |  John   | Smith   | 2018-03-01  09:10:00 |  99.12
+ 2  |  Jenny  | Doe     |                      |
+ 3  |  Andy   | Jones   | 2018-03-02  08:02:15 |  13.5
+ (4 rows)</code></pre>
+                 
+                
+                 
+                    <h3 id="nested-data-sqlextension3">Extension 3: Accessing an array of scalars directly using an alias </h3>
+                    <p>When an alias <code class="code">p</code> in a <code class="code">FROM</code> clause ranges over an
+                array of scalars, the query refers to the values of <code class="code">p</code> as
+                    <code class="code">p</code>. For example, the following query produces pairs of customer
+                names and phone numbers.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">SELECT c.name.given, c.name.family, p AS phone
+FROM   spectrum.customers c LEFT JOIN c.phones p ON true  </code></pre>
+                    <p>The preceding query returns the following data.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">given  |  family  |  phone
+-------|----------|-----------
+John   | Smith    | 123-4577891
+Jenny  | Doe      | 858-8675309
+Jenny  | Doe      | 415-9876543
+Andy   | Jones    | 
+(4 rows) </code></pre>
+                     
+                 
+                    <h3 id="nested-data-sqlextension4">Extension 4: Accessing elements of maps </h3>
+                    <p>Redshift Spectrum treats the <code class="code">map</code> data type as an <code class="code">array</code> type that contains <code class="code">struct</code> types with a <code class="code">key</code> column and a <code class="code">value</code> column.
+                        The <code class="code">key</code> must be a <code class="code">scalar</code>; the value can be any data type.
+                     </p>
+                    <p>For example, the following code creates an external table with a
+                    <code class="code">map</code> for storing phone numbers.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE EXTERNAL TABLE spectrum.customers2 (
+  id     int,
+  name   struct&lt;given:varchar(20), family:varchar(20)&gt;,
+  phones map&lt;varchar(20), varchar(20)&gt;,
+  orders array&lt;struct&lt;shipdate:timestamp, price:double precision&gt;&gt;
+)
+STORED AS PARQUET
+LOCATION 's3://redshift-downloads/tickit/spectrum/customers/';</code></pre>
+                    <p>Because a <code class="code">map</code> type behaves like an <code class="code">array</code> type
+                with columns <code class="code">key</code> and <code class="code">value</code>, you can think of the preceding
+                schemas as if they were the following.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE EXTERNAL TABLE spectrum.customers3 (
+  id     int,
+  name   struct&lt;given:varchar(20), family:varchar(20)&gt;,
+  phones array&lt;struct&lt;key:varchar(20), value:varchar(20)&gt;&gt;,
+  orders array&lt;struct&lt;shipdate:timestamp, price:double precision&gt;&gt;
+)
+STORED AS PARQUET
+LOCATION 's3://redshift-downloads/tickit/spectrum/customers/';   </code></pre>
+                    
+                    <p>The following query returns the names of customers with a mobile phone number and returns the number for each name. 
+                        The map query is treated as the equivalent of querying a nested <code class="code">array</code> of <code class="code">struct</code> types. 
+                        The following query only returns data if you have created the external table as described previously.
+                    </p>   
+                     <pre class="programlisting"><div class="code-btn-container"></div><code class="">SELECT c.name.given, c.name.family, p.value 
+FROM   spectrum.customers c, c.phones p 
+WHERE  p.key = 'mobile';  </code></pre>   
+                  <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Note</h6></div><div class="awsdocs-note-text"><p>The <code class="code">key</code> for a <code class="code">map</code> is a <code class="code">string</code> for Ion and JSON file types.</p></div></div>      
+                    
+                    
+                     
+                <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warning" /> <strong>Javascript is disabled or is unavailable in your browser.</strong></p><p>To use the Amazon Web Services Documentation, Javascript must be enabled. Please refer to your browser's Help pages for instructions.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Document Conventions</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./c-spectrum-troubleshooting.html">Troubleshooting
+            queries</div><div id="next" class="next-link" accesskey="n" href="./nested-data-use-cases.html">Nested data use cases </div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Did this page help you? - Yes</div><div class="content"><p>Thanks for letting us know we're doing a good job!</p><p>If you've got a moment, please tell us what we did right so we can do more of it.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-query-nested-data.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Did this page help you? - No</div><div class="content"><p>Thanks for letting us know this page needs work. We're sorry we let you down.</p><p>If you've got a moment, please tell us how we can make the documentation better.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-query-nested-data.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

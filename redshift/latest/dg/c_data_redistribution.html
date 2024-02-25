@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Evaluating the query plan - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c_data_redistribution" /><meta name="default_state" content="c_data_redistribution" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/c_data_redistribution.html" /><meta name="description" content="Evaluate the query plan to identify candidates for optimizing the distribution styles for your database." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Database Developer Guide" /><meta name="abstract" content="Create and manage a data warehouse with Amazon Redshift, an enterprise-level, petabyte scale, fully managed data warehousing service." /><meta name="guide-locale" content="en_us" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/c_data_redistribution.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c_data_redistribution.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c_data_redistribution.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c_data_redistribution.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c_data_redistribution.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c_data_redistribution.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c_data_redistribution.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c_data_redistribution.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c_data_redistribution.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c_data_redistribution.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c_data_redistribution.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_data_redistribution.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c_data_redistribution.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_data_redistribution.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c_data_redistribution.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c_data_redistribution.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c_data_redistribution.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c_data_redistribution.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c_data_redistribution.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c_data_redistribution.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c_data_redistribution.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c_data_redistribution.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Database Developer Guide" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Database Developer Guide" /><meta id="panorama-serviceConsolePage" value="Evaluating the query plan" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Evaluating the query plan - Amazon Redshift</title><meta name="pdf" content="/pdfs/redshift/latest/dg/redshift-dg.pdf#c_data_redistribution" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/c_data_redistribution.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/c_data_redistribution.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/c_data_redistribution.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,developer,sample data,database,database developer,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Database Developer Guide",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Working with automatic table optimization",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/t_Creating_tables.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Working with data distribution styles",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/t_Distributing_data.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Evaluating the query plan",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/t_Distributing_data.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="/pdfs/redshift/latest/dg/redshift-dg.pdf#c_data_redistribution" target="_blank" rel="noopener noreferrer" title="Open PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Database Developer Guide</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="c_data_redistribution">Evaluating the query plan</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p> You can use query plans to identify candidates for optimizing the distribution
+                style. </p><p>After making your initial design decisions, create your tables, load them with
+                data, and test them. Use a test dataset that is as close as possible to the real
+                data. Measure load times to use as a baseline for comparisons. </p><p> Evaluate queries that are representative of the most costly queries you expect to
+                run, specifically queries that use joins and aggregations. Compare runtimes for
+                various design options. When you compare runtimes, don't count the first time
+                the query is run, because the first runtime includes the compilation time. </p><div class="variablelist">
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+            <dl>
+                    <dt><span class="term"><b>DS_DIST_NONE</b></span></dt>
+                    <dd>
+                        <p> No redistribution is required, because corresponding slices are
+                            collocated on the compute nodes. You typically have only one
+                            DS_DIST_NONE step, the join between the fact table and one dimension
+                            table. </p>
+                    </dd>
+                 
+                    <dt><span class="term"><b>DS_DIST_ALL_NONE</b></span></dt>
+                    <dd>
+                        <p> No redistribution is required, because the inner join table used
+                            DISTSTYLE ALL. The entire table is located on every node. </p>
+                    </dd>
+                 
+                    <dt><span class="term"><b>DS_DIST_INNER</b></span></dt>
+                    <dd>
+                        <p> The inner table is redistributed. </p>
+                    </dd>
+                 
+                    <dt><span class="term"><b>DS_DIST_OUTER</b></span></dt>
+                    <dd>
+                        <p> The outer table is redistributed. </p>
+                    </dd>
+                 
+                    <dt><span class="term"><b>DS_BCAST_INNER</b></span></dt>
+                    <dd>
+                        <p> A copy of the entire inner table is broadcast to all the compute
+                            nodes. </p>
+                    </dd>
+                 
+                    <dt><span class="term"><b>DS_DIST_ALL_INNER</b></span></dt>
+                    <dd>
+                        <p>The entire inner table is redistributed to a single slice because the
+                            outer table uses DISTSTYLE ALL.</p>
+                    </dd>
+                 
+                    <dt><span class="term"><b>DS_DIST_BOTH</b></span></dt>
+                    <dd>
+                        <p> Both tables are redistributed. </p>
+                    </dd>
+                </dl></div><p>DS_DIST_NONE and DS_DIST_ALL_NONE are good. They indicate that no distribution was
+                required for that step because all of the joins are collocated. </p><p>DS_DIST_INNER means that the step probably has a relatively high cost because the
+                inner table is being redistributed to the nodes. DS_DIST_INNER indicates that the
+                outer table is already properly distributed on the join key. Set the inner
+                table's distribution key to the join key to convert this to DS_DIST_NONE. In
+                some cases, distributing the inner table on the join key isn't possible because
+                the outer table isn't distributed on the join key. If this is the case,
+                evaluate whether to use ALL distribution for the inner table. If the table isn't
+                updated frequently or extensively, and it's large enough to carry a high
+                redistribution cost, change the distribution style to ALL and test again. ALL
+                distribution causes increased load times, so when you retest, include the load time
+                in your evaluation factors. </p><p>DS_DIST_ALL_INNER is not good. It means that the entire inner table is
+                redistributed to a single slice because the outer table uses DISTSTYLE ALL, so that
+                a copy of the entire outer table is located on each node. This results in
+                inefficient serial runtime of the join on a single node, instead taking advantage of
+                parallel runtime using all of the nodes. DISTSTYLE ALL is meant to be used only for
+                the inner join table. Instead, specify a distribution key or use even distribution
+                for the outer table.</p><p>DS_BCAST_INNER and DS_DIST_BOTH are not good. Usually these redistributions occur
+                because the tables are not joined on their distribution keys. If the fact table does
+                not already have a distribution key, specify the joining column as the distribution
+                key for both tables. If the fact table already has a distribution key on another
+                column, evaluate whether changing the distribution key to collocate this join
+                improve overall performance. If changing the distribution key of the outer table
+                isn't an optimal choice, you can achieve collocation by specifying DISTSTYLE
+                ALL for the inner table. </p><p> The following example shows a portion of a query plan with DS_BCAST_INNER and
+                DS_DIST_NONE labels.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">-&gt;  XN Hash Join DS_BCAST_INNER  (cost=112.50..3272334142.59 rows=170771 width=84)
+        Hash Cond: ("outer".venueid = "inner".venueid)
+        -&gt;  XN Hash Join DS_BCAST_INNER  (cost=109.98..3167290276.71 rows=172456 width=47)
+              Hash Cond: ("outer".eventid = "inner".eventid)
+              -&gt;  XN Merge Join DS_DIST_NONE  (cost=0.00..6286.47 rows=172456 width=30)
+                    Merge Cond: ("outer".listid = "inner".listid)
+                    -&gt;  XN Seq Scan on listing  (cost=0.00..1924.97 rows=192497 width=14)
+                    -&gt;  XN Seq Scan on sales  (cost=0.00..1724.56 rows=172456 width=24)</code></pre><p>After changing the dimension tables to use DISTSTYLE ALL, the query plan for the
+                same query shows DS_DIST_ALL_NONE in place of DS_BCAST_INNER. Also, there is a
+                dramatic change in the relative cost for the join steps. The total cost is <code class="code">14142.59</code> compared to <code class="code">3272334142.59</code> in the previous query.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">-&gt;  XN Hash Join DS_DIST_ALL_NONE  (cost=112.50..14142.59 rows=170771 width=84)
+        Hash Cond: ("outer".venueid = "inner".venueid)
+        -&gt;  XN Hash Join DS_DIST_ALL_NONE  (cost=109.98..10276.71 rows=172456 width=47)
+              Hash Cond: ("outer".eventid = "inner".eventid)
+              -&gt;  XN Merge Join DS_DIST_NONE  (cost=0.00..6286.47 rows=172456 width=30)
+                    Merge Cond: ("outer".listid = "inner".listid)
+                    -&gt;  XN Seq Scan on listing  (cost=0.00..1924.97 rows=192497 width=14)
+                    -&gt;  XN Seq Scan on sales  (cost=0.00..1724.56 rows=172456 width=24)            </code></pre><awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warning" /> <strong>Javascript is disabled or is unavailable in your browser.</strong></p><p>To use the Amazon Web Services Documentation, Javascript must be enabled. Please refer to your browser's Help pages for instructions.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Document Conventions</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./t_designating_distribution_styles.html">Designating distribution
+                    styles</div><div id="next" class="next-link" accesskey="n" href="./t_explain_plan_example.html">Query plan example</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Did this page help you? - Yes</div><div class="content"><p>Thanks for letting us know we're doing a good job!</p><p>If you've got a moment, please tell us what we did right so we can do more of it.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/c_data_redistribution.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Did this page help you? - No</div><div class="content"><p>Thanks for letting us know this page needs work. We're sorry we let you down.</p><p>If you've got a moment, please tell us how we can make the documentation better.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/c_data_redistribution.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

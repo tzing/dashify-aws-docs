@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Querying external data using Amazon Redshift Spectrum - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="c-using-spectrum" /><meta name="default_state" content="c-using-spectrum" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html" /><meta name="description" content="Use Amazon Redshift Spectrum to query and retrieve data from files in Amazon S3 without having to load the data into Amazon Redshift tables." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Database Developer Guide" /><meta name="abstract" content="Create and manage a data warehouse with Amazon Redshift, an enterprise-level, petabyte scale, fully managed data warehousing service." /><meta name="guide-locale" content="en_us" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-using-spectrum.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/c-using-spectrum.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-using-spectrum.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/c-using-spectrum.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-using-spectrum.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/c-using-spectrum.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-using-spectrum.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/c-using-spectrum.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-using-spectrum.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/c-using-spectrum.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-using-spectrum.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/c-using-spectrum.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-using-spectrum.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/c-using-spectrum.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-using-spectrum.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/c-using-spectrum.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/c-using-spectrum.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/c-using-spectrum.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Database Developer Guide" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Database Developer Guide" /><meta id="panorama-serviceConsolePage" value="Querying external data using Amazon Redshift Spectrum" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Querying external data using Amazon Redshift Spectrum - Amazon Redshift</title><meta name="pdf" content="/pdfs/redshift/latest/dg/redshift-dg.pdf#c-using-spectrum" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/c-using-spectrum.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/c-using-spectrum.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/c-using-spectrum.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,developer,sample data,database,database developer,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Database Developer Guide",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Querying external data using Amazon Redshift Spectrum",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="/pdfs/redshift/latest/dg/redshift-dg.pdf#c-using-spectrum" target="_blank" rel="noopener noreferrer" title="Open PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Database Developer Guide</a></div><div id="page-toc-src"><a href="#c-spectrum-overview">Amazon Redshift Spectrum overview</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="c-using-spectrum">Querying external data using Amazon Redshift Spectrum</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Using Amazon Redshift Spectrum, you can efficiently query and retrieve structured and semistructured
+      data from files in Amazon S3 without having to load the data into Amazon Redshift tables. Redshift Spectrum
+      queries employ massive parallelism to run very fast against large datasets. Much of the
+      processing occurs in the Redshift Spectrum layer, and most of the data remains in Amazon S3.
+      Multiple clusters can concurrently query the same dataset in Amazon S3 without the need to make
+      copies of the data for each cluster.</p><div class="highlights"><h6>Topics</h6><ul><li><a href="#c-spectrum-overview">Amazon Redshift Spectrum overview</a></li><li><a href="./c-getting-started-using-spectrum.html">Getting started with Amazon Redshift
+            Spectrum</a></li><li><a href="./c-spectrum-iam-policies.html">IAM policies for Amazon Redshift Spectrum</a></li><li><a href="./spectrum-lake-formation.html">Using Redshift Spectrum with AWS Lake Formation</a></li><li><a href="./c-spectrum-data-files.html">Creating data files for queries in Amazon Redshift
+            Spectrum</a></li><li><a href="./c-spectrum-external-schemas.html">Creating external schemas for Amazon Redshift
+            Spectrum</a></li><li><a href="./c-spectrum-external-tables.html">Creating external tables for Redshift Spectrum</a></li><li><a href="./querying-iceberg.html">Using Apache Iceberg tables with Amazon Redshift</a></li><li><a href="./c-spectrum-external-performance.html">Improving Amazon Redshift Spectrum query
+            performance</a></li><li><a href="./t_setting-data-handling-options.html">Setting data handling options</a></li><li><a href="./c_performing-correlated-subqueries-spectrum.html">Example: Performing correlated subqueries in Redshift Spectrum</a></li><li><a href="./c-spectrum-metrics.html">Monitoring metrics in Amazon Redshift Spectrum</a></li><li><a href="./c-spectrum-troubleshooting.html">Troubleshooting queries in Amazon Redshift
+            Spectrum</a></li><li><a href="./tutorial-query-nested-data.html">Tutorial: Querying nested data with Amazon Redshift
+            Spectrum</a></li></ul></div>
+      <h2 id="c-spectrum-overview">Amazon Redshift Spectrum overview</h2>
+
+      <p>Amazon Redshift Spectrum resides on dedicated Amazon Redshift servers that are independent of your cluster.
+         Amazon Redshift pushes many compute-intensive tasks, such as predicate filtering and
+         aggregation, down to the Redshift Spectrum layer. Thus, Redshift Spectrum queries use much
+         less of your cluster's processing capacity than other queries. Redshift Spectrum also
+         scales intelligently. Based on the demands of your queries, Redshift Spectrum can
+         potentially use thousands of instances to take advantage of massively parallel
+         processing.</p>
+      <p>You create Redshift Spectrum tables by defining the structure for your files and registering them as
+         tables in an external data catalog. The external data catalog can be AWS Glue, the data
+         catalog that comes with Amazon Athena, or your own Apache Hive metastore. You can create and
+         manage external tables either from Amazon Redshift using data definition language (DDL) commands or
+         using any other tool that connects to the external data catalog. Changes to the external
+         data catalog are immediately available to any of your Amazon Redshift clusters. </p>
+      <p>Optionally, you can partition the external tables on one or more columns. Defining
+         partitions as part of the external table can improve performance. The improvement occurs
+         because the Amazon Redshift query optimizer eliminates partitions that don't contain data for the
+         query. </p>
+      <p>After your Redshift Spectrum tables have been defined, you can query and join the tables
+         just as you do any other Amazon Redshift table. Redshift Spectrum doesn't support update operations on external
+         tables. You can add Redshift Spectrum tables to multiple Amazon Redshift clusters and query the same
+         data on Amazon S3 from any cluster in the same AWS Region. When you update Amazon S3 data files, the
+         data is immediately available for query from any of your Amazon Redshift clusters. </p>
+
+
+      <p>The AWS Glue Data Catalog that you access might be encrypted to increase security. If the
+         AWS Glue catalog is encrypted, you need the AWS Key Management Service (AWS KMS) key for AWS Glue to access the
+         AWS Glue catalog. AWS Glue catalog encryption is not available in all AWS Regions. For a list of
+         supported AWS Regions, see <a href="https://docs.aws.amazon.com/glue/latest/dg/encryption-glue-resources.html">Encryption and Secure Access for AWS Glue</a> in the <em><a href="https://docs.aws.amazon.com/glue/latest/dg/">AWS Glue Developer Guide</a>. </em>For more information about AWS Glue Data Catalog encryption, see
+            <a href="https://docs.aws.amazon.com/glue/latest/dg/encrypt-glue-data-catalog.html">Encrypting Your AWS Glue Data Catalog</a> in the <em><a href="https://docs.aws.amazon.com/glue/latest/dg/">AWS Glue Developer Guide</a>. </em>
+      </p>
+
+
+      <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Note</h6></div><div class="awsdocs-note-text"><p>You can't view details for Redshift Spectrum tables using the same resources that you
+            use for standard Amazon Redshift tables, such as <a href="./r_PG_TABLE_DEF.html">PG_TABLE_DEF</a>, <a href="./r_STV_TBL_PERM.html">STV_TBL_PERM</a>, PG_CLASS, or information_schema. If your business
+            intelligence or analytics tool doesn't recognize Redshift Spectrum external tables,
+            configure your application to query <a href="./r_SVV_EXTERNAL_TABLES.html">SVV_EXTERNAL_TABLES</a> and <a href="./r_SVV_EXTERNAL_COLUMNS.html">SVV_EXTERNAL_COLUMNS</a>.</p></div></div>
+       
+         <h3 id="c-spectrum-regions">Amazon Redshift Spectrum Regions</h3>
+         
+         <p>Redshift Spectrum is available in AWS Regions where Amazon Redshift is available, unless otherwise specified in Region specific documentation. For AWS Region availability in commercial Regions, see
+            <a href="https://docs.aws.amazon.com/general/latest/gr/redshift-service.html#redshift_region">Service endpoints</a> for the <b>Redshift API</b> in the <em>Amazon Web Services General Reference</em>. </p>
+         
+         
+         
+         
+         
+       
+       
+         <h3 id="c-spectrum-considerations">Amazon Redshift Spectrum considerations</h3>
+
+         <p>Note the following considerations when you use Amazon Redshift Spectrum:</p>
+         <div class="itemizedlist">
+             
+             
+             
+             
+            
+             
+             
+            
+             
+            
+             
+            
+            
+         <ul class="itemizedlist"><li class="listitem">
+               <p>The Amazon Redshift cluster and the Amazon S3 bucket must be in the same AWS Region. </p>
+            </li><li class="listitem">
+               <p>Redshift Spectrum doesn't support enhanced VPC routing with provisioned clusters. To access your Amazon S3 data, you might need to perform additional
+                  configuration steps. For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/spectrum-enhanced-vpc.html">Redshift Spectrum and enhanced VPC routing</a> in the <em>Amazon Redshift Management Guide</em>.</p>
+            </li><li class="listitem"><p>Redshift Spectrum supports Amazon S3 access point aliases. For more information, 
+               see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-alias.html">Using a bucket–style alias for your access point</a> in the <em>Amazon Simple Storage Service User Guide</em>. 
+               However, Redshift Spectrum doesn't support VPC with Amazon S3 access point aliases. 
+               For more information, see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/spectrum-enhanced-vpc.html">Redshift Spectrum and enhanced VPC routing</a> in the <em>Amazon Redshift Management Guide</em>.</p>
+            </li><li class="listitem">
+               <p>You can't perform update or delete operations on external tables. To create a new external table in the specified schema, you can use CREATE EXTERNAL TABLE. For more information about CREATE EXTERNAL TABLE, see <a href="./r_CREATE_EXTERNAL_TABLE.html">CREATE EXTERNAL TABLE</a>. To
+                  insert the results of a SELECT query into existing external tables on external
+                  catalogs, you can use INSERT (external table). For more information about INSERT
+                  (external table), see <a href="./r_INSERT_external_table.html">INSERT (external table)</a>.</p>
+            </li><li class="listitem">
+               <p>Unless you are using an AWS Glue Data Catalog that is enabled for AWS Lake Formation, you can't
+                  control user permissions on an external table. Instead, you can grant and revoke
+                  permissions on the external schema. For more information about working with AWS Lake Formation,
+                  see <a href="./spectrum-lake-formation.html">Using Redshift Spectrum with AWS Lake Formation</a>.</p>
+            </li><li class="listitem">
+               <p>To run Redshift Spectrum queries, the database user must have permission to
+                  create temporary tables in the database. The following example grants temporary
+                  permission on the database <code class="code">spectrumdb</code> to the
+                     <code class="code">spectrumusers</code> user group. </p>
+               <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">grant temp on database spectrumdb to group spectrumusers;</code></pre>
+               <p>For more information, see <a href="./r_GRANT.html">GRANT</a>.</p>
+            </li><li class="listitem">
+               <p>When using the Athena Data Catalog or AWS Glue Data Catalog as a metadata store,
+                  see <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html">Quotas and
+                     Limits</a> in the <em>Amazon Redshift Management Guide</em>.
+               </p>
+               
+            </li><li class="listitem">
+               <p>Redshift Spectrum doesn't support Amazon EMR with Kerberos.</p>
+            </li></ul></div>
+       
+   <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warning" /> <strong>Javascript is disabled or is unavailable in your browser.</strong></p><p>To use the Amazon Web Services Documentation, Javascript must be enabled. Please refer to your browser's Help pages for instructions.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Document Conventions</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./federated-limitations.html">Considerations</div><div id="next" class="next-link" accesskey="n" href="./c-getting-started-using-spectrum.html">Getting started with Amazon Redshift
+            Spectrum</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Did this page help you? - Yes</div><div class="content"><p>Thanks for letting us know we're doing a good job!</p><p>If you've got a moment, please tell us what we did right so we can do more of it.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/c-using-spectrum.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Did this page help you? - No</div><div class="content"><p>Thanks for letting us know this page needs work. We're sorry we let you down.</p><p>If you've got a moment, please tell us how we can make the documentation better.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/c-using-spectrum.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

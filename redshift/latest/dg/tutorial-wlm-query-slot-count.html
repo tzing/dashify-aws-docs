@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Section 4: Using wlm_query_slot_count to temporarily override the concurrency level in a queue - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="tutorial-wlm-query-slot-count" /><meta name="default_state" content="tutorial-wlm-query-slot-count" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="description" content="Sometimes, users might temporarily need more resources for a particular query. If so, they can use the wlm_query_slot_count configuration setting to temporarily override the way slots are allocated in a query queue. Slots are units of memory and CPU that are used to process queries. You might override the slot count when you have occasional queries that take a lot of resources in the cluster, such as when you perform a VACUUM operation in the database." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Database Developer Guide" /><meta name="abstract" content="Create and manage a data warehouse with Amazon Redshift, an enterprise-level, petabyte scale, fully managed data warehousing service." /><meta name="guide-locale" content="en_us" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/tutorial-wlm-query-slot-count.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Database Developer Guide" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Database Developer Guide" /><meta id="panorama-serviceConsolePage" value="Section 4: Using wlm_query_slot_count to temporarily override the concurrency level in a queue" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Section 4: Using wlm_query_slot_count to temporarily override the concurrency level in a queue - Amazon Redshift</title><meta name="pdf" content="/pdfs/redshift/latest/dg/redshift-dg.pdf#tutorial-wlm-query-slot-count" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-wlm-query-slot-count.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,developer,sample data,database,database developer,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Database Developer Guide",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Implementing workload management",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Implementing manual WLM",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/cm-c-defining-query-queues.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Tutorial: Configuring manual workload management (WLM) queues",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 7,
+        "name" : "Section 4: Using wlm_query_slot_count to temporarily override the concurrency level in a queue",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/tutorial-configuring-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="/pdfs/redshift/latest/dg/redshift-dg.pdf#tutorial-wlm-query-slot-count" target="_blank" rel="noopener noreferrer" title="Open PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Database Developer Guide</a></div><div id="page-toc-src"><a href="#tutorial-wlm-override-slot-count">Step 1: Override the concurrency
+                    level using wlm_query_slot_count</a><a href="#tutorial-wlm-run-queries-from-different-sessions">Step 2: Run
+                    queries from different sessions</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="tutorial-wlm-query-slot-count">Section 4: Using wlm_query_slot_count to
+                temporarily override the concurrency level in a queue</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Sometimes, users might temporarily need more resources for a particular query. If so,
+            they can use the wlm_query_slot_count configuration setting to temporarily override the
+            way slots are allocated in a query queue. <em>Slots</em> are units of memory
+            and CPU that are used to process queries. You might override the slot count when you
+            have occasional queries that take a lot of resources in the cluster, such as when you
+            perform a VACUUM operation in the database. </p><p>You might find that users often need to set wlm_query_slot_count for certain types of
+            queries. If so, consider adjusting the WLM configuration and giving users a queue that
+            better suits the needs of their queries. For more information about temporarily
+            overriding the concurrency level by using slot count, see <a href="./r_wlm_query_slot_count.html">wlm_query_slot_count</a>.</p>
+            <h2 id="tutorial-wlm-override-slot-count">Step 1: Override the concurrency
+                    level using wlm_query_slot_count</h2>
+
+            <p>For the purposes of this tutorial, we run the same long-running SELECT query.
+                We run it as the <code class="code">adminwlm</code> user using wlm_query_slot_count to
+                increase the number of slots available for the query.</p>
+             
+                <h3 id="how-to-wlm-override-slot-count">To override the concurrency
+                        level using wlm_query_slot_count</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+                     
+                <ol><li>
+                        <p>Increase the limit on the query to make sure that you have enough time
+                            to query the WLM_QUERY_STATE_VW view and see a result. </p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set wlm_query_slot_count to 3; 
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>Now, query WLM_QUERY_STATE_VW with the admin user to see how
+                            the query is running.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_query_state_vw;</code></pre>
+                        <p>The following is an example result.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="/images/redshift/latest/dg/images/psql_tutorial_wlm_170.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>Notice that the slot count for the query is 3. This count means that
+                            the query is using all three slots to process the query, allocating all
+                            of the resources in the queue to that query.</p>
+                    </li><li>
+                        <p>Now, run the following query.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from WLM_QUEUE_STATE_VW;</code></pre>
+                        <p>The following is an example result.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="/images/redshift/latest/dg/images/psql_tutorial_wlm_160.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>The wlm_query_slot_count configuration setting is valid for the
+                            current session only. If that session expires, or another user runs a
+                            query, the WLM configuration is used.</p>
+                    </li><li>
+                        <p>Reset the slot count and rerun the test.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">reset wlm_query_slot_count;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                        <p>The following are example results.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="/images/redshift/latest/dg/images/psql_tutorial_wlm_180.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="/images/redshift/latest/dg/images/psql_tutorial_wlm_190.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                    </li></ol></div>
+             
+         
+            <h2 id="tutorial-wlm-run-queries-from-different-sessions">Step 2: Run
+                    queries from different sessions</h2>
+
+            <p>Next, run queries from different sessions.</p>
+             
+                <h3 id="how-to-wlm-run-queries-from-different-sessions">To run queries
+                        from different sessions</h3>
+
+                <div class="orderedlist">
+                     
+                     
+                     
+
+                     
+                <ol><li>
+                        <p>In RSQL window 1 and 2, run the following to use the test query
+                            group.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set query_group to test;</code></pre>
+                    </li><li>
+                        <p>In RSQL window 1, run the following long-running query.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>As the long-running query is still going in RSQL window 1, run the
+                            following. These commands increase the slot count to use all the slots
+                            for the queue and then start running the long-running query.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">set wlm_query_slot_count to 2;
+select avg(l.priceperticket*s.qtysold) from listing l, sales s where l.listid &lt;40000;</code></pre>
+                    </li><li>
+                        <p>Open a third RSQL window and query the views to see the
+                            results.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select * from wlm_queue_state_vw;
+select * from wlm_query_state_vw;</code></pre>
+                        <p>The following are example results.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="/images/redshift/latest/dg/images/psql_tutorial_wlm_200.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <div class="mediaobject">
+                             
+                                <img src="/images/redshift/latest/dg/images/psql_tutorial_wlm_210.png" class="aws-docs-img-whiteBg aws-docs-img-padding" />
+                             
+                        </div>
+                        <p>Notice that the first query is using one of the slots allocated to
+                            queue 1 to run the query. In addition, notice that there is one query
+                            that is waiting in the queue (where <code class="code">queued</code> is
+                                <code class="code">1</code> and <code class="code">state</code> is
+                            <code class="code">QueuedWaiting</code>). After the first query completes, the second
+                            one begins running. This execution happens because both queries are
+                            routed to the <code class="code">test</code> query group, and the second query must
+                            wait for enough slots to begin processing.</p>
+                    </li></ol></div>
+             
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warning" /> <strong>Javascript is disabled or is unavailable in your browser.</strong></p><p>To use the Amazon Web Services Documentation, Javascript must be enabled. Please refer to your browser's Help pages for instructions.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Document Conventions</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./tutorial-wlm-routing-queries-to-queues.html">Section 3: Routing queries to
+                queues based on user groups and query groups</div><div id="next" class="next-link" accesskey="n" href="./tutorial-wlm-cleaning-up-resources.html">Section 5: Cleaning up your
+                resources</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Did this page help you? - Yes</div><div class="content"><p>Thanks for letting us know we're doing a good job!</p><p>If you've got a moment, please tell us what we did right so we can do more of it.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-wlm-query-slot-count.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Did this page help you? - No</div><div class="content"><p>Thanks for letting us know this page needs work. We're sorry we let you down.</p><p>If you've got a moment, please tell us how we can make the documentation better.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/tutorial-wlm-query-slot-count.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

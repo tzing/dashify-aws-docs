@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>WLM query monitoring rules - Amazon Redshift</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="cm-c-wlm-query-monitoring-rules" /><meta name="default_state" content="cm-c-wlm-query-monitoring-rules" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="description" content="In Amazon Redshift workload management (WLM), query monitoring rules define metrics-based performance boundaries for WLM queues and specify what action to take when a query goes beyond those boundaries. For example, for a queue dedicated to short running queries, you might create a rule that cancels queries that run for more than 60 seconds. To track poorly designed queries, you might have another rule that logs queries that contain nested loops." /><meta name="deployment_region" content="IAD" /><meta name="product" content="Amazon Redshift" /><meta name="guide" content="Database Developer Guide" /><meta name="abstract" content="Create and manage a data warehouse with Amazon Redshift, an enterprise-level, petabyte scale, fully managed data warehousing service." /><meta name="guide-locale" content="en_us" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" hreflang="x-default" /><meta name="feedback-item" content="Redshift" /><meta name="this_doc_product" content="Amazon Redshift" /><meta name="this_doc_guide" content="Database Developer Guide" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'redshift'}"></script><meta id="panorama-serviceSubSection" value="Database Developer Guide" /><meta id="panorama-serviceConsolePage" value="WLM query monitoring rules" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>WLM query monitoring rules - Amazon Redshift</title><meta name="pdf" content="/pdfs/redshift/latest/dg/redshift-dg.pdf#cm-c-wlm-query-monitoring-rules" /><meta name="rss" content="Dochistory.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=155" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html" /><meta name="keywords" content="Amazon Redshift,AWS Redshift,Redshift,Redshift Spectrum,cluster,data warehouse,developer,sample data,database,database developer,HLL" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "Amazon Redshift",
+        "item" : "https://docs.aws.amazon.com/redshift/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Database Developer Guide",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Implementing workload management",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "WLM query monitoring rules",
+        "item" : "https://docs.aws.amazon.com/redshift/latest/dg/cm-c-implementing-workload-management.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="/pdfs/redshift/latest/dg/redshift-dg.pdf#cm-c-wlm-query-monitoring-rules" target="_blank" rel="noopener noreferrer" title="Open PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Database Developer Guide</a></div><div id="page-toc-src"><a href="#cm-c-wlm-defining-query-monitoring-rules">Defining a query
+               monitor rule</a><a href="#cm-c-wlm-query-monitoring-metrics">Query monitoring
+               metrics for Amazon Redshift provisioned</a><a href="#cm-c-wlm-query-monitoring-metrics-serverless">Query monitoring metrics for Amazon Redshift Serverless</a><a href="#cm-c-wlm-query-monitoring-templates">Query monitoring rules
+               templates</a><a href="#cm-c-wlm-qmr-tables-and-views">System tables and views for
+               query monitoring rules</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="cm-c-wlm-query-monitoring-rules">WLM query monitoring rules</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>In Amazon Redshift workload management (WLM), query monitoring rules define metrics-based
+         performance boundaries for WLM queues and specify what action to take when a query goes
+         beyond those boundaries. For example, for a queue dedicated to short running queries, you
+         might create a rule that cancels queries that run for more than 60 seconds. To track poorly
+         designed queries, you might have another rule that logs queries that contain nested loops. </p><p>You define query monitoring rules as part of your workload management (WLM)
+         configuration. You can define up to 25 rules for each queue, with a limit of 25 rules for
+         all queues. Each rule includes up to three conditions, or predicates, and one action. A
+            <em>predicate</em> consists of a metric, a comparison condition (=, &lt;, or
+         &gt; ), and a value. If all of the predicates for any rule are met, that rule's action is
+         triggered. Possible rule actions are log, hop, and abort, as discussed following. </p><p>The rules in a given queue apply only to queries running in that queue. A rule is
+         independent of other rules. </p><p>WLM evaluates metrics every 10 seconds. If more than one rule is triggered during the
+         same period, WLM initiates the most severe action—abort, then hop, then log. If the
+         action is hop or abort, the action is logged and the query is evicted from the queue. If
+         the action is log, the query continues to run in the queue. WLM initiates only one log
+         action per query per rule. If the queue contains other rules, those rules remain in effect.
+         If the action is hop and the query is routed to another queue, the rules for the new queue
+         apply. For more information about query monitoring and tracking actions taken on specific queries, see the collection of samples at <a href="./wlm-short-query-acceleration.html">Working with short query
+            acceleration</a>.</p><p>When all of a rule's predicates are met, WLM writes a row to the <a href="./r_STL_WLM_RULE_ACTION.html">STL_WLM_RULE_ACTION</a> system table. In
+         addition, Amazon Redshift records query metrics for currently running queries to <a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a>. Metrics for
+         completed queries are stored in <a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a>. </p>
+         <h2 id="cm-c-wlm-defining-query-monitoring-rules">Defining a query monitoring
+               rule</h2>
+
+
+         <p>You create query monitoring rules as part of your WLM configuration, which you define
+            as part of your cluster's parameter group definition.</p>
+
+
+
+         <p>You can create rules using the AWS Management Console or programmatically using JSON. </p>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Note</h6></div><div class="awsdocs-note-text"><p>If you choose to create rules programmatically, we strongly recommend using the
+               console to generate the JSON that you include in the parameter group definition. For
+               more information, see 
+               
+               <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-parameter-groups-console.html#parameter-group-modify-qmr-console">Creating or modifying a query monitoring rule using the console</a>
+               
+               and
+                  <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html#configure-parameters-using-the-cli">Configuring Parameter Values Using the AWS CLI</a> in the
+                  <em>Amazon Redshift Management Guide</em>. </p></div></div>
+
+         <p>To define a query monitoring rule, you specify the following elements:</p>
+         <div class="itemizedlist">
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>A rule name – Rule names must be unique within the WLM configuration.
+                  Rule names can be up to 32 alphanumeric characters or underscores, and can't
+                  contain spaces or quotation marks. You can have up to 25 rules per queue, and the
+                  total limit for all queues is 25 rules.</p>
+            </li><li class="listitem">
+               <p>One or more predicates – You can have up to three predicates per rule.
+                  If all the predicates for any rule are met, the associated action is triggered. A
+                  predicate is defined by a metric name, an operator ( =, &lt;, or &gt; ), and a
+                  value. An example is <code class="code">query_cpu_time &gt; 100000</code>. For a list of
+                  metrics and examples of values for different metrics, see <a href="#cm-c-wlm-query-monitoring-metrics">Query monitoring metrics for Amazon Redshift provisioned</a> following in this section.
+               </p>
+            </li><li class="listitem">
+               <p>An action – If more than one rule is triggered, WLM chooses the rule
+                  with the most severe action. Possible actions, in ascending order of severity,
+                  are:</p>
+               <div class="itemizedlist">
+                   
+                   
+                   
+                   
+               <ul class="itemizedlist"><li class="listitem">
+                     <p>Log – Record information about the query in the
+                        STL_WLM_RULE_ACTION system table. Use the Log action when you want to only
+                        write a log record. WLM creates at most one log per query, per rule.
+                        Following a log action, other rules remain in force and WLM continues to
+                        monitor the query. </p>
+                  </li><li class="listitem">
+                     <p>Hop (only available with manual WLM) – Log the action and hop the query to the next matching queue.
+                        If there isn't another matching queue, the query is canceled. QMR hops only
+                           <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_AS.html">CREATE TABLE AS</a>
+                        (CTAS) statements and read-only queries, such as SELECT statements. For more
+                        information, see <a href="./wlm-queue-hopping.html">WLM query queue hopping</a>. </p>
+                  </li><li class="listitem">
+                     <p>Abort – Log the action and cancel the query. QMR doesn't stop
+                        COPY statements and maintenance operations, such as ANALYZE and VACUUM.
+                     </p>
+                  </li><li class="listitem">
+                     <p>Change priority (only available with automatic WLM) – Change the priority of a query.
+                     </p>
+                  </li></ul></div>
+            </li></ul></div>
+
+         
+         <p>To limit the runtime of queries, we recommend creating a query monitoring rule
+            instead of using WLM timeout. For example, you can set <code class="code">max_execution_time</code>
+            to 50,000 milliseconds as shown in the following JSON snippet.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"max_execution_time": 50000</code></pre>
+         <p>But we recommend instead that you define an equivalent query monitoring rule that
+            sets <code class="code">query_execution_time</code> to 50 seconds as shown in the following JSON
+            snippet.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"rules": 
+[
+    <span>{</span>
+        "rule_name": "rule_query_execution",
+        "predicate": [
+            <span>{</span>
+                "metric_name": "query_execution_time",
+                "operator": "&gt;",
+                "value": 50
+            }
+        ],
+        "action": "abort"
+    }            
+]</code></pre>
+         
+         <p>For steps to create or modify a query monitoring rule, see 
+            
+            <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-parameter-groups-console.html#parameter-group-modify-qmr-console">Creating or modifying a query monitoring rule using the console</a>
+            
+            and <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/workload-mgmt-config.html#wlm-json-config-properties">Properties in
+               the wlm_json_configuration Parameter</a> in the
+            <em>Amazon Redshift Management Guide</em>.</p>
+         
+
+         <p>You can find more information about query monitoring rules in the following topics: </p>
+         <div class="itemizedlist">
+             
+
+             
+
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>
+                  <a href="#cm-c-wlm-query-monitoring-metrics">Query monitoring metrics for Amazon Redshift provisioned</a>
+               </p>
+            </li><li class="listitem">
+               <p>
+                  <a href="#cm-c-wlm-query-monitoring-templates">Query monitoring rules
+               templates</a>
+               </p>
+            </li><li class="listitem">
+               <p>
+                  <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-parameter-groups-console.html#parameter-group-modify-qmr-console">Creating a Rule Using the Console</a>
+               </p>
+            </li><li class="listitem">
+               <p>
+                  <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/workload-mgmt-config.html">Configuring Workload
+                     Management</a>
+               </p>
+            </li><li class="listitem">
+               <p>
+                  <a href="#cm-c-wlm-qmr-tables-and-views">System tables and views for query
+               monitoring rules</a>
+               </p>
+            </li></ul></div>
+       
+         <h2 id="cm-c-wlm-query-monitoring-metrics">Query monitoring metrics for Amazon Redshift provisioned</h2>
+
+
+         <p>The following table describes the metrics used in query monitoring rules. (These
+            metrics are distinct from the metrics stored in the <a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a> and <a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a> system tables.) </p>
+         <p>For a given metric, the performance threshold is tracked either at the query level or
+            the segment level. For more information about segments and steps, see <a href="./c-query-planning.html">Query planning and execution workflow</a>.</p>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Note</h6></div><div class="awsdocs-note-text"><p>The <a href="./cm-c-defining-query-queues.html#wlm-timeout">WLM timeout</a> parameter is
+               distinct from query monitoring rules.</p></div></div>
+
+         <div class="table-container"><div class="table-contents"><table id="w323aac62c77c17b9"><thead>
+                  <tr>
+                     <th>Metric</th>
+                     <th>Name</th>
+                     <th>Description</th>
+
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">Query CPU time</td>
+                     <td tabindex="-1">
+                        <code class="code">query_cpu_time</code>
+                     </td>
+                     <td tabindex="-1">CPU time used by the query, in seconds. <code class="code">CPU
+                           time</code> is distinct from <code class="code">Query execution time</code>.
+                           <p>Valid values are 0–999,999. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Blocks read</td>
+                     <td tabindex="-1">
+                        <code class="code">query_blocks_read</code>
+                     </td>
+                     <td tabindex="-1">Number of 1 MB data blocks read by the query.<p>Valid
+                           values are 0–1,048,575. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Scan row count</td>
+                     <td tabindex="-1">
+                        <code class="code">scan_row_count</code>
+                     </td>
+                     <td tabindex="-1">
+                        <p>The number of rows in a scan step. The row count is the total number
+                           of rows emitted before filtering rows marked for deletion (ghost rows)
+                           and before applying user-defined query filters.</p>
+                        <p>Valid values are 0–999,999,999,999,999. </p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Query execution time</td>
+                     <td tabindex="-1">
+                        <code class="code">query_execution_time</code>
+                     </td>
+                     <td tabindex="-1">Elapsed execution time for a query, in seconds. Execution
+                        time doesn't include time spent waiting in a queue.<p>Valid values are 0–86,399.</p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Query queue time</td>
+                     <td tabindex="-1">
+                        <code class="code">query_queue_time</code>
+                     </td>
+                     <td tabindex="-1">Time spent waiting in a queue, in seconds. <p>Valid values are 0–86,399. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">CPU usage</td>
+                     <td tabindex="-1">
+                        <code class="code">query_cpu_usage_percent</code>
+                     </td>
+                     <td tabindex="-1">Percent of CPU capacity used by the query.<p>Valid
+                           values are 0–6,399. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Memory to disk</td>
+                     <td tabindex="-1">
+                        <code class="code">query_temp_blocks_to_disk</code>
+                     </td>
+                     <td tabindex="-1">Temporary disk space used to write intermediate results,
+                        in 1 MB blocks.<p>Valid values are 0–319,815,679. </p></td>  
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">CPU skew</td>
+                     <td tabindex="-1">
+                        <code class="code">cpu_skew</code>
+                     </td>
+                     <td tabindex="-1">The ratio of maximum CPU usage for any slice to average
+                        CPU usage for all slices. This metric is defined at the segment
+                           level.<p>Valid values are 0–99. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">I/O skew</td>
+                     <td tabindex="-1">
+                        <code class="code">io_skew</code>
+                     </td>
+                     <td tabindex="-1">The ratio of maximum blocks read (I/O) for any slice to
+                        average blocks read for all slices. This metric is defined at the segment
+                           level.<p>Valid values are 0–99. </p></td>
+                  </tr>
+
+                  <tr>
+                     <td tabindex="-1">Rows joined</td>
+                     <td tabindex="-1">
+                        <code class="code">join_row_count</code>
+                     </td>
+                     <td tabindex="-1">The number of rows processed in a join step.<p>Valid
+                        values are 0–999,999,999,999,999. </p></td>
+                  </tr>
+
+                  <tr>
+                     <td tabindex="-1">Nested loop join row count</td>
+                     <td tabindex="-1">
+                        <code class="code">nested_loop_join_row_count</code>
+                     </td>
+                     <td tabindex="-1">The number or rows in a nested loop join.<p>Valid
+                        values are 0–999,999,999,999,999. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Return row count</td>
+                     <td tabindex="-1">
+                        <code class="code">return_row_count</code>
+                     </td>
+                     <td tabindex="-1">The number of rows returned by the query.<p> Valid
+                        values are 0–999,999,999,999,999. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Segment execution time</td>
+                     <td tabindex="-1">
+                        <code class="code">segment_execution_time</code>
+                     </td>
+                     <td tabindex="-1">Elapsed execution time for a single segment, in seconds.
+                        To avoid or reduce sampling errors, include <code class="code">segment_execution_time
+                           &gt; 10</code> in your rules.<p>Valid values are 0–86,388.</p></td>
+                  </tr>
+
+                  <tr>
+                     <td tabindex="-1">Spectrum scan row count</td>
+                     <td tabindex="-1">
+                        <code class="code">spectrum_scan_row_count</code>
+                     </td>
+                     <td tabindex="-1">The number of rows of data in Amazon S3 scanned by an
+                        Amazon Redshift Spectrum query. <p>Valid values are 0–999,999,999,999,999. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Spectrum scan size</td>
+                     <td tabindex="-1">
+                        <code class="code">spectrum_scan_size_mb</code>
+                     </td>
+                     <td tabindex="-1">The size of data in Amazon S3, in MB, scanned by an Amazon Redshift
+                        Spectrum query.<p>Valid values are 0–999,999,999,999,999. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Query priority</td>
+                     <td tabindex="-1">
+                        <code class="code">query_priority</code>
+                     </td>
+                     <td tabindex="-1">The priority of the query.
+                        <p>Valid values are <code class="code">HIGHEST</code>, <code class="code">HIGH</code>, <code class="code">NORMAL</code>, <code class="code">LOW</code>, and <code class="code">LOWEST</code>. 
+                        When comparing <code class="code">query_priority</code> using greater than (&gt;) and less than (&lt;) operators, <code class="code">HIGHEST</code> is greater than <code class="code">HIGH</code>, 
+                           <code class="code">HIGH</code> is greater than <code class="code">NORMAL</code>, and so on. </p></td>
+                  </tr>
+               </table></div></div>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Note</h6></div><div class="awsdocs-note-text"><div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem"><p>The hop action is not supported with the <code class="code">query_queue_time</code> predicate. 
+               That is, rules defined to hop when a <code class="code">query_queue_time</code> predicate is met are ignored. </p></li><li class="listitem">
+            <p>Short segment execution times can result in sampling errors with some metrics,
+               such as <code class="code">io_skew</code> and <code class="code">query_cpu_usage_percent</code>. To avoid or reduce
+               sampling errors, include segment execution time in your rules. A good starting point
+               is <code class="code">segment_execution_time &gt; 10</code>.</p>
+            </li></ul></div></div></div>
+         <p>The <a href="./r_SVL_QUERY_METRICS.html">SVL_QUERY_METRICS</a> view
+            shows the metrics for completed queries. The <a href="./r_SVL_QUERY_METRICS_SUMMARY.html">SVL_QUERY_METRICS_SUMMARY</a> view shows the maximum values of
+            metrics for completed queries. Use the values in these views as an aid to determine
+            threshold values for defining query monitoring rules.</p>
+       
+         <h2 id="cm-c-wlm-query-monitoring-metrics-serverless">Query monitoring metrics for Amazon Redshift Serverless</h2>
+         <p>The following table describes the metrics used in query monitoring rules for Amazon Redshift Serverless. 
+            
+         
+         </p>
+            
+         
+         <div class="table-container"><div class="table-contents"><table id="w323aac62c77c19b7"><thead>
+                  <tr>
+                     <th>Metric</th>
+                     <th>Name</th>
+                     <th>Description</th>
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">Query CPU time</td>
+                     <td tabindex="-1"><code class="code">max_query_cpu_time</code></td>
+                     <td tabindex="-1">CPU time used by the query, in seconds. <code class="code">CPU time</code> is distinct from <code class="code">Query execution time</code>.
+                        <p>Valid values are 0–999,999. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Blocks read</td>
+                     <td tabindex="-1">
+                        <code class="code">max_query_blocks_read</code>
+                     </td>
+                     <td tabindex="-1">Number of 1 MB data blocks read by the query.<p>Valid
+                        values are 0–1,048,575. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Scan row count</td>
+                     <td tabindex="-1">
+                        <code class="code">max_scan_row_count</code>
+                     </td>
+                     <td tabindex="-1">
+                        <p>The number of rows in a scan step. The row count is the total number
+                           of rows emitted before filtering rows marked for deletion (ghost rows)
+                           and before applying user-defined query filters.</p>
+                        <p>Valid values are 0–999,999,999,999,999. </p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Query execution time</td>
+                     <td tabindex="-1">max_query_execution_time</td>
+                     <td tabindex="-1">
+                        <p>Elapsed execution time for a query, in seconds. 
+                           Execution time doesn't include time spent waiting in a queue. If a query exceeds the set execution time, Amazon Redshift Serverless stops the query.</p>
+                        <p>Valid values are 0–86,399.
+                        </p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Query queue time</td>
+                     <td tabindex="-1"><code class="code">max_query_queue_time</code></td>
+                     <td tabindex="-1">Time spent waiting in a queue, in seconds. <p>Valid values are 0–86,399. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">CPU usage</td>
+                     <td tabindex="-1">
+                        <code class="code">max_query_cpu_usage_percent</code>
+                     </td>
+                     <td tabindex="-1">Percent of CPU capacity used by the query.<p>Valid
+                        values are 0–6,399. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Memory to disk</td>
+                     <td tabindex="-1">
+                        <code class="code">max_query_temp_blocks_to_disk</code>
+                     </td>
+                     <td tabindex="-1">Temporary disk space used to write intermediate results,
+                        in 1 MB blocks.<p>Valid values are 0–319,815,679. </p></td>  
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Rows joined</td>
+                     <td tabindex="-1">
+                        <code class="code">max_join_row_count</code>
+                     </td>
+                     <td tabindex="-1">The number of rows processed in a join step.<p>Valid
+                        values are 0–999,999,999,999,999. </p></td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Nested loop join row count</td>
+                     <td tabindex="-1">
+                        <code class="code">max_nested_loop_join_row_count</code>
+                     </td>
+                     <td tabindex="-1">The number or rows in a nested loop join.<p>Valid
+                        values are 0–999,999,999,999,999. </p></td>
+                  </tr>
+               </table></div></div>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Note</h6></div><div class="awsdocs-note-text"><div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem"><p>The hop action is not supported with the <code class="code">max_query_queue_time</code> predicate. 
+                  That is, rules defined to hop when a <code class="code">max_query_queue_time</code> predicate is met are ignored. </p></li><li class="listitem">
+                  <p>Short segment execution times can result in sampling errors with some metrics,
+                     such as <code class="code">max_io_skew</code> and <code class="code">max_query_cpu_usage_percent</code>.</p>
+               </li></ul></div></div></div>
+    
+       
+         <h2 id="cm-c-wlm-query-monitoring-templates">Query monitoring rules
+               templates</h2>
+
+
+
+         <p>When you add a rule using the Amazon Redshift console, you can choose to create a rule from
+            a predefined template. Amazon Redshift creates a new rule with a set of predicates and
+            populates the predicates with default values. The default action is log. You can modify
+            the predicates and action to meet your use case. </p>
+         <p>The following table lists available templates. </p>
+         <div class="table-container"><div class="table-contents"><table id="w323aac62c77c23b7"><thead>
+                  <tr>
+                     <th>Template Name</th>
+                     <th>Predicates</th>
+                     <th>Description</th>
+
+                  </tr>
+               </thead>
+                  <tr>
+                     <td tabindex="-1">Nested loop join</td>
+                     <td tabindex="-1">
+                        <code class="code">nested_loop_join_row_count &gt; 100</code>
+                     </td>
+                     <td tabindex="-1">A nested loop join might indicate an incomplete join
+                        predicate, which often results in a very large return set (a Cartesian
+                        product). Use a low row count to find a potentially runaway query
+                        early.</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Query returns a high number of rows</td>
+                     <td tabindex="-1">
+                        <code class="code">return_row_count &gt; 1000000</code>
+                     </td>
+                     <td tabindex="-1">If you dedicate a queue to simple, short running queries,
+                        you might include a rule that finds queries returning a high row count. The
+                        template uses a default of 1 million rows. For some systems, you might
+                        consider one million rows to be high, or in a larger system, a billion or
+                        more rows might be high.</td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Join with a high number of rows</td>
+                     <td tabindex="-1">
+                        <code class="code">join_row_count &gt; 1000000000</code>
+                     </td>
+                     <td tabindex="-1">A join step that involves an unusually high number of
+                        rows might indicate a need for more restrictive filters. The template uses a
+                        default of 1 billion rows. For an ad hoc (one-time) queue that's
+                        intended for quick, simple queries, you might use a lower number. </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">High disk usage when writing intermediate results</td>
+                     <td tabindex="-1">
+                        <code class="code">query_temp_blocks_to_disk &gt; 100000</code>
+                     </td>
+                     <td tabindex="-1">When currently executing queries use more than the
+                        available system RAM, the query execution engine writes intermediate results
+                        to disk (spilled memory). Typically, this condition is the result of a rogue
+                        query, which usually is also the query that uses the most disk space. The
+                        acceptable threshold for disk usage varies based on the cluster node type
+                        and number of nodes. The template uses a default of 100,000 blocks, or 100
+                        GB. For a small cluster, you might use a lower number. </td>
+                  </tr>
+                  <tr>
+                     <td tabindex="-1">Long running query with high I/O skew</td>
+                     <td tabindex="-1"><code class="code">segment_execution_time &gt; 120</code> and
+                           <code class="code">io_skew &gt; 1.30</code>
+                     </td>
+                     <td tabindex="-1">I/O skew occurs when one node slice has a much higher I/O
+                        rate than the other slices. As a starting point, a skew of 1.30 (1.3 times
+                        average) is considered high. High I/O skew is not always a problem, but when
+                        combined with a long running query time, it might indicate a problem with
+                        the distribution style or sort key. </td>
+                  </tr>
+               </table></div></div>
+
+       
+         <h2 id="cm-c-wlm-qmr-tables-and-views">System tables and views for query
+               monitoring rules</h2>
+
+
+
+         <p>When all of a rule's predicates are met, WLM writes a row to the <a href="./r_STL_WLM_RULE_ACTION.html">STL_WLM_RULE_ACTION</a> system table.
+            This row contains details for the query that triggered the rule and the resulting
+            action. </p>
+         <p>In addition, Amazon Redshift records query metrics the following system tables and views.</p>
+         <div class="itemizedlist">
+             
+             
+             
+             
+         <ul class="itemizedlist"><li class="listitem">
+               <p>The <a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a>
+                  table displays the metrics for currently running queries.</p>
+            </li><li class="listitem">
+               <p>The <a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a>
+                  table records the metrics for completed queries. </p>
+            </li><li class="listitem">
+               <p>The <a href="./r_SVL_QUERY_METRICS.html">SVL_QUERY_METRICS</a>
+                  view shows the metrics for completed queries. </p>
+            </li><li class="listitem">
+               <p>The <a href="./r_SVL_QUERY_METRICS_SUMMARY.html">SVL_QUERY_METRICS_SUMMARY</a> view shows the maximum values of
+                  metrics for completed queries.</p>
+            </li></ul></div>
+      <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warning" /> <strong>Javascript is disabled or is unavailable in your browser.</strong></p><p>To use the Amazon Web Services Documentation, Javascript must be enabled. Please refer to your browser's Help pages for instructions.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Document Conventions</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./cm-c-wlm-dynamic-example.html">Dynamic WLM example</div><div id="next" class="next-link" accesskey="n" href="./cm-c-wlm-system-tables-and-views.html">WLM system tables and views</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Did this page help you? - Yes</div><div class="content"><p>Thanks for letting us know we're doing a good job!</p><p>If you've got a moment, please tell us what we did right so we can do more of it.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Did this page help you? - No</div><div class="content"><p>Thanks for letting us know this page needs work. We're sorry we let you down.</p><p>If you've got a moment, please tell us how we can make the documentation better.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/en_us/redshift/latest/dg/cm-c-wlm-query-monitoring-rules.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
