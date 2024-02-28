@@ -44,7 +44,6 @@ jobs:
           - lang: zh_tw
             sitemap: https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/sitemap.xml
             title: Amazon Redshift 資料庫開發人員指南
-
     permissions:
       contents: write
     uses: ./.github/workflows/download.yaml
@@ -54,3 +53,38 @@ jobs:
       dashify-command: redshift
       docset-name: redshift-${{ matrix.lang }}
       docset-title: ${{ matrix.title }}
+
+  create-release:
+    runs-on: ubuntu-latest
+    needs: download
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+      - id: check-artifacts
+        run: |
+          if ls redshift-*.tgz; then
+            echo "has-artifacts=true" >> $GITHUB_OUTPUT
+          else
+            echo "has-artifacts=false" >> $GITHUB_OUTPUT
+          fi
+      - if: steps.check-artifacts.outputs.has-artifacts == 'true'
+        uses: actions/checkout@v4
+      - if: steps.check-artifacts.outputs.has-artifacts == 'true'
+        id: version
+        uses: ./.github/actions/versioning
+        with:
+          prefix: redshift/developer-guide/
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - if: steps.check-artifacts.outputs.has-artifacts == 'true'
+        uses: ncipollo/release-action@v1
+        id: release
+        with:
+          commit: data/redshift/developer-guide/en_us
+          tag: redshift/developer-guide/${{ steps.version.outputs.next-version }}
+          generateReleaseNotes: true
+          makeLatest: false
+          artifacts: redshift-*.tgz
+          artifactErrorsFailBuild: true

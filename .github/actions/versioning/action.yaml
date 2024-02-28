@@ -1,0 +1,104 @@
+name: Versioning
+description: Determine the version of the next release
+
+inputs:
+  prefix:
+    description: Branch prefix for the version
+    required: true
+  repository:
+    description: Repository name
+    default: ${{ github.repository }}
+  token:
+    description: GitHub token
+    required: true
+
+outputs:
+  latest-version:
+    description: The latest version
+    value: ${{ steps.version.outputs.latest-version }}
+  next-version:
+    description: The next version
+    value: ${{ steps.version.outputs.next-version }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        pip install poetry --quiet
+        poetry config virtualenvs.create false
+        poetry install --quiet --with ci
+
+    - id: version
+      shell: python
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+        TAG_PREFIX: ${{ inputs.prefix }}
+      run: |
+        import datetime
+        import logging
+        import os
+
+        import httpx
+
+        token = os.environ["GITHUB_TOKEN"]
+        repo = os.environ["GITHUB_REPOSITORY"]
+        prefix = os.environ["TAG_PREFIX"]
+        output = os.environ["GITHUB_OUTPUT"]
+
+        logger = logging.getLogger(__name__)
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s | %(levelname)s | %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+
+        def format_version(ver: tuple[int, int, int]) -> str:
+            return ".".join(map(str, ver))
+
+        # get latest version
+        resp = httpx.get(
+            f"https://api.github.com/repos/{repo}/git/matching-refs/tags/{prefix}",
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+            },
+        )
+        resp.raise_for_status()
+
+        versions = set()
+        for item in resp.json():
+            ref: str = item["ref"]
+            ver_str = ref.removeprefix(f"refs/tags/{prefix}")
+            ver_num = tuple(map(int, ver_str.split(".")))
+
+            logger.info(f"Found version: {ver_num}")
+            versions.add(ver_num)
+
+        if versions:
+            latest_version = max(versions)
+            logger.info(f"Latest version: {format_version(latest_version)}")
+        else:
+            latest_version = (0, 0, 0)
+            logger.info("No version found")
+
+        # get next version
+        # note we uses CalVer in format of 'YYYY.MM.INCO' for versioning docsets
+        today = datetime.date.today()
+
+        if latest_version[:2] == (today.year, today.month):
+            next_version = (today.year, today.month, latest_version[2] + 1)
+        else:
+            next_version = (today.year, today.month, 0)
+
+        logger.info(f"Next version: {format_version(next_version)}")
+
+        # write to output
+        with open(output, "a") as fd:
+            print(f"latest-version={format_version(latest_version)}", file=fd)
+            print(f"next-version={format_version(next_version)}", file=fd)
