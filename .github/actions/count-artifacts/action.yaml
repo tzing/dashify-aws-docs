@@ -1,0 +1,37 @@
+name: Count artifacts
+description: Count artifacts for the current run
+
+inputs:
+  github-token:
+    description: GitHub token
+    required: true
+
+outputs:
+  has-artifacts:
+    description: Whether the run has artifacts
+    value: ${{ steps.count-artifacts.outputs.has-updated }}
+  artifact-count:
+    description: The number of artifacts
+    value: ${{ steps.count-artifacts.outputs.artifact-count }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Count artifacts
+      shell: bash
+      run: |
+        set -o pipefail
+
+        count=$(
+          gh api /repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts | jq .total_count
+        )
+
+        echo "artifact-count=$count" | tee -a $GITHUB_OUTPUT
+
+        if [[ $count -gt 0 ]]; then
+          echo "has-artifacts=true" | tee -a $GITHUB_OUTPUT
+        else
+          echo "has-artifacts=false" | tee -a $GITHUB_OUTPUT
+        fi
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
