@@ -42,14 +42,18 @@
       }
     ]
 }
-</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#r_CREATE_IDENTITY_PROVIDER" target="_blank" rel="noopener noreferrer" title="pdf-tooltip"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">aws-documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">데이터베이스 개발자 안내서</a></div><div id="page-toc-src"><a href="#r_CREATE_IDENTITY_PROVIDER-synopsis">구문</a><a href="#r_CREATE_IDENTITY_PROVIDER-parameters">파라미터</a><a href="#r_CREATE_IDENTITY_PROVIDER-examples">예</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="r_CREATE_IDENTITY_PROVIDER">CREATE IDENTITY PROVIDER</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>새 자격 증명 공급자를 정의합니다. 슈퍼 사용자만 자격 증명 공급자를 생성할 수 있습니다.</p>
-         <h2 id="r_CREATE_IDENTITY_PROVIDER-synopsis">구문</h2>
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#r_CREATE_IDENTITY_PROVIDER" target="_blank" rel="noopener noreferrer" title="pdf-tooltip"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">aws-documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">데이터베이스 개발자 안내서</a></div><div id="page-toc-src"><a href="#r_CREATE_IDENTITY_PROVIDER-synopsis">명령문</a><a href="#r_CREATE_IDENTITY_PROVIDER-parameters">파라미터</a><a href="#r_CREATE_IDENTITY_PROVIDER-examples">예</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="r_CREATE_IDENTITY_PROVIDER">CREATE IDENTITY PROVIDER</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>새 자격 증명 공급자를 정의합니다. 슈퍼 사용자만 자격 증명 공급자를 생성할 수 있습니다.</p>
+         <h2 id="r_CREATE_IDENTITY_PROVIDER-synopsis">명령문</h2>
          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE IDENTITY PROVIDER <em>identity_provider_name </em>TYPE <em>type_name</em>
 NAMESPACE <em>namespace_name</em>
- PARAMETERS <em>parameter_string</em></code></pre>
+[PARAMETERS <em>parameter_string</em>]
+[APPLICATION_ARN <em>arn</em>]
+[IAM_ROLE <em>iam_role</em>]</code></pre>
        
          <h2 id="r_CREATE_IDENTITY_PROVIDER-parameters">파라미터</h2>
          <div class="variablelist">
+             
+             
              
              
              
@@ -74,6 +78,16 @@ NAMESPACE <em>namespace_name</em>
                <dd>
                   <p>자격 증명 공급자에 필요한 파라미터와 값이 포함된 올바른 형식의 JSON 객체를 포함하는 문자열입니다.</p>
                </dd>
+             
+               <dt><span class="term"> <em>arn</em> </span></dt>
+               <dd>
+                  <p>IAM Identity Center 관리형 애플리케이션의 Amazon 리소스 이름(ARN)입니다. 이 파라미터는 ID 제공업체 유형이 AWSIDC인 경우에만 적용됩니다.</p>
+               </dd>
+             
+               <dt><span class="term"> <em>iam_role</em> </span></dt>
+               <dd>
+                  <p>IAM Identity Center에 대한 연결 권한을 제공하는 IAM 역할입니다. 이 파라미터는 ID 제공업체 유형이 AWSIDC인 경우에만 적용됩니다.</p>
+               </dd>
             </dl></div>
        
          <h2 id="r_CREATE_IDENTITY_PROVIDER-examples">예</h2>
@@ -85,5 +99,12 @@ PARAMETERS '<span>{</span>"issuer":"https://sts.windows.net/2sdfdsf-d475-420d-b5
 "client_secret":"BUAH~ewrqewrqwerUUY^%tHe1oNZShoiU7",
 "audience":["https://analysis.windows.net/powerbi/connector/AmazonRedshift"]
 }'</code></pre>
-         <p>추가 예를 포함하여 CREATE IDENTITY PROVIDER 사용에 대한 자세한 내용은 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-native-idp.html">Amazon Redshift용 기본 ID 제공업체(IdP) 페더레이션</a>을 참조하세요.</p>
+         <p>IAM Identity Center의 관리형 애플리케이션을 기존의 프로비저닝된 클러스터 또는 Amazon Redshift Serverless 작업 그룹에 연결할 수 있습니다. 이렇게 하면 IAM Identity Center를 통해 Redshift 데이터베이스에 대한 액세스를 관리할 수 있습니다. 이렇게 하려면 다음 샘플과 같은 SQL 명령을 실행합니다. 데이터베이스 관리자여야 합니다.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="SQL ">CREATE IDENTITY PROVIDER "redshift-idc-app" TYPE AWSIDC
+NAMESPACE 'awsidc'
+APPLICATION_ARN 'arn:aws:sso::123456789012:application/ssoins-12345f67fe123d4/apl-a0b0a12dc123b1a4'
+IAM_ROLE 'arn:aws:iam::123456789012:role/MyRedshiftRole';</code></pre>
+         <p>이 경우 연결할 관리형 애플리케이션은 애플리케이션 ARN으로 식별됩니다. <code class="code">SELECT * FROM SVV_IDENTITY_PROVIDERS;</code>를 실행하여 이를 찾을 수 있습니다.</p>
+    
+         <p>추가 예를 포함하여 CREATE IDENTITY PROVIDER 사용에 대한 자세한 내용은 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-native-idp.html">Amazon Redshift용 기본 ID 제공업체(IdP) 페더레이션</a>을 참조하세요. Redshift에서 IAM Identity Center에 대한 연결을 설정하는 방법에 대한 자세한 내용은 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-idp-connect.html">Redshift를 IAM Identity Center와 연결하여 사용자에게 Single Sign-On 경험을 제공합니다</a>를 참조하세요.</p>
       <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="주의" /> <strong>javascript가 브라우저에서 비활성화되거나 사용이 불가합니다.</strong></p><p>AWS 설명서를 사용하려면 Javascript가 활성화되어야 합니다. 지침을 보려면 브라우저의 도움말 페이지를 참조하십시오.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">문서 규칙</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_CREATE_GROUP.html">create group</div><div id="next" class="next-link" accesskey="n" href="./r_CREATE_LIBRARY.html">CREATE LIBRARY</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 예</div><div class="content"><p>칭찬해 주셔서 감사합니다!</p><p>잠깐 시간을 내어 좋았던 부분을 알려 주시면 더 열심히 만들어 보겠습니다.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_CREATE_IDENTITY_PROVIDER.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 아니요</div><div class="content"><p>이 페이지에 작업이 필요하다는 점을 알려 주셔서 감사합니다. 실망시켜 드려 죄송합니다.</p><p>잠깐 시간을 내어 설명서를 향상시킬 수 있는 방법에 대해 말씀해 주십시오.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ko_kr/redshift/latest/dg/r_CREATE_IDENTITY_PROVIDER.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
