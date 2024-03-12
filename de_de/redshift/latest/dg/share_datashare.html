@@ -39,7 +39,7 @@
 </script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#share_datashare" target="_blank" rel="noopener noreferrer" title="PDF öffnen"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Dokumentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Datenbankentwicklerhandbuch</a></div><div id="page-toc-src"><a href="#manage-permissions">Verwalten von Berechtigungen für Datashare</a><a href="#datashare-views">Arbeiten mit Ansichten in der Amazon-Redshift-Datenfreigabe</a><a href="#iam-policy">Verwalten des Zugriffs auf Datenfreigabe-API-Vorgänge mit IAM-Richtlinien</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Die vorliegende Übersetzung wurde maschinell erstellt. Im Falle eines Konflikts oder eines Widerspruchs zwischen dieser übersetzten Fassung und der englischen Fassung (einschließlich infolge von Verzögerungen bei der Übersetzung) ist die englische Fassung maßgeblich.</p></awsui-alert><h1 class="topictitle" id="share_datashare">Freigeben von Datashares</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Sie benötigen Datashares nur, wenn Sie Daten zwischen verschiedenen von Amazon Redshift bereitgestellten Clustern oder Serverless-Arbeitsgruppen freigeben. Innerhalb desselben Clusters können Sie eine andere Datenbank mithilfe der einfachen dreiteiligen Notation <code class="code">database.schema.table</code> abfragen, sofern Sie über die erforderlichen Berechtigungen für die Objekte in der anderen Datenbank verfügen.</p>
          <h2 id="manage-permissions">Verwalten von Berechtigungen für Datashares in Amazon Redshift</h2>
          
-         <p>Als Administrator eines Produzenten-Clusters behalten Sie die Kontrolle über die Datensätze, die Sie freigeben. Sie können neue Objekte hinzufügen oder sie aus dem Datashare entfernen. Sie können Zugriff auf Datashares für Konsumenten-Cluster, AWS-Konten oder AWS-Regionen allgemein gewähren oder aufheben. Wenn Berechtigungen aufgehoben werden, verlieren Konsumenten-Cluster umgehend den Zugriff auf freigegebene Objekte. Sie sehen diese auch nicht mehr in der Liste EINGEHENDER Datashares in SVV_DATASHARES.</p>
+         <p>Als Administrator eines Produzenten-Clusters behalten Sie die Kontrolle über die Datensätze, die Sie freigeben. Sie können neue Objekte hinzufügen oder sie aus dem Datashare entfernen. Sie können den Zugriff auf Datashares auch insgesamt für die Konsumenten-Cluster,  AWS Konten oder  AWS Regionen gewähren oder widerrufen. Wenn Berechtigungen aufgehoben werden, verlieren Konsumenten-Cluster umgehend den Zugriff auf freigegebene Objekte. Sie sehen diese auch nicht mehr in der Liste EINGEHENDER Datashares in SVV_DATASHARES.</p>
          <p>Im folgenden Beispiel wird das Datashare erstellt<code class="code">salesshare</code>, das Schema hinzugefügt <code class="code">public</code>und die Tabelle <code class="code">public.tickit_sales_redshift</code> zu hinzugefügt<code class="code">salesshare</code>. Außerdem werden dem angegebenen Cluster<code class="code">salesshare</code>-Namespace Nutzungsberechtigungen für erteilt.</p>
          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE DATASHARE salesshare;
             
@@ -78,7 +78,7 @@ GRANT SELECT ON sales_db.public.tickit_sales_redshift TO Bob;</code></pre>
          <h2 id="datashare-views">Arbeiten mit Ansichten in der Amazon-Redshift-Datenfreigabe</h2>
          <p>Ein Produzenten-Cluster kann reguläre, spätbindende und materialisierte Ansichten freigeben. Wenn Sie reguläre oder spätbindende Ansichten freigeben, müssen Sie die Basistabellen nicht freigeben. Die folgende Tabelle zeigt, wie Ansichten bei der Datenfreigabe unterstützt werden.</p>
          
-         <div class="table-container"><div class="table-contents"><table id="w319aac35c13b7b5"><thead>
+         <div class="table-container"><div class="table-contents"><table id="w320aac35c13b7b5"><thead>
                   <tr>
                      <th>Name der Ansicht</th>
                      <th>Kann diese Ansicht einem Datashare hinzugefügt werden?</th>
@@ -151,6 +151,11 @@ current_user | current_namespace
 -------------+--------------------------------------
 dwuser       | 86b5169f-01dc-4a6f-9fbb-e2e24359e9a8
 (1 row)</code></pre>
+         
+          
+            <h3 id="mv_incremental_datashare">Inkrementelle Aktualisierung für materialisierte Ansichten in einem Datashare</h3>
+            <p> Amazon Redshift unterstützt die inkrementelle Aktualisierung für materialisierte Ansichten in einem Konsumenten-Datashare, wenn die Basistabellen gemeinsam genutzt werden. Die inkrementelle Aktualisierung ist eine Operation, bei der Amazon Redshift Änderungen an der Basistabelle oder den Tabellen identifiziert, die nach der vorherigen Aktualisierung vorgenommen wurden, und nur die entsprechenden Datensätze in der materialisierten Ansicht aktualisiert. Weitere Informationen zu diesem Verhalten finden Sie unter <a href="https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-create-sql-command.html#mv_CREATE_MARTERIALIZED_VIEW_datashare">CREATE MATERIALIZED VIEW</a>. </p>
+          
        
          <h2 id="iam-policy">Verwalten des Zugriffs auf Datenfreigabe-API-Vorgänge mit IAM-Richtlinien</h2>
          <p>Um den Zugriff auf die API-Operationen für die Datenfreigabe zu steuern, verwenden Sie aktionsbasierte IAM-Richtlinien. Weitere Informationen zum Verwalten von IAM-Richtlinien finden Sie unter <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_manage.html">Verwalten von IAM-Richtlinien</a> im <em>IAM-Benutzerhandbuch</em>.</p>
@@ -159,8 +164,8 @@ dwuser       | 86b5169f-01dc-4a6f-9fbb-e2e24359e9a8
          
          
          
-         <p>Um die kontoübergreifende Datenfreigabe sicherer zu gestalten, können Sie einen bedingten Schlüssel <code class="code">ConsumerIdentifier</code> für die API-Vorgänge <code class="code">AuthorizeDataShare</code> und <code class="code">DeauthorizeDataShare</code> verwenden. Auf diese Weise können Sie explizit steuern, welche AWS-Konten die beiden API-Vorgänge aufrufen dürfen.</p>
-         <p>Sie können die Autorisierung der Datenfreigabe oder deren Aufhebung für jeden Konsumenten verweigern, der sich nicht in Ihrem eigenen Konto befindet. Geben Sie hierzu die AWS-Konto-Nummer in der IAM-Richtlinie an.</p>
+         <p>Um die kontoübergreifende Datenfreigabe sicherer zu gestalten, können Sie einen bedingten Schlüssel <code class="code">ConsumerIdentifier</code> für die API-Vorgänge <code class="code">AuthorizeDataShare</code> und <code class="code">DeauthorizeDataShare</code> verwenden. Auf diese Weise können Sie explizit steuern, welche die beiden API-Operationen aufrufen  AWS-Konten kann.</p>
+         <p>Sie können die Autorisierung der Datenfreigabe oder deren Aufhebung für jeden Konsumenten verweigern, der sich nicht in Ihrem eigenen Konto befindet. Geben Sie dazu die  AWS-Konto Nummer in der IAM-Richtlinie an.</p>
          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
     "Version": "2012-10-17",
     "Statement": [
@@ -180,7 +185,7 @@ dwuser       | 86b5169f-01dc-4a6f-9fbb-e2e24359e9a8
         }
     ]
 }</code></pre>
-         <p>Sie können einem Produzenten mit einem DataShareArn <code class="userinput">testshare2</code> erlauben, in der IAM-Richtlinie explizit mit einem Konsumenten mit einem AWS-Konto von 111122223333 zu teilen.</p>
+         <p>Sie können einem Produzenten mit einem DataShareArn <code class="userinput">testshare2</code> erlauben, in der IAM-Richtlinie explizit mit einem Konsumenten mit einem  AWS-Konto von 111122223333 zu teilen.</p>
          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
     "Version": "2012-10-17",
     "Statement": [
