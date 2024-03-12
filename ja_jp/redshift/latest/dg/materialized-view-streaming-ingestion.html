@@ -38,7 +38,7 @@
 }
 </script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#materialized-view-streaming-ingestion" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#materialized-view-streaming-ingestion-data-flow">データフロー</a><a href="#materialized-view-streaming-ingestion-use-cases">ストリーミング取り込みのユースケース</a><a href="#materialized-view-streaming-ingestion-considerations">ストリーミング取り込みに関する考慮事項</a><a href="#materialized-view-streaming-ingestion-limitations">制限事項</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="materialized-view-streaming-ingestion">ストリーミング取り込み</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p> ストリーミング取り込みでは、<a href="https://aws.amazon.com/kinesis/data-streams/" rel="noopener noreferrer" target="_blank"><span>Amazon Kinesis Data Streams</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> および <a href="https://aws.amazon.com/msk/" rel="noopener noreferrer" target="_blank"><span>Amazon Managed Streaming for Apache Kafka</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> から Amazon Redshift Serverless でプロビジョニングされたビューまたは Amazon Redshift マテリアライズドビューにストリームデータを低レイテンシーかつ高速で取り込むことができます。データアクセスにかかる時間を短縮し、ストレージコストを削減することができます。<a href="./materialized-view-overview.html">Amazon Redshift でのマテリアライズドビューの作成</a> で説明されているように、Amazon Redshift クラスターまたは Amazon Redshift Serverless にストリーミング取り込みを設定することで、SQL ステートメントを使用して、マテリアライズドビューを作成することができます。その後、マテリアライズドビューの更新を使用して、毎秒数百メガバイトのデータを取り込むことができます。これにより、外部データにすばやくアクセスできるので、更新が高速化されます。</p>
             <h2 id="materialized-view-streaming-ingestion-data-flow">データフロー</h2>
-            <p> Amazon Redshift でプロビジョニングされたクラスターまたは Amazon Redshift Serverless サーバーレスワークグループが、ストリームコンシューマーです。マテリアライズドビューは、ストリームから読み込まれるデータのランディング領域であり、このデータは到着時に処理されます。例えば、JSON 値を消費し、使い慣れた SQL を使用して、マテリアライズドビューのデータ列にマッピングすることができます。マテリアライズドビューの更新時、Amazon Redshift のコンピューティングノードは、各 Kinesis データシャードまたは Kafka パーティションをコンピューティングスライスに割り当てます。各スライスは、ビューの内容が Kinesisストリームの <code class="code">SEQUENCE_NUMBER</code> または Kafka トピックの最後の <code class="code">Offset</code> のと同等になるまで、割り当てられたシャードのデータを処理します。後続のマテリアライズドビューでは、以前の更新における最後の <code class="code">SEQUENCE_NUMBER</code> からの読み取りデータが、ストリームデータまたはトピックデータと同等になるまで更新されます。</p>
+            <p> Amazon Redshift でプロビジョニングされたクラスターまたは Amazon Redshift Serverless サーバーレスワークグループが、ストリームコンシューマーです。マテリアライズドビューは、ストリームから読み込まれるデータのランディング領域であり、このデータは到着時に処理されます。例えば、JSON 値を消費し、使い慣れた SQL を使用して、マテリアライズドビューのデータ列にマッピングすることができます。マテリアライズドビューを更新すると、Redshift は、ビューの内容が Kinesisストリームの <code class="code">SEQUENCE_NUMBER</code> または Kafka トピックの最後の <code class="code">Offset</code> と同等になるまで、割り当てられた Kinesis データシャードまたは Kafka パーティションのデータを消費します。後続のマテリアライズドビューでは、以前の更新における最後の <code class="code">SEQUENCE_NUMBER</code> からの読み取りデータが、ストリームデータまたはトピックデータと同等になるまで更新されます。</p>
       
      
          
@@ -71,7 +71,7 @@
                         <p><em>ストリーミングの取り込みと Amazon Redshift Serverless</em> — プロビジョニングされたクラスターでの Amazon Redshift ストリーミングの取り込みに適用されるのと同じセットアップと設定の手順が、Amazon Redshift Serverless でのストリーミング取り込みにも適用されます。自動更新やその他のワークロードによるストリーミングの取り込みをサポートするために必要なレベルの RPU で Amazon Redshift Serverless のサイズを設定することが重要です。詳細については、「<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-billing.html">Amazon Redshift Serverless の料金</a>」を参照してください。</p>
               
                     </li><li class="listitem">
-                        <p><em>Amazon MSK クラスターとは異なるアベイラビリティーゾーンにある Amazon Redshift ノード</em> - ストリーミング取り込みを設定すると、Amazon MSK のラック認識が有効になっている場合、Amazon Redshift は同じアベイラビリティーゾーンの Amazon MSK クラスターへの接続を試みます。すべてのノードが Amazon Redshift クラスターとは異なるアベイラビリティーゾーンにある場合、アベイラビリティーゾーン間のデータ転送コストが発生する可能性があります。これを回避するには、Amazon Redshift クラスターと同じ AZ に少なくとも 1 つの Amazon MSK ブローカークラスターノードを置いてください。</p>
+                        <p><em>Amazon MSK クラスターとは異なるアベイラビリティーゾーンにある Amazon Redshift ノード</em> - ストリーミング取り込みを設定すると、Amazon MSK のラック認識が有効になっている場合、Amazon Redshift は同じアベイラビリティーゾーンの Amazon MSK クラスターへの接続を試みます。すべてのノードが Amazon Redshift クラスターとは異なるアベイラビリティーゾーンにある場合、アベイラビリティーゾーン間のデータ転送コストが発生する可能性があります。これを回避するには、Redshift のプロビジョニングされたクラスターまたはワークグループと同じ AZ に少なくとも 1 つの Amazon MSK ブローカークラスターノードを保持します。</p>
                     </li><li class="listitem">
                         <p><em>更新の開始場所</em> - マテリアライズドビューを作成すると、最初の更新は <code class="code">TRIM_HORIZON</code> Kinesis ストリームまたは Amazon MSK トピックのオフセット 0 から始まります。</p></li><li class="listitem">
                         <p> <em>データ形式</em> - サポートされるデータ形式は、<code class="code">VARBYTE</code> からの変換が可能なデータ形式に限られます。詳細については、「<a href="./r_VARBYTE_type.html">VARBYTE 型</a>」および「<a href="./r_VARBYTE_OPERATORS.html">VARBYTE 演算子</a>」を参照してください。</p>
@@ -86,23 +86,23 @@
                 
                  
                     <h3 id="materialized-view-streaming-methods">Amazon S3 のデータのステージングとストリーミング取り込みの使用の比較</h3>
-                    <p> Amazon Redshift または Amazon Redshift Serverless にデータをストリーミングする複数のオプションがあります。よく知られているオプションには、このトピックで説明されているストリーミング取り込みと、Kinesis Data Firehose を使用して Amazon S3 への配信ストリームをセットアップする方法の 2 つがあります。以下のリストで、それぞれの方法を説明します。</p>  
+                    <p> Amazon Redshift または Amazon Redshift Serverless にデータをストリーミングする複数のオプションがあります。よく知られているオプションには、このトピックで説明しているストリーミング取り込みと、Firehose を使用した Amazon S3 への配信ストリームのセットアップの 2 つがあります。以下のリストで、それぞれの方法を説明します。</p>  
                     <div class="orderedlist">
                          
                          
-                    <ol><li><p> Kinesis Data Streams または Amazon Managed Streaming for Apache Kafka から Amazon Redshift または Amazon Redshift Serverless へのストリーミング取り込みでは、データを受信するためにマテリアライズドビューを設定する必要があります。</p></li><li><p>Kinesis Data Streams を使用して Amazon Redshift にデータを配信し、Kinesis Data Firehose を介してストリーミングするには、ソースストリームを Amazon Kinesis Data Firehose に接続し、Kinesis Data Firehose が Amazon S3 にデータをステージングするのを待つ必要があります。このプロセスでは、さまざまな長さのバッファ間隔でさまざまなサイズのバッチを使用します。Amazon S3 にストリーミングした後、Kinesis Data Firehose はデータをロードするための COPY コマンドを開始します。</p></li></ol></div>
+                    <ol><li><p> Kinesis Data Streams または Amazon Managed Streaming for Apache Kafka から Amazon Redshift または Amazon Redshift Serverless へのストリーミング取り込みでは、データを受信するためにマテリアライズドビューを設定する必要があります。</p></li><li><p>Kinesis Data Streams を使用して Amazon Redshift にデータを配信し、Firehose を介してストリーミングするには、ソースストリームを Amazon Data Firehose に接続し、Firehose が Amazon S3 にデータをステージングするのを待つ必要があります。このプロセスでは、さまざまな長さのバッファ間隔でさまざまなサイズのバッチを使用します。Amazon S3 へのストリーミング後に、Firehose はデータをロードするための COPY コマンドを開始します。</p></li></ol></div>
                     <p>ストリーミング取り込みでは、2 番目のプロセスで必要ないくつかの手順を省略できます。</p>
                     <div class="itemizedlist">
                          
                          
                          
-                    <ul class="itemizedlist"><li class="listitem"><p>ストリーミング取り込みでは、Kinesis Data Streams から Redshift データベースのマテリアライズドビューにデータを直接送信できるため、Amazon Kinesis Data Firehose 配信ストリームにデータを送信する必要はありません。</p></li><li class="listitem"><p>ストリーミング取り込みデータは Redshift マテリアライズドビューに直接送信されるため、ストリーミングデータを Amazon S3 に入れる必要はありません。</p></li><li class="listitem"><p>マテリアライズドビュー内のデータはストリームから直接更新されるため、COPY コマンドを記述して実行する必要はありません。Amazon S3 から Redshift へのデータのロードはプロセスの一部ではありません。</p></li></ul></div>
-                    <p>ストリーミング取り込みは Amazon Kinesis Data Streams からのストリームと Amazon MSK からのトピックに限定されることに注意してください。Kinesis Data Streams から Amazon Redshift 以外のソースにストリーミングする場合、Kinesis Data Firehose 配信ストリームが必要になる可能性があります。詳細については、「<a href="https://docs.aws.amazon.com/firehose/latest/dev/basic-write.html">Amazon Kinesis Data Firehose 配信ストリームへのデータの送信</a>」を参照してください。</p>
+                    <ul class="itemizedlist"><li class="listitem"><p>ストリーミング取り込みでは、Kinesis Data Streams から Redshift データベースのマテリアライズドビューにデータを直接送信できるため、Amazon Data Firehose 配信ストリームにデータを送信する必要はありません。</p></li><li class="listitem"><p>ストリーミング取り込みデータは Redshift マテリアライズドビューに直接送信されるため、ストリーミングデータを Amazon S3 に入れる必要はありません。</p></li><li class="listitem"><p>マテリアライズドビュー内のデータはストリームから直接更新されるため、COPY コマンドを記述して実行する必要はありません。Amazon S3 から Redshift へのデータのロードはプロセスの一部ではありません。</p></li></ul></div>
+                  <p>ストリーミング取り込みは Amazon Kinesis Data Streams からのストリームと Amazon MSK からのトピックに限定されることに注意してください。Kinesis Data Streams から Amazon Redshift 以外のターゲットにストリーミングする場合、Firehose 配信ストリームが必要になることがあります。詳細については、「<a href="https://docs.aws.amazon.com/firehose/latest/dev/basic-write.html">Amazon Data Firehose 配信ストリームへのデータの送信</a>」を参照してください。</p>
                  
              
                     <h2 id="materialized-view-streaming-ingestion-limitations">制限事項</h2>
                     
-                    <div class="table-container"><div class="table-contents"><table id="w319aac21c47c11b3"><thead>
+                    <div class="table-container"><div class="table-contents"><table id="w320aac21c47c11b3"><thead>
                                 <tr>
                                     <th>機能または動作 </th>
                                     <th>説明 </th>

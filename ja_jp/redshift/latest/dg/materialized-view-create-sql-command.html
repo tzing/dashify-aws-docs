@@ -42,7 +42,7 @@
       }
     ]
 }
-</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#materialized-view-create-sql-command" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#mv_CREATE_MATERIALIZED_VIEW-synopsis">構文</a><a href="#mv_CREATE_MATERIALIZED_VIEW-parameters">パラメータ</a><a href="#mv_CREATE_MARTERIALIZED_VIEW_usage">使用に関する注意事項</a><a href="#materialized-view-ddl">マテリアライズドビューまたはベーステーブルの DDL の更新</a><a href="#mv_CREATE_MATERIALIZED_VIEW-limitations">制限事項</a><a href="#mv_CREATE_MARTERIALIZED_VIEW_examples">例</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="materialized-view-create-sql-command">CREATE MATERIALIZED VIEW</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>1 つ以上の Amazon Redshift テーブルに基づいてマテリアライズドビューを作成します。また、Spectrum やフェデレーションクエリを使用して作成した外部テーブルに基づいてマテリアライズドビューを作成することもできます。Spectrum の詳細については、「<a href="./c-using-spectrum.html">Amazon Redshift Spectrum を使用した外部データのクエリ</a>」を参照してください。フェデレーションクエリの詳細については、「<a href="./federated-overview.html">Amazon Redshift での横串検索を使用したデータのクエリの実行</a>」を参照してください。</p>
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#materialized-view-create-sql-command" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#mv_CREATE_MATERIALIZED_VIEW-synopsis">Syntax</a><a href="#mv_CREATE_MATERIALIZED_VIEW-parameters">パラメータ</a><a href="#mv_CREATE_MARTERIALIZED_VIEW_usage">使用に関する注意事項</a><a href="#mv_CREATE_MARTERIALIZED_VIEW_datashare">データ共有内のマテリアライズドビューの増分更新</a><a href="#materialized-view-ddl">マテリアライズドビューまたはベーステーブルの DDL の更新</a><a href="#mv_CREATE_MATERIALIZED_VIEW-limitations">制限事項</a><a href="#mv_CREATE_MARTERIALIZED_VIEW_examples">例</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="materialized-view-create-sql-command">CREATE MATERIALIZED VIEW</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>1 つ以上の Amazon Redshift テーブルに基づいてマテリアライズドビューを作成します。また、Spectrum やフェデレーションクエリを使用して作成した外部テーブルに基づいてマテリアライズドビューを作成することもできます。Spectrum の詳細については、「<a href="./c-using-spectrum.html">Amazon Redshift Spectrum を使用した外部データのクエリ</a>」を参照してください。フェデレーションクエリの詳細については、「<a href="./federated-overview.html">Amazon Redshift での横串検索を使用したデータのクエリの実行</a>」を参照してください。</p>
          <h2 id="mv_CREATE_MATERIALIZED_VIEW-synopsis">構文</h2>
          <pre class="screen">CREATE MATERIALIZED VIEW mv_name
 [ BACKUP <span>{</span> YES | NO } ]
@@ -108,6 +108,15 @@ AS query </pre>
      
                <p>マテリアライズドビューを作成するためのベーステーブルに対するテーブルレベルまたは列レベルの SELECT 権限。特定の列に対する列レベルの権限がある場合は、それらの列にのみマテリアライズドビューを作成することができます。</p>
             </li></ul></div>
+       
+         <h2 id="mv_CREATE_MARTERIALIZED_VIEW_datashare">データ共有内のマテリアライズドビューの増分更新</h2>
+         <p> Amazon Redshift は、ベーステーブルを共有している場合、コンシューマーデータ共有でのマテリアライズドビューの自動更新と増分更新をサポートしています。増分更新は、Amazon Redshift が前回の更新後に発生したベーステーブルの変更を特定し、マテリアライズドビューの対応するレコードのみを更新する操作です。これにより、フル更新と比べて、実行が迅速化し、ワークロードのパフォーマンスが向上します。増分更新を利用するために、マテリアライズドビュー定義を変更する必要はありません。</p>
+         <p>マテリアライズドビューによる増分更新を利用する場合、次の 2 つの注意すべき制限があります。</p>
+         <div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem"><p>マテリアライズドビューは、ローカルまたはリモートの 1 つのデータベースのみを参照する必要があります。</p></li><li class="listitem"><p>増分更新は、新しいマテリアライズドビューでのみ使用できます。したがって、増分更新を行うには、既存のマテリアライズドビューを削除して再作成する必要があります。</p></li></ul></div>
+         <p>データ共有でのマテリアライズドビューの作成の詳細については、<a href="https://docs.aws.amazon.com/redshift/latest/dg/share_datashare.html#datashare-views">「Amazon Redshift データ共有でのビューの使用</a>」を参照してください。これには、いくつかのクエリ例も含まれています。</p>
        
          <h2 id="materialized-view-ddl">マテリアライズドビューまたはベーステーブルの DDL の更新</h2>
          <p>Amazon Redshift でマテリアライズドビューを使用する場合は、マテリアライズドビューまたはベーステーブルのデータ定義言語 (DDL) の更新に関する以下の注意事項に従ってください。</p>

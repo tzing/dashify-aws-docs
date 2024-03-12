@@ -48,7 +48,7 @@
       }
     ]
 }
-</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#r_WF_LEAD" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#r_WF_LEAD-synopsis">構文</a><a href="#r_WF_LEAD-arguments">引数</a><a href="#r_WF_LEAD-examples">例</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="r_WF_LEAD">LEAD ウィンドウ関数</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p> LEAD ウィンドウ関数は、パーティションの現在の行より下 (後) の指定されたオフセットの行の値を返します。</p>
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#r_WF_LEAD" target="_blank" rel="noopener noreferrer" title="PDF を開く"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">データベース開発者ガイド</a></div><div id="page-toc-src"><a href="#r_WF_LEAD-synopsis">Syntax</a><a href="#r_WF_LEAD-arguments">引数</a><a href="#r_WF_LEAD-examples">例</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="r_WF_LEAD">LEAD ウィンドウ関数</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p> LEAD ウィンドウ関数は、パーティションの現在の行より下 (後) の指定されたオフセットの行の値を返します。</p>
             <h2 id="r_WF_LEAD-synopsis">構文</h2>
 
 
@@ -109,31 +109,25 @@ OVER ( [ PARTITION BY <em>window_partition</em> ] ORDER BY <em>window_ordering</
             <h2 id="r_WF_LEAD-examples">例</h2>
 
 
-            <p> 次の例は、チケットが 2008 年 1 月 1 日および 2008 年 1 月 2 日に販売された SALES テーブルのイベントの手数料、および次の販売のチケット販売に支払った手数料を示します。</p>
-            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select eventid, commission, saletime,
-lead(commission, 1) over (order by saletime) as next_comm
-from sales where saletime between '2008-01-01 00:00:00' and '2008-01-02 12:59:59'
-order by saletime;
+            <p> 次の例は、チケットが 2008 年 1 月 1 日および 2008 年 1 月 2 日に販売された SALES テーブルのイベントの手数料、および次の販売のチケット販売に支払った手数料を示します。次の例では、TICKIT サンプルデータを使用します。詳細については、「<a href="./c_sampledb.html">サンプルデータベース</a>」を参照してください。</p>
 
-eventid | commission |      saletime       | next_comm
----------+------------+---------------------+-----------
-6213 |      52.05 | 2008-01-01 01:00:19 |    106.20
-7003 |     106.20 | 2008-01-01 02:30:52 |    103.20
-8762 |     103.20 | 2008-01-01 03:50:02 |     70.80
-1150 |      70.80 | 2008-01-01 06:06:57 |     50.55
-1749 |      50.55 | 2008-01-01 07:05:02 |    125.40
-8649 |     125.40 | 2008-01-01 07:26:20 |     35.10
-2903 |      35.10 | 2008-01-01 09:41:06 |    259.50
-6605 |     259.50 | 2008-01-01 12:50:55 |    628.80
-6870 |     628.80 | 2008-01-01 12:59:34 |     74.10
-6977 |      74.10 | 2008-01-02 01:11:16 |     13.50
-4650 |      13.50 | 2008-01-02 01:40:59 |     26.55
-4515 |      26.55 | 2008-01-02 01:52:35 |     22.80
-5465 |      22.80 | 2008-01-02 02:28:01 |     45.60
-5465 |      45.60 | 2008-01-02 02:28:02 |     53.10
-7003 |      53.10 | 2008-01-02 02:31:12 |     70.35
-4124 |      70.35 | 2008-01-02 03:12:50 |     36.15
-1673 |      36.15 | 2008-01-02 03:15:00 |   1300.80
-...
-(39 rows)</code></pre>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql "><code class="userinput">SELECT eventid, commission, saletime, LEAD(commission, 1) over ( ORDER BY saletime ) AS next_comm
+FROM sales
+WHERE saletime BETWEEN '2008-01-09 00:00:00' AND '2008-01-10 12:59:59'
+LIMIT 10;</code>
+
+<code class="computeroutput" copy="false">+---------+------------+---------------------+-----------+
+| eventid | commission |      saletime       | next_comm |
++---------+------------+---------------------+-----------+
+|    1664 |       13.2 | 2008-01-09 01:00:21 |      69.6 |
+|     184 |       69.6 | 2008-01-09 01:00:36 |     116.1 |
+|    6870 |      116.1 | 2008-01-09 01:02:37 |      11.1 |
+|    3718 |       11.1 | 2008-01-09 01:05:19 |     205.5 |
+|    6772 |      205.5 | 2008-01-09 01:14:04 |      38.4 |
+|    3074 |       38.4 | 2008-01-09 01:26:50 |     209.4 |
+|    5254 |      209.4 | 2008-01-09 01:29:16 |      26.4 |
+|    3724 |       26.4 | 2008-01-09 01:40:09 |      57.6 |
+|    5303 |       57.6 | 2008-01-09 01:40:21 |      51.6 |
+|    3678 |       51.6 | 2008-01-09 01:42:54 |      43.8 |
++---------+------------+---------------------+-----------+</code></code></pre>
          <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_WF_last_value.html">LAST_VALUE</div><div id="next" class="next-link" accesskey="n" href="./r_WF_LISTAGG.html">LISTAGG</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_WF_LEAD.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/ja_jp/redshift/latest/dg/r_WF_LEAD.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
