@@ -38,7 +38,7 @@
 }
 </script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#materialized-view-streaming-ingestion" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#materialized-view-streaming-ingestion-data-flow">数据流</a><a href="#materialized-view-streaming-ingestion-use-cases">串流摄取使用案例</a><a href="#materialized-view-streaming-ingestion-considerations">串流摄取注意事项</a><a href="#materialized-view-streaming-ingestion-limitations">限制</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="materialized-view-streaming-ingestion">串流摄取</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p> 串流摄取直接以低延迟、高速度的方式将流数据从 <a href="https://aws.amazon.com/kinesis/data-streams/" rel="noopener noreferrer" target="_blank"><span>Amazon Kinesis Data Streams</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> 和 <a href="https://aws.amazon.com/msk/" rel="noopener noreferrer" target="_blank"><span>Amazon Managed Streaming for Apache Kafka</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> 摄取到 Amazon Redshift 预调配或 Amazon Redshift Serverless 实体化视图中。它减少了访问数据所需的时间并降低了存储成本。您可以为 Amazon Redshift 集群或 Amazon Redshift Serverless 配置串流摄取并使用 SQL 语句创建实体化视图，如<a href="./materialized-view-overview.html">在 Amazon Redshift 中创建实体化视图</a>中所述。然后，借助实体化视图刷新，每秒可以摄取数百兆字节的数据。从而快速访问快速刷新的外部数据。</p>
             <h2 id="materialized-view-streaming-ingestion-data-flow">数据流</h2>
-            <p> Amazon Redshift 预调配集群或 Amazon Redshift Serverless 工作组是串流使用者。实体化视图是从串流中读取的数据的着陆区，读取的数据将在到达时进行处理。例如，可以通过熟悉的 SQL 来使用 JSON 值并映射到实体化视图的数据列。刷新实体化视图时，Amazon Redshift 计算节点会将每个 Kinesis 数据分片或 Kafka 分区分配给一个计算切片。每个切片都会使用所分配分片中的数据，直到视图与 Kinesis 流的 <code class="code">SEQUENCE_NUMBER</code> 或 Kafka 主题的上一个 <code class="code">Offset</code> 相等为止。后续的实体化视图刷新会从上次刷新的最新 <code class="code">SEQUENCE_NUMBER</code> 读取数据，直到与串流数据或主题数据相等为止。</p>
+            <p> Amazon Redshift 预调配集群或 Amazon Redshift Serverless 工作组是串流使用者。实体化视图是从串流中读取的数据的着陆区，读取的数据将在到达时进行处理。例如，可以通过熟悉的 SQL 来使用 JSON 值并映射到实体化视图的数据列。在刷新实体化视图时，Redshift 会使用已分配 Kinesis 数据分片或 Kafka 分区中的数据，直到该视图与 Kinesis 流的 <code class="code">SEQUENCE_NUMBER</code> 或 Kafka 主题的上一个 <code class="code">Offset</code> 达到平衡。后续的实体化视图刷新会从上次刷新的最新 <code class="code">SEQUENCE_NUMBER</code> 读取数据，直到与串流数据或主题数据相等为止。</p>
       
      
          
@@ -66,15 +66,15 @@
                     
                     
                 <ul class="itemizedlist"><li class="listitem"><p><em>自动刷新使用情况和激活</em> – 实体化视图的自动刷新查询被视为任何其他用户工作负载。自动刷新会在数据串流到达时从串流加载数据。</p>
-                   <p>对于为串流摄取而创建的实体化视图，可以显式开启自动刷新。为此，请在实体化视图定义中指定 <code class="code">AUTO REFRESH</code>。手动刷新是原定设置。要为现有实体化视图指定自动刷新以进行串流摄取，可以运行 <code class="code">ALTER MATERIALIZED VIEW</code> 以开启此功能。有关更多信息，请参阅 <a href="https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-create-sql-command.html">CREATE MATERIALIZED VIEW</a> 或 <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_ALTER_MATERIALIZED_VIEW.html">ALTER MATERIALIZED VIEW</a>。</p>
+                   <p>对于为串流摄取而创建的实体化视图，可以显式开启自动刷新。为此，请在实体化视图定义中指定 <code class="code">AUTO REFRESH</code>。手动刷新是默认设置。要为现有实体化视图指定自动刷新以进行串流摄取，可以运行 <code class="code">ALTER MATERIALIZED VIEW</code> 以开启此功能。有关更多信息，请参阅 <a href="https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-create-sql-command.html">CREATE MATERIALIZED VIEW</a> 或 <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_ALTER_MATERIALIZED_VIEW.html">ALTER MATERIALIZED VIEW</a>。</p>
                     </li><li class="listitem">
                         <p><em>串流摄取和 Amazon Redshift Serverless</em> – 适用于预置集群上的 Amazon Redshift 串流摄取的相同设置和配置说明也适用于 Amazon Redshift Serverless 上的串流摄取。重要的是将 Amazon Redshift Serverless 配置为必要的 RPU 级别，以便支持具有自动刷新功能的串流摄取和其他工作负载。有关更多信息，请参阅 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-billing.html">Amazon Redshift Serverless 的账单</a>。</p>
               
                     </li><li class="listitem">
-                        <p><em>与 Amazon MSK 集群位于不同可用区的 Amazon Redshift 节点</em> – 当您配置串流摄取时，如果为 Amazon MSK 启用了机架感知功能，则 Amazon Redshift 会尝试连接到同一可用区中的 Amazon MSK 集群。如果您的所有节点都与 Amazon Redshift 集群位于不同的可用区，则会产生跨可用区的数据传输费用。为避免这种情况，请在与 Amazon Redshift 集群相同的可用区中至少保留一个 Amazon MSK 代理集群节点。</p>
+                        <p><em>与 Amazon MSK 集群位于不同可用区的 Amazon Redshift 节点</em> – 当您配置串流摄取时，如果为 Amazon MSK 启用了机架感知功能，则 Amazon Redshift 会尝试连接到同一可用区中的 Amazon MSK 集群。如果您的所有节点都与 Amazon Redshift 集群位于不同的可用区，则会产生跨可用区的数据传输费用。为避免这种情况，请在与 Redshift 预置集群或工作组相同的可用区中至少保留一个 Amazon MSK 代理集群节点。</p>
                     </li><li class="listitem">
                         <p><em>刷新起始位置</em> – 创建实体化视图后，其初始刷新从 Kinesis 串流的 <code class="code">TRIM_HORIZON</code> 或从 Amazon MSK 主题的偏移 0 开始。</p></li><li class="listitem">
-                        <p> <em>数据格式</em> – 支持的数据格式仅限于可以从 <code class="code">VARBYTE</code> 转换的那些格式。有关更多信息，请参阅 <a href="./r_VARBYTE_type.html">VARBYTE 类型</a> 和 <a href="./r_VARBYTE_OPERATORS.html">VARBYTE 运算符</a>：</p>
+                        <p> <em>数据格式</em> – 支持的数据格式仅限于可以从 <code class="code">VARBYTE</code> 转换的那些格式。有关更多信息，请参阅 <a href="./r_VARBYTE_type.html">VARBYTE 类型</a>和 <a href="./r_VARBYTE_OPERATORS.html">VARBYTE 运算符</a>。</p>
                     </li><li class="listitem"><p><em>流式传输到多个实体化视图</em> – 在 Amazon Redshift 中，我们建议在大多数情况下将每个串流的数据放置在单个实体化视图中。但也可以摄取串流并将数据放入多个实体化视图中。例如，在一个使用案例中，您摄取了一个包含运动数据的串流，但您将每项运动的数据整理到一个单独的实体化视图中。</p>
                         <p>请注意，当您将数据摄入并刷新多个实体化视图时，可能会产生更高的传出成本，特别是从串流提供程序读取数据时。此外，读取多个实体化视图使用的资源更多，从而会影响其他工作负载。另请注意串流提供程序的带宽、吞吐量和性能限制。有关数据流定价的更多信息，请参阅 <a href="https://aws.amazon.com/kinesis/data-streams/pricing/" rel="noopener noreferrer" target="_blank"><span>Kinesis Data Streams 定价</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>和 <a href="https://aws.amazon.com/msk/pricing/" rel="noopener noreferrer" target="_blank"><span>Amazon Managed Streaming for Apache Kafka 定价</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p>
                     </li><li class="listitem"><p><em>将记录附加到表</em> - 您可以运行 <code class="code">ALTER TABLE APPEND</code>，以从现有源实体化视图中将行附加到目标表。仅当将实体化视图配置为串流摄取时，此操作才会起作用。有关更多信息，请参阅 <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_ALTER_TABLE_APPEND.html">ALTER TABLE APPEND</a>。</p></li><li class="listitem"><p><em>运行 TRUNCATE 或 DELETE</em> - 您可以使用以下几种方法，从用于串流摄取的实体化视图中删除记录：</p>
@@ -86,23 +86,23 @@
                 
                  
                     <h3 id="materialized-view-streaming-methods">使用串流摄取与在 Amazon S3 中暂存数据进行比较</h3>
-                    <p> 有多种选项可以将数据流式传输到 Amazon Redshift 或 Amazon Redshift Serverless。两个众所周知的选项是串流摄取（如本主题所述），或者使用 Kinesis Data Firehose 设置到 Amazon S3 的传输流。以下列表描述了每种方法：</p>  
+                    <p> 有多种选项可以将数据流式传输到 Amazon Redshift 或 Amazon Redshift Serverless。两个众所周知的选项是串流摄取（如本主题所述），或者使用 Firehose 设置到 Amazon S3 的传输流。以下列表描述了每种方法：</p>  
                     <div class="orderedlist">
                          
                          
-                    <ol><li><p> 从 Kinesis Data Streams 或 Amazon Managed Streaming for Apache Kafka 到 Amazon Redshift 或 Amazon Redshift Serverless 的串流摄取涉及配置实体化视图来接收数据。</p></li><li><p>使用 Kinesis Data Streams 将数据传输到 Amazon Redshift 并通过 Kinesis Data Firehose 进行流式传输的过程，包括将源流连接到 Amazon Kinesis Data Firehose，然后等待 Kinesis Data Firehose 在 Amazon S3 中暂存数据。此过程使用不同大小的批次，缓冲间隔长度各不相同。在流式传输到 Amazon S3 后，Kinesis Data Firehose 会启动一个 COPY 命令来加载数据。</p></li></ol></div>
+                    <ol><li><p> 从 Kinesis Data Streams 或 Amazon Managed Streaming for Apache Kafka 到 Amazon Redshift 或 Amazon Redshift Serverless 的串流摄取涉及配置实体化视图来接收数据。</p></li><li><p>使用 Kinesis Data Streams 将数据传输到 Amazon Redshift 并通过 Firehose 进行流式传输的过程涉及将源流连接到 Amazon Data Firehose，然后等待 Firehose 在 Amazon S3 中暂存数据。此过程使用不同大小的批次，缓冲间隔长度各不相同。在流式传输到 Amazon S3 后，Firehose 会启动一个 COPY 命令来加载数据。</p></li></ol></div>
                     <p>通过串流摄取，您可以绕过第二个过程所需的几个步骤：</p>
                     <div class="itemizedlist">
                          
                          
                          
-                    <ul class="itemizedlist"><li class="listitem"><p>您不必将数据发送到 Amazon Kinesis Data Firehose 传输流，因为通过串流摄取，数据可以直接从 Kinesis Data Streams 发送到 Redshift 数据库中的实体化视图。</p></li><li class="listitem"><p>您不必将流式传输的数据存入 Amazon S3，因为串流摄取数据会直接传送到 Redshift 实体化视图。</p></li><li class="listitem"><p>您不必编写和运行 COPY 命令，因为实体化视图中的数据是直接从流中刷新的。将数据从 Amazon S3 加载到 Redshift 并不是该过程的一部分。</p></li></ul></div>
-                    <p>请注意，串流摄取仅限于来自 Amazon Kinesis Data Streams 的流和来自 Amazon MSK 的主题。要从 Kinesis Data Streams 流式传输到 Amazon Redshift 以外的源，可能需要一个 Kinesis Data Firehose 传输流。有关更多信息，请参阅<a href="https://docs.aws.amazon.com/firehose/latest/dev/basic-write.html">将数据发送到 Amazon Kinesis Data Firehose 传输流</a>。</p>
+                    <ul class="itemizedlist"><li class="listitem"><p>您不必将数据发送到 Amazon Data Firehose 传输流，因为通过串流摄取，数据可以直接从 Kinesis Data Streams 发送到 Redshift 数据库中的实体化视图。</p></li><li class="listitem"><p>您不必将流式传输的数据存入 Amazon S3，因为串流摄取数据会直接传送到 Redshift 实体化视图。</p></li><li class="listitem"><p>您不必编写和运行 COPY 命令，因为实体化视图中的数据是直接从流中刷新的。将数据从 Amazon S3 加载到 Redshift 并不是该过程的一部分。</p></li></ul></div>
+                  <p>请注意，串流摄取仅限于来自 Amazon Kinesis Data Streams 的流和来自 Amazon MSK 的主题。要从 Kinesis Data Streams 流式传输到 Amazon Redshift 以外的目标，可能需要一个 Firehose 传输流。有关更多信息，请参阅 <a href="https://docs.aws.amazon.com/firehose/latest/dev/basic-write.html">Sending Data to an Amazon Data Firehose Delivery Stream</a>。</p>
                  
              
                     <h2 id="materialized-view-streaming-ingestion-limitations">限制</h2>
                     
-                    <div class="table-container"><div class="table-contents"><table id="w319aac21c47c11b3"><thead>
+                    <div class="table-container"><div class="table-contents"><table id="w320aac21c47c11b3"><thead>
                                 <tr>
                                     <th>特征或操作 </th>
                                     <th>描述 </th>

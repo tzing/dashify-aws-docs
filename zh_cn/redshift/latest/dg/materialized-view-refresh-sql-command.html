@@ -42,7 +42,7 @@
       }
     ]
 }
-</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#materialized-view-refresh-sql-command" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#mv_REFRESH_MATERIALIZED_VIEW-synopsis">语法</a><a href="#mv_REFRESH_MATERIALIZED_VIEW-parameters">参数</a><a href="#mv_REFRESH_MARTERIALIZED_VIEW_usage">使用说明</a><a href="#mv_REFRESH_MARTERIALIZED_VIEW_limitations">增量刷新限制</a><a href="#mv_REFRESH_MARTERIALIZED_VIEW_examples">示例</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="materialized-view-refresh-sql-command">REFRESH MATERIALIZED VIEW</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>刷新实体化视图。</p><p>创建实体化视图时，其内容将反映当时基础数据库表的状态。实体化视图中的数据将保持不变，即使应用程序更改基础表中的数据也是如此。要更新实体化视图中的数据，您可以随时使用 <code class="code">REFRESH MATERIALIZED VIEW</code> 语句。使用此语句时，Amazon Redshift 会标识已在一个或多个基表中进行的更改，然后将这些更改应用于实体化视图。</p><p>有关实体化视图的更多信息，请参阅<a href="./materialized-view-overview.html">在 Amazon Redshift 中创建实体化视图</a>。</p>
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#materialized-view-refresh-sql-command" target="_blank" rel="noopener noreferrer" title="打开 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">数据库开发人员指南</a></div><div id="page-toc-src"><a href="#mv_REFRESH_MATERIALIZED_VIEW-synopsis">语法</a><a href="#mv_REFRESH_MATERIALIZED_VIEW-parameters">参数</a><a href="#mv_REFRESH_MARTERIALIZED_VIEW_usage">使用说明</a><a href="#mv_REFRESH_MARTERIALIZED_VIEW_datashare">对数据共享中的实体化视图进行增量刷新</a><a href="#mv_REFRESH_MARTERIALIZED_VIEW_limitations">增量刷新限制</a><a href="#mv_REFRESH_MARTERIALIZED_VIEW_examples">示例</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="materialized-view-refresh-sql-command">REFRESH MATERIALIZED VIEW</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>刷新实体化视图。</p><p>创建实体化视图时，其内容将反映当时基础数据库表的状态。实体化视图中的数据将保持不变，即使应用程序更改基础表中的数据也是如此。要更新实体化视图中的数据，您可以随时使用 <code class="code">REFRESH MATERIALIZED VIEW</code> 语句。使用此语句时，Amazon Redshift 会标识已在一个或多个基表中进行的更改，然后将这些更改应用于实体化视图。</p><p>有关实体化视图的更多信息，请参阅<a href="./materialized-view-overview.html">在 Amazon Redshift 中创建实体化视图</a>。</p>
          <h2 id="mv_REFRESH_MATERIALIZED_VIEW-synopsis">语法</h2>
          <pre class="screen">REFRESH MATERIALIZED VIEW <em>mv_name</em></pre>
        
@@ -89,9 +89,13 @@
                <p>一些由用户对基表发起的操作会强制在下次运行 REFRESH 操作时完全重新计算实体化视图。此类操作的示例包括手动调用的 VACUUM、经典调整大小、ALTER DISTKEY 操作、ALTER SORTKEY 操作和截断操作。有关事件和状态更改的更多信息，请参阅 <a href="./r_STL_MV_STATE.html">STL_MV_STATE</a>。</p>
             </li></ul></div>
        
+         <h2 id="mv_REFRESH_MARTERIALIZED_VIEW_datashare">对数据共享中的实体化视图进行增量刷新</h2>
+         <p> 在共享基表时，Amazon Redshift 支持对消费者数据共享中的实体化视图进行自动和增量刷新。增量刷新是一项操作，其中 Amazon Redshift 可识别上次刷新后发生的一个或多个基表中的更改，并仅更新实体化视图中的相应记录。有关此行为的更多信息，请参阅 <a href="https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-create-sql-command.html#mv_CREATE_MARTERIALIZED_VIEW_datashare">CREATE MATERIALIZED VIEW</a>。</p>
+       
          <h2 id="mv_REFRESH_MARTERIALIZED_VIEW_limitations">增量刷新限制</h2>
          <p>Amazon Redshift 目前不支持使用以下任意 SQL 元素通过查询定义的实体化视图的递增刷新：</p>
          <div class="itemizedlist">
+             
              
              
              
@@ -122,7 +126,7 @@
             </li><li class="listitem">
                <p>使用临时表进行查询优化的查询，例如优化常用的子表达式。</p>
             </li><li class="listitem">
-               <p>在 FROM 子句以外的任何位置的子查询。</p>
+               <p>子查询</p>
             </li><li class="listitem">
                <p>在定义实体化视图的查询中引用以下格式的外部表。</p>
                <div class="itemizedlist">
@@ -134,7 +138,7 @@
                      <p> Hudi </p>
                   </li></ul></div>
                <p>对于使用引用其他格式的外部表定义的实体化视图，预览版跟踪支持增量刷新。有关设置预览版集群的更多信息，请参阅《Amazon Redshift 管理指南》<em></em>中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-clusters-console.html#cluster-preview">创建预览版集群</a>。有关设置预览工作组的信息，请参阅《Amazon Redshift 管理指南》<em></em>中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-workgroup-preview.html">创建预览工作组</a>。</p>
-            </li><li class="listitem"><p>可变函数，如日期-时间函数，RANDOM 和非 STABLE 用户定义函数。</p></li></ul></div>
+            </li><li class="listitem"><p>可变函数，如日期-时间函数，RANDOM 和非 STABLE 用户定义函数。</p></li><li class="listitem"><p>有关零 ETL 集成的增量刷新限制，请参阅<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/zero-etl.reqs-lims.html">将零 ETL 集成与 Amazon Redshift 结合使用时的注意事项</a>。</p></li></ul></div>
          <p>有关实体化视图限制的更多信息，包括 VACUUM 等后台操作对实体化视图刷新操作的影响，请参阅<a href="#mv_REFRESH_MARTERIALIZED_VIEW_usage">使用说明</a>。</p>
        
          <h2 id="mv_REFRESH_MARTERIALIZED_VIEW_examples">示例</h2>

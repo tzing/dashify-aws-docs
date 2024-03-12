@@ -112,7 +112,7 @@ ATTACH RLS POLICY policy_categories ON tickit_category_redshift TO ROLE analyst,
                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">ERROR: RLS policy could not be rewritten.</code></pre></li><li class="listitem"><p>RLS 策略不能附加到外部表和实体化视图。</p></li><li class="listitem"><p>Amazon Redshift 不支持与 RLS 的数据共享。如果关系没有对数据共享关闭 RLS，则使用者集群上的查询将失败，并出现以下错误：</p>
                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">RLS-protected relation "rls_protected_table" cannot be accessed via datasharing query.</code></pre></li><li class="listitem"><p>在跨数据库查询中，Amazon Redshift 会阻止读取受 RLS 保护的关系。拥有 IGNORE RLS 权限的用户可以使用跨数据库查询访问受保护的关系。当没有 IGNORE RLS 权限的用户通过跨数据库查询访问受 RLS 保护的关系时，会出现以下错误：</p>
                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">RLS-protected relation "rls_protected_table" cannot be accessed via cross-database query.</code></pre></li><li class="listitem"><p>ALTER RLS POLICY 仅支持使用 USING（using_predicate_exp）子句修改 RLS 策略。运行 ALTER RLS POLICY 时，您无法使用 WITH 子句修改 RLS 策略。</p></li><li class="listitem">
-                 <p>如果以下任一配置选项的值与会话的原定设置值不匹配，则无法查询已开启行级安全性的关系：</p>
+                 <p>如果以下任一配置选项的值与会话的默认值不匹配，则无法查询已开启行级安全性的关系：</p>
                  <div class="itemizedlist">
                      
                      
@@ -124,10 +124,10 @@ ATTACH RLS POLICY policy_categories ON tickit_category_redshift TO ROLE analyst,
                     </p></li><li class="listitem"><p>                     
                        <code class="code">downcase_delimited_identifier</code>
                     </p></li></ul></div>
-                 <p>如果您试图查询具有行级安全性的关系，并看到消息“RLS 保护的关系不支持会话级别配置，因为区分大小写不同于其原定设置值”，请考虑重置会话的配置选项。</p>
+                 <p>如果您试图查询具有行级安全性的关系，并看到消息“RLS 保护的关系不支持会话级别配置，因为区分大小写不同于其默认值”，请考虑重置会话的配置选项。</p>
               </li><li class="listitem"><p> 当您的预调配集群或无服务器命名空间具有任何行级安全策略时，普通用户将无法使用以下命令：</p>
                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="">ALTER &lt;current_user&gt; SET enable_case_sensitive_super_attribute/enable_case_sensitive_identifier/downcase_delimited_identifier</code></pre>
-                 <p>创建 RLS 策略时，我们建议您更改普通用户的原定设置配置选项设置，使其与创建策略时会话的配置选项设置相匹配。超级用户和具有 ALTER USER 权限的用户可以使用参数组设置或 ALTER USER 命令来执行此操作。有关参数组的信息，请参阅《Amazon Redshift 管理指南》<em></em>中的 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Amazon Redshift 参数组</a>。有关 ALTER USER 命令的信息，请参阅 <a href="./r_ALTER_USER.html">ALTER USER</a>。</p></li><li class="listitem">
+                 <p>创建 RLS 策略时，我们建议您更改普通用户的默认配置选项设置，使其与创建策略时会话的配置选项设置相匹配。超级用户和具有 ALTER USER 权限的用户可以使用参数组设置或 ALTER USER 命令来执行此操作。有关参数组的信息，请参阅《Amazon Redshift 管理指南》<em></em>中的 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html">Amazon Redshift 参数组</a>。有关 ALTER USER 命令的信息，请参阅 <a href="./r_ALTER_USER.html">ALTER USER</a>。</p></li><li class="listitem">
                  <p> 普通用户无法使用 <a href="./r_CREATE_VIEW.html">CREATE VIEW</a> 命令替换具有行级安全策略的视图和后期绑定视图。要替换具有 RLS 策略的视图或 LBV，请先分离附加到这些视图的所有 RLS 策略，替换视图或 LBV，然后重新附加策略。具有 <code class="code">sys:secadmin permission</code> 的超级用户和用户可以在具有 RLS 策略的视图或 LBV 上使用 CREATE VIEW，而无需分离策略。</p>
               </li><li class="listitem">
                  <p> 具有行级安全策略的视图不能引用系统表和系统视图。</p>
