@@ -46,10 +46,14 @@
          <h2 id="r_CREATE_IDENTITY_PROVIDER-synopsis">Sintaxis</h2>
          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE IDENTITY PROVIDER <em>identity_provider_name </em>TYPE <em>type_name</em>
 NAMESPACE <em>namespace_name</em>
- PARAMETERS <em>parameter_string</em></code></pre>
+[PARAMETERS <em>parameter_string</em>]
+[APPLICATION_ARN <em>arn</em>]
+[IAM_ROLE <em>iam_role</em>]</code></pre>
        
          <h2 id="r_CREATE_IDENTITY_PROVIDER-parameters">Parámetros</h2>
          <div class="variablelist">
+             
+             
              
              
              
@@ -74,9 +78,19 @@ NAMESPACE <em>namespace_name</em>
                <dd>
                   <p>Una cadena que contiene un objeto JSON con el formato correcto que contiene los parámetros y valores necesarios para el proveedor de identidades específico.</p>
                </dd>
+             
+               <dt><span class="term"> <em>arn</em> </span></dt>
+               <dd>
+                  <p>El nombre de recurso de Amazon (ARN) de una aplicación administrada por el IAM Identity Center. Este parámetro solo se aplica cuando el tipo de proveedor de identidades es AWSIDC.</p>
+               </dd>
+             
+               <dt><span class="term"> <em>iam_role</em> </span></dt>
+               <dd>
+                  <p>El rol de IAM que proporciona permisos para realizar la conexión al IAM Identity Center. Este parámetro solo se aplica cuando el tipo de proveedor de identidades es AWSIDC.</p>
+               </dd>
             </dl></div>
        
-         <h2 id="r_CREATE_IDENTITY_PROVIDER-examples">Ejemplo</h2>
+         <h2 id="r_CREATE_IDENTITY_PROVIDER-examples">Ejemplos</h2>
          <p>En el ejemplo siguiente se crea un proveedor de identidades denominado <em>oauth_standard</em>, con un TIPO <em>azure</em>, para establecer la comunicación con Microsoft Azure Active Directory (AD).</p>
          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="SQL ">CREATE IDENTITY PROVIDER oauth_standard TYPE azure
 NAMESPACE 'aad'
@@ -85,5 +99,12 @@ PARAMETERS '<span>{</span>"issuer":"https://sts.windows.net/2sdfdsf-d475-420d-b5
 "client_secret":"BUAH~ewrqewrqwerUUY^%tHe1oNZShoiU7",
 "audience":["https://analysis.windows.net/powerbi/connector/AmazonRedshift"]
 }'</code></pre>
-         <p>Para obtener más información sobre el uso de CREATE IDENTITY PROVIDER, incluidos ejemplos adicionales, consulte <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-native-idp.html">Federación de proveedores de identidades (IdP) nativos para Amazon Redshift</a>.</p>
+         <p>Puede conectar una aplicación administrada de IAM Identity Center con un clúster aprovisionado existente o un grupo de trabajo de Amazon Redshift sin servidor. Esto le permite administrar el acceso a una base de datos de Redshift a través del IAM Identity Center. Para ello, ejecute un comando de SQL como el siguiente ejemplo. Debe ser administrador de bases de datos.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="SQL ">CREATE IDENTITY PROVIDER "redshift-idc-app" TYPE AWSIDC
+NAMESPACE 'awsidc'
+APPLICATION_ARN 'arn:aws:sso::123456789012:application/ssoins-12345f67fe123d4/apl-a0b0a12dc123b1a4'
+IAM_ROLE 'arn:aws:iam::123456789012:role/MyRedshiftRole';</code></pre>
+         <p>En este caso, el ARN de la aplicación identifica la aplicación administrada a la que conectarse. Puede encontrarla ejecutando <code class="code">SELECT * FROM SVV_IDENTITY_PROVIDERS;</code>.</p>
+    
+         <p>Para obtener más información sobre el uso de CREATE IDENTITY PROVIDER, incluidos ejemplos adicionales, consulte <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-native-idp.html">Federación de proveedores de identidades (IdP) nativos para Amazon Redshift</a>. Para obtener más información sobre la configuración de una conexión de IAM Identity Center desde Redshift, consulte <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-idp-connect.html">Conectar Redshift con IAM Identity Center para ofrecer a los usuarios una experiencia de inicio de sesión único</a>.</p>
       <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Aviso" /> <strong>JavaScript está desactivado o no está disponible en su navegador.</strong></p><p>Para utilizar la documentación de AWS, debe estar habilitado JavaScript. Para obtener más información, consulte las páginas de ayuda de su navegador.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenciones del documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_CREATE_GROUP.html">CREATE GROUP</div><div id="next" class="next-link" accesskey="n" href="./r_CREATE_LIBRARY.html">CREATE LIBRARY</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - Sí</div><div class="content"><p>Gracias por hacernos saber que estamos haciendo un buen trabajo.</p><p>Si tiene un momento, díganos qué es lo que le ha gustado para que podamos seguir trabajando en esa línea.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/r_CREATE_IDENTITY_PROVIDER.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - No</div><div class="content"><p>Gracias por informarnos de que debemos trabajar en esta página. Lamentamos haberle defraudado.</p><p>Si tiene un momento, díganos cómo podemos mejorar la documentación.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/es_es/redshift/latest/dg/r_CREATE_IDENTITY_PROVIDER.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
