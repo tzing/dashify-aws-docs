@@ -81,7 +81,7 @@ OVER ( [ PARTITION BY <em>window_partition</em> ] ORDER BY <em>window_ordering</
                   <dt><span class="term">IGNORE NULLS </span></dt>
                   <dd>
                      <p>選擇性規格，指出 Amazon Redshift 在決定要使用的列時應該略過 Null 值。如果未列出 IGNORE NULLS，則會包含 Null 值。</p>
-                     <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>您可以使用 NVL 或 COALESCE 表達式，將 Null 值換成另一個值。如需詳細資訊，請參閱<a href="./r_NVL_function.html">NVL 和 COALESCE 函數</a>。</p></div></div>
+                     <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>您可以使用 NVL 或 COALESCE 表達式，將 Null 值換成另一個值。如需詳細資訊，請參閱 <a href="./r_NVL_function.html">NVL 和 COALESCE 函數</a>。</p></div></div>
                   </dd>
                 
                   <dt><span class="term">RESPECT NULLS </span></dt>
@@ -109,31 +109,25 @@ OVER ( [ PARTITION BY <em>window_partition</em> ] ORDER BY <em>window_ordering</
             <h2 id="r_WF_LEAD-examples">範例</h2>
 
 
-            <p> 下列範例提供 SALES 資料表中於 2008 年 1 月 1 日和 2008 年 1 月 2 日售出門票之活動的佣金，以及對隨後銷售之門票銷售支付的佣金。</p>
-            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select eventid, commission, saletime,
-lead(commission, 1) over (order by saletime) as next_comm
-from sales where saletime between '2008-01-01 00:00:00' and '2008-01-02 12:59:59'
-order by saletime;
+            <p> 下列範例提供 SALES 資料表中於 2008 年 1 月 1 日和 2008 年 1 月 2 日售出門票之活動的佣金，以及對隨後銷售之門票銷售支付的佣金。下列範例使用 TICKIT 範例資料庫。如需詳細資訊，請參閱 <a href="./c_sampledb.html">範本資料庫</a>。</p>
 
-eventid | commission |      saletime       | next_comm
----------+------------+---------------------+-----------
-6213 |      52.05 | 2008-01-01 01:00:19 |    106.20
-7003 |     106.20 | 2008-01-01 02:30:52 |    103.20
-8762 |     103.20 | 2008-01-01 03:50:02 |     70.80
-1150 |      70.80 | 2008-01-01 06:06:57 |     50.55
-1749 |      50.55 | 2008-01-01 07:05:02 |    125.40
-8649 |     125.40 | 2008-01-01 07:26:20 |     35.10
-2903 |      35.10 | 2008-01-01 09:41:06 |    259.50
-6605 |     259.50 | 2008-01-01 12:50:55 |    628.80
-6870 |     628.80 | 2008-01-01 12:59:34 |     74.10
-6977 |      74.10 | 2008-01-02 01:11:16 |     13.50
-4650 |      13.50 | 2008-01-02 01:40:59 |     26.55
-4515 |      26.55 | 2008-01-02 01:52:35 |     22.80
-5465 |      22.80 | 2008-01-02 02:28:01 |     45.60
-5465 |      45.60 | 2008-01-02 02:28:02 |     53.10
-7003 |      53.10 | 2008-01-02 02:31:12 |     70.35
-4124 |      70.35 | 2008-01-02 03:12:50 |     36.15
-1673 |      36.15 | 2008-01-02 03:15:00 |   1300.80
-...
-(39 rows)</code></pre>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql "><code class="userinput">SELECT eventid, commission, saletime, LEAD(commission, 1) over ( ORDER BY saletime ) AS next_comm
+FROM sales
+WHERE saletime BETWEEN '2008-01-09 00:00:00' AND '2008-01-10 12:59:59'
+LIMIT 10;</code>
+
+<code class="computeroutput" copy="false">+---------+------------+---------------------+-----------+
+| eventid | commission |      saletime       | next_comm |
++---------+------------+---------------------+-----------+
+|    1664 |       13.2 | 2008-01-09 01:00:21 |      69.6 |
+|     184 |       69.6 | 2008-01-09 01:00:36 |     116.1 |
+|    6870 |      116.1 | 2008-01-09 01:02:37 |      11.1 |
+|    3718 |       11.1 | 2008-01-09 01:05:19 |     205.5 |
+|    6772 |      205.5 | 2008-01-09 01:14:04 |      38.4 |
+|    3074 |       38.4 | 2008-01-09 01:26:50 |     209.4 |
+|    5254 |      209.4 | 2008-01-09 01:29:16 |      26.4 |
+|    3724 |       26.4 | 2008-01-09 01:40:09 |      57.6 |
+|    5303 |       57.6 | 2008-01-09 01:40:21 |      51.6 |
+|    3678 |       51.6 | 2008-01-09 01:42:54 |      43.8 |
++---------+------------+---------------------+-----------+</code></code></pre>
          <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_WF_last_value.html">LAST_VALUE</div><div id="next" class="next-link" accesskey="n" href="./r_WF_LISTAGG.html">LISTAGG</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_WF_LEAD.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_WF_LEAD.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

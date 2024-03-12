@@ -58,11 +58,11 @@
                 <p>DROP SCHEMA、TABLE、VIEW</p>
             </li><li class="listitem">
                 <p>ALTER SCHEMA、TABLE</p>
-            </li></ul></div><p>另請參閱 <a href="./r_STL_QUERYTEXT.html">STL_QUERYTEXT</a>、<a href="./r_STL_UTILITYTEXT.html">STL_UTILITYTEXT</a> 和 <a href="./r_SVL_STATEMENTTEXT.html">SVL_STATEMENTTEXT</a>。這些檢視提供在系統上執行之 SQL 命令的時間軸；此歷史記錄有助於進行故障診斷，以及建立所有系統活動的稽核記錄。</p><p>使用 STARTTIME 和 ENDTIME 資料欄，來了解已在特定時段記錄哪些陳述式。SQL 文字的長區塊會分成數行，一行 200 個字元；SEQUENCE 欄會識別屬於單一陳述式的文字片段。</p><p>所有使用者都可看見 STL_DDLTEXT。超級使用者可以看見所有資料列；一般使用者只能看見自己的資料。如需詳細資訊，請參閱<a href="./cm_chap_system-tables.html#c_visibility-of-data">系統資料表和檢視中資料的可見性</a>。</p><p>此資料表中的部份或所有資料也會在 SYS 監控檢視 <a href="./SYS_QUERY_HISTORY.html">SYS_QUERY_HISTORY</a> 中找到。SYS 監視檢視中的資料會格式化為更易於使用和理解。我們建議您使用 SYS 監控檢視進行查詢。</p>
+            </li></ul></div><p>另請參閱 <a href="./r_STL_QUERYTEXT.html">STL_QUERYTEXT</a>、<a href="./r_STL_UTILITYTEXT.html">STL_UTILITYTEXT</a> 和 <a href="./r_SVL_STATEMENTTEXT.html">SVL_STATEMENTTEXT</a>。這些檢視提供在系統上執行之 SQL 命令的時間軸；此歷史記錄有助於進行故障診斷，以及建立所有系統活動的稽核記錄。</p><p>使用 STARTTIME 和 ENDTIME 資料欄，來了解已在特定時段記錄哪些陳述式。SQL 文字的長區塊會分成數行，一行 200 個字元；SEQUENCE 欄會識別屬於單一陳述式的文字片段。</p><p>所有使用者都可看見 STL_DDLTEXT。超級使用者可以看見所有資料列；一般使用者只能看見自己的資料。如需詳細資訊，請參閱 <a href="./cm_chap_system-tables.html#c_visibility-of-data">系統資料表和檢視中資料的可見性</a>。</p><p>此資料表中的部份或所有資料也會在 SYS 監控檢視 <a href="./SYS_QUERY_HISTORY.html">SYS_QUERY_HISTORY</a> 中找到。SYS 監視檢視中的資料會格式化為更易於使用和理解。我們建議您使用 SYS 監控檢視進行查詢。</p>
             <h2 id="r_STL_DDLTEXT-table-columns2">資料表欄</h2>
 
 
-            <div class="table-container"><div class="table-contents"><table id="w319aac49c17b9c25c17b3"><thead>
+            <div class="table-container"><div class="table-contents"><table id="w320aac49c17b9c25c17b3"><thead>
                         <tr>
                             <th>欄名稱 </th>
                             <th>資料類型 </th>
@@ -132,7 +132,7 @@ from stl_ddltext order by xid desc, sequence;
             
             
              
-                <h3 id="r_STL_DDLTEXT-reconstruct-sql">重建存放的 SQL</h3>
+                <h3 id="r_STL_DDLTEXT-reconstruct-sql">重建儲存的 SQL</h3>
                 
 
                 
@@ -150,7 +150,7 @@ xid     |  sequence | query_statement
 ...
 </code></pre>
                 
-                <p>若要重建存放在 STL_DDLTEXT 中 <code class="code">text</code> 欄的 SQL，請執行下列 SQL 陳述式。它會將 <code class="code">text</code> 欄中一或多個區段的 DDL 陳述式放在一起。請先在 SQL 用戶端中以新的一行取代任意 (<code class="code">\n</code>) 特殊字元，再執行重建的 SQL。下列 SELECT 陳述式的結果會依序將三個列放在一起，以便在 <code class="code">query_statement</code> 欄位中重建 SQL。</p> 
+                <p>若要重建儲存在 STL_DDLTEXT 中 <code class="code">text</code> 欄的 SQL，請執行下列 SQL 陳述式。它會將 <code class="code">text</code> 欄中一或多個區段的 DDL 陳述式放在一起。請先在 SQL 用戶端中以新的一行取代任意 (<code class="code">\n</code>) 特殊字元，再執行重建的 SQL。下列 SELECT 陳述式的結果會依序將三個列放在一起，以便在 <code class="code">query_statement</code> 欄位中重建 SQL。</p> 
                 
                 <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sql ">SELECT LISTAGG(CASE WHEN LEN(RTRIM(text)) = 0 THEN text ELSE RTRIM(text) END) WITHIN GROUP (ORDER BY sequence) as query_statement
 FROM stl_ddltext GROUP BY xid, endtime order by xid, endtime;</code></pre>

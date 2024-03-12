@@ -46,7 +46,9 @@
          <h2 id="r_CREATE_IDENTITY_PROVIDER-synopsis">語法</h2>
          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CREATE IDENTITY PROVIDER <em>identity_provider_name </em>TYPE <em>type_name</em>
 NAMESPACE <em>namespace_name</em>
- PARAMETERS <em>parameter_string</em></code></pre>
+[PARAMETERS <em>parameter_string</em>]
+[APPLICATION_ARN <em>arn</em>]
+[IAM_ROLE <em>iam_role</em>]</code></pre>
        
          <h2 id="r_CREATE_IDENTITY_PROVIDER-parameters">參數</h2>
          <div class="variablelist">
@@ -54,10 +56,12 @@ NAMESPACE <em>namespace_name</em>
              
              
              
+             
+             
          <dl>
                <dt><span class="term"> <em>identity_provider_name</em> </span></dt>
                <dd>
-                  <p>新身分提供者的名稱。如需有效名稱的詳細資訊，請參閱 <a href="./r_names.html">名稱與識別符</a>。</p>
+                  <p>新身分提供者的名稱。如需有效名稱的相關資訊，請參閱 <a href="./r_names.html">名稱與識別碼</a>。</p>
                </dd>
              
                <dt><span class="term"><em>type_name</em></span></dt>
@@ -67,12 +71,22 @@ NAMESPACE <em>namespace_name</em>
              
                <dt><span class="term"><em>namespace_name</em></span></dt>
                <dd>
-                  <p>命名空間 這是身分提供者目錄的唯一速記識別符。</p>
+                  <p>命名空間 這是身分提供者目錄的唯一速記識別碼。</p>
                </dd>
              
                <dt><span class="term"> <em>parameter_string</em> </span></dt>
                <dd>
                   <p>包含正確格式化 JSON 物件的字串，其中包含身分提供者所需的參數和值。</p>
+               </dd>
+             
+               <dt><span class="term"> <em>arn</em> </span></dt>
+               <dd>
+                  <p>IAM 身分中心受管應用程式的 Amazon 資源名稱 (ARN)。此參數僅適用於身分識別提供者類型為時。 AWSIDC</p>
+               </dd>
+             
+               <dt><span class="term"> <em>阿姆角色</em> </span></dt>
+               <dd>
+                  <p>提供連線至 IAM 身分中心的許可的 IAM 角色。此參數僅適用於身分識別提供者類型為時。 AWSIDC</p>
                </dd>
             </dl></div>
        
@@ -85,5 +99,12 @@ PARAMETERS '<span>{</span>"issuer":"https://sts.windows.net/2sdfdsf-d475-420d-b5
 "client_secret":"BUAH~ewrqewrqwerUUY^%tHe1oNZShoiU7",
 "audience":["https://analysis.windows.net/powerbi/connector/AmazonRedshift"]
 }'</code></pre>
-         <p>如需有關使用 CREATE IDENTITY PROVIDER 的詳細資訊 (包括其他範例)，請參閱 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-native-idp.html">Amazon Redshift 的原生身分提供者 (IdP) 聯合</a>。</p>
+         <p>您可以將 IAM 身分中心受管應用程式與現有的佈建叢集或 Amazon Redshift 無伺服器工作群組連接。這可讓您透過 IAM 身分中心管理 Redshift 資料庫的存取權。若要這麼做，請執行類似下列範例的 SQL 命令。您必須是資料庫管理員。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="SQL ">CREATE IDENTITY PROVIDER "redshift-idc-app" TYPE AWSIDC
+NAMESPACE 'awsidc'
+APPLICATION_ARN 'arn:aws:sso::123456789012:application/ssoins-12345f67fe123d4/apl-a0b0a12dc123b1a4'
+IAM_ROLE 'arn:aws:iam::123456789012:role/MyRedshiftRole';</code></pre>
+         <p>在此情況下，應用程式 ARN 會識別要連線的受管理應用程式。您可以通過運行找到它<code class="code">SELECT * FROM SVV_IDENTITY_PROVIDERS;</code>。</p>
+    
+         <p>如需使用 CREATE IDENTITY PROVIDER 的相關資訊 (包括其他範例)，請參閱 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-native-idp.html">Amazon Redshift 的原生身分提供者 (IdP) 聯合</a>。如需有關從 Redshift 設定 IAM 身分中心連線的詳細資訊，請參閱 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-idp-connect.html">Connect Redshift 與 IAM 身分中心連線，為使用者提供單一登入</a>體驗。</p>
       <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./r_CREATE_GROUP.html">CREATE GROUP</div><div id="next" class="next-link" accesskey="n" href="./r_CREATE_LIBRARY.html">CREATE LIBRARY</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_CREATE_IDENTITY_PROVIDER.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Redshift&amp;topic_url=https://docs.aws.amazon.com/zh_tw/redshift/latest/dg/r_CREATE_IDENTITY_PROVIDER.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

@@ -42,7 +42,7 @@
       }
     ]
 }
-</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#materialized-view-create-sql-command" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#mv_CREATE_MATERIALIZED_VIEW-synopsis">語法</a><a href="#mv_CREATE_MATERIALIZED_VIEW-parameters">參數</a><a href="#mv_CREATE_MARTERIALIZED_VIEW_usage">使用須知</a><a href="#materialized-view-ddl">具體化檢視或基礎資料表的 DDL 更新</a><a href="#mv_CREATE_MATERIALIZED_VIEW-limitations">限制</a><a href="#mv_CREATE_MARTERIALIZED_VIEW_examples">範例</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="materialized-view-create-sql-command">CREATE MATERIALIZED VIEW</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>根據一個或多個 Amazon Redshift 資料表建立具體化視觀表。您也可以讓具體化視觀表以使用 Spectrum 或聯合查詢建立的外部資料表為依據。如需 Spectrum 的詳細資訊，請參閱<a href="./c-using-spectrum.html">使用 Amazon Redshift Spectrum 查詢外部資料</a>。如需聯合查詢的詳細資訊，請參閱 <a href="./federated-overview.html">使用 Amazon Redshift 中的聯合查詢來查詢資料</a>。</p>
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#materialized-view-create-sql-command" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#mv_CREATE_MATERIALIZED_VIEW-synopsis">語法</a><a href="#mv_CREATE_MATERIALIZED_VIEW-parameters">參數</a><a href="#mv_CREATE_MARTERIALIZED_VIEW_usage">使用須知</a><a href="#mv_CREATE_MARTERIALIZED_VIEW_datashare">資料命名中具體化視觀表的累加式重新整理</a><a href="#materialized-view-ddl">具體化檢視或基礎資料表的 DDL 更新</a><a href="#mv_CREATE_MATERIALIZED_VIEW-limitations">限制</a><a href="#mv_CREATE_MARTERIALIZED_VIEW_examples">範例</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="materialized-view-create-sql-command">CREATE MATERIALIZED VIEW</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>根據一個或多個 Amazon Redshift 資料表建立具體化視觀表。您也可以讓具體化視觀表以使用 Spectrum 或聯合查詢建立的外部資料表為依據。如需 Spectrum 的詳細資訊，請參閱<a href="./c-using-spectrum.html">使用 Amazon Redshift Spectrum 查詢外部資料</a>。如需聯合查詢的詳細資訊，請參閱 <a href="./federated-overview.html">使用 Amazon Redshift 中的聯合查詢來查詢資料</a>。</p>
          <h2 id="mv_CREATE_MATERIALIZED_VIEW-synopsis">語法</h2>
          <pre class="screen">CREATE MATERIALIZED VIEW mv_name
 [ BACKUP <span>{</span> YES | NO } ]
@@ -59,7 +59,7 @@ AS query </pre>
             <dl>
                <dt><span class="term">BACKUP</span></dt>
                <dd>
-                  <p>此子句指定是否將具體化視觀表包含在自動化和手動叢集快照中，這些快照會存放在 Amazon S3 內。</p>
+                  <p>此子句指定是否將具體化視觀表包含在自動化和手動叢集快照中，這些快照會儲存在 Amazon S3 內。</p>
                   <p><code class="code">BACKUP</code> 的預設值為 <code class="code">YES</code>。</p>
                   <p>您可以指定 <code class="code">BACKUP NO</code> 來減少建立快照及從快照還原的處理時間，以及減少 Amazon S3 中所需要的儲存體空間。</p>
                   <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p><code class="code">BACKUP NO</code> 設定對於將資料自動複寫到叢集內其他節點的操作並無影響，因此指定了 <code class="code">BACKUP
@@ -75,11 +75,11 @@ AS query </pre>
                       
                       
                   <ul class="itemizedlist"><li class="listitem">
-                        <p> 具體化檢視的分佈樣式，其格式為 <code class="code">DISTSTYLE <span>{</span> EVEN | ALL | KEY }</code>。如果您省略此子句，則分佈樣式為 <code class="code">EVEN</code>。如需詳細資訊，請參閱<a href="./c_choosing_dist_sort.html">分佈樣式</a>。</p>
+                        <p> 具體化檢視的分佈樣式，其格式為 <code class="code">DISTSTYLE <span>{</span> EVEN | ALL | KEY }</code>。如果您省略此子句，則分佈樣式為 <code class="code">EVEN</code>。如需詳細資訊，請參閱 <a href="./c_choosing_dist_sort.html">分佈樣式</a>。</p>
                      </li><li class="listitem">
-                        <p>具體化檢視的分佈索引鍵，其格式為 <code class="code">DISTKEY ( <em>distkey_identifier</em> )</code>。如需詳細資訊，請參閱<a href="./t_designating_distribution_styles.html">指定分佈樣式</a>。</p>
+                        <p>具體化檢視的分佈索引鍵，其格式為 <code class="code">DISTKEY ( <em>distkey_identifier</em> )</code>。如需詳細資訊，請參閱 <a href="./t_designating_distribution_styles.html">指定分佈樣式</a>。</p>
                      </li><li class="listitem">
-                        <p>具體化檢視的排序索引鍵，其格式為 <code class="code">SORTKEY ( <em>column_name</em> [, ...] )</code>。如需詳細資訊，請參閱<a href="./t_Sorting_data.html">使用排序索引鍵</a>。</p>
+                        <p>具體化檢視的排序索引鍵，其格式為 <code class="code">SORTKEY ( <em>column_name</em> [, ...] )</code>。如需詳細資訊，請參閱 <a href="./t_Sorting_data.html">使用排序索引鍵</a>。</p>
 
                      </li></ul></div>
                </dd>
@@ -92,7 +92,7 @@ AS query </pre>
                   <p>如果查詢包含不支援增量重新整理的 SQL 命令，則 Amazon Redshift 會顯示訊息，指出具體化視觀表將使用完整重新整理。不一定會顯示訊息，視 SQL 用戶端應用程式而定。檢查 <a href="./r_STV_MV_INFO.html">STV_MV_INFO</a> 的 <code class="code">state</code> 資料欄，以查看具體化檢視所使用的重新整理類型。</p></dd>
                <dt><span class="term">AUTO REFRESH</span></dt>
                <dd>
-                  <p>該子句會定義是否應使用基本資料表中的最新變更自動重新整理具體化視觀表。預設值為 <code class="code">NO</code>。如需詳細資訊，請參閱<a href="./materialized-view-refresh.html">重新整理具體化視觀表</a>。</p>
+                  <p>該子句會定義是否應使用基本資料表中的最新變更自動重新整理具體化視觀表。預設值為 <code class="code">NO</code>。如需詳細資訊，請參閱 <a href="./materialized-view-refresh.html">重新整理具體化視觀表</a>。</p>
 
                </dd>
             </dl></div>
@@ -108,6 +108,15 @@ AS query </pre>
      
                <p>在基礎資料表上建立具體化視觀表的資料表層級或資料欄層級 SELECT 權限。如果您擁有特定資料欄層級的權限，就可以僅針對這些資料欄建立具體化視觀表。</p>
             </li></ul></div>
+       
+         <h2 id="mv_CREATE_MARTERIALIZED_VIEW_datashare">資料命名中具體化視觀表的累加式重新整理</h2>
+         <p> Amazon Redshift 支援在共用基礎資料表時，針對消費者資料保護中的具體化視圖進行自動和累加式重新整理。累加式重新整理是一項操作，Amazon Redshift 會識別基礎資料表或上次重新整理後發生的資料表中的變更，並僅更新具體化視觀表中的對應記錄。這樣的執行速度比完全重新整理更快，並且可改善工作負載效 您不必變更具體化檢視的定義，即可利用累加式重新整理。</p>
+         <p>利用具體化視觀表的累加式重新整理時，有幾個限制需要注意：</p>
+         <div class="itemizedlist">
+             
+             
+         <ul class="itemizedlist"><li class="listitem"><p>具體化視觀表必須只參照一個資料庫，無論是本機或遠端。</p></li><li class="listitem"><p>累加式重新整理只能在新具體化視觀表上使用。因此，您必須刪除現有的具體化視觀表並重新建立它們，以進行累加式重新整理</p></li></ul></div>
+         <p>如需有關在資料清單中建立具體化視觀表的詳細資訊，請參閱<a href="https://docs.aws.amazon.com/redshift/latest/dg/share_datashare.html#datashare-views">在 Amazon Redshift 資料共用中使用檢視</a>，其中包含數個查詢範例。</p>
        
          <h2 id="materialized-view-ddl">具體化檢視或基礎資料表的 DDL 更新</h2>
          <p>在 Amazon Redshift 中使用具體化視觀表時，請遵循下列對具體化檢視或基礎資料表進行資料定義語言 (DDL) 更新時的使用注意事項。</p>
@@ -152,7 +161,7 @@ AS query </pre>
                <p>對基礎資料表的近期繫結參考。換句話說，定義具體化檢視的 SQL 查詢中所參考的任何基底資料表或相關資料行都必須存在，且必須有效。</p>
             </li><li class="listitem">
                <p>僅限領導節點的函數：CURRENT_SCHEMA、CURRENT_SCHEMAS、HAS_DATABASE_PRIVILEGE、HAS_SCHEMA_PRIVILEGE、HAS_TABLE_PRIVILEGE。</p>
-            </li><li class="listitem"><p>具體化視觀表定義包含可變函數或外部結構描述時，您無法使用 AUTO REFRESH YES 選項。當您在另一個具體化視觀表上定義具體化視觀表時，也無法使用此選項。</p></li><li class="listitem"><p>您不需要在具體化視觀表上手動執行 <a href="./r_ANALYZE.html">ANALYZE</a>。目前這種情況只會透過 AUTO ANALYZE 發生。如需詳細資訊，請參閱<a href="./t_Analyzing_tables.html">分析資料表</a>。</p></li></ul></div>
+            </li><li class="listitem"><p>具體化視觀表定義包含可變函數或外部結構描述時，您無法使用 AUTO REFRESH YES 選項。當您在另一個具體化視觀表上定義具體化視觀表時，也無法使用此選項。</p></li><li class="listitem"><p>您不需要在具體化視觀表上手動執行 <a href="./r_ANALYZE.html">ANALYZE</a>。目前這種情況只會透過 AUTO ANALYZE 發生。如需詳細資訊，請參閱 <a href="./t_Analyzing_tables.html">分析資料表</a>。</p></li></ul></div>
          
          
        

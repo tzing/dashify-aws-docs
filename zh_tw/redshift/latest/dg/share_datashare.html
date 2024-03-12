@@ -39,7 +39,7 @@
 </script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#share_datashare" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#manage-permissions">管理資料共用的許可</a><a href="#datashare-views">在 Amazon Redshift 資料共用中使用檢視</a><a href="#iam-policy">使用 IAM 政策管理資料共用 API 操作的存取</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="share_datashare">共用資料共用</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>只有在不同的 Amazon Redshift 佈建叢集或無伺服器工作群組之間共用資料時，才需要資料共用。在同一個叢集中，只要您擁有其他資料庫中物件的必要權限，就可以使用簡單的三部分標記法 <code class="code">database.schema.table</code> 來查詢另一個資料庫。</p>
          <h2 id="manage-permissions">在 Amazon Redshift 中管理資料共用的許可</h2>
          
-         <p>身為生產者叢集管理員，您可以保留所共用資料集的控制權。您可以將新物件新增至資料共用，或從資料共用中移除物件。您也可以授予或撤銷取用者叢集、AWS 帳戶或 AWS 區域的整體資料共用存取權。當許可被撤銷時，取用者叢集會立即失去共用物件的存取權，並無法在 SVV_DATASHARES 的 INBOUND 資料共用清單中看到共用物件。</p>
+         <p>身為生產者叢集管理員，您可以保留所共用資料集的控制權。您可以將新物件新增至資料共用，或從資料共用中移除物件。您也可以授與或撤銷取用者叢集、 AWS 帳戶或區域的整體資料存取權。 AWS 當許可被撤銷時，取用者叢集會立即失去共用物件的存取權，並無法在 SVV_DATASHARES 的 INBOUND 資料共用清單中看到共用物件。</p>
          <p>下列範例會建立資料清單<code class="code">salesshare</code>、新增結構描述<code class="code">public</code>，並將資料表<code class="code">public.tickit_sales_redshift</code>新增至。<code class="code">salesshare</code>它也會授與指定叢集命名空間的使用權限。<code class="code">salesshare</code></p>
          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE DATASHARE salesshare;
             
@@ -48,7 +48,7 @@ ALTER DATASHARE salesshare ADD SCHEMA public;
 ALTER DATASHARE salesshare ADD TABLE public.tickit_sales_redshift; 
 
 GRANT USAGE ON DATASHARE salesshare TO NAMESPACE '13b8833d-17c6-4f16-8fe4-1a018f5ed00d';</code></pre>
-         <p>對於 CREATE DATASHARE，超級使用者和資料庫擁有者可以建立資料庫。如需詳細資訊，請參閱<a href="./r_CREATE_DATASHARE.html">CREATE DATASHARE</a>。對於 ALTER DATASHARE，在要新增或移除的資料共用物件上有所需許可的資料共用擁有者可以修改資料共用。如需相關資訊，請參閱 <a href="./r_ALTER_DATASHARE.html">ALTER DATASHARE</a>。</p>
+         <p>對於 CREATE DATASHARE，超級使用者和資料庫擁有者可以建立資料庫。如需詳細資訊，請參閱 <a href="./r_CREATE_DATASHARE.html">CREATE DATASHARE</a>。對於 ALTER DATASHARE，在要新增或移除的資料共用物件上有所需許可的資料共用擁有者可以修改資料共用。如需相關資訊，請參閱 <a href="./r_ALTER_DATASHARE.html">ALTER DATASHARE</a>。</p>
          
          <p>身為生產者管理員，當您捨棄資料共用時，資料共用不會再列在取用者叢集上。使用者叢集上從捨棄的資料共用中建立的資料庫和結構描述參考會繼續存在，但其中沒有任何物件。取用者叢集管理員必須手動刪除這些資料庫。</p>
          <p>在取用者方面，取用者叢集管理員可以透過從資料共用建立資料庫來決定哪些使用者和角色應該可以存取共用資料。根據您在建立資料庫時所選擇的選項，您可以按照下列方式控制對資料庫的存取。如需從資料共用建立資料庫的詳細資訊，請參閱 <a href="./r_CREATE_DATABASE.html">CREATE DATABASE</a>。</p>
@@ -78,7 +78,7 @@ GRANT SELECT ON sales_db.public.tickit_sales_redshift TO Bob;</code></pre>
          <h2 id="datashare-views">在 Amazon Redshift 資料共用中使用檢視</h2>
          <p>生產者叢集可以共用一般、近期繫結和具體化視觀表。共用一般檢視或近期繫結檢視時，您不需要共用基底資料表。下表顯示資料共用如何支援檢視。</p>
          
-         <div class="table-container"><div class="table-contents"><table id="w319aac35c13b7b5"><thead>
+         <div class="table-container"><div class="table-contents"><table id="w320aac35c13b7b5"><thead>
                   <tr>
                      <th>檢視表名稱</th>
                      <th>可以將此檢視新增到資料共用嗎？</th>
@@ -151,6 +151,11 @@ current_user | current_namespace
 -------------+--------------------------------------
 dwuser       | 86b5169f-01dc-4a6f-9fbb-e2e24359e9a8
 (1 row)</code></pre>
+         
+          
+            <h3 id="mv_incremental_datashare">資料命名中具體化視觀表的累加式重新整理</h3>
+            <p> Amazon Redshift 支援在共用基礎資料表時，針對消費者資料保護中的具體化視圖進行累加式重新整理。累加式重新整理是一項操作，Amazon Redshift 會識別基礎資料表或上次重新整理後發生的資料表中的變更，並僅更新具體化視觀表中的對應記錄。如需此行為的相關資訊，請參閱<a href="https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-create-sql-command.html#mv_CREATE_MARTERIALIZED_VIEW_datashare">建立具體化視觀表</a>。</p>
+          
        
          <h2 id="iam-policy">使用 IAM 政策管理資料共用 API 操作的存取</h2>
          <p>若要控制資料共用 API 操作的存取權，請使用 IAM 動作型政策。如需有關管理 IAM 政策的詳細資訊，請參閱《IAM 使用者指南》<em></em>中的<a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_manage.html">理 IAM 政策</a>。</p>
@@ -159,7 +164,7 @@ dwuser       | 86b5169f-01dc-4a6f-9fbb-e2e24359e9a8
          
          
          
-         <p>若要讓跨帳戶資料共用更安全，您可以使用條件式金鑰 <code class="code">ConsumerIdentifier</code> 進行 <code class="code">AuthorizeDataShare</code> 和 <code class="code">DeauthorizeDataShare</code> API 操作。這樣，您就可以明確控制哪些 AWS 帳戶 可以對兩個 API 操作進行呼叫。</p>
+         <p>若要讓跨帳戶資料共用更安全，您可以使用條件式金鑰 <code class="code">ConsumerIdentifier</code> 進行 <code class="code">AuthorizeDataShare</code> 和 <code class="code">DeauthorizeDataShare</code> API 操作。這樣，您可以明確控制哪些 AWS 帳戶 可以對兩個 API 操作進行調用。</p>
          <p>對於不是您自己帳戶的取用者，您可以拒絕授權或取消授權資料共用。若要這麼做，請在 IAM 政策中指定 AWS 帳戶 數字。</p>
          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
     "Version": "2012-10-17",
@@ -180,7 +185,7 @@ dwuser       | 86b5169f-01dc-4a6f-9fbb-e2e24359e9a8
         }
     ]
 }</code></pre>
-         <p>您可以允許具有 a 的生產者明確地與 IAM 政策中具有 111122223333 AWS 帳戶 的消費者共享。 DataShareArn  <code class="userinput">testshare2</code></p>
+         <p>您可以允許具有 a 的生產者明確地與 IAM 政策中具有 111122223333  AWS 帳戶  的消費者共享。 DataShareArn  <code class="userinput">testshare2</code></p>
          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
     "Version": "2012-10-17",
     "Statement": [

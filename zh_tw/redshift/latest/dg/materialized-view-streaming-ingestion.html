@@ -38,7 +38,7 @@
 }
 </script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#materialized-view-streaming-ingestion" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#materialized-view-streaming-ingestion-data-flow">資料流程</a><a href="#materialized-view-streaming-ingestion-use-cases">串流擷取使用案例</a><a href="#materialized-view-streaming-ingestion-considerations">串流擷取考量</a><a href="#materialized-view-streaming-ingestion-limitations">限制</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="materialized-view-streaming-ingestion">串流擷取</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p> 串流擷取可從 <a href="https://aws.amazon.com/kinesis/data-streams/" rel="noopener noreferrer" target="_blank"><span>Amazon Kinesis Data Streams</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> 和 <a href="https://aws.amazon.com/msk/" rel="noopener noreferrer" target="_blank"><span>Amazon Managed Streaming for Apache Kafka</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> 提供低延遲、高速擷取的串流資料至由 Amazon Redshift 佈建或 Amazon Redshift Serverless 的具體化視觀表。其可以減少存取資料所需的時間，並降低儲存成本。您可以為 Amazon Redshift 叢集或 Amazon Redshift Serverless 設定串流擷取，並使用 SQL 陳述式建立具體化視觀表，如 <a href="./materialized-view-overview.html">在 Amazon Redshift 中建立具體化視觀表</a> 中所述。之後，使用具體化視觀表重新整理，您可以每秒擷取數百 MB 的資料。如此可快速存取快速重新整理的外部資料。</p>
             <h2 id="materialized-view-streaming-ingestion-data-flow">資料流程</h2>
-            <p> Amazon Redshift 佈建的叢集或 Amazon Redshift Serverless 工作群組是串流取用者。具體化視觀表是從串流讀取資料的登陸區域，會在資料到達時進行處理。例如，您可以使用熟悉的 SQL 取用 JSON 值，並對應至具體化視觀表的資料欄。重新整理具體化視觀表時，Amazon Redshift 運算節點會將每個 Kinesis 資料碎片或 Kafka 分割區分配給運算配量。每個配量都會從已配置的碎片中取用資料，直到檢視達到 Kinesis 串流 <code class="code">SEQUENCE_NUMBER</code> 的同位處理或 Kafka 主題的最後一個 <code class="code">Offset</code>。後續具體化視觀表會重新整理上次重新整理的最後一個 <code class="code">SEQUENCE_NUMBER</code> 的讀取資料，直到達到串流或主題資料的同位處理為止。</p>
+            <p> Amazon Redshift 佈建的叢集或 Amazon Redshift Serverless 工作群組是串流取用者。具體化視觀表是從串流讀取資料的登陸區域，會在資料到達時進行處理。例如，您可以使用熟悉的 SQL 取用 JSON 值，並對應至具體化視觀表的資料欄。重新整理具體化視觀表時，Redshift 會耗用已配置 Kinesis 資料碎片或 Kafka 分割區的資料，直到檢視達到 Kinesis 串流的同位檢查或 Kafka 主題<code class="code">SEQUENCE_NUMBER</code>的最後一個。<code class="code">Offset</code>後續具體化視觀表會重新整理上次重新整理的最後一個 <code class="code">SEQUENCE_NUMBER</code> 的讀取資料，直到達到串流或主題資料的同位處理為止。</p>
       
      
          
@@ -71,12 +71,12 @@
                         <p><em>串流擷取和 Amazon Redshift Serverless</em> - 適用於已佈建叢集上 Amazon Redshift 串流擷取的相同設定和組態指示也適用於 Amazon Redshift Serverless 上的串流擷取。使用必要的 RPU 層級調整 Amazon Redshift Serverless 的大小很重要，可支援具有自動重新整理和其他工作負載的串流擷取。如需詳細資訊，請參閱 <a href="https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-billing.html">Amazon Redshift Serverless 的計費</a>。</p>
               
                     </li><li class="listitem">
-                        <p><em>Amazon Redshift 節點位於與 Amazon MSK 叢集不同的可用區域中</em> - 當您設定串流擷取時，如果 Amazon MSK 啟用了機架意識，Amazon Redshift 會嘗試連線到同一可用區域中的 Amazon MSK 叢集。如果所有節點都與 Amazon Redshift 叢集位於不同的可用區域，則可能會產生跨可用區域的資料傳輸費用。為避免這種情況發生，請將至少一個 Amazon MSK 代理程式叢集節點保留在與 Amazon Redshift 叢集相同的可用區域中。</p>
+                        <p><em>Amazon Redshift 節點位於與 Amazon MSK 叢集不同的可用區域中</em> - 當您設定串流擷取時，如果 Amazon MSK 啟用了機架意識，Amazon Redshift 會嘗試連線到同一可用區域中的 Amazon MSK 叢集。如果所有節點都與 Amazon Redshift 叢集位於不同的可用區域，則可能會產生跨可用區域的資料傳輸費用。為避免這種情況，請將至少一個 Amazon MSK 代理程式叢集節點保留在與 Redshift 佈建的叢集或工作群組相同的可用區域中。</p>
                     </li><li class="listitem">
                         <p><em>重新整理開始位置</em> - 建立具體化視觀表之後，其初始重新整理會從 Kinesis 串流的 <code class="code">TRIM_HORIZON</code> 開始，或從 Amazon MSK 主題的位移 0 開始。</p></li><li class="listitem">
                         <p> <em>資料格式</em> - 支援的資料格式僅限於可以從 <code class="code">VARBYTE</code> 轉換的格式。如需詳細資訊，請參閱 <a href="./r_VARBYTE_type.html">VARBYTE 類型</a> 及 <a href="./r_VARBYTE_OPERATORS.html">VARBYTE 運算子</a>。</p>
                     </li><li class="listitem"><p><em>串流至多個具體化視觀表</em> - 在 Amazon Redshift 中，我們建議您在大多數情況下將每個串流的資料放置在單一具體化視觀表中。但是，您可以擷取串流並將資料放置在多個具體化視觀表中。例如，您可以擷取包含運動資料的串流，但您可以將每項運動的資料組織成個別的具體化視觀表。</p>
-                        <p>請注意，當您將資料擷取至多個具體化視觀表並重新整理時，輸出成本可能會較高，特別是從串流提供者讀取資料時。此外，讀取到多個具體化視觀表的較高資源使用量也會影響其他工作負載。另請注意串流提供者的頻寬、輸送量和效能限制。如需有關資料串流定價的詳細資訊，請參閱 <a href="https://aws.amazon.com/kinesis/data-streams/pricing/" rel="noopener noreferrer" target="_blank"><span>Kinesis Data Streams 定價</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>和 <a href="https://aws.amazon.com/msk/pricing/" rel="noopener noreferrer" target="_blank"><span>Amazon Managed Streaming for Apache Kafka 定價</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p>
+                        <p>請注意，當您將資料擷取至多個具體化視觀表並重新整理時，輸出成本可能會較高，特別是從串流提供者讀取資料時。此外，讀取到多個具體化視觀表的較高資源使用量也會影響其他工作負載。另請注意串流提供者的頻寬、輸送量和效能限制。如需資料串流定價的相關資訊，請參閱 <a href="https://aws.amazon.com/kinesis/data-streams/pricing/" rel="noopener noreferrer" target="_blank"><span>Kinesis Data Streams 定價</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>和 <a href="https://aws.amazon.com/msk/pricing/" rel="noopener noreferrer" target="_blank"><span>Amazon Managed Streaming for Apache Kafka 定價</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p>
                     </li><li class="listitem"><p><em>將記錄附加至資料表</em> - 您可以執行 <code class="code">ALTER TABLE APPEND</code> 將資料列從現有的來源具體化視觀表附加至目標資料表。這只有在具體化視觀表設定為串流擷取時才有作用。如需詳細資訊，請參閱 <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_ALTER_TABLE_APPEND.html">ALTER TABLE APPEND</a>。</p></li><li class="listitem"><p><em>執行 TRUNCATE 或 DELETE</em> - 您可以使用下列幾種方法，從用於串流擷取的具體化視觀表中移除記錄：</p>
                         <div class="itemizedlist">
                              
@@ -86,23 +86,23 @@
                 
                  
                     <h3 id="materialized-view-streaming-methods">使用串流擷取與 Amazon S3 中的暫存資料進行比較</h3>
-                    <p> 將資料串流至 Amazon Redshift 或 Amazon Redshift Serverless 有多種選項。兩個眾所周知的選項是串流擷取 (如本主題所述)，或使用 Kinesis Data Firehose 設定流向 Amazon S3 的交付串流。以下清單描述了每個方法：</p>  
+                    <p> 將資料串流至 Amazon Redshift 或 Amazon Redshift Serverless 有多種選項。兩個眾所周知的選項是串流擷取 (如本主題所述)，或使用 Firehose 設定向 Amazon S3 的交付串流。以下清單描述了每個方法：</p>  
                     <div class="orderedlist">
                          
                          
-                    <ol><li><p> 從 Kinesis Data Streams 或 Amazon Managed Streaming for Apache Kafka 到 Amazon Redshift 或 Amazon Redshift Serverless 的串流擷取涉及設定具體化視觀表以接收資料。</p></li><li><p>使用 Kinesis Data Streams 將資料傳遞到 Amazon Redshift 及透過 Kinesis Data Firehose 串流涉及將來源串流連接到 Amazon Kinesis Data Firehose，並等待 Kinesis Data Firehose 將資料暫存在 Amazon S3 中。這個程序會利用不同大小的批次，並以可變長度的緩衝區作為間隔。串流到 Amazon S3 之後，Kinesis Data Firehose 會啟動 COPY 命令來載入資料。</p></li></ol></div>
+                    <ol><li><p> 從 Kinesis Data Streams 或 Amazon Managed Streaming for Apache Kafka 到 Amazon Redshift 或 Amazon Redshift Serverless 的串流擷取涉及設定具體化視觀表以接收資料。</p></li><li><p>使用 Kinesis 資料串流將資料交付至 Amazon Redshift，並透過 Firehose 進行串流，包括將來源串流連接到亞馬遜資料火管，然後等待 Firehose 在 Amazon S3 中暫存資料。這個程序會利用不同大小的批次，並以可變長度的緩衝區作為間隔。串流到 Amazon S3 之後，Firehose 會啟動 COPY 命令來載入資料。</p></li></ol></div>
                     <p>透過串流擷取，您可以略過第二個程序所需的幾個步驟：</p>
                     <div class="itemizedlist">
                          
                          
                          
-                    <ul class="itemizedlist"><li class="listitem"><p>您不必將資料傳送到 Amazon Kinesis Data Firehose 交付串流，因為透過串流擷取，資料可以直接從 Kinesis Data Streams 傳送到 Redshift 資料庫中的具體化視觀表。</p></li><li class="listitem"><p>您不必在 Amazon S3 登陸串流資料，因為串流擷取資料會直接傳送至 Redshift 具體化視觀表。</p></li><li class="listitem"><p>您不需要撰寫和執行 COPY 命令，因為具體化視觀表中的資料會直接從串流重新整理。將資料從 Amazon S3 載入 Redshift 不是程序的一部分。</p></li></ul></div>
-                    <p>請注意，串流擷取僅限於來自 Amazon Kinesis Data Streams 的串流及來自 Amazon MSK 的主題。若要從 Kinesis Data Streams 串流至 Amazon Redshift 以外的來源，您可能需要 Kinesis Data Firehose 交付串流。如需詳細資訊，請參閱<a href="https://docs.aws.amazon.com/firehose/latest/dev/basic-write.html">傳送資料至 Amazon Kinesis Data Firehose 交付串流</a>。</p>
+                    <ul class="itemizedlist"><li class="listitem"><p>您不必將資料傳送到 Amazon Data Firehose 交付串流，因為透過串流擷取，資料可以直接從 Kinesis Data Streams 傳送到 Redshift 資料庫中的具體化檢視。</p></li><li class="listitem"><p>您不必在 Amazon S3 登陸串流資料，因為串流擷取資料會直接傳送至 Redshift 具體化視觀表。</p></li><li class="listitem"><p>您不需要撰寫和執行 COPY 命令，因為具體化視觀表中的資料會直接從串流重新整理。將資料從 Amazon S3 載入 Redshift 不是程序的一部分。</p></li></ul></div>
+                  <p>請注意，串流擷取僅限於來自 Amazon Kinesis Data Streams 的串流及來自 Amazon MSK 的主題。若要從 Kinesis Data Streams 至 Amazon Redshift 以外的目標，您可能需要一個 Firehose 交付串流。如需詳細資訊，請參閱將資<a href="https://docs.aws.amazon.com/firehose/latest/dev/basic-write.html">料傳送至 Amazon 資料 Firehose 交付串流</a>。</p>
                  
              
                     <h2 id="materialized-view-streaming-ingestion-limitations">限制</h2>
                     
-                    <div class="table-container"><div class="table-contents"><table id="w319aac21c47c11b3"><thead>
+                    <div class="table-container"><div class="table-contents"><table id="w320aac21c47c11b3"><thead>
                                 <tr>
                                     <th>功能或行為 </th>
                                     <th>描述 </th>
@@ -112,7 +112,7 @@
                                 
                                 <tr>
                                     <td tabindex="-1"><b>Kafka 主題長度限制</b> </td>
-                                    <td tabindex="-1"><p>Kafka 主題的名稱不得超過 128 個字元 *不包括引號)。如需詳細資訊，請參閱<a href="https://docs.aws.amazon.com/redshift/latest/dg/r_names.html">名稱和識別符</a>。</p></td>
+                                    <td tabindex="-1"><p>Kafka 主題的名稱不得超過 128 個字元 *不包括引號)。如需詳細資訊，請參閱<a href="https://docs.aws.amazon.com/redshift/latest/dg/r_names.html">名稱和識別碼</a>。</p></td>
                                 </tr>
                                 <tr>
                                     <td tabindex="-1"><b>具體化視觀表的累加式重新整理和 JOIN</b></td>

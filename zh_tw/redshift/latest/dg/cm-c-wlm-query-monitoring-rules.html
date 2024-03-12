@@ -36,7 +36,7 @@
       }
     ]
 }
-</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#cm-c-wlm-query-monitoring-rules" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#cm-c-wlm-defining-query-monitoring-rules">定義查詢監控規則</a><a href="#cm-c-wlm-query-monitoring-metrics">已佈建 Amazon Redshift 的查詢監控指標</a><a href="#cm-c-wlm-query-monitoring-metrics-serverless">Amazon Redshift Serverless 的查詢監控指標</a><a href="#cm-c-wlm-query-monitoring-templates">查詢監控規則範本</a><a href="#cm-c-wlm-qmr-tables-and-views">查詢監控規則的系統資料表和檢視</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="cm-c-wlm-query-monitoring-rules">WLM 查詢監控規則</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>在 Amazon Redshift 工作負載管理 (WLM) 中，查詢監控規則會為 WLM 佇列定義以指標為基礎的效能邊界，並指定當查詢超出這些邊界時要採取的動作。例如，對於短期執行查詢專用的佇列，您可以建立規則，以將執行時間超過 60 秒的查詢取消。若要追蹤設計不良的查詢，您可以使用另一個規則來記錄含有巢狀迴圈的查詢。</p><p>請將查詢監控規則定義為工作負載管理 (WLM) 組態的一部分。每一個佇列最多可以定義 25 個規則，而全部佇列合計以 25 個規則為限制。每個規則最多包含三個條件 (或述詞) 和一個動作。<em>述詞</em>由指標、比較條件 (=、&lt; 或 &gt; ) 和值所組成。如果符合任何規則的所有述詞，就會觸發該規則的動作。可能的規則動作包括記錄、跳轉和中止，如下所述。</p><p>給定佇列中的規則僅套用至該佇列中執行的查詢。各規則彼此無關。</p><p>WLM 每 10 秒評估一次指標。如果同一時段內觸發多個規則，WLM 會啟動最嚴重的動作，依序為中止、跳轉、記錄。如果動作是跳轉或中止，則會記錄動作，並從佇列中移出查詢。如果動作是記錄，則查詢會在佇列中繼續執行。WLM 會依每個規則，對每個查詢只啟動一個記錄動作。如果佇列包含其他規則，那些規則仍然有效。如果動作是跳轉，且將查詢路由至另一個佇列，則會套用新佇列的規則。如需針對特定查詢執行的查詢監控和追蹤動作的詳細資訊，請參閱 <a href="./wlm-short-query-acceleration.html">使用短期查詢加速</a> 中的範例集合。</p><p>當符合規則的所有述詞時，WLM 會將一列寫入 <a href="./r_STL_WLM_RULE_ACTION.html">STL_WLM_RULE_ACTION</a> 系統資料表。此外，Amazon Redshift 會將目前執行中查詢的查詢指標記錄到 <a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a>。已完成之查詢的指標存放在 <a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a> 中。</p>
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#cm-c-wlm-query-monitoring-rules" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#cm-c-wlm-defining-query-monitoring-rules">定義查詢監控規則</a><a href="#cm-c-wlm-query-monitoring-metrics">已佈建 Amazon Redshift 的查詢監控指標</a><a href="#cm-c-wlm-query-monitoring-metrics-serverless">Amazon Redshift Serverless 的查詢監控指標</a><a href="#cm-c-wlm-query-monitoring-templates">查詢監控規則範本</a><a href="#cm-c-wlm-qmr-tables-and-views">查詢監控規則的系統資料表和檢視</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="cm-c-wlm-query-monitoring-rules">WLM 查詢監控規則</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>在 Amazon Redshift 工作負載管理 (WLM) 中，查詢監控規則會為 WLM 佇列定義以指標為基礎的效能邊界，並指定當查詢超出這些邊界時要採取的動作。例如，對於短期執行查詢專用的佇列，您可以建立規則，以將執行時間超過 60 秒的查詢取消。若要追蹤設計不良的查詢，您可以使用另一個規則來記錄含有巢狀迴圈的查詢。</p><p>請將查詢監控規則定義為工作負載管理 (WLM) 組態的一部分。每一個佇列最多可以定義 25 個規則，而全部佇列合計以 25 個規則為限制。每個規則最多包含三個條件 (或述詞) 和一個動作。<em>述詞</em>由指標、比較條件 (=、&lt; 或 &gt; ) 和值所組成。如果符合任何規則的所有述詞，就會觸發該規則的動作。可能的規則動作包括記錄、跳轉和中止，如下所述。</p><p>給定佇列中的規則僅套用至該佇列中執行的查詢。各規則彼此無關。</p><p>WLM 每 10 秒評估一次指標。如果同一時段內觸發多個規則，WLM 會啟動最嚴重的動作，依序為中止、跳轉、記錄。如果動作是跳轉或中止，則會記錄動作，並從佇列中移出查詢。如果動作是記錄，則查詢會在佇列中繼續執行。WLM 會依每個規則，對每個查詢只啟動一個記錄動作。如果佇列包含其他規則，那些規則仍然有效。如果動作是跳轉，且將查詢路由至另一個佇列，則會套用新佇列的規則。如需針對特定查詢執行的查詢監控和追蹤動作的相關資訊，請參閱 <a href="./wlm-short-query-acceleration.html">使用短期查詢加速</a> 中的範例集合。</p><p>當符合規則的所有述詞時，WLM 會將一列寫入 <a href="./r_STL_WLM_RULE_ACTION.html">STL_WLM_RULE_ACTION</a> 系統資料表。此外，Amazon Redshift 會將目前執行中查詢的查詢指標記錄到 <a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a>。已完成之查詢的指標儲存在 <a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a> 中。</p>
          <h2 id="cm-c-wlm-defining-query-monitoring-rules">定義查詢監控規則</h2>
 
 
@@ -44,8 +44,8 @@
 
 
 
-         <p>您可以使用 AWS Management Console 或 以程式設計方式使用 JSON 來建立規則。</p>
-         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>如果您選擇以程式設計方式建立規則，強烈建議您使用主控台來產生 JSON，再加入參數群組定義中。如需詳細資訊，請參閱《Amazon Redshift 管理指南》<em></em>中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-parameter-groups-console.html#parameter-group-modify-qmr-console">使用主控台建立或修改查詢監控規則</a>和<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html#configure-parameters-using-the-cli">使用 AWS CLI 設定參數值</a>。</p></div></div>
+         <p>您可以使用 AWS Management Console 或以程式設計方式使用 JSON 來建立規則。</p>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>如果您選擇以程式設計方式建立規則，強烈建議您使用主控台來產生 JSON，再加入參數群組定義中。如需詳細資訊，請參閱《Amazon Redshift 管理指南》<em></em>中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-parameter-groups-console.html#parameter-group-modify-qmr-console">使用主控台建立或修改查詢監控規則</a>和<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html#configure-parameters-using-the-cli">使用  AWS CLI 設定參數值</a>。</p></div></div>
 
          <p>若要定義查詢監控規則，請指定下列元素：</p>
          <div class="itemizedlist">
@@ -66,7 +66,7 @@
                <ul class="itemizedlist"><li class="listitem">
                      <p>日誌 – 將查詢的相關資訊記錄在 STL_WLM_RULE_ACTION 系統資料表中。只需要寫入日誌記錄時，請使用「記錄」動作。WLM 依每個規則，對每個查詢最多只建立一個日誌。在記錄動作之後，其他規則仍然有效，且 WLM 會繼續監控查詢。</p>
                   </li><li class="listitem">
-                     <p>跳轉 (僅適用於手動 WLM) – 記錄動作，並將查詢跳轉至下一個相符的佇列。如果沒有另一個相符的佇列，則會取消查詢。QMR 只會轉跳 <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_AS.html">CREATE TABLE AS</a> (CTAS) 陳述式和唯讀查詢，例如 SELECT 陳述式。如需詳細資訊，請參閱<a href="./wlm-queue-hopping.html">WLM 查詢佇列跳轉</a>。</p>
+                     <p>跳轉 (僅適用於手動 WLM) – 記錄動作，並將查詢跳轉至下一個相符的佇列。如果沒有另一個相符的佇列，則會取消查詢。QMR 只會轉跳 <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_AS.html">CREATE TABLE AS</a> (CTAS) 陳述式和唯讀查詢，例如 SELECT 陳述式。如需詳細資訊，請參閱 <a href="./wlm-queue-hopping.html">WLM 查詢佇列跳轉</a>。</p>
                   </li><li class="listitem">
                      <p>中止 – 記錄動作並終止查詢。QMR 不會停止 COPY 陳述式和維護操作，例如 ANALYZE 和 VACUUM。</p>
                   </li><li class="listitem">
@@ -126,11 +126,11 @@
          <h2 id="cm-c-wlm-query-monitoring-metrics">已佈建 Amazon Redshift 的查詢監控指標</h2>
 
 
-         <p>下表描述查詢監控規則中使用的指標。(這些指標不同於 <a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a> 和 <a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a> 系統資料表中存放的指標。) </p>
-         <p>對於給定的指標，將會在查詢層級或區段層級追蹤效能臨界值。如需區段和步驟的詳細資訊，請參閱<a href="./c-query-planning.html">查詢計劃和執行工作流程</a>。</p>
+         <p>下表描述查詢監控規則中使用的指標。(這些指標不同於 <a href="./r_STV_QUERY_METRICS.html">STV_QUERY_METRICS</a> 和 <a href="./r_STL_QUERY_METRICS.html">STL_QUERY_METRICS</a> 系統資料表中儲存的指標。) </p>
+         <p>對於給定的指標，將會在查詢層級或區段層級追蹤效能臨界值。如需區段和步驟的相關資訊，請參閱<a href="./c-query-planning.html">查詢計劃和執行工作流程</a>。</p>
          <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p><a href="./cm-c-defining-query-queues.html#wlm-timeout">WLM 逾時</a> 參數不同於查詢監控規則。</p></div></div>
 
-         <div class="table-container"><div class="table-contents"><table id="w319aac43c57c15b9"><thead>
+         <div class="table-container"><div class="table-contents"><table id="w320aac43c57c15b9"><thead>
                   <tr>
                      <th>指標</th>
                      <th>名稱</th>
@@ -271,7 +271,7 @@
          <p>下表描述 Amazon Redshift Serverless 查詢監控規則中使用的指標。</p>
             
          
-         <div class="table-container"><div class="table-contents"><table id="w319aac43c57c17b5"><thead>
+         <div class="table-container"><div class="table-contents"><table id="w320aac43c57c17b5"><thead>
                   <tr>
                      <th>指標</th>
                      <th>名稱</th>
@@ -304,7 +304,7 @@
                      <td tabindex="-1">查詢執行時間</td>
                      <td tabindex="-1">max_query_execution_time</td>
                      <td tabindex="-1">
-                        <p>查詢經過的執行時間 (秒)。執行時間不包括在佇列中等待所花的時間。如果查詢超過所設定的執行時間，Amazon Redshift Serverless 會停止查詢。</p>
+                        <p>查詢經過的執行時間 (秒)。執行時間不包括在佇列中等待所花的時間。如果查詢超過設定的執行時間，Amazon Redshift Serverless 會停止查詢。</p>
                         <p>有效值為 0–86,399。</p>
                      </td>
                   </tr>
@@ -356,7 +356,7 @@
 
          <p>當您使用 Amazon Redshift 主控台新增規則時，您可以選擇從預先定義的範本建立規則。Amazon Redshift 會建立包含一組述詞的新規則，並以預設值填入述詞。預設動作為記錄。您可以修改述詞和動作，以符合您的使用案例。</p>
          <p>下表列出可用的範本。</p>
-         <div class="table-container"><div class="table-contents"><table id="w319aac43c57c19b7"><thead>
+         <div class="table-container"><div class="table-contents"><table id="w320aac43c57c19b7"><thead>
                   <tr>
                      <th>範本名稱</th>
                      <th>述詞</th>

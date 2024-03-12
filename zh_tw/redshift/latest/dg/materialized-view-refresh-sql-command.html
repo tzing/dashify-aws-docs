@@ -42,7 +42,7 @@
       }
     ]
 }
-</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#materialized-view-refresh-sql-command" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#mv_REFRESH_MATERIALIZED_VIEW-synopsis">語法</a><a href="#mv_REFRESH_MATERIALIZED_VIEW-parameters">參數</a><a href="#mv_REFRESH_MARTERIALIZED_VIEW_usage">使用須知</a><a href="#mv_REFRESH_MARTERIALIZED_VIEW_limitations">增量重新整理的限制</a><a href="#mv_REFRESH_MARTERIALIZED_VIEW_examples">範例</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="materialized-view-refresh-sql-command">REFRESH MATERIALIZED VIEW</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>重新整理具體化檢視。</p><p>當您建立具體化視觀表時，其內容會反映當時基礎資料庫資料表或資料表的狀態。即使應用程式對基底資料表中的資料進行變更，具體化檢視中的資料仍會維持不變。如要更新具體化視觀表中的資料，您可以隨時使用 <code class="code">REFRESH MATERIALIZED VIEW</code> 陳述式。當您執行此陳述式時，Amazon Redshift 會識別在基底資料表或資料表中發生的變更，然後將這些變更套用到具體化視觀表。</p><p>如需具體化視觀表的詳細資訊，請參閱 <a href="./materialized-view-overview.html">在 Amazon Redshift 中建立具體化視觀表</a>。</p>
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#materialized-view-refresh-sql-command" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#mv_REFRESH_MATERIALIZED_VIEW-synopsis">語法</a><a href="#mv_REFRESH_MATERIALIZED_VIEW-parameters">參數</a><a href="#mv_REFRESH_MARTERIALIZED_VIEW_usage">使用須知</a><a href="#mv_REFRESH_MARTERIALIZED_VIEW_datashare">資料命名中具體化視觀表的累加式重新整理</a><a href="#mv_REFRESH_MARTERIALIZED_VIEW_limitations">增量重新整理的限制</a><a href="#mv_REFRESH_MARTERIALIZED_VIEW_examples">範例</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="materialized-view-refresh-sql-command">REFRESH MATERIALIZED VIEW</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>重新整理具體化檢視。</p><p>當您建立具體化視觀表時，其內容會反映當時基礎資料庫資料表或資料表的狀態。即使應用程式對基底資料表中的資料進行變更，具體化檢視中的資料仍會維持不變。如要更新具體化視觀表中的資料，您可以隨時使用 <code class="code">REFRESH MATERIALIZED VIEW</code> 陳述式。當您執行此陳述式時，Amazon Redshift 會識別在基底資料表或資料表中發生的變更，然後將這些變更套用到具體化視觀表。</p><p>如需具體化檢視的相關資訊，請參閱 <a href="./materialized-view-overview.html">在 Amazon Redshift 中建立具體化視觀表</a>。</p>
          <h2 id="mv_REFRESH_MATERIALIZED_VIEW-synopsis">語法</h2>
          <pre class="screen">REFRESH MATERIALIZED VIEW <em>mv_name</em></pre>
        
@@ -84,14 +84,18 @@
              
              
          <ul class="itemizedlist"><li class="listitem">
-               <p>如果具體化檢視並未重新整理，則背景 vacuum 操作可能會遭到封鎖。在內部定義的閾值期間後，便會允許執行 vacuum 操作。發生此 vacuum 操作時，任何依存的具體化檢視都會標記為在下一次重新整理時重新進行運算 (即使這些具體化檢視為累加式也一樣)。如需 VACUUM 的詳細資訊，請參閱 <a href="./r_VACUUM_command.html">VACUUM</a>。如需事件和狀態變更的詳細資訊，請參閱 <a href="./r_STL_MV_STATE.html">STL_MV_STATE</a>。</p>
+               <p>如果具體化檢視並未重新整理，則背景 vacuum 操作可能會遭到封鎖。在內部定義的閾值期間後，便會允許執行 vacuum 操作。發生此 vacuum 操作時，任何依存的具體化檢視都會標記為在下一次重新整理時重新進行運算 (即使這些具體化檢視為累加式也一樣)。如需 VACUUM 的詳細資訊，請參閱 <a href="./r_VACUUM_command.html">VACUUM</a>。如需事件和狀態變更的相關資訊，請參閱 <a href="./r_STL_MV_STATE.html">STL_MV_STATE</a>。</p>
             </li><li class="listitem">
-               <p>有些使用者在基底資料表上啟動的操作會強制具體化檢視在下一次執行 REFRESH 操作時重新運算。這類操作的範例：手動調用的 VACUUM、傳統調整大小、ALTER DISTKEY 操作，ALTER SORTKEY 操作和 TRUNCATE 操作。如需事件和狀態變更的詳細資訊，請參閱 <a href="./r_STL_MV_STATE.html">STL_MV_STATE</a>。</p>
+               <p>有些使用者在基底資料表上啟動的操作會強制具體化檢視在下一次執行 REFRESH 操作時重新運算。這類操作的範例：手動調用的 VACUUM、傳統調整大小、ALTER DISTKEY 操作，ALTER SORTKEY 操作和 TRUNCATE 操作。如需事件和狀態變更的相關資訊，請參閱 <a href="./r_STL_MV_STATE.html">STL_MV_STATE</a>。</p>
             </li></ul></div>
+       
+         <h2 id="mv_REFRESH_MARTERIALIZED_VIEW_datashare">資料命名中具體化視觀表的累加式重新整理</h2>
+         <p> Amazon Redshift 支援在共用基礎資料表時，針對消費者資料保護中的具體化視圖進行自動和累加式重新整理。累加式重新整理是一項操作，Amazon Redshift 會識別基礎資料表或上次重新整理後發生的資料表中的變更，並僅更新具體化視觀表中的對應記錄。如需此行為的相關資訊，請參閱<a href="https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-create-sql-command.html#mv_CREATE_MARTERIALIZED_VIEW_datashare">建立具體化視觀表</a>。</p>
        
          <h2 id="mv_REFRESH_MARTERIALIZED_VIEW_limitations">增量重新整理的限制</h2>
          <p>對於使用下列任一 SQL 元素搭配查詢定義的具體化視觀表，Amazon Redshift 目前不支援累加式重新整理：</p>
          <div class="itemizedlist">
+             
              
              
              
@@ -122,7 +126,7 @@
             </li><li class="listitem">
                <p>使用暫存資料表進行查詢最佳化的查詢，例如最佳化通用子運算式。</p>
             </li><li class="listitem">
-               <p>在 FROM 子句以外任何位置的子查詢。</p>
+               <p>子查詢</p>
             </li><li class="listitem">
                <p>在定義具體化視觀表的查詢中，參照下列查詢中的格式的外部資料表。</p>
                <div class="itemizedlist">
@@ -134,8 +138,8 @@
                      <p> Hudi </p>
                   </li></ul></div>
                <p>使用參照預覽軌跡上其他格式的外部資料表定義的具體化視觀表，支援累加式重新整理。如需詳細資訊，請參閱 <em>Amazon Redshift 管理指南</em>中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/managing-clusters-console.html#cluster-preview">建立預覽叢集</a>。如需設定預覽工作群組的詳細資訊，請參閱 <em>Amazon Redshift 管理指南</em>中的<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-workgroup-preview.html">建立預覽工作群組</a>。</p>
-            </li><li class="listitem"><p>可變函數，例如日期時間函數，RANDOM 和非穩定的使用者定義函數。</p></li></ul></div>
-         <p>如需有關具體化視觀表的詳細資訊，包括具體化視觀表重新整理操作上的背景作業影響，例如 VACUUM，請參閱 <a href="#mv_REFRESH_MARTERIALIZED_VIEW_usage">使用須知</a>。</p>
+            </li><li class="listitem"><p>可變函數，例如日期時間函數，RANDOM 和非穩定的使用者定義函數。</p></li><li class="listitem"><p>如需零 ETL 整合之累加式重新整理的限制，請參閱將零 ETL 整合與 Amazon Redshift 搭配<a href="https://docs.aws.amazon.com/redshift/latest/mgmt/zero-etl.reqs-lims.html">使用時的考</a>量事項。</p></li></ul></div>
+         <p>如需有關具體化視觀表的相關資訊，包括具體化視觀表重新整理操作上的背景作業影響，例如 VACUUM，請參閱 <a href="#mv_REFRESH_MARTERIALIZED_VIEW_usage">使用須知</a>。</p>
        
          <h2 id="mv_REFRESH_MARTERIALIZED_VIEW_examples">範例</h2>
          <p>以下範例會重新整理 <code class="code">tickets_mv</code> 具體化檢視。</p>

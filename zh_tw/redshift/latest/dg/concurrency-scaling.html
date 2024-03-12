@@ -36,7 +36,7 @@
       }
     ]
 }
-</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#concurrency-scaling" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#concurrency-scaling-capabilities">並行擴展功能</a><a href="#concurrency-scaling-limitations">並行擴展的限制</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="concurrency-scaling">使用並行擴展</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>使用並行擴展功能，您可以藉由持續的快速查詢效能，支援數千個並行使用者和並行查詢。開啟並行擴展時，Amazon Redshift 會自動新增額外的叢集容量以處理增加的讀取及寫入查詢。使用者會看到最新資料，無論查詢是執行於主要叢集或並行擴展叢集。</p><p>您可藉由設定 (WLM) 佇列來管理要將哪些查詢傳送至並行擴展叢集。當您開啟並行擴展時，合格查詢會傳送到並行擴展叢集，而非在佇列中等待。</p><p>我們只會向您收取並行擴展叢集實際執行查詢的費用。如需有關定價的詳細資訊，包括費用應計方式與最低費用，請參閱<a href="https://aws.amazon.com/redshift/pricing/#Concurrency_Scaling_pricing" rel="noopener noreferrer" target="_blank"><span>並行擴展定價</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p>
+</script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#concurrency-scaling" target="_blank" rel="noopener noreferrer" title="開啟 PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">資料庫開發人員指南</a></div><div id="page-toc-src"><a href="#concurrency-scaling-capabilities">並行擴展功能</a><a href="#concurrency-scaling-limitations">並行擴展的限制</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="concurrency-scaling">使用並行擴展</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>使用並行擴展功能，您可以藉由持續的快速查詢效能，支援數千個並行使用者和並行查詢。開啟並行擴展時，Amazon Redshift 會自動新增額外的叢集容量以處理增加的讀取及寫入查詢。使用者會看到最新資料，無論查詢是執行於主要叢集或並行擴展叢集。</p><p>您可藉由設定 (WLM) 佇列來管理要將哪些查詢傳送至並行擴展叢集。當您開啟並行擴展時，合格查詢會傳送到並行擴展叢集，而非在佇列中等待。</p><p>我們只會向您收取並行擴展叢集實際執行查詢的費用。如需定價的相關資訊，包括費用應計方式與最低費用，請參閱<a href="https://aws.amazon.com/redshift/pricing/#Concurrency_Scaling_pricing" rel="noopener noreferrer" target="_blank"><span>並行擴展定價</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p>
          <h2 id="concurrency-scaling-capabilities">並行擴展功能</h2>
          <p>當您為 WLM 佇列開啟並行擴展時，其適用於讀取操作，例如儀表板查詢。也適用於常用的寫入操作，例如用於資料擷取和處理的陳述式。</p>
         
@@ -80,7 +80,14 @@
             </li><li class="listitem">
                <p>不支援可存取系統資料表、PostgreSQL 目錄資料表或無備份資料表的查詢。</p>
             </li><li class="listitem">
-               <p>不支援可存取具有限制性資源政策之外部資源的 COPY 或 UNLOAD 查詢。外部資源可包括 Amazon S3 儲存貯體或 DynamoDB 資料表。政策可以限制對特定來源 VPC (<code class="code">aws:sourceVpc</code>)、來源 VPC 端點 (<code class="code">aws:sourceVpce</code>) 或來源 IP 地址 (<code class="code">aws:SourceIp</code>) 的存取。在某些情況下，您可能需要移除外部資源上的政策。這樣做表示存取資源的 COPY 或 UNLOAD 查詢會傳送至並行擴展叢集。</p>
+               <p>當有限制的 IAM 政策許可時，它不支援存取外部資源的 COPY 或 UNLOAD 查詢。這包括套用至資源 (例如 Amazon S3 儲存貯體或 DynamoDB 表) 的許可，或套用至來源的許可。IAM 來源可以包括下列項目：</p>
+           <div class="itemizedlist">
+               
+               
+               
+           <ul class="itemizedlist"><li class="listitem"><p><code class="code">aws:sourceVpc</code>— 來源虛 VPC。</p></li><li class="listitem"><p><code class="code">aws:sourceVpce</code>— 來源虛 VPC 端點。</p></li><li class="listitem"><p><code class="code">aws:sourceIp</code>— 來源 IP 位址。</p></li></ul></div>
+           <p>在某些情況下，您可能需要移除限制資源或來源的權限，以便將存取資源的 COPY 和 UNLOAD 查詢傳送至並行擴展叢集。</p>
+           <p> 如需有關資源策略的詳細資訊，請參閱 AWS Identity and Access Management 使用指南中的<a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policy-types">策略類型</a>和使用儲<a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies-vpc-endpoint.html">存貯體策略控制來自 VPC 端點的</a>存取。</p>
             </li><li class="listitem">
                <p>DDL 作業 (例如 CREATE TABLE 或 ALTER TABLE) 不支援用於寫入操作的 Amazon Redshift 並行擴展。</p>
             </li><li class="listitem">
@@ -99,7 +106,7 @@
                <p>Amazon Redshift 只在 Amazon Redshift RA3 節點上支援寫入操作的並行擴展，特別是 ra3.16xlarge、ra3.4xlarge 和 ra3.xlplus。其他節點類型不支援寫入操作的並行擴展。</p>
             </li></ul></div> 
          
-      <p>如需並行擴展的詳細資訊，請參閱《Amazon Redshift 管理指南》<em></em>中的下列主題。</p><div class="itemizedlist">
+      <p>如需並行擴展的相關資訊，請參閱《Amazon Redshift 管理指南》<em></em>中的下列主題。</p><div class="itemizedlist">
              
              
              
