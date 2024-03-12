@@ -39,8 +39,8 @@
 </script></head><body><div id="main"><div style="display: none"><a href="redshift-dg.pdf#share_datashare" target="_blank" rel="noopener noreferrer" title="Apri PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentazione</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Guida per sviluppatori di database</a></div><div id="page-toc-src"><a href="#manage-permissions">Gestione delle autorizzazioni per le unità di condivisione dati</a><a href="#datashare-views">Utilizzo delle viste nella condivisione dei dati Amazon Redshift</a><a href="#iam-policy">Gestione dell'accesso alle operazioni API di condivisione dati con policy IAM</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Le traduzioni sono generate tramite traduzione automatica. In caso di conflitto tra il contenuto di una traduzione e la versione originale in Inglese, quest'ultima prevarrà.</p></awsui-alert><h1 class="topictitle" id="share_datashare">Condivisione di unità di condivisione dati</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>È necessario utilizzare le unità di condivisione dati solo quando si condividono dati tra diversi cluster Amazon Redshift con provisioning o gruppi di lavoro serverless. All'interno dello stesso cluster, è possibile eseguire query su un altro database utilizzando una semplice notazione in tre parti <code class="code">database.schema.table</code> purché si disponga delle autorizzazioni richieste per gli oggetti dell'altro database.</p>
          <h2 id="manage-permissions">Gestione delle autorizzazioni per le unità di condivisione dati in Amazon Redshift</h2>
          
-         <p>Un amministratore del cluster di producer mantiene il controllo per i set di dati che condivide. È possibile aggiungere nuovi oggetti o rimuoverli dall'unità di condivisione dati. È inoltre possibile concedere o revocare l'accesso alle unità di condivisione dati nel suo complesso per i cluster di consumer, gli account AWS o le regioni AWS. Quando le autorizzazioni vengono revocate, i cluster consumer perdono immediatamente l'accesso agli oggetti condivisi e smettono di vederli nell'elenco delle unità di condivisione dati INBOUND in SVV_DATASHARES.</p>
-         <p>L'esempio seguente crea il datashare<code class="code">salesshare</code>, aggiunge lo schema e aggiunge la tabella <code class="code">public</code> a. <code class="code">public.tickit_sales_redshift</code> <code class="code">salesshare</code> Concede inoltre le autorizzazioni di utilizzo per lo spazio dei nomi del <code class="code">salesshare</code> cluster specificato.</p>
+         <p>Un amministratore del cluster di producer mantiene il controllo per i set di dati che condivide. È possibile aggiungere nuovi oggetti o rimuoverli dall'unità di condivisione dati. Puoi anche concedere o revocare l'accesso alle condivisioni di dati nel loro insieme per i cluster di consumatori, gli account o le regioni.  AWS   AWS  Quando le autorizzazioni vengono revocate, i cluster consumer perdono immediatamente l'accesso agli oggetti condivisi e smettono di vederli nell'elenco delle unità di condivisione dati INBOUND in SVV_DATASHARES.</p>
+         <p>L'esempio seguente crea il datashare<code class="code">salesshare</code>, aggiunge lo schema <code class="code">public</code> e aggiunge la tabella a. <code class="code">public.tickit_sales_redshift</code> <code class="code">salesshare</code> Concede inoltre le autorizzazioni di utilizzo per lo spazio dei nomi del <code class="code">salesshare</code> cluster specificato.</p>
          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE DATASHARE salesshare;
             
 ALTER DATASHARE salesshare ADD SCHEMA public;
@@ -78,7 +78,7 @@ GRANT SELECT ON sales_db.public.tickit_sales_redshift TO Bob;</code></pre>
          <h2 id="datashare-views">Utilizzo delle viste nella condivisione dei dati Amazon Redshift</h2>
          <p>Un cluster producer può condividere viste regolari, ad associazione tardiva e materializzate. Quando si condividono viste regolari o ad associazione tardiva, non è necessario condividere le tabelle di base. La tabella seguente mostra come sono supportate le viste con la condivisione dati.</p>
          
-         <div class="table-container"><div class="table-contents"><table id="w319aac35c13b7b5"><thead>
+         <div class="table-container"><div class="table-contents"><table id="w320aac35c13b7b5"><thead>
                   <tr>
                      <th>Nome della vista</th>
                      <th>Questa vista può essere aggiunta a una unità di condivisione dati?</th>
@@ -151,6 +151,11 @@ current_user | current_namespace
 -------------+--------------------------------------
 dwuser       | 86b5169f-01dc-4a6f-9fbb-e2e24359e9a8
 (1 row)</code></pre>
+         
+          
+            <h3 id="mv_incremental_datashare">Aggiornamento incrementale per le viste materializzate in un datashare</h3>
+            <p> Amazon Redshift supporta l'aggiornamento incrementale per le viste materializzate in un datashare consumer quando le tabelle di base vengono condivise. L'aggiornamento incrementale è un'operazione in cui Amazon Redshift identifica le modifiche nella tabella o nelle tabelle di base avvenute dopo l'aggiornamento precedente e aggiorna solo i record corrispondenti nella vista materializzata. <a href="https://docs.aws.amazon.com/redshift/latest/dg/materialized-view-create-sql-command.html#mv_CREATE_MARTERIALIZED_VIEW_datashare">Per ulteriori informazioni su questo comportamento, consulta CREATE MATERIALIZED VIEW.</a> </p>
+          
        
          <h2 id="iam-policy">Gestione dell'accesso alle operazioni API di condivisione dati con policy IAM</h2>
          <p>Per controllare l'accesso alle operazioni API di condivisione dati, utilizzare le policy basate su azioni IAM. Per ulteriori informazioni sulla gestione e sulla creazione di policy IAM personalizzate, consultare <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_manage.html">Gestione delle policy IAM</a> nella <em>Guida per l'utente di IAM</em>.</p>
@@ -159,8 +164,8 @@ dwuser       | 86b5169f-01dc-4a6f-9fbb-e2e24359e9a8
          
          
          
-         <p>Per rendere più sicura la condivisione dei dati tra account, è possibile utilizzare una chiave condizionale <code class="code">ConsumerIdentifier</code> per operazioni API <code class="code">AuthorizeDataShare</code> e <code class="code">DeauthorizeDataShare</code>. In questo modo, è possibile controllare esplicitamente quale Account AWS può effettuare chiamate alle due operazioni API.</p>
-         <p>Puoi negare l'autorizzazione o la deautorizzazione della condivisione dei dati per qualsiasi consumatore che non sia il tuo account. A tale scopo, specificare il numero Account AWS nella policy IAM.</p>
+         <p>Per rendere più sicura la condivisione dei dati tra account, è possibile utilizzare una chiave condizionale <code class="code">ConsumerIdentifier</code> per operazioni API <code class="code">AuthorizeDataShare</code> e <code class="code">DeauthorizeDataShare</code>. In questo modo, puoi controllare in modo esplicito chi  Account AWS  può effettuare chiamate alle due operazioni API.</p>
+         <p>Puoi negare l'autorizzazione o la deautorizzazione della condivisione dei dati per qualsiasi consumatore che non sia il tuo account. A tale scopo, specifica il  Account AWS  numero nella policy IAM.</p>
          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
     "Version": "2012-10-17",
     "Statement": [
@@ -180,7 +185,7 @@ dwuser       | 86b5169f-01dc-4a6f-9fbb-e2e24359e9a8
         }
     ]
 }</code></pre>
-         <p>Puoi consentire a un produttore con  DataShareArn  <code class="userinput">testshare2</code> a di condividere in modo esplicito con un consumatore con uno Account AWS di 111122223333 nella policy IAM.</p>
+         <p>Puoi consentire a un produttore con un di  DataShareArn  <code class="userinput">testshare2</code> condividerlo esplicitamente con un consumatore con uno  Account AWS  di 111122223333 nella policy IAM.</p>
          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class=""><span>{</span>
     "Version": "2012-10-17",
     "Statement": [
