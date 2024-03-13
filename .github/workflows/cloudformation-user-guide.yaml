@@ -1,0 +1,96 @@
+name: Download CloudFormation User Guide
+
+on:
+  schedule:
+    - cron: "43 21 * * 4"
+  workflow_dispatch:
+
+jobs:
+  download:
+    strategy:
+      max-parallel: 4
+      matrix:
+        include:
+          - lang: en_us
+            sitemap: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/sitemap.xml
+            title: AWS CloudFormation User Guide
+          - lang: de_de
+            sitemap: https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/sitemap.xml
+            title: AWS CloudFormation Leitfaden
+          - lang: es_es
+            sitemap: https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/sitemap.xml
+            title: Guía del usuario de AWS CloudFormation
+          - lang: fr_fr
+            sitemap: https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/sitemap.xml
+            title: Guide de l'utilisateur AWS CloudFormation
+          - lang: id_id
+            sitemap: https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/sitemap.xml
+            title: Panduan Pengguna AWS CloudFormation
+          - lang: it_it
+            sitemap: https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/sitemap.xml
+            title: Guida per l'utente di AWS CloudFormation
+          - lang: ja_jp
+            sitemap: https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/sitemap.xml
+            title: AWS CloudFormation ユーザーガイド
+          - lang: ko_kr
+            sitemap: https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/sitemap.xml
+            title: AWS CloudFormation 사용자 가이드
+          - lang: pt_br
+            sitemap: https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/sitemap.xml
+            title: Guia do usuário do AWS CloudFormation
+          - lang: zh_cn
+            sitemap: https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/sitemap.xml
+            title: AWS CloudFormation 用户指南
+          - lang: zh_tw
+            sitemap: https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/sitemap.xml
+            title: AWS CloudFormation 使用者指南
+    permissions:
+      contents: write
+    uses: ./.github/workflows/download.yaml
+    with:
+      storage-branch: data/cloudformation/user-guide/${{ matrix.lang }}
+      sitemap-url: ${{ matrix.sitemap }}
+      dashify-command: cloudformation
+      docset-name: cloudformation-${{ matrix.lang }}
+      docset-title: ${{ matrix.title }}
+
+  check-updated:
+    runs-on: ubuntu-latest
+    needs: download
+    outputs:
+      is-updated: ${{ steps.count-artifacts.outputs.has-artifacts }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Count artifacts
+        uses: ./.github/actions/count-artifacts
+        id: count-artifacts
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  create-release:
+    runs-on: ubuntu-latest
+    needs: check-updated
+    if: needs.check-updated.outputs.is-updated == 'true'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+      - uses: actions/checkout@v4
+      - name: Get version
+        id: version
+        uses: ./.github/actions/versioning
+        with:
+          prefix: cloudformation/user-guide/
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release
+        uses: ncipollo/release-action@v1
+        id: release
+        with:
+          commit: data/cloudformation/user-guide/en_us
+          tag: cloudformation/user-guide/${{ steps.version.outputs.next-version }}
+          generateReleaseNotes: true
+          makeLatest: false
+          artifacts: cloudformation-*.tgz
+          artifactErrorsFailBuild: true
