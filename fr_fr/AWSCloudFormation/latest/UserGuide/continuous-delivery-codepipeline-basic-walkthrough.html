@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="fr-FR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Procédure : Création d'un pipeline pour les piles de test et de production - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="continuous-delivery-codepipeline-basic-walkthrough" /><meta name="default_state" content="continuous-delivery-codepipeline-basic-walkthrough" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="description" content="Découvrez comment créer un CodePipeline pipeline qui automatise de nombreuses AWS CloudFormation actions pour un flux de travail de livraison continue." /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="Guide de l'utilisateur" /><meta name="abstract" content="Créez et gérez des déploiements AWS d'infrastructure de manière prévisible et répétée à l'aide de ce AWS CloudFormation guide de l'utilisateur." /><meta name="guide-locale" content="fr_fr" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="Guide de l'utilisateur" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="Guide de l'utilisateur" /><meta id="panorama-serviceConsolePage" value="Procédure : Création d'un pipeline pour les piles de test et de production" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Procédure : Création d'un pipeline pour les piles de test et de production - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,provisionnement des ressources,configuration des ressources,gestion de l'infrastructure,CloudFormer,CloudFormation pile,CloudFormation stackset,CloudFormation modèle,jeu de modifications" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guide de l'utilisateur",
+        "item" : "https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Livraison continue avec CodePipeline",
+        "item" : "https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Procédure : Création d'un pipeline pour les piles de test et de production",
+        "item" : "https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">Guide de l'utilisateur</a></div><div id="page-toc-src"><a href="#w9aac21c11b5">Prérequis</a><a href="#w9aac21c11b7">Présentation de la procédure</a><a href="#w9aac21c11b9">Étape 1 : Modifier l'artefact et le charger dans un compartiment S3</a><a href="#w9aac21c11c11">Étape 2 : Créer la pile du pipeline</a><a href="#w9aac21c11c13">Étape 3 : Afficher la  WordPress  pile</a><a href="#w9aac21c11c15">Étape 4 : Nettoyer les ressources</a><a href="#w9aac21c11c19">Consultez aussi</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Les traductions sont fournies par des outils de traduction automatique. En cas de conflit entre le contenu d'une traduction et celui de la version originale en anglais, la version anglaise prévaudra.</p></awsui-alert><h1 class="topictitle" id="continuous-delivery-codepipeline-basic-walkthrough">Procédure : Création d'un pipeline pour les piles de test et de production</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Imaginez un processus de lancement dans lequel vous soumettez un modèle AWS CloudFormation qu'AWS CloudFormation utilise ensuite pour créer automatiquement une pile de test. Après avoir passé en revue la pile de test, vous pouvez obtenir un aperçu de la façon dont vos modifications vont changer votre pile de production. Vous choisissez alors de procéder ou non à leur implémentation. Pour mettre en œuvre ce flux de travail, vous pouvez utiliser AWS CloudFormation pour créer votre pile de test, supprimer la pile de test, créer puis exécuter un jeu de modifications. Cependant, à chaque action, vous devez interagir manuellement avec AWS CloudFormation. Dans cette présentation détaillée, nous allons créer un  CodePipeline  pipeline qui automatise bon nombre de ces actions, afin de vous aider à mettre en place un flux de travail de livraison continu avec vos AWS CloudFormation stocks.</p>
+    <h2 id="w9aac21c11b5">Prérequis</h2>
+    <p>Cette procédure pas à pas suppose que vous avez utilisé  CodePipeline  et que vous savez comment fonctionnent les pipelinesAWS CloudFormation, les AWS CloudFormation modèles et les piles. Pour plus d'informations CodePipeline, consultez le <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/">guide de AWS CodePipeline l'utilisateur</a>. Vous devez également disposer d'un <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html">compartiment</a> Amazon S3 dans la même région AWS que celle dans laquelle vous allez créer votre pipeline.</p>
+    <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>Important</h6></div><div class="awsdocs-note-text"><p>L'exemple de  WordPress  modèle crée une instance EC2 qui nécessite une connexion à Internet. Vérifiez que votre VPC et votre sous-réseau par défaut autorisent le trafic vers Internet.</p></div></div>
+   
+    <h2 id="w9aac21c11b7">Présentation de la procédure</h2>
+    <p>Cette procédure pas à pas crée un pipeline pour un exemple de  WordPress  site dans une pile. Le pipeline est divisé en trois étapes. Chaque étape doit contenir au moins une action, qui constitue une tâche que le pipeline effectue sur vos artefacts (vos entrées). Une étape organise des actions dans un pipeline.  CodePipeline doit effectuer toutes les actions d'une étape avant que celle-ci ne traite de nouveaux artefacts, par exemple, si vous avez soumis une nouvelle entrée pour réexécuter le pipeline.</p>
+    <p>A la fin de cette procédure, vous disposerez d'un pipeline qui réalise le flux de travail suivant :</p>
+    <div class="orderedlist">
+       
+       
+       
+    <ol><li>
+        <p>La première étape du pipeline récupère un artefact source (un modèle AWS CloudFormation et ses fichiers de configuration) à partir d'un référentiel.</p>
+        <p>Vous allez préparer un artefact qui inclut un exemple de  WordPress  modèle et le télécharger dans un compartiment S3.</p>
+      </li><li>
+        <p>Dans la deuxième étape, le pipeline crée une pile de test, puis attend votre approbation.</p>
+        <p>Après avoir passé en revue la pile de test, vous pouvez choisir de continuer avec le pipeline d'origine ou créer et soumettre un autre artefact pour apporter des modifications. Si vous l'approuvez, cette étape supprime la pile de test et le pipeline passe à l'étape suivante.</p>
+      </li><li>
+        <p>Dans la troisième étape, le pipeline crée un jeu de modifications par rapport à la pile de production, puis attend votre approbation.</p>
+        <p>Dans votre exécution initiale, vous ne disposerez pas encore de pile de production. Le jeu de modifications affiche toutes les ressources créées par AWS CloudFormation. Si vous l'approuvez, cette étape exécute le jeu de modifications et crée votre pile de production.</p>
+      </li></ol></div>
+    <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Note</h6></div><div class="awsdocs-note-text"><p>AWS CloudFormation est un service gratuit. Cependant, les ressources AWS (comme l'instance EC2) que vous incluez dans votre pile vous sont facturées au taux en vigueur pour chaque ressource. Pour plus d'informations sur la tarification AWS, veuillez consulter la page de détails de chaque produit à l'adresse <a href="https://aws.amazon.com/" rel="noopener noreferrer" target="_blank"><span>http://aws.amazon.com</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p></div></div>
+   
+    <h2 id="w9aac21c11b9">Étape 1 : Modifier l'artefact et le charger dans un compartiment S3</h2>
+    <p>Avant de créer votre pipeline, vous devez configurer votre référentiel source et vos fichiers.  CodePipeline copie ces fichiers sources dans le <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html">magasin d'artefacts</a> de votre pipeline, puis les utilise pour effectuer des actions dans votre pipeline, telles que la création d'une pile AWS CloudFormation.</p>
+    <p>Lorsque vous utilisez Amazon Simple Storage Service (Amazon S3) comme référentiel source CodePipeline , vous devez compresser vos fichiers sources avant de les télécharger dans un compartiment S3. Le fichier compressé est un  CodePipeline  artefact qui peut contenir un AWS CloudFormation modèle, un fichier de configuration de modèle ou les deux. Nous fournissons un artefact qui contient un exemple de  WordPress  modèle et deux fichiers de configuration de modèle. Les deux fichiers de configuration spécifient les valeurs des paramètres du  WordPress  modèle.  CodePipeline les utilise lorsqu'il crée les  WordPress  piles. L'un des fichiers contient les valeurs des paramètres pour une pile de test et l'autre fichier pour une pile de production. Vous aurez besoin de modifier les fichiers de configuration, par exemple, pour spécifier le nom d'une paire de clés EC2 que vous possédez déjà. Pour plus d'informations sur les artefacts, consultez <a href="./continuous-delivery-codepipeline-cfn-artifacts.html">Artefacts AWS CloudFormation</a>.</p>
+    <p>Après avoir créé votre artefact, vous allez le charger dans un compartiment S3.</p>
+    <div class="procedure"><h6>Pour modifier et charger l'artefact</h6><ol><li>
+        <p>Téléchargez et ouvrez l'exemple d'artefact : <a href="https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/wordpress-single-instance.zip" rel="noopener noreferrer" target="_blank"><span>https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/ wordpress-single-instance .zip.</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a></p>
+        <p>L'artefact contient trois fichiers :</p>
+        <div class="itemizedlist">
+           
+           
+           
+        <ul class="itemizedlist"><li class="listitem">
+            <p>Exemple de  WordPress  modèle : <code class="code">wordpress-single-instance.yaml</code></p>
+          </li><li class="listitem">
+            <p>Le fichier de configuration du modèle pour la pile de test : <code class="code">test-stack-configuration.json</code> </p>
+          </li><li class="listitem">
+            <p>Le fichier de configuration du modèle pour la pile de production : <code class="code">prod-stack-configuration.json</code></p>
+          </li></ul></div>
+      </li><li>
+        <p>Extrayez tous les fichiers et utilisez n'importe quel éditeur de texte pour modifier les fichiers de configuration du modèle.</p>
+        <p>Ouvrez les fichiers de configuration pour vérifier qu'ils contiennent des paires clé-valeur correspondant aux paramètres du  WordPress  modèle. Les fichiers de configuration spécifient les valeurs des paramètres que votre pipeline utilise lorsqu'il crée les piles de test et de production.</p>
+        <p>Modifiez le fichier <code class="code">test-stack-configuration.json</code> pour spécifier les valeurs des paramètres pour la pile de test et le fichier <code class="code">prod-stack-configuration.json</code> pour la pile de production.</p>
+        <div class="itemizedlist">
+           
+           
+        <ul class="itemizedlist"><li class="listitem">
+            <p>Remplacez les valeurs des <code class="code">DBRootPassword</code> touches <code class="code">DBPassword</code> et par des mots de passe que vous pouvez utiliser pour vous connecter à votre  WordPress  base de données. Comme défini dans le  WordPress  modèle, les valeurs des paramètres ne doivent contenir que des caractères alphanumériques.</p>
+          </li><li class="listitem">
+            <p>Remplacez la valeur de la clé <code class="code">KeyName</code> par un nom de paire de clés EC2 existant dans la région dans laquelle vous allez créer votre pipeline.</p>
+          </li></ul></div>
+      </li><li>
+        <p>Ajoutez les fichiers de configuration modifiés au fichier de l'artefact d'origine (<code class="code">.zip</code>) en remplaçant les fichiers en double.</p>
+        <p>Vous disposez maintenant d'un artefact personnalisé que vous pouvez charger dans un compartiment S3.</p>
+      </li><li>
+        <p><a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/UploadingObjectsintoAmazonS3.html">Chargez l'artefact dans un compartiment S3 que vous possédez.</a></p>
+        <p>Notez l'emplacement du fichier. Vous devrez spécifier l'emplacement de ce fichier lors de la création de votre pipeline.</p>
+        <p>Remarques sur l'artefact et le compartiment S3 :</p>
+        <div class="itemizedlist">
+           
+           
+           
+           
+        <ul class="itemizedlist"><li class="listitem">
+            <p>Utilisez un compartiment qui se trouve dans la même région AWS que celle dans laquelle vous créez votre pipeline.</p>
+          </li><li class="listitem">
+            <p>CodePipeline nécessite que la gestion des <a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/enable-bucket-versioning.html">versions du bucket soit activée</a>.</p>
+          </li><li class="listitem">
+            <p>Vous pouvez également utiliser des services qui ne vous obligent pas à compresser vos fichiers avant de les télécharger,  GitHub  par exemple pour votre dépôt source.  CodeCommit</p>
+          </li><li class="listitem">
+            <p>Les artefacts peuvent contenir des informations sensibles telles que des mots de passe. <a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/EditingPermissionsonanObject.html">Limitez l'accès</a> de façon à ce que seuls les utilisateurs autorisés puissent consulter le fichier. Lorsque vous le faites, assurez-vous qu'il  CodePipeline  peut toujours accéder au fichier.</p>
+          </li></ul></div>
+      </li></ol></div>
+    <p>Vous disposez désormais d'un artefact qui  CodePipeline  peut être intégré à votre pipeline. À l'étape suivante, vous allez spécifier l'emplacement de l'artefact et créer le  WordPress  pipeline.</p>
+   
+    <h2 id="w9aac21c11c11">Étape 2 : Créer la pile du pipeline</h2>
+    <p>Pour créer le  WordPress  pipeline, vous allez utiliser un exemple de AWS CloudFormation modèle. Outre la création du pipeline, le modèle définit des rôles de service AWS Identity and Access Management (IAM) pour  CodePipeline  etAWS CloudFormation, un compartiment S3 pour le magasin d' CodePipeline artefacts et une rubrique Amazon Simple Notification Service (Amazon SNS) à laquelle le pipeline envoie des notifications, telles que des notifications concernant les avis. L'exemple de modèle facilite le provisionnement et la configuration de ces ressources dans une pile AWS CloudFormation unique.</p>
+    <p>Pour plus d'informations sur la configuration du pipeline, consultez <a href="#codepipeline-basic-walkthrough-template-details">Fonctions du pipeline</a>.</p>
+    <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>Important</h6></div><div class="awsdocs-note-text"><p>L'exemple de  WordPress  modèle crée une instance EC2 qui nécessite une connexion à Internet. Vérifiez que votre VPC et votre sous-réseau par défaut autorisent le trafic vers Internet.</p></div></div>
+    <div class="procedure"><h6>Pour créer la pile du pipeline</h6><ol><li>
+        <p>Téléchargez l'exemple de modèle depuis <a href="https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/basic-pipeline.yml" rel="noopener noreferrer" target="_blank"><span>https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/basic-pipeline.yml</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>. Enregistrez-le sur votre ordinateur.</p>
+      </li><li>
+        <p>Ouvrez la AWS CloudFormation console à l'<a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>adresse https://console.aws.amazon.com/cloudformation/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p>
+      </li><li>
+        <p>Choisissez une AWS région qui prend en charge  CodePipeline  etAWS CloudFormation.</p>
+        <p>Pour plus d'informations, consultez <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Régions et points de terminaison AWS</a> dans le <em>Références générales AWS</em>.</p>
+      </li><li>
+        <p>Sélectionnez <b>Créer la pile</b>.</p>
+      </li><li>
+        <p>Sous <b>Specify template (Spécifier un modèle)</b>, choisissez <b>Upload a template file (Charger un fichier de modèle)</b>, puis choisissez le modèle que vous venez de télécharger, <code class="code">basic-pipeline.yml</code>.</p>
+      </li><li>
+        <p>Choisissez <b>Suivant</b>.</p>
+      </li><li>
+        <p>Pour le <b>Nom de la pile</b>, tapez <code class="code">sample-WordPress-pipeline</code>.</p>
+      </li><li>
+        <p>Dans la section <b>Paramètres</b>, spécifiez les valeurs suivantes pour les paramètres, puis choisissez <b>Suivant</b>. Lorsque vous définissez les paramètres de pile, si vous avez conservé les mêmes noms pour le  WordPress  modèle et ses fichiers de configuration, vous pouvez utiliser les valeurs par défaut. Dans le cas contraire, spécifiez les noms de fichiers utilisés.</p>
+        <div class="variablelist">
+           
+           
+           
+           
+        <dl>
+            <dt><span class="term"><b>PipelineName</b></span></dt>
+            <dd>
+              <p>Nom de votre pipeline, comme <code class="code">WordPress-test-pipeline</code>.</p>
+            </dd>
+           
+            <dt><span class="term"><b>S3Bucket</b></span></dt>
+            <dd>
+              <p>Nom du compartiment S3 dans lequel vous avez enregistré votre artefact (fichier <code class="code">.zip</code>).</p>
+            </dd>
+           
+            <dt><span class="term"><b>SourceS3Key</b></span></dt>
+            <dd>
+              <p>Nom de fichier de votre artefact. Si vous avez enregistré l'artefact dans un dossier, incluez-le dans le nom de fichier, comme <code class="code">folder/subfolder/wordpress-single-instance.zip</code>.</p>
+            </dd>
+           
+            <dt><span class="term"><b>E-mail</b></span></dt>
+            <dd>
+              <p>Adresse e-mail à laquelle  CodePipeline  envoie la notification du pipeline, telle que<code class="code">myemail@example.com</code>.</p>
+            </dd>
+          </dl></div>
+      </li><li>
+        <p>Dans cette procédure détaillée, vous n'avez pas besoin d'ajouter des balises ni de spécifier des paramètres avancés. Dès lors, cliquez sur <b>Suivant</b>.</p>
+      </li><li>
+        <p>Assurez-vous que le nom de la pile et l'URL du modèle sont corrects, puis choisissez <b>Créer une pile</b>.</p>
+      </li><li>
+        <p>Cochez la case pour confirmer que vous savez qu'AWS CloudFormation peut créer des ressources IAM.</p>
+      </li></ol></div>
+    <p>La création de la pile par AWS CloudFormation peut durer plusieurs minutes. Pour surveiller la progression, affichez les événements de la pile. Pour plus d’informations, consultez <a href="./cfn-console-view-stack-data-resources.html">Affichage des données et des ressources de la AWS CloudFormation pile sur AWS Management Console</a>.</p>
+    <p>Une fois votre stack créé,  CodePipeline  démarre votre nouveau pipeline. Pour afficher son état, consultez la <a href="https://console.aws.amazon.com/codepipeline/" rel="noopener noreferrer" target="_blank"><span>console CodePipeline </span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>. Dans la liste des pipelines, choisissez <b>WordPress-test-pipeline</b>.</p>
+     
+      <h3 id="codepipeline-basic-walkthrough-template-details">Fonctions du pipeline</h3>
+      <p>Cette section explique les trois étapes du pipeline, à l'aide d'extraits de l'exemple de modèle de  WordPress  pipeline.</p>
+       
+        <h4 id="w9aac21c11c11c15b5">Étape 1 : Source</h4>
+        <p>La première étape du pipeline concerne la source : vous spécifiez l'emplacement de votre code source. Chaque fois que vous envoyez une révision à cet emplacement, votre pipeline est  CodePipeline  réexécuté.</p>
+        <p>Le code source, identifié par son nom de fichier, se trouve dans un compartiment S3. Vous avez spécifié ces valeurs en tant que valeurs du paramètre d'entrée lorsque vous avez créé la pile du pipeline. Pour permettre l'utilisation de l'artefact source dans les étapes suivantes, l'extrait spécifie la propriété <code class="code">OutputArtifacts</code> avec le nom <code class="code">TemplateSource</code>. Pour utiliser cet artefact dans les étapes suivantes, spécifiez <code class="code">TemplateSource</code> comme artefact d'entrée.</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">- Name: S3Source
+  Actions:
+    - Name: TemplateSource
+      ActionTypeId:
+        Category: Source
+        Owner: AWS
+        Provider: S3
+        Version: '1'
+      Configuration:
+        S3Bucket: !Ref 'S3Bucket'
+        S3ObjectKey: !Ref 'SourceS3Key'
+      OutputArtifacts:
+        - Name: TemplateSource</code></pre>
+       
+       
+        <h4 id="w9aac21c11c11c15b7">Étape 2 :  TestStage</h4>
+        <p>A l'étape <code class="code">TestStage</code>, le pipeline crée la pile de test, attend l'approbation, puis supprime la pile de test.</p>
+        <p>Pour l'<code class="code">CreateStack</code>action, le pipeline utilise le fichier de configuration de test et le  WordPress  modèle pour créer la pile de tests. Les deux fichiers se trouvent dans l'artefact d'entrée <code class="code">TemplateSource</code>, obtenu à l'étape Source. L'extrait utilise le mode d'action <code class="code">REPLACE_ON_FAILURE</code>. Si la création de la pile échoue, le pipeline la remplace afin que vous n'ayez pas à nettoyer ou résoudre les problèmes de la pile avant d'exécuter à nouveau le pipeline. Le mode d'action est utile pour l'itération rapide sur les piles de test. Pour la propriété <code class="code">RoleArn</code>, la valeur correspond à un rôle de service AWS CloudFormation qui est déclaré à un autre emplacement du modèle.</p>
+        <p>L'action <code class="code">ApproveTestStack</code> interrompt le pipeline et envoie une notification à l'adresse e-mail que vous avez spécifiée lors de la création de la pile du pipeline. Pendant que le pipeline est suspendu, vous pouvez vérifier la pile de  WordPress  tests et ses ressources.  CodePipeline À utiliser pour <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals-approve-or-reject.html">approuver ou rejeter</a> cette action. La propriété <code class="code">CustomData</code> comprend une description de l'action en cours d'approbation que le pipeline ajoute à l'e-mail de notification.</p>
+        <p>Après avoir approuvé cette action,  CodePipeline  passe à l'<code class="code">DeleteTestStack</code>action et supprime la  WordPress  pile de tests et ses ressources.</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">- Name: TestStage
+  Actions:
+    - Name: CreateStack
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      InputArtifacts:
+        - Name: TemplateSource
+      Configuration:
+        ActionMode: REPLACE_ON_FAILURE
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref TestStackName
+        TemplateConfiguration: !Sub "TemplateSource::$<span>{</span>TestStackConfig}"
+        TemplatePath: !Sub "TemplateSource::$<span>{</span>TemplateFileName}"
+      RunOrder: '1'
+    - Name: ApproveTestStack
+      ActionTypeId:
+        Category: Approval
+        Owner: AWS
+        Provider: Manual
+        Version: '1'
+      Configuration:
+        NotificationArn: !Ref CodePipelineSNSTopic
+        CustomData: !Sub 'Do you want to create a change set against the production stack and delete the $<span>{</span>TestStackName} stack?'
+      RunOrder: '2'
+    - Name: DeleteTestStack
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      Configuration:
+        ActionMode: DELETE_ONLY
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref TestStackName
+      RunOrder: '3'</code></pre>
+       
+       
+        <h4 id="w9aac21c11c11c15b9">Étape 3 :  ProdStage</h4>
+        <p>L'étape <code class="code">ProdStage</code> du pipeline crée un jeu de modifications par rapport à la pile de production existante, attend l'approbation et exécute ensuite ce jeu de modifications.</p>
+        <p>Le jeu de modifications fournit un aperçu de toutes les modifications qu'AWS CloudFormation apportera à votre pile de production avant de les implémenter. La pile de production ne sera pas opérationnelle lors de votre première exécution du pipeline. Le jeu de modifications affiche les actions effectuées par AWS CloudFormation lors de la création de la pile de test. Pour créer l'ensemble de modifications, l'<code class="code">CreateChangeSet</code>action utilise le modèle d' WordPress exemple et la configuration du modèle de production à partir de l'artefact <code class="code">TemplateSource</code> d'entrée.</p>
+        <p>A l'instar de l'étape précédente, l'action <code class="code">ApproveChangeSet</code> interrompt le pipeline et envoie une notification par e-mail. Lorsque le pipeline est suspendu, vous pouvez consulter l'ensemble de modifications pour vérifier toutes les modifications proposées pour la  WordPress  pile de production.  CodePipeline À utiliser pour <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals-approve-or-reject.html">approuver ou rejeter</a> cette action afin de poursuivre ou d'arrêter le pipeline, respectivement.</p>
+        <p>Lorsque vous approuvez cette action, l'action <code class="code">ExecuteChangeSet</code> exécute le jeu de modifications, de façon à ce qu'AWS CloudFormation effectue toutes les actions qu'il contient. Pour le cycle initial, AWS CloudFormation crée la pile  WordPress  de production. Lors des exécutions suivantes, AWS CloudFormation la met à jour.</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Texte"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">- Name: ProdStage
+  Actions:
+    - Name: CreateChangeSet
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      InputArtifacts:
+        - Name: TemplateSource
+      Configuration:
+        ActionMode: CHANGE_SET_REPLACE
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref ProdStackName
+        ChangeSetName: !Ref ChangeSetName
+        TemplateConfiguration: !Sub "TemplateSource::$<span>{</span>ProdStackConfig}"
+        TemplatePath: !Sub "TemplateSource::$<span>{</span>TemplateFileName}"
+      RunOrder: '1'
+    - Name: ApproveChangeSet
+      ActionTypeId:
+        Category: Approval
+        Owner: AWS
+        Provider: Manual
+        Version: '1'
+      Configuration:
+        NotificationArn: !Ref CodePipelineSNSTopic
+        CustomData: !Sub 'A new change set was created for the $<span>{</span>ProdStackName} stack. Do you want to implement the changes?'
+      RunOrder: '2'
+    - Name: ExecuteChangeSet
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      Configuration:
+        ActionMode: CHANGE_SET_EXECUTE
+        ChangeSetName: !Ref ChangeSetName
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref ProdStackName
+      RunOrder: '3'</code></pre>
+       
+     
+   
+    <h2 id="w9aac21c11c13">Étape 3 : Afficher la  WordPress  pile</h2>
+    <p>Au fur  CodePipeline  et à mesure du pipeline, il est utilisé AWS CloudFormation pour créer des piles de test et de production. Pour voir l'état de ces piles et leur sortie utilisez la console AWS CloudFormation.</p>
+    <div class="procedure"><h6>Pour afficher une pile</h6><ol><li>
+        <p>Ouvrez la AWS CloudFormation console à l'<a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>adresse https://console.aws.amazon.com/cloudformation/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p>
+      </li><li>
+        <p>Selon que votre pipeline se trouve à l'étape de test ou de production, choisissez la pile <code class="code">Test-MyWordPressSite</code> ou <code class="code">Prod-MyWordPressSite</code>.</p>
+      </li><li>
+        <p>Pour vérifier l'état de votre pile, affichez les <a href="./cfn-console-view-stack-data-resources.html">événements</a> de la pile.</p>
+      </li></ol></div>
+    <p>Si la pile est en état d'échec, affichez la raison de l'état pour trouver l'erreur de la pile. Corrigez l'erreur et exécutez de nouveau le pipeline. Si la pile est en bon <code class="code">CREATE_COMPLETE</code> état, consultez ses sorties pour obtenir l'URL de votre  WordPress  site.</p>
+    <p>Vous l'avez utilisé avec succès  CodePipeline  pour créer un flux de livraison continue pour un exemple de  WordPress  site. Si vous soumettez des modifications au compartiment S3, détecte  CodePipeline  automatiquement une nouvelle version, puis réexécute votre pipeline. Ce flux de travail facilite l'envoi et le test de modifications avant d'apporter des changements à votre site de production.</p>
+   
+    <h2 id="w9aac21c11c15">Étape 4 : Nettoyer les ressources</h2>
+    <p>Pour vous assurer que des services inutilisés ne vous sont pas facturés, supprimez vos ressources.</p>
+    <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>Important</h6></div><div class="awsdocs-note-text"><p>Supprimez les  WordPress  piles de test et de production avant de supprimer la pile de pipeline. La pile de pipelines contient un rôle de service requis pour supprimer les  WordPress  piles. Si vous avez d'abord supprimé la pile de pipelines, vous pouvez <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DeleteStack.html">associer un autre rôle de service Amazon Resource Name (ARN)</a> aux  WordPress piles, puis les supprimer.</p></div></div>
+    <div class="procedure"><h6>Pour supprimer des objets dans le magasin d'artefacts</h6><ol><li><p>Ouvrez la console Amazon S3 sur <a href="https://console.aws.amazon.com/s3/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/s3/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p></li><li>
+        <p>Choisissez le compartiment S3  CodePipeline  utilisé comme magasin d'artefacts pour votre pipeline.</p>
+        <p>Le nom du compartiment utilise le format suivant : <code class="code"><code class="replaceable">stackname-artifactstorebucket-id</code></code>. Si vous avez suivi cette procédure, le nom du compartiment peut ressembler à l'exemple suivant : <code class="code">sample-WordPress-pipeline-artifactstorebucket-12345abcd12345</code>.</p>
+      </li><li>
+        <p>Supprimez tous les objets dans le compartiment S3 du magasin d'artefacts.</p>
+        <p>Lorsque vous supprimerez la pile du pipeline à l'étape suivante, ce compartiment doit être vide. Sinon, AWS CloudFormation ne sera pas en mesure de supprimer le compartiment.</p>
+      </li></ol></div>
+    <div class="procedure"><h6>Pour supprimer les piles</h6><ol><li>
+        <p>Dans la console AWS CloudFormation, sélectionnez la pile que vous souhaitez supprimer.</p>
+        <p>Si les  WordPress  piles créées par le pipeline sont toujours en cours d'exécution, choisissez-les d'abord. Par défaut, les noms de pile sont <code class="code">Test-MyWordPressSite</code> et <code class="code">Prod-MyWordPressSite</code>.</p>
+        <p>Si vous avez déjà supprimé les  WordPress  piles, choisissez-les<code class="code">sample-WordPress-pipeline</code>.</p>
+      </li><li>
+        <p>Choisissez <b>Actions</b>, puis <b>Supprimer pile</b>.</p>
+      </li><li>
+        <p>Dans le message de confirmation, choisissez <b>Oui, supprimer</b>.</p>
+      </li></ol></div>
+    <p>AWS CloudFormation supprime toutes les ressources de la pile, telles que l'instance EC2, la rubrique de notification, le rôle de service et le pipeline.</p>
+    <p>Maintenant que vous savez comment créer un AWS CloudFormation flux de travail de base CodePipeline, vous pouvez utiliser le modèle d'exemple et les artefacts comme point de départ pour créer le vôtre.</p>
+   
+    <h2 id="w9aac21c11c19">Consultez aussi</h2>
+    <p>Les ressources connexes suivantes peuvent s'avérer utiles lors de l'utilisation de ces paramètres.</p>
+    <div class="itemizedlist">
+       
+       
+       
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p>Pour plus d'informations sur les paramètres AWS CloudFormation d'action dans CodePipeline, consultez la référence de configuration des <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CloudFormation.html">AWS CloudFormation</a>actions dans le <em>Guide de AWS CodePipeline l'utilisateur</em>.</p>
+      </li><li class="listitem">
+        <p>Pour des valeurs d'exemple de modèle par fournisseur d'action (par exemple pour les champs <code class="code">Owner</code> ou <code class="code">configuration</code>), veuillez consulter la rubrique <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference.html">Référence sur la structure des actions</a> dans le <em>Guide de l'utilisateur AWS CodePipeline</em>.</p>
+      </li><li class="listitem">
+        <p>Pour télécharger des exemples de modèles de pile de pipeline au format YAML ou JSON, consultez les didacticiels sous <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-cloudformation.html">Créer un pipeline AWS  CloudFormation</a> dans le <em>guide de l'AWS CodePipelineutilisateur</em>.</p>
+      </li><li class="listitem">
+        <p>Pour voir un exemple de fichier de configuration de modèle, consultez <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/continuous-delivery-codepipeline-cfn-artifacts.html">Artefacts AWS CloudFormation</a>.</p>
+      </li></ul></div>
+  <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Avertissement" /> <strong>JavaScript est désactivé ou n'est pas disponible dans votre navigateur.</strong></p><p>Pour que vous puissiez utiliser la documentation AWS, Javascript doit être activé. Vous trouverez des instructions sur les pages d'aide de votre navigateur.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Conventions de rédaction</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./continuous-delivery-codepipeline.html">Livraison continue</div><div id="next" class="next-link" accesskey="n" href="./continuous-delivery-codepipeline-action-reference.html">Référence sur les propriétés de configuration</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Cette page vous a-t-elle été utile ? - Oui</div><div class="content"><p>Merci de nous avoir fait part de votre satisfaction.</p><p>Si vous avez quelques minutes à nous consacrer, merci de nous indiquer ce qui vous a plu afin que nous puissions nous améliorer davantage.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Commentaire" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Cette page vous a-t-elle été utile ? - Non</div><div class="content"><p>Merci de nous avoir avertis que cette page avait besoin d'être retravaillée. Nous sommes désolés de ne pas avoir répondu à vos attentes.</p><p>Si vous avez quelques minutes à nous consacrer, merci de nous indiquer comment nous pourrions améliorer cette documentation.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Commentaire" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
