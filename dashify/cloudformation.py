@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
     "--title",
     default="AWS CloudFormation User Guide",
     show_default=True,
+    envvar="DOCSET_TITLE",
     help="Docset title",
 )
 @click.option(
@@ -31,6 +32,7 @@ logger = logging.getLogger(__name__)
     type=dashify.core.URL(),
     default="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/",
     show_default=True,
+    envvar="DOCSET_SITE_URL",
     help="URL of the document site. This is used to resolve file path and relative links.",
 )
 @click.option(
