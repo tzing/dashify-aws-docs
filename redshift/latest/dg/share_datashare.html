@@ -25,7 +25,7 @@
       {
         "@type" : "ListItem",
         "position" : 4,
-        "name" : "Sharing data across clusters in Amazon Redshift",
+        "name" : "Sharing data in Amazon Redshift",
         "item" : "https://docs.aws.amazon.com/redshift/latest/dg/datashare-overview.html"
       },
       {
@@ -36,7 +36,7 @@
       }
     ]
 }
-</script></head><body><div id="main"><div style="display: none"><a href="/pdfs/redshift/latest/dg/redshift-dg.pdf#share_datashare" target="_blank" rel="noopener noreferrer" title="Open PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Database Developer Guide</a></div><div id="page-toc-src"><a href="#manage-permissions">Managing permissions for datashares</a><a href="#datashare-views">Working with views in Amazon Redshift data sharing</a><a href="#iam-policy">Managing access to data sharing API operations with IAM
+</script></head><body><div id="main"><div style="display: none"><a href="/pdfs/redshift/latest/dg/redshift-dg.pdf#share_datashare" target="_blank" rel="noopener noreferrer" title="Open PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Database Developer Guide</a></div><div id="page-toc-src"><a href="#manage-permissions">Managing permissions for datashares</a><a href="#share-datashare-writes">Granular sharing using WITH PERMISSIONS (preview)</a><a href="#datashare-views">Working with views in Amazon Redshift data sharing</a><a href="#iam-policy">Managing access to data sharing API operations with IAM
                policies</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="share_datashare">Sharing datashares</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>You only need datashares when you are sharing data between different Amazon Redshift provisioned clusters or serverless workgroups. Within the same cluster, you can query another database using simple three-part notation <code class="code">database.schema.table</code> as long as you have the required permissions on the objects in the other database.</p>
          <h2 id="manage-permissions">Managing permissions for datashares in Amazon Redshift</h2>
          
@@ -102,12 +102,34 @@ GRANT SELECT ON sales_db.public.tickit_sales_redshift TO Bob;</code></pre>
             relevant permissions for any objects in the database or schema that you want them to access. 
          </p>
        
+         <h2 id="share-datashare-writes">Granular sharing using WITH PERMISSIONS (preview)</h2>
+          
+            <h3 id="within-account-writes-share-consumer-create-database">Enabling clusters or Serverless workgroups to query the datashare</h3> 
+            <p>This step assumes the datashare is originating from another cluster or Amazon Redshift Serverless namespace in your account, or it is coming from another account and has 
+               been associated with the namespace you are using.</p>
+            <div class="procedure"><ol><li><p>The consumer database administrator can create a database from the datashare.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">CREATE DATABASE my_ds_db [WITH PERMISSIONS] FROM DATASHARE my_datashare OF NAMESPACE 'abc123def';</code></pre>
+                  <p>If you create a database WITH PERMISSIONS you can grant granular permissions on datashare objects to different users and roles. Without this, all users and roles 
+                     granted USAGE permission on the datashare database are granted all permissions on all objects within the datashare database.</p>
+                  
+               </li><li><p>The following shows how to grant permissions to a Redshift database user or role. You must be connected to a local database to run these 
+                  statements. You cannot run these statements if you execute a USE command on the datashare database before running the grant statements.</p>
+                  <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">GRANT USAGE ON DATABASE my_ds_db TO ROLE data_eng;
+GRANT CREATE, USAGE ON SCHEMA my_ds_db.my_shared_schema TO ROLE data_eng;
+GRANT ALL ON ALL TABLES IN SCHEMA my_ds_db.my_shared_schema TO ROLE data_eng;
+ 
+GRANT USAGE ON DATABASE my_ds_db TO bi_user;
+GRANT USAGE ON SCHEMA my_ds_db.my_shared_schema TO bi_user;
+GRANT SELECT ON my_ds_db.my_shared_schema.table1 TO bi_user;</code></pre>
+</li></ol></div>
+          
+       
          <h2 id="datashare-views">Working with views in Amazon Redshift data sharing</h2>
          <p>A producer cluster can share regular, late-binding, and materialized views. When
             sharing regular or late-binding views, you don't have to share the base tables. The
             following table shows how views are supported with data sharing.</p>
          
-         <div class="table-container"><div class="table-contents"><table id="w323aac54c13b7b5"><thead>
+         <div class="table-container"><div class="table-contents"><table id="w323aac54c15b9b5"><thead>
                   <tr>
                      <th>View name</th>
                      <th>Can this view be added to a datashare?</th>

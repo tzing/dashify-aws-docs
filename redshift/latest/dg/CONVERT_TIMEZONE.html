@@ -48,7 +48,7 @@
       }
     ]
 }
-</script></head><body><div id="main"><div style="display: none"><a href="/pdfs/redshift/latest/dg/redshift-dg.pdf#CONVERT_TIMEZONE" target="_blank" rel="noopener noreferrer" title="Open PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Database Developer Guide</a></div><div id="page-toc-src"><a href="#CONVERT_TIMEZONE-syntax">Syntax</a><a href="#CONVERT_TIMEZONE-arguments">Arguments</a><a href="#CONVERT_TIMEZONE-return-type">Return Type</a><a href="#CONVERT_TIMEZONE-usage-notes">Time zone usage notes</a><a href="#CONVERT_TIMEZONE-examples">Examples</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="CONVERT_TIMEZONE">CONVERT_TIMEZONE function</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>CONVERT_TIMEZONE converts a timestamp from one time zone to another. The function automatically adjusts for Daylight saving time.</p><h2 id="CONVERT_TIMEZONE-syntax">Syntax</h2>
+</script></head><body><div id="main"><div style="display: none"><a href="/pdfs/redshift/latest/dg/redshift-dg.pdf#CONVERT_TIMEZONE" target="_blank" rel="noopener noreferrer" title="Open PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/redshift/index.html">Amazon Redshift</a><a href="welcome.html">Database Developer Guide</a></div><div id="page-toc-src"><a href="#CONVERT_TIMEZONE-syntax">Syntax</a><a href="#CONVERT_TIMEZONE-arguments">Arguments</a><a href="#CONVERT_TIMEZONE-return-type">Return Type</a><a href="#CONVERT_TIMEZONE-usage-notes">Time zone usage notes</a><a href="#CONVERT_TIMEZONE-examples">Examples</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="CONVERT_TIMEZONE">CONVERT_TIMEZONE function</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>CONVERT_TIMEZONE converts a timestamp from one time zone to another. The function automatically adjusts for daylight saving time.</p><h2 id="CONVERT_TIMEZONE-syntax">Syntax</h2>
          
          
          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">CONVERT_TIMEZONE( ['<em>source_timezone</em>',] '<em>target_timezone</em>', '<em>timestamp</em>')</code></pre>
@@ -88,28 +88,55 @@
          <p>TIMESTAMP</p>
       <h2 id="CONVERT_TIMEZONE-usage-notes">Time zone usage notes</h2>
          
-         <p>Either <em>source_timezone</em> or <em>target_timezone</em>
+         <p><em>source_timezone</em> or <em>target_timezone</em>
             can be specified as a time zone name (such as 'Africa/Kampala' or 'Singapore') or as a
-            time zone abbreviation (such as 'UTC' or 'PDT'). </p>
-        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Note</h6></div><div class="awsdocs-note-text"><p>The results of using a time zone name or a time zone abbreviation can be different due to local seasonal time, such as, Daylight saving time. </p></div></div>
-         <p>To view a list of supported time zone names, run the following command.
-            </p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select pg_timezone_names();</code></pre><p> To view a list of supported
-               time zone abbreviations, run the following command.
-            </p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select pg_timezone_abbrevs();</code></pre>
-         <p>For more information, see <a href="./appendix-timezone-names.html">Appendix: Time zone names and abbreviations</a>.</p>
-         <h3 id="CONVERT_TIMEZONE-using-name">Using a time zone name</h3>
-            
+            time zone abbreviation (such as 'UTC' or 'PDT'). You don't have to convert time zone names to names or abbreviations
+            to abbreviations. For example, you can choose a timestamp from the source time zone name 'Singapore' and 
+         convert it to a timestamp in the time zone abbreviation 'PDT'.</p>
+        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Note</h6></div><div class="awsdocs-note-text"><p>The results of using a time zone name or a time zone abbreviation can be different due to local seasonal time, such as daylight saving time. </p></div></div>
+         
+         <h3 id="CONVERT_TIMEZONE-using-name">Using a time zone name</h3>            
+            <p>To view a current and complete list of time zone names, run the following command.
+            </p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select pg_timezone_names();</code></pre>
+            <p>Each row contains a comma-separated string with the time zone name, abbreviation, UTC offset, and indicator if the time zone observes daylight-savings (<code class="code">t</code> or <code class="code">f</code>). 
+               For example, the following snippet shows two resulting rows.
+               The first row is the time zone <code class="code">Europe/Paris</code>, abbreviation <code class="code">CET</code>, with <code class="code">01:00:00</code> offset from UTC, and <code class="code">f</code> to indicate it doesn't observe daylight-savings time.
+               The second row is the time zone <code class="code">Israel</code>, abbreviation <code class="code">IST</code>, with <code class="code">02:00:00</code> offset from UTC, and <code class="code">f</code> to indicate it doesn't observe daylight-savings time.</p>
+            <pre class="programlisting"><div class="code-btn-container"></div><code class="">pg_timezone_names
+-----------------
+(Europe/Paris,CET,01:00:00,f)	
+(Israel,IST,02:00:00,f)	
+</code></pre>
+            <p>Run the SQL statement to obtain the entire list and find a time zone name. 
+               Approximately 600 rows are returned.
+               Even though some of the returned time zone names are capitalized initialisms or
+               acronyms (for example; GB, PRC, ROK), the CONVERT_TIMEZONE function treats them as time
+               zone names, not time zone abbreviations. </p>
             <p>If you specify a time zone using a time zone name, CONVERT_TIMEZONE automatically
-               adjusts for Daylight saving time (DST), or any other local seasonal protocol, such as
+               adjusts for daylight saving time (DST), or any other local seasonal protocol, such as
                Summer Time, Standard Time, or Winter Time, that is in force for that time zone
                during the date and time specified by '<em>timestamp</em>'. For example,
                'Europe/London' represents UTC in the winter and adds one hour in the summer. </p>
           
          <h3 id="CONVERT_TIMEZONE-using-abbrev">Using a time zone abbreviation</h3>
             
+            <p> To view a current and complete list of
+               time zone abbreviations, run the following command.
+            </p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="">select pg_timezone_abbrevs();</code></pre>
+            <p>The results contain a comma-separated string with the time zone abbreviation, UTC offset, and indicator if the time zone observes daylight-savings (<code class="code">t</code> or <code class="code">f</code>). 
+               For example, the following snippet shows two resulting rows.
+               The first row contains the abbreviation for Pacific Daylight Time <code class="code">PDT</code>, with a <code class="code">-07:00:00</code> offset from UTC, and <code class="code">t</code> to indicate it observes daylight-savings time.
+               The second row contains the abbreviation for Pacific Standard Time <code class="code">PST</code>, with a <code class="code">-08:00:00</code> offset from UTC, and <code class="code">f</code> to indicate it doesn't observe daylight-savings time.</p>
+            <pre class="programlisting"><div class="code-btn-container"></div><code class="">pg_timezone_abbrevs
+--------------------
+(PDT,-07:00:00,t)	
+(PST,-08:00:00,f)	
+</code></pre>
+            <p>Run the SQL statement to obtain the entire list and find an abbreviation based on its offset and daylight-savings indicator. 
+               Approximately 200 rows are returned.</p>
             <p>Time zone abbreviations represent a fixed offset from UTC. If you specify a time
                zone using a time zone abbreviation, CONVERT_TIMEZONE uses the fixed offset from UTC
-               and does not adjust for any local seasonal protocol. </p>
+               and doesn't adjust for any local seasonal protocol. </p>
            
          <h3 id="CONVERT_TIMEZONE-using-posix">Using POSIX-style format</h3> 
             <p>A POSIX-style time zone
