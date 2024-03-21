@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Impedir atualizações nos recursos de pilha - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="protect-stack-resources" /><meta name="default_state" content="protect-stack-resources" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" /><meta name="description" content="Impede que os recursos de pilha sejam involuntariamente atualizados ou excluídos durante uma atualização da pilha usando as políticas da pilha do AWS CloudFormation." /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="Guia do usuário" /><meta name="abstract" content="Crie e gerencie implantações da infraestrutura da AWS de maneira previsível e que pode ser repetida usando o AWS CloudFormation com este Guia do usuário." /><meta name="guide-locale" content="pt_br" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="Guia do usuário" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="Guia do usuário" /><meta id="panorama-serviceConsolePage" value="Impedir atualizações nos recursos de pilha" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Impedir atualizações nos recursos de pilha - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,provisionamento de recursos,configuração de recursos,gerenciamento da infraestrutura,CloudFormer,Pilha do CloudFormation,Stackset do CloudFormation,Modelo do CloudFormation,conjunto de alterações" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guia do usuário",
+        "item" : "https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Como trabalhar com pilhas",
+        "item" : "https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/stacks.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Atualizações de pilhas do AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Impedir atualizações nos recursos de pilha",
+        "item" : "https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentação</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">Guia do usuário</a></div><div id="page-toc-src"><a href="#stack-policy-intro-example">Exemplo de política de pilha</a><a href="#stack-policy-reference">Definir uma política de pilha</a><a href="#protect-stack-resources-protecting">Configurar uma política de pilha</a><a href="#protect-stack-resources-updating">Atualizar recursos protegidos</a><a href="#protect-stack-resources-modifying">Modificar uma política de pilha </a><a href="#stack-policy-samples">Mais exemplos de políticas de pilha</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="protect-stack-resources">Impedir atualizações nos recursos de pilha</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Quando você cria uma pilha, todas as ações de atualização são permitidas em todos os recursos. Por padrão, qualquer usuário com permissões de atualização da pilha pode atualizar todos os recursos na pilha. Durante uma atualização, alguns recursos podem exigir uma interrupção ou ser completamente substituídos, o que resulta em novos IDs físicos ou armazenamento completamente novo. Você pode impedir que a <a href="./aws-template-resource-type-ref.html">pilha de recursos</a> seja involuntariamente atualizada ou excluída durante uma atualização da pilha usando uma política de pilha. Uma política de pilha é um documento JSON que define quais ações de atualização podem ser executadas nos recursos designados.</p><p>Depois de definir uma política de pilha, todos os recursos na pilha são protegidos por padrão. Para permitir atualizações em recursos específicos, você especifica uma instrução explícita <code class="code">Allow</code> para esses recursos em sua política de pilha. Você pode definir apenas uma política de pilha por pilha. Porém, é possível proteger vários recursos em uma única política. Uma política de pilha se aplica a todos os usuários do AWS CloudFormation que tentarem atualizar a pilha. Você não pode associar diferentes políticas de pilha com diferentes usuários.</p><p>Uma política de pilha é aplicada somente durante as atualizações da pilha. Ela não fornece controles de acesso como uma política do AWS Identity and Access Management (IAM). Use uma política de pilha somente como um mecanismo à prova de falhas que impede atualizações acidentais em recursos de pilha específicos. Para controlar o acesso a recursos ou ações da AWS, use o IAM.</p><div class="highlights" id="inline-topiclist"><h6>Tópicos</h6><ul><li><a href="#stack-policy-intro-example">Exemplo de política de pilha</a></li><li><a href="#stack-policy-reference">Definir uma política de pilha</a></li><li><a href="#protect-stack-resources-protecting">Configurar uma política de pilha</a></li><li><a href="#protect-stack-resources-updating">Atualizar recursos protegidos</a></li><li><a href="#protect-stack-resources-modifying">Modificar uma política de pilha </a></li><li><a href="#stack-policy-samples">Mais exemplos de políticas de pilha</a></li></ul></div>
+   <h2 id="stack-policy-intro-example">Exemplo de política de pilha</h2>
+    <p>A política de pilha de exemplo a seguir impede atualizações no recurso <code class="code">ProductionDatabase</code>:</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    },
+    <span>{</span>
+      "Effect" : "Deny",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "LogicalResourceId/ProductionDatabase"
+    }
+  ]
+}</code></pre>
+    <p>Quando você define uma política de pilha, todos os recursos na pilha são protegidos por padrão. Para permitir atualizações em todos os recursos, adicionamos uma instrução <code class="code">Allow</code> que permite que todas as ações em todos os recursos. Embora a instrução <code class="code">Allow</code> especifique todos os recursos, a instrução explícita <code class="code">Deny</code> a substitui para o recurso com o ID lógico <code class="code">ProductionDatabase</code>. Essa instrução <code class="code">Deny</code> impede todas as ações de atualização, como substituição ou exclusão, no recurso <code class="code">ProductionDatabase</code>.</p>
+    <p>O elemento <code class="code">Principal</code> é necessário, mas suporta apenas o caractere curinga (<code class="code">*</code>), o que significa que a instrução aplica-se a todos os <a href="https://docs.aws.amazon.com/glossary/latest/reference/glos-chap.html#principal">principais</a>.</p>
+    <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>Durante uma atualização de pilha, o AWS CloudFormation atualiza recursos que dependem de outros recursos atualizados. Por exemplo, o AWS CloudFormation atualiza um recurso que faz referência a um recurso atualizado. O AWS CloudFormation não faz alterações físicas, como o ID do recurso, em recursos atualizados automaticamente. Porém, se uma política de pilha estiver associada a esses recursos, você deve ter permissão para atualizá-los.</p></div></div>
+   
+   <h2 id="stack-policy-reference">Definir uma política de pilha</h2>
+    <p>Quando você cria uma pilha, nenhuma política de pilha é definida, de modo que todas as ações de atualização são permitidas em todos os recursos. Para proteger os recursos da pilha de ações de atualização, defina uma pilha de política e, em seguida, configure-a em sua pilha. Uma política de pilha é um documento JSON que define as ações de atualização de pilha do AWS CloudFormation que os usuários do AWS CloudFormation podem executar e os recursos que as ações se aplicam. Você pode definir a política de pilha ao criar uma pilha, especificando um arquivo de texto que contém a sua política de pilha ou digitando-a. Quando você define uma política de pilha em sua pilha, qualquer atualização não explicitamente permitida é negada por padrão.</p>
+    <p>Você define uma política de pilha com cinco elementos: <code class="code">Effect</code>, <code class="code">Action</code>, <code class="code">Principal</code>, <code class="code">Resource</code> e <code class="code">Condition</code>. O pseudocódigo a seguir mostra a sintaxe da política de pilha.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "<code class="replaceable">Deny_or_Allow</code>",
+      "Action" : "<code class="replaceable">update_actions</code>",
+      "Principal" : "*",
+      "Resource" : "LogicalResourceId/<code class="replaceable">resource_logical_ID</code>",
+      "Condition" : <span>{</span>
+        "<code class="replaceable">StringEquals_or_StringLike</code>" : <span>{</span>
+          "ResourceType" : [<code class="replaceable">resource_type, ...</code>]
+        }
+      }
+    }
+  ]
+}</code></pre>
+    <div class="variablelist">
+       
+       
+       
+       
+       
+    <dl>
+        <dt><span class="term"><code class="code">Effect</code></span></dt>
+        <dd>
+          <p>Determina se as ações que você especifica são negadas ou permitidas no(s) recurso(s) especificado(s). Você pode especificar apenas <code class="code">Deny</code> ou <code class="code">Allow</code>, como:</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"Effect" : "Deny"</code></pre>
+          <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>Importante</h6></div><div class="awsdocs-note-text"><p>Se uma política de pilha inclui instruções de sobreposição (tanto para permitir e negar atualizações em um recurso), uma instrução <code class="code">Deny</code> sempre substituirá uma instrução <code class="code">Allow</code>. Para garantir que um recurso está protegido, use uma instrução <code class="code">Deny</code> para esse recurso.</p></div></div>
+        </dd>
+       
+        <dt><span class="term">Ação</span></dt>
+        <dd>
+          <p>Especifica as ações de atualização que são negadas ou permitidas:</p><div class="variablelist">
+               
+               
+               
+               
+            <dl>
+                <dt><span class="term">Update:Modify</span></dt>
+                <dd>
+                  <p>Especifica ações de atualização durante as quais os recursos poderão não ter interrupções ou algumas interrupções enquanto as alterações estão sendo aplicadas. Todos os recursos mantêm seus IDs físicos.</p>
+                </dd>
+               
+                <dt><span class="term">Update:Replace</span></dt>
+                <dd>
+                  <p>Especifica ações de atualização durante as quais os recursos são recriados. O AWS CloudFormation cria um novo recurso com as atualizações especificadas e, em seguida, exclui o recurso antigo. Como o recurso é recriado, o ID físico do novo recurso pode ser diferente.</p>
+                </dd>
+               
+                <dt><span class="term">Update:Delete</span></dt>
+                <dd>
+                  <p>Especifica ações de atualização durante as quais os recursos são removidos. As atualizações que removem completamente os recursos de um modelo de pilha exigem esta ação.</p>
+                </dd>
+               
+                <dt><span class="term">Atualização:*</span></dt>
+                <dd>
+                  <p>Especifica todas as ações de atualização. O asterisco é um caractere curinga que representa todas as ações de atualização.</p>
+                </dd>
+              </dl></div>
+          <p>O exemplo a seguir mostra como especificar apenas as ações de substituição e exclusão:</p>
+          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"Action" : ["Update:Replace", "Update:Delete"]</code></pre>
+          <p>Para permitir todas as ações de atualização exceto para uma, use <code class="code">NotAction</code>. Por exemplo, para permitir todas as ações de atualização exceto <code class="code">Update:Delete</code>, use <code class="code">NotAction</code>, como mostrado no exemplo a seguir:</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Allow",
+      "NotAction" : "Update:Delete",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+          <p>Para obter mais informações sobre atualizações de pilhas, consulte <a href="./using-cfn-updating-stacks.html">Atualizações de pilhas do AWS CloudFormation</a>.</p>
+        </dd>
+       
+        <dt><span class="term">Entidade principal</span></dt>
+        <dd>
+          <p>O elemento <code class="code">Principal</code> especifica a entidade que a política se aplica. Este elemento é necessário, mas suporta apenas o caractere curinga (<code class="code">*</code>), o que significa que a política aplica-se a todos <a href="https://docs.aws.amazon.com/glossary/latest/reference/glos-chap.html#principal">principais</a>.</p>
+        </dd>
+       
+        <dt><span class="term">Recurso</span></dt>
+        <dd>
+          <p>Especifica os IDs lógicos dos recursos aos quais a política se aplica. Para especificar os <a href="./aws-template-resource-type-ref.html">tipos de recursos</a>, use o elemento <code class="code">Condition</code>.</p>
+          <p>Para especificar um único recurso, use seu ID lógico. Por exemplo:</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"Resource" : ["LogicalResourceId/myEC2instance"]</code></pre>
+          <p>Você pode usar um caractere curinga com IDs lógicos. Por exemplo, se você usar um prefixo de ID lógico comum para todos os recursos relacionados, é possível especificar todos eles com um caractere curinga:</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"Resource" : ["LogicalResourceId/CriticalResource*"]</code></pre>
+          <p>Você também pode usar um elemento <code class="code">Not</code> com recursos. Por exemplo, para permitir as atualizações em todos os recursos, exceto um, use um elemento <code class="code">NotResource</code> para proteger esse recurso:</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "NotResource" : "LogicalResourceId/ProductionDatabase"
+    }
+  ]
+}</code></pre>
+          <p>Quando você define uma política de pilha, qualquer atualização não explicitamente permitida é negada por padrão. Ao permitir atualizações para todos os recursos, exceto para o recurso <code class="code">ProductionDatabase</code>, você nega atualizações para o recurso <code class="code">ProductionDatabase</code>.</p>
+        </dd>
+       
+        <dt><span class="term">Condições</span></dt>
+        <dd>
+          <p>Especifica o <a href="./aws-template-resource-type-ref.html">tipo de recurso</a> que a política se aplica. Para especificar os IDs lógicos de recursos específicos, use o elemento <code class="code">Resource</code>.</p>
+          <p>Você pode especificar um tipo de recurso, como todas as instâncias de banco de dados do RDS e EC2, conforme mostrado no exemplo a seguir:</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+  <span>{</span>
+    "Effect" : "Deny",
+    "Principal" : "*",
+    "Action" : "Update:*",
+    "Resource" : "*",
+    "Condition" : <span>{</span>
+      "StringEquals" : <span>{</span>
+        "ResourceType" : ["AWS::EC2::Instance", "AWS::RDS::DBInstance"]
+      }
+    }
+  },
+  <span>{</span>
+    "Effect" : "Allow",
+    "Principal" : "*",
+    "Action" : "Update:*",
+    "Resource" : "*"
+  }
+  ]
+}</code></pre>
+          <p>A instrução <code class="code">Allow</code> concede permissões de atualização para todos os recursos e a instrução <code class="code">Deny</code> nega atualizações para instâncias de banco de dados do RDS e EC2. A declaração <code class="code">Deny</code> sempre substitui as ações de permissão.</p>
+          <p>Você pode usar um caractere curinga com tipos de recursos. Por exemplo, você pode negar permissões de atualização para todos os recursos do Amazon EC2 — como instâncias, security groups e sub-redes — usando um caractere curinga, como mostrado no exemplo a seguir:</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"Condition" : <span>{</span>
+  "StringLike" : <span>{</span>
+    "ResourceType" : ["AWS::EC2::*"]
+  }
+}</code></pre>
+          <p>Você deve usar a condição <code class="code">StringLike</code> quando ao usar caracteres curinga.</p>
+        </dd>
+      </dl></div>
+   
+   <h2 id="protect-stack-resources-protecting">Configurar uma política de pilha</h2>
+    <p>Você pode usar o console ou a AWS CLI para aplicar uma política de pilha ao criar uma pilha. Você também pode usar a AWS CLI para aplicar uma política de pilha a uma pilha existente. Depois de aplicar uma política de pilha, você não pode removê-la da pilha, mas é possível usar a AWS CLI para modificá-la.</p>
+    <p>Uma política de pilha se aplica a todos os usuários do AWS CloudFormation que tentam atualizar a pilha. Você não pode associar diferentes políticas de pilha com diferentes usuários.</p>
+    <p>Para obter mais informações sobre como gravar políticas de pilhas, consulte <a href="#stack-policy-reference">Definir uma política de pilha</a>.</p>
+    <div class="procedure"><h6>Para definir uma política de pilha ao criar uma pilha (console)</h6><ol><li><p>Abra o console do AWS CloudFormation em <a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p></li><li>
+        <p>Na página <b>CloudFormation Stacks (Pilhas do CloudFormation)</b>, escolha <b>Criar pilha (Create stack)</b>.</p>
+      </li><li>
+        <p>No assistente Create Stack (Criar pilha), na página <b>Configure stack options (Configurar opções de pilha)</b>, expanda a seção <b>Advanced (Avançado)</b> e escolha <b>Stack policy (Política de pilha)</b>.</p>
+      </li><li>
+        <p>Especifique a política da pilha:</p>
+        <div class="itemizedlist">
+           
+           
+        <ul class="itemizedlist"><li class="listitem"><p>Para gravar uma política diretamente no console, escolha <b>Enter stack policy (Inserir política de pilha)</b> e digite a política de pilha diretamente no campo de texto.</p></li><li class="listitem"><p>Para usar uma política definida em um arquivo separado, escolha <b>Upload a file (Fazer upload de um arquivo)</b> e <b>Choose file (Escolher arquivo)</b> para selecionar o arquivo que contém a política de pilha.</p></li></ul></div>
+      </li></ol></div>
+    <div class="procedure"><h6>Para definir uma política de pilha ao criar uma pilha (AWS CLI)</h6><ul><li>
+        <p>Use o comando <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/create-stack.html">aws cloudformation create-stack</a></code> com a opção <code class="code">--stack-policy-body</code> para digitar em uma política modificada ou a opção <code class="code">--stack-policy-url</code> para especificar um arquivo que contém a política. </p>
+      </li></ul></div>
+    <div class="procedure"><h6>Para definir uma política de pilha em uma pilha existente (AWS CLI apenas)</h6><ul><li>
+        <p>Use o comando <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/set-stack-policy.html">aws cloudformation set-stack-policy</a></code> com a opção <code class="code">--stack-policy-body</code> para digitar em uma política modificada ou a opção <code class="code">--stack-policy-url</code> para especificar um arquivo que contém a política.</p>
+        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>Para adicionar uma política a uma pilha existente, você deve ter permissão para a ação <code class="code"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_SetStackPolicy.html">SetStackPolicy</a></code> do AWS CloudFormation.</p></div></div>
+      </li></ul></div>
+   
+   <h2 id="protect-stack-resources-updating">Atualizar recursos protegidos</h2>
+    <p>Para atualizar recursos protegidos, crie uma política temporária que substitui a política de pilha e permite atualizações nesses recursos. Especifique a política de substituição quando você atualizar a pilha. A política de substituição não altera permanentemente a política de pilha.</p>
+    <p>Para atualizar recursos protegidos, você deve ter permissão para usar a ação <code class="code"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_SetStackPolicy.html">SetStackPolicy</a></code> do AWS CloudFormation. Para obter mais informações sobre configuração de permissões do AWS CloudFormation, consulte <a href="./using-iam-template.html">Controlar o acesso com o AWS Identity and Access Management</a>.</p>
+    <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>Durante uma atualização de pilha, o AWS CloudFormation atualiza recursos que dependem de outros recursos atualizados. Por exemplo, o AWS CloudFormation atualiza um recurso que faz referência a um recurso atualizado. O AWS CloudFormation não faz alterações físicas, como o ID dos recursos, em recursos atualizados automaticamente. Porém, se uma política de pilha estiver associada a esses recursos, você deve ter permissão para atualizá-los.</p></div></div>
+    <div class="procedure"><h6>Para atualizar um recurso protegido (console)</h6><ol><li><p>Abra o console do AWS CloudFormation em <a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p></li><li>
+        <p>Selecione a pilha que deseja atualizar, escolha <b>Stack actions (Ações de pilha)</b> e selecione <b>Update stack (Atualizar pilha)</b>.</p>
+      </li><li>
+        <p>Se você <em>não</em> modificou o modelo de pilha, selecione <b>Use current template (Usar modelo atual)</b> e clique em <b>Next (Próximo)</b>. Se você modificou o modelo, selecione <b>Replace current template (Substituir modelo atual)</b> e especifique a localização do modelo atualizado na seção <b>Specify template (Especificar modelo)</b>:</p>
+        <div class="itemizedlist">
+           
+           
+        <ul class="itemizedlist"><li class="listitem">
+            <p>Para um modelo armazenado localmente em seu computador, selecione <b>Upload a template file (Fazer upload de um arquivo de modelo)</b>. Escolha <b>Escolher arquivo</b> para navegar até o arquivo e selecioná-lo e, em seguida, clique em <b>Próximo</b>.</p>
+          </li><li class="listitem">
+            <p>Para um modelo armazenado em um bucket do Amazon S3, selecione <b>Amazon S3 URL (URL do Amazon S3)</b>. Insira ou cole o URL do modelo e, em seguida, clique em <b>Próximo</b>.</p>
+            <p>Se tiver um modelo em um bucket com versionamento habilitado, você poderá indicar uma versão específica do modelo, como <code class="code">https://s3.amazonaws.com/templates/myTemplate.template?versionId=123ab1cdeKdOW5IH4GAcYbEngcpTJTDW</code>. Para obter mais informações, consulte <a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/managing-objects-versioned-bucket.html">Gerenciar objetos em um bucket habilitado para versionamento</a> no <em>Guia do usuário do Amazon Simple Storage Service</em>.</p>
+          </li></ul></div>
+      </li><li>
+        <p>Se o seu modelo contém parâmetros, na página <b>Specify stack details (Especificar detalhes da pilha)</b>, insira ou modifique os valores dos parâmetros e escolha <b>Next (Próximo)</b>.</p>
+        <p>O AWS CloudFormation preenche cada parâmetro com o valor que está atualmente definido na pilha, exceto os parâmetros declarados com o atributo <code class="code">NoEcho</code>. É possível usar os valores atuais para esses parâmetros escolhendo <b>Use existing value (Usar valor existente)</b>.</p>
+        <p>Para obter mais informações sobre o uso de <code class="code">NoEcho</code> para mascarar informações confidenciais, bem como o uso de parâmetros dinâmicos para gerenciar segredos, consulte a melhor prática <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html#creds">Não incorporar credenciais em seus modelos</a>.</p>
+      </li><li>
+        <p>Especifique uma política de pilha de substituição.</p>
+        <ol><li><p>Na página <b>Configure stack options (Configurar opções da pilha)</b>, na seção <b>Advanced options (Opções avançadas)</b>, selecione <b>Stack policy (Política de pilha)</b>.</p></li><li><p>Selecione <b>Upload a file (Fazer upload de um arquivo)</b>.</p></li><li><p>Clique em <b>Choose file (Escolher arquivo)</b> e navegue até o arquivo que contém a política de pilha de sobreposição ou digite uma política.</p></li><li><p>Escolha <b>Próximo</b>.</p></li></ol>
+        
+        <p>A política de substituição deve especificar uma instrução <code class="code">Allow</code> para os recursos protegidos que você deseja atualizar. Por exemplo, para atualizar todos os recursos protegidos, especifique uma política de substituição temporária que permite todas as atualizações:</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>O AWS CloudFormation aplica a política de substituição apenas durante a atualização. A política de substituição não altera permanentemente a política de pilha. Para modificar uma política de pilha, consulte <a href="#protect-stack-resources-modifying">Modificar uma política de pilha </a>.</p></div></div>
+      </li><li>
+        <p>Analise as informações e as alterações da pilha que você enviou.</p>
+        <p>Verifique se você enviou as informações corretas, como os valores de parâmetro ou modelo de URL correto. Se o seu modelo contém recursos do IAM, escolha <b>I acknowledge that this template may create IAM resources (Eu reconheço que este modelo pode criar recursos do IAM)</b> para especificar que você deseja usar recursos do IAM no modelo. Para obter mais informações sobre o uso de recursos do IAM em modelos, consulte <a href="./using-iam-template.html">Controlar o acesso com o AWS Identity and Access Management</a>.</p>
+        <p>Na seção <b>Preview your changes (Visualizar suas alterações)</b>, verifique se o AWS CloudFormation fará todas as alterações que você espera. Por exemplo, verifique se o AWS CloudFormation adiciona, remove e modifica os recursos que você pretende adicionar, remover ou modificar. O AWS CloudFormation gera essa pré-visualização criando um conjunto de alterações para a pilha. Para ter mais informações, consulte <a href="./using-cfn-updating-stacks-changesets.html">Atualizar pilhas usando conjuntos de alterações</a>.</p>
+      </li><li>
+        <p>Quando estiver satisfeito com as alterações, clique em <b>Update (Atualizar)</b>.</p>
+        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>Nesse ponto, você também tem a opção de visualizar o conjunto de alterações para rever as atualizações propostas mais cuidadosamente. Para fazer isso, clique em <b>View change set</b> (Visualizar conjunto de alterações) em vez de em <b>Update</b> (Atualizar). O CloudFormation mostra o conjunto de alterações gerado com base nas suas atualizações. Quando estiver pronto para executar a atualização da pilha, clique em <b>Execute (Executar)</b>.</p></div></div>
+        <p>CloudFormation exibe a página <b>Stack details</b> (Detalhes da pilha) para sua pilha. Sua pilha agora tem um status de <b>UPDATE_IN_PROGRESS</b>. Depois que o CloudFormation tiver concluído com êxito a atualização da pilha, ele definirá o status da pilha como <b>UPDATE_COMPLETE</b>.</p>
+        <p>Caso a atualização da pilha falhe, o CloudFormation reverterá automaticamente as alterações e definirá o status como <b>UPDATE_ROLLBACK_COMPLETE</b>.</p>
+      </li></ol></div>
+    <div class="procedure"><h6>Para atualizar um recurso protegido (AWS CLI)</h6><ul><li>
+        <p>Use o comando <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/update-stack.html">aws cloudformation update-stack</a></code> com a opção <code class="code">--stack-policy-during-update-body</code> para digitar em uma política modificada ou a opção <code class="code">--stack-policy-during-update-url</code> para especificar um arquivo que contém a política.</p>
+        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>O AWS CloudFormation aplica a política de substituição apenas durante a atualização. A política de substituição não altera permanentemente a política de pilha. Para modificar uma política de pilha, consulte <a href="#protect-stack-resources-modifying">Modificar uma política de pilha </a>.</p></div></div>
+      </li></ul></div>
+   
+   <h2 id="protect-stack-resources-modifying">Modificar uma política de pilha </h2>
+    <p>Para proteger os recursos adicionais ou para remover a proteção dos recursos, modifique a política da pilha. Por exemplo, quando você adiciona um banco de dados que você deseja proteger a sua pilha, adicione uma instrução <code class="code">Deny</code> para o banco de dados à política de pilha. Para modificar a política, você deve ter permissão para usar a ação <code class="code"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_SetStackPolicy.html">SetStackPolicy</a></code>.</p>
+    <p>Use a AWS CLI para modificar políticas de pilha.</p>
+    <div class="procedure"><h6>Para modificar uma política de pilha (AWS CLI)</h6><ul><li>
+        <p>Use o comando <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/set-stack-policy.html">aws cloudformation set-stack-policy</a></code> com a opção <code class="code">--stack-policy-body</code> para digitar em uma política modificada ou a opção <code class="code">--stack-policy-url</code> para especificar um arquivo que contém a política.</p>
+      </li></ul></div>
+    <p>Você não pode excluir uma política de pilha. Para remover todas as proteções de todos os recursos, você modifica a política para explicitamente permitir todas as ações em todos os recursos. A política a seguir permite todas as atualizações em todos os recursos:</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+   
+   <h2 id="stack-policy-samples">Mais exemplos de políticas de pilha</h2>
+    <p>As seguintes políticas de exemplo mostram como impedir atualizações em todos os recursos de pilha, especificar recursos e impedir determinados tipos de atualizações.</p>
+     
+     <h3 id="w9aac25c17c29c21b5">Impedir atualizações em todos os recursos de pilha</h3>
+      <p>Para impedir atualizações em todos os recursos de pilha, a seguinte política especifica uma instrução <code class="code">Deny</code> para todas as ações de atualização em todos os recursos.</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Deny",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+     
+     
+     <h3 id="w9aac25c17c29c21b7">Impedir atualizações em um único recurso</h3>
+      <p>A seguinte política nega todas as ações de atualização no banco de dados com o ID lógico <code class="code">MyDatabase</code>. Isso permite todas as ações de atualização em todos os outros recursos de pilha com uma instrução <code class="code">Allow</code>. A instrução <code class="code">Allow</code> não se aplica ao recurso <code class="code">MyDatabase</code> porque a instrução <code class="code">Deny</code> sempre substitui as ações de permissão.</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Deny",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "LogicalResourceId/MyDatabase"
+    },
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+      <p>Você pode alcançar o mesmo resultado do exemplo anterior usando um padrão de negação. Quando você define uma política de pilha, o AWS CloudFormation bloqueia qualquer atualização que não é explicitamente permitida. A seguinte política permite atualizações em todos os recursos, exceto no recurso <code class="code">ProductionDatabase</code>, que é negado por padrão.</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "NotResource" : "LogicalResourceId/ProductionDatabase"
+    }
+  ]
+}</code></pre>
+      <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>Importante</h6></div><div class="awsdocs-note-text"><p>Não há risco em usar uma negação padrão. Se você tiver uma instrução <code class="code">Allow</code> em outro lugar na política (como uma instrução <code class="code">Allow</code> que usa um caractere curinga), talvez você conceda inadvertidamente permissão de atualização a recursos que você não pretendia. Como uma negação explícita substitui quaisquer ações de permissão, você pode garantir que um recurso seja protegido usando uma instrução <code class="code">Deny</code>.</p></div></div>
+     
+     
+     <h3 id="w9aac25c17c29c21b9">Impedir atualizações em todas as instâncias de um tipo de recurso</h3>
+      <p>A seguinte política nega todas as ações de atualização no tipo de recurso de instância de banco de dados do RDS. Isso permite todas as ações de atualização em todos os outros recursos de pilha com uma instrução <code class="code">Allow</code>. A instrução <code class="code">Allow</code> não se aplica ao recurso de instância de banco de dados do RDS porque uma instrução <code class="code">Deny</code> sempre substitui as ações de permissão.</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Deny",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*",
+      "Condition" : <span>{</span>
+        "StringEquals" : <span>{</span>
+          "ResourceType" : ["AWS::RDS::DBInstance"]
+        }
+      }
+    },
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+     
+     
+     <h3 id="w9aac25c17c29c21c11">Impedir atualizações de substituição em uma instância</h3>
+      <p>A seguinte política nega atualizações que poderiam causar uma substituição da instância com o ID lógico <code class="code">MyInstance</code>. Isso permite todas as ações de atualização em todos os outros recursos de pilha com uma instrução <code class="code">Allow</code>. A instrução <code class="code">Allow</code> não se aplica ao recurso <code class="code">MyInstance</code> porque a instrução <code class="code">Deny</code> sempre substitui as ações de permissão.</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Deny",
+      "Action" : "Update:Replace",
+      "Principal": "*",
+      "Resource" : "LogicalResourceId/MyInstance"
+    },
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+     
+     
+     <h3 id="w9aac25c17c29c21c13">Impedir atualizações em pilhas aninhadas</h3>
+      <p>A seguinte política nega todas as ações de atualização no tipo de recurso de pilha do AWS CloudFormation (pilhas aninhadas). Isso permite todas as ações de atualização em todos os outros recursos de pilha com uma instrução <code class="code">Allow</code>. A declaração <code class="code">Allow</code> não se aplica aos recursos de pilha do AWS CloudFormation porque a instrução <code class="code">Deny</code> sempre substitui as ações de permissão.</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Deny",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*",
+      "Condition" : <span>{</span>
+        "StringEquals" : <span>{</span>
+          "ResourceType" : ["AWS::CloudFormation::Stack"]
+        }
+      }
+    },
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+     
+  <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Atenção" /> <strong>O Javascript está desativado ou não está disponível no seu navegador.</strong></p><p>Para usar a documentação da AWS, o Javascript deve estar ativado. Consulte as páginas de Ajuda do navegador para obter instruções.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenções do documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./using-cfn--stack-update-cancel.html">Cancelar uma atualização de pilha</div><div id="next" class="next-link" accesskey="n" href="./using-cfn-updating-stacks-continueupdaterollback.html">Continuar revertendo uma atualização</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Essa página foi útil? - Sim</div><div class="content"><p>Obrigado por nos informar que estamos fazendo um bom trabalho!</p><p>Se tiver tempo, conte-nos sobre o que você gostou para que possamos melhorar ainda mais.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Essa página foi útil? - Não</div><div class="content"><p>Obrigado por nos informar que precisamos melhorar a página. Lamentamos ter decepcionado você.</p><p>Se tiver tempo, conte-nos como podemos melhorar a documentação.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

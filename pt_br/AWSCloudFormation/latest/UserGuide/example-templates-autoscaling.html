@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Passo a passo: criar uma aplicação dimensionada e com balanceamento de carga - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="example-templates-autoscaling" /><meta name="default_state" content="example-templates-autoscaling" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" /><meta name="description" content="Use esse modelo de exemplo para criar um site básico do Apache que usa o Elastic Load Balancing e o Amazon EC2 Auto Scaling." /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="Guia do usuário" /><meta name="abstract" content="Crie e gerencie implantações da infraestrutura da AWS de maneira previsível e que pode ser repetida usando o AWS CloudFormation com este Guia do usuário." /><meta name="guide-locale" content="pt_br" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="Guia do usuário" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="Guia do usuário" /><meta id="panorama-serviceConsolePage" value="Passo a passo: criar uma aplicação dimensionada e com balanceamento de carga" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Passo a passo: criar uma aplicação dimensionada e com balanceamento de carga - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,provisionamento de recursos,configuração de recursos,gerenciamento da infraestrutura,CloudFormer,Pilha do CloudFormation,Stackset do CloudFormation,Modelo do CloudFormation,conjunto de alterações" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guia do usuário",
+        "item" : "https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Trabalhar com modelos do AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/template-guide.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Demonstrações",
+        "item" : "https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/CHAP_Using.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Passo a passo: criar uma aplicação dimensionada e com balanceamento de carga",
+        "item" : "https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/CHAP_Using.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentação</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">Guia do usuário</a></div><div id="page-toc-src"><a href="#example-templates-autoscaling-full-stack-template">Modelo de pilha completo</a><a href="#example-templates-autoscaling-description">Demonstração do modelo</a><a href="#example-templates-autoscaling-launch-stack">Etapa 1: Iniciar a pilha</a><a href="#example-templates-autoscaling-clean-up">Etapa 6: Limpar recursos de amostra</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="example-templates-autoscaling">Passo a passo: criar uma aplicação dimensionada e com balanceamento de carga</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Neste passo a passo, você cria uma pilha que ajuda a configurar uma aplicação dimensionada e com balanceamento de carga. O passo a passo fornece um modelo de exemplo que você usa para criar a pilha. O modelo de exemplo provisiona um grupo do Auto Scaling, um Application Load Balancer, grupos de segurança que controlam o tráfego para o balanceador de carga e para o grupo do Auto Scaling e uma configuração de notificação do Amazon SNS para publicar notificações sobre atividades de escalabilidade. </p><p>Esse modelo cria uma ou mais instâncias do Amazon EC2 e um Application Load Balancer. Você será cobrado pelos recursos da AWS usados se criar uma pilha com base nesse modelo. </p>
+    <h2 id="example-templates-autoscaling-full-stack-template">Modelo de pilha completo</h2>
+    <p>Vamos começar com o modelo.</p>
+
+    <div class="minimized-block" data-minimized="true"><div class="minimized-content" data-minimized-height="450">
+      <p><strong>YAML</strong></p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  InstanceType:
+    Description: The EC2 instance type
+    Type: String
+    Default: t3.micro
+    AllowedValues:
+      - t3.micro
+      - t3.small
+      - t3.medium
+  KeyName:
+    Description: Name of an existing EC2 key pair to allow SSH access to the instances
+    Type: 'AWS::EC2::KeyPair::KeyName'
+  LatestAmiId:
+    Description: The latest Amazon Linux 2 AMI from the Parameter Store
+    Type: 'AWS::SSM::Parameter::Value&lt;AWS::EC2::Image::Id&gt;'
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+  OperatorEmail:
+    Description: The email address to notify when there are any scaling activities
+    Type: String
+  SSHLocation:
+    Description: The IP address range that can be used to SSH to the EC2 instances
+    Type: String
+    MinLength: 9
+    MaxLength: 18
+    Default: 0.0.0.0/0
+    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+  Subnets:
+    Type: 'List&lt;AWS::EC2::Subnet::Id&gt;'
+    Description: At least two public subnets in different Availability Zones in the selected VPC
+  VPC:
+    Type: 'AWS::EC2::VPC::Id'
+    Description: A virtual private cloud (VPC) that enables resources in public subnets to connect to the internet
+Resources:
+  ELBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ELB Security Group
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: EC2 Security Group
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        SourceSecurityGroupId:
+          Fn::GetAtt:
+          - ELBSecurityGroup
+          - GroupId
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: !Ref SSHLocation
+  EC2TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 15
+      HealthyThresholdCount: 5
+      Matcher:
+        HttpCode: '200'
+      Name: EC2TargetGroup
+      Port: 80
+      Protocol: HTTP
+      TargetGroupAttributes:
+      - Key: deregistration_delay.timeout_seconds
+        Value: '20'
+      UnhealthyThresholdCount: 3
+      VpcId: !Ref VPC
+  ALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref EC2TargetGroup
+      LoadBalancerArn: !Ref ApplicationLoadBalancer
+      Port: 80
+      Protocol: HTTP
+  ApplicationLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Scheme: internet-facing
+      Subnets: !Ref Subnets
+      SecurityGroups:
+        - !GetAtt ELBSecurityGroup.GroupId
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties: 
+      LaunchTemplateName: !Sub $<span>{</span>AWS::StackName}-launch-template
+      LaunchTemplateData:
+        ImageId: !Ref LatestAmiId
+        InstanceType: !Ref InstanceType
+        KeyName: !Ref KeyName
+        SecurityGroupIds: 
+          - !Ref EC2SecurityGroup
+        UserData:
+          Fn::Base64: !Sub |
+            #!/bin/bash
+            yum update -y
+            yum install -y httpd
+            systemctl start httpd
+            systemctl enable httpd
+            echo "&lt;h1&gt;Hello World!&lt;/h1&gt;" &gt; /var/www/html/index.html
+  NotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint: !Ref OperatorEmail
+          Protocol: email
+  WebServerGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      MaxSize: '3'
+      MinSize: '1'
+      NotificationConfigurations:
+        - TopicARN: !Ref NotificationTopic
+          NotificationTypes: ['autoscaling:EC2_INSTANCE_LAUNCH', 'autoscaling:EC2_INSTANCE_LAUNCH_ERROR', 'autoscaling:EC2_INSTANCE_TERMINATE', 'autoscaling:EC2_INSTANCE_TERMINATE_ERROR']
+      TargetGroupARNs:
+        - !Ref EC2TargetGroup
+      VPCZoneIdentifier: !Ref Subnets</code></pre>
+      <p><strong>JSON</strong></p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "AWSTemplateFormatVersion":"2010-09-09",
+  "Parameters":<span>{</span>
+    "InstanceType":<span>{</span>
+      "Description":"The EC2 instance type",
+      "Type":"String",
+      "Default":"t3.micro",
+      "AllowedValues":[
+        "t3.micro",
+        "t3.small",
+        "t3.medium"
+      ]
+    },
+    "KeyName":<span>{</span>
+      "Description":"Name of an existing EC2 key pair to allow SSH access to the instances",
+      "Type":"AWS::EC2::KeyPair::KeyName"
+    },
+    "LatestAmiId":<span>{</span>
+      "Description":"The latest Amazon Linux 2 AMI from the Parameter Store",
+      "Type":"AWS::SSM::Parameter::Value&lt;AWS::EC2::Image::Id&gt;",
+      "Default":"/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+    },
+    "OperatorEmail":<span>{</span>
+      "Description":"The email address to notify when there are any scaling activities",
+      "Type":"String"
+    },
+    "SSHLocation":<span>{</span>
+      "Description":"The IP address range that can be used to SSH to the EC2 instances",
+      "Type":"String",
+      "MinLength":9,
+      "MaxLength":18,
+      "Default":"0.0.0.0/0",
+      "ConstraintDescription":"Must be a valid IP CIDR range of the form x.x.x.x/x."
+    },
+    "Subnets":<span>{</span>
+      "Type":"List&lt;AWS::EC2::Subnet::Id&gt;",
+      "Description":"At least two public subnets in different Availability Zones in the selected VPC"
+    },
+    "VPC":<span>{</span>
+      "Type":"AWS::EC2::VPC::Id",
+      "Description":"A virtual private cloud (VPC) that enables resources in public subnets to connect to the internet"
+    }
+  },
+  "Resources":<span>{</span>
+    "ELBSecurityGroup":<span>{</span>
+      "Type":"AWS::EC2::SecurityGroup",
+      "Properties":<span>{</span>
+        "GroupDescription":"ELB Security Group",
+        "VpcId":<span>{</span>
+          "Ref":"VPC"
+        },
+        "SecurityGroupIngress":[
+          <span>{</span>
+            "IpProtocol":"tcp",
+            "FromPort":80,
+            "ToPort":80,
+            "CidrIp":"0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "EC2SecurityGroup":<span>{</span>
+      "Type":"AWS::EC2::SecurityGroup",
+      "Properties":<span>{</span>
+        "GroupDescription":"EC2 Security Group",
+        "VpcId":<span>{</span>
+          "Ref":"VPC"
+        },
+        "SecurityGroupIngress":[
+          <span>{</span>
+            "IpProtocol":"tcp",
+            "FromPort":80,
+            "ToPort":80,
+            "SourceSecurityGroupId":<span>{</span>
+              "Fn::GetAtt":[
+                "ELBSecurityGroup",
+                "GroupId"
+              ]
+            }
+          },
+          <span>{</span>
+            "IpProtocol":"tcp",
+            "FromPort":22,
+            "ToPort":22,
+            "CidrIp":<span>{</span>
+              "Ref":"SSHLocation"
+            }
+          }
+        ]
+      }
+    },
+    "EC2TargetGroup":<span>{</span>
+      "Type":"AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties":<span>{</span>
+        "HealthCheckIntervalSeconds":30,
+        "HealthCheckProtocol":"HTTP",
+        "HealthCheckTimeoutSeconds":15,
+        "HealthyThresholdCount":5,
+        "Matcher":<span>{</span>
+          "HttpCode":"200"
+        },
+        "Name":"EC2TargetGroup",
+        "Port":80,
+        "Protocol":"HTTP",
+        "TargetGroupAttributes":[
+          <span>{</span>
+            "Key":"deregistration_delay.timeout_seconds",
+            "Value":"20"
+          }
+        ],
+        "UnhealthyThresholdCount":3,
+        "VpcId":<span>{</span>
+          "Ref":"VPC"
+        }
+      }
+    },
+    "ALBListener":<span>{</span>
+      "Type":"AWS::ElasticLoadBalancingV2::Listener",
+      "Properties":<span>{</span>
+        "DefaultActions":[
+          <span>{</span>
+            "Type":"forward",
+            "TargetGroupArn":<span>{</span>
+              "Ref":"EC2TargetGroup"
+            }
+          }
+        ],
+        "LoadBalancerArn":<span>{</span>
+          "Ref":"ApplicationLoadBalancer"
+        },
+        "Port":80,
+        "Protocol":"HTTP"
+      }
+    },
+    "ApplicationLoadBalancer":<span>{</span>
+      "Type":"AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "Properties":<span>{</span>
+        "Scheme":"internet-facing",
+        "Subnets":<span>{</span>
+          "Ref":"Subnets"
+        },
+        "SecurityGroups":[
+          <span>{</span>
+            "Fn::GetAtt":[
+              "ELBSecurityGroup",
+              "GroupId"
+            ]
+          }
+        ]
+      }
+    },
+    "LaunchTemplate":<span>{</span>
+      "Type":"AWS::EC2::LaunchTemplate",
+      "Properties":<span>{</span>
+        "LaunchTemplateName":<span>{</span>
+          "Fn::Sub":"$<span>{</span>AWS::StackName}-launch-template"
+        },
+        "LaunchTemplateData":<span>{</span>
+          "ImageId":<span>{</span>
+            "Ref":"LatestAmiId"
+          },
+          "InstanceType":<span>{</span>
+            "Ref":"InstanceType"
+          },
+          "KeyName":<span>{</span>
+            "Ref":"KeyName"
+          },
+          "SecurityGroupIds":[
+            <span>{</span>
+              "Ref":"EC2SecurityGroup"
+            }
+          ],
+          "UserData":<span>{</span>
+            "Fn::Base64":<span>{</span>
+              "Fn::Join":[
+                "",
+                [
+                  "#!/bin/bash\n",
+                  "yum update -y\n",
+                  "yum install -y httpd\n",
+                  "systemctl start httpd\n",
+                  "systemctl enable httpd\n",
+                  "echo \"&lt;h1&gt;Hello World!&lt;/h1&gt;\" &gt; /var/www/html/index.html"
+                ]
+              ]
+            }
+          }
+        }
+      }
+    },
+    "NotificationTopic":<span>{</span>
+      "Type":"AWS::SNS::Topic",
+      "Properties":<span>{</span>
+        "Subscription":[
+          <span>{</span>
+            "Endpoint":<span>{</span>
+              "Ref":"OperatorEmail"
+            },
+            "Protocol":"email"
+          }
+        ]
+      }
+    },
+    "WebServerGroup":<span>{</span>
+      "Type":"AWS::AutoScaling::AutoScalingGroup",
+      "Properties":<span>{</span>
+        "LaunchTemplate":<span>{</span>
+          "LaunchTemplateId":<span>{</span>
+            "Ref":"LaunchTemplate"
+          },
+          "Version":<span>{</span>
+            "Fn::GetAtt":[
+              "LaunchTemplate",
+              "LatestVersionNumber"
+            ]
+          }
+        },
+        "MaxSize":"3",
+        "MinSize":"1",
+        "NotificationConfigurations":[
+          <span>{</span>
+            "TopicARN":<span>{</span>
+              "Ref":"NotificationTopic"
+            },
+            "NotificationTypes":[
+              "autoscaling:EC2_INSTANCE_LAUNCH",
+              "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+              "autoscaling:EC2_INSTANCE_TERMINATE",
+              "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
+            ]
+          }
+        ],
+        "TargetGroupARNs":[
+          <span>{</span>
+            "Ref":"EC2TargetGroup"
+          }
+        ],
+        "VPCZoneIdentifier":<span>{</span>
+          "Ref":"Subnets"
+        }
+      }
+    }
+  }
+}</code></pre>
+    <div class="minimized-fader"></div></div><div class="show-more-btn"><a href="#"><awsui-icon class="show-more-text" variant="link" name="caret-right-filled"></awsui-icon><span class="show-more-text">Mostrar mais</span><awsui-icon class="show-less-text" variant="link" name="caret-up-filled"></awsui-icon><span class="show-less-text">Mostrar menos</span></a></div></div>
+   
+    <h2 id="example-templates-autoscaling-description">Demonstração do modelo</h2>
+    <p>A primeira parte desse modelo especifica o <code class="code">Parameters</code>. A cada parâmetro deve receber um valor em tempo de execução para que o AWS CloudFormation provisione a pilha com êxito. Os recursos especificados mais tarde nesse modelo fazem referência a esses valores e usam os dados.</p>
+    <div class="itemizedlist">
+       
+       
+       
+       
+       
+       
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">InstanceType</code>: o tipo de instância do EC2 provisionado pelo Amazon EC2 Auto Scaling. Se não especificado, um padrão de <code class="code">t3.micro</code> será usado.</p>
+      </li><li class="listitem">
+        <p><code class="code">KeyName</code>: um par de chaves do EC2 existente para permitir o acesso SSH às instâncias.</p>
+      </li><li class="listitem">
+        <p><code class="code">LatestAmiId</code>: a imagem de máquina da Amazon (AMI) para as instâncias. Se não for especificada, suas instâncias serão iniciadas com uma AMI do Amazon Linux 2, usando um parâmetro público AWS Systems Manager mantido pelo AWS. Para obter mais informações, consulte <a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-finding-public-parameters.html">Localizar parâmetros públicos</a>, no <em>Guia do usuário do AWS Systems Manager</em>.</p>
+      </li><li class="listitem">
+        <p><code class="code">OperatorEmail</code>: o endereço de e-mail para o qual você deseja enviar notificações de atividade de escalabilidade.</p>
+      </li><li class="listitem">
+        <p><code class="code">SSHLocation</code>: o intervalo de endereços IP que pode ser usado para aplicar SSH nas instâncias.</p>
+      </li><li class="listitem">
+        <p><code class="code">Subnets</code>: pelo menos duas sub-redes públicas devem estar em diferentes zonas de disponibilidade. </p>
+      </li><li class="listitem">
+        <p><code class="code">VPC</code>: uma nuvem privada virtual (VPC) na sua conta que permite aos recursos em sub-redes públicas se conectarem à Internet. </p>
+        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>Você pode usar a VPC padrão e as sub-redes padrão para permitir que as instâncias acessem a Internet. Nesse último caso, certifique-se de que a VPC tenha uma sub-rede mapeada para cada zona de disponibilidade da região na qual você está trabalhando. No mínimo, é necessário ter duas sub-redes públicas disponíveis para criar o balanceador de carga.</p></div></div>
+      </li></ul></div>
+    <p>A próxima parte desse modelo especifica o <code class="code">Resources</code>. Esta seção especifica os recursos da pilha e suas propriedades.</p>
+    <p>Recurso <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group.html">AWS::EC2::SecurityGroup</a> <code class="code">ELBSecurityGroup</code> </p>
+    <div class="itemizedlist">
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">SecurityGroupIngress</code> contém uma regra de entrada TCP que permite acesso de <em>todos os endereços IP</em> (“CidrIp”: “0.0.0.0.0/0") na porta 80.</p>
+      </li></ul></div>
+    <p>Recurso <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group.html">AWS::EC2::SecurityGroup</a> <code class="code">EC2SecurityGroup</code> </p>
+
+    <div class="itemizedlist">
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">SecurityGroupIngress</code> contém duas regras de entrada: 1) uma regra de entrada TCP que permite acesso SSH (porta 22) a partir do intervalo de endereços IP que você fornece ao parâmetro de entrada <code class="code">SSHLocation</code> e 2) uma regra de entrada TCP que permite acesso do balanceador de carga especificando o grupo de segurança do balanceador de carga. A função <a href="./intrinsic-function-reference-getatt.html">GetAtt</a> é usada para obter o ID do grupo de segurança com o nome lógico <code class="code">ELBSecurityGroup</code>.</p>
+      </li></ul></div>
+    <p>Recurso <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html">AWS::ElasticLoadBalancingV2::TargetGroup</a> <code class="code">EC2TargetGroup</code></p>
+    <div class="itemizedlist">
+       
+       
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">Port</code>, <code class="code">Protocol</code> e <code class="code">HealthCheckProtocol</code> especificam a porta da instância (80) e o protocolo (HTTP) para onde o <code class="code">ApplicationLoadBalancer</code> roteia o tráfego e que o Elastic Load Balancing utiliza para verificar a integridade das instâncias do EC2.</p>
+      </li><li class="listitem">
+        <p><code class="code">HealthCheckIntervalSeconds</code> especifica que as instâncias do EC2 têm um intervalo de 30 segundos entre verificações de integridade. O <code class="code">HealthCheckTimeoutSeconds</code> é definido como o tempo que Elastic Load Balancing espera por uma resposta do destino da verificação de integridade (15 segundos neste exemplo). Após o tempo limite, o Elastic Load Balancing marca essa verificação de integridade da instância do EC2 como não íntegra. Quando uma instância do EC2 falha em três verificações de integridade consecutivas (<code class="code">UnhealthyThresholdCount</code>), o Elastic Load Balancing interrompe o roteamento do tráfego para essa instância do EC2 até que ela tenha cinco verificações de integridade positivas consecutivas (<code class="code">HealthyThresholdCount</code>). Nesse ponto, o Elastic Load Balancing considera a instância íntegra e começa a rotear o tráfego para ela novamente.</p>
+      </li><li class="listitem">
+        <p><code class="code">TargetGroupAttributes</code> atualiza o valor do atraso de cancelamento do registro do grupo de destino para 20 segundos. Por padrão, o Elastic Load Balancing aguarda 300 segundos antes de concluir o processo de cancelamento do registro.</p>
+      </li></ul></div>
+    <p>Recurso <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listener.html">AWS::ElasticLoadBalancingV2::Listener</a> <code class="code">ALBListener</code></p>
+    <div class="itemizedlist">
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">DefaultActions</code> especifica a porta na qual o balanceador de carga escuta, o grupo de destino ao qual o balanceador de carga encaminha solicitações e o protocolo usado para rotear as solicitações.</p>
+      </li></ul></div>
+    <p>Recurso <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-loadbalancer.html">AWS::ElasticLoadBalancingV2::LoadBalancer</a> <code class="code">ApplicationLoadBalancer</code></p>
+    <div class="itemizedlist">
+       
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">Subnets</code> usa o valor do parâmetro de entrada <code class="code">Subnets</code> como a lista de sub-redes públicas nas quais os nós do balanceador de carga serão criados.</p>
+      </li><li class="listitem">
+        <p><code class="code">SecurityGroup</code> obtém o ID do grupo de segurança que atua como um firewall virtual para seus nós de balanceador de carga a fim de controlar o tráfego de entrada. A função <a href="./intrinsic-function-reference-getatt.html">GetAtt</a> é usada para obter o ID do grupo de segurança com o nome lógico <code class="code">ELBSecurityGroup</code>.</p>
+      </li></ul></div>
+    <p>Recurso <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-launchtemplate.html">AWS::EC2::LaunchTemplate</a> <code class="code">LaunchTemplate</code></p>
+    <div class="itemizedlist">
+       
+       
+       
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">ImageId</code> usa o valor do parâmetro de entrada <code class="code">LatestAmiId</code> como a AMI a ser usada.</p>
+      </li><li class="listitem">
+        <p><code class="code">KeyName</code> usa o valor do parâmetro de entrada <code class="code">KeyName</code> como o par de chaves do EC2 a ser usado.</p>
+      </li><li class="listitem">
+        <p><code class="code">SecurityGroupIds</code> obtém o ID do grupo de segurança com o nome lógico <code class="code">EC2SecurityGroup</code> que atua como um firewall virtual para suas instâncias do EC2 a fim de controlar o tráfego de entrada.</p>
+      </li><li class="listitem">
+        <p><code class="code">UserData</code> é um script de configuração executado depois que a instância está ativa e em execução. Neste exemplo, o script instala o Apache e cria um arquivo index.html.</p>
+      </li></ul></div>
+    <p>Recurso <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sns-topic.html">AWS::SNS::Topic</a> <code class="code">NotificationTopic</code></p>
+    <div class="itemizedlist">
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">Subscription</code> usa o valor do parâmetro de entrada <code class="code">OperatorEmail</code> como o endereço de e-mail do destinatário das notificações quando há atividades de escalabilidade. </p>
+      </li></ul></div>
+    <p>Recurso <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-as-group.html">AWS::AutoScaling::AutoScalingGroup</a> <code class="code">WebServerGroup</code></p>
+    <div class="itemizedlist">
+       
+       
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">MinSize</code> e <code class="code">MaxSize</code> definem os números mínimo e máximo de instâncias do EC2 no grupo do Auto Scaling.</p>
+      </li><li class="listitem">
+        <p><code class="code">TargetGroupARNs</code> usa o ARN do grupo de destino com o nome lógico <code class="code">EC2TargetGroup</code>. À medida que esse grupo do Auto Scaling é escalado, ele automaticamente registra e cancela o registro de instâncias nesse grupo de destino.</p>
+      </li><li class="listitem">
+        <p><code class="code">VPCZoneIdentifier</code> usa o valor do parâmetro de entrada <code class="code">Subnets</code> como a lista de sub-redes públicas nas quais as instâncias do EC2 podem ser criadas.</p>
+      </li></ul></div>
+   
+    <h2 id="example-templates-autoscaling-launch-stack">Etapa 1: Iniciar a pilha</h2>
+    <p>Para iniciar a pilha, verifique se você tem permissões do AWS Identity and Access Management (IAM) para usar todos estes serviços: Amazon EC2, Amazon EC2 Auto Scaling,AWS Systems Manager, Elastic Load Balancing, Amazon SNS e AWS CloudFormation. </p>
+    <p>O procedimento a seguir envolve o upload do modelo de pilha de amostra a partir de um arquivo. Abra um editor de texto na máquina local e adicione um dos modelos. Salve o arquivo com o nome <code class="code">sampleloadbalancedappstack.template</code>.</p>
+    <p><b>Para executar o modelo de pilha</b></p>
+
+    <div class="procedure"><ol><li> <p>Faça login no AWS Management Console e abra o console AWS CloudFormation em <a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p> </li><li>
+        <p>Escolha <b>Create stack (Criar pilha)</b>, <b>With new resources (Com novos recursos (padrão))</b>.</p>
+      </li><li>
+        <p>Em <b>Specify template</b> (Especificar modelo), selecione <b>Upload a template file</b> (Carregar um arquivo de modelo) e depois <b>Choose file</b> (Escolher arquivo). </p>
+      </li><li>
+        <p>Escolha <b>Next</b> (Próximo).</p>
+      </li><li>
+        <p>Na página <b>Specify stack details</b> (Especificar detalhes da pilha), digite um nome para a pilha (por exemplo, <code class="userinput">SampleLoadBalancedAppStack</code>).</p>
+      </li><li>
+        <p>Em <b>Parameters</b> (Parâmetros), analise os parâmetros da pilha e forneça valores para todos os parâmetros que não tenham valores padrão, incluindo <b>OperatorEmail</b>, <b>SSHLocation</b>, <b>KeyName</b>, <b>VPC</b> e <b>Subnets</b>.</p>
+      </li><li>
+        <p>Escolha <b>Next</b> (Próximo) duas vezes.</p>
+      </li><li>
+        <p>Na página <b>Revisar</b>, verifique e confirme as configurações.</p>
+      </li><li>
+        <p>Selecione <b>Submit</b> (Enviar).</p>
+        <p>Você pode visualizar o status da pilha no console do AWS CloudFormation, na coluna <b>Status</b>. Quando o AWS CloudFormation criar a pilha, você receberá o status <b>CREATE_COMPLETE</b>.</p>
+        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>Depois de criar a pilha, você deve confirmar a assinatura para que o endereço de e-mail possa começar a receber notificações. Para obter mais informações, consulte <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-sns-notifications.html">Obter notificações do Amazon SNS quando o grupo do Auto Scaling é dimensionado</a> no <em>Guia do usuário do Amazon EC2 Auto Scaling</em>.</p></div></div>
+      </li></ol></div>
+   
+    <h2 id="example-templates-autoscaling-clean-up">Etapa 6: Limpar recursos de amostra</h2>
+
+    <p>Para ter certeza de que você não será cobrado por recursos de amostra não utilizados, exclua a pilha.</p>
+    <div class="procedure"><h6>Para excluir a pilha</h6><ol><li>
+        <p>No console do AWS CloudFormation, selecione a pilha <b>SampleLoadBalancedAppStack</b>.</p>
+      </li><li>
+        <p>Escolha <b>Delete</b> (Excluir).</p>
+      </li><li>
+        <p>Na mensagem de confirmação, escolha <b>Delete stack</b> (Excluir pilha).</p>
+        <p>O status de <b>SampleLoadBalancedAppStack</b> muda para <b>DELETE_IN_PROGRESS</b>. Quando o AWS CloudFormation conclui a exclusão da pilha, ela é removida da lista.</p>
+      </li></ol></div>
+    <p>Use o modelos de exemplo deste passo a passo para criar seus próprios modelos de pilha. Para obter mais informações, consulte <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/tutorial-ec2-auto-scaling-load-balancer.html">Tutorial: Configurar uma aplicação dimensionada e com balanceamento de carga</a>, no <em>Guia do usuário do Amazon EC2 Auto Scaling</em>.</p>
+  <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Atenção" /> <strong>O Javascript está desativado ou não está disponível no seu navegador.</strong></p><p>Para usar a documentação da AWS, o Javascript deve estar ativado. Consulte as páginas de Ajuda do navegador para obter instruções.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenções do documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./walkthrough-crossstackref.html">Demonstração: Consultar saídas de recurso em outra pilha do AWS CloudFormation</div><div id="next" class="next-link" accesskey="n" href="./deploying.applications.html">Implantar aplicativos </div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Essa página foi útil? - Sim</div><div class="content"><p>Obrigado por nos informar que estamos fazendo um bom trabalho!</p><p>Se tiver tempo, conte-nos sobre o que você gostou para que possamos melhorar ainda mais.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Essa página foi útil? - Não</div><div class="content"><p>Obrigado por nos informar que precisamos melhorar a página. Lamentamos ter decepcionado você.</p><p>Se tiver tempo, conte-nos como podemos melhorar a documentação.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
