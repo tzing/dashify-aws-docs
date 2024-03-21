@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="es-ES"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Tutorial: Creación de una canalización para pilas de prueba y pilas de producción - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="continuous-delivery-codepipeline-basic-walkthrough" /><meta name="default_state" content="continuous-delivery-codepipeline-basic-walkthrough" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="description" content="Aprenda a crear una canalización de CodePipeline que automatice numerosas acciones de AWS CloudFormation para conseguir un flujo de trabajo de entrega continuo." /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="Guía del usuario" /><meta name="abstract" content="Cree y administre implementaciones de infraestructura de AWS de forma predecible y repetida mediante AWS CloudFormation con esta Guía del usuario." /><meta name="guide-locale" content="es_es" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="Guía del usuario" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="Guía del usuario" /><meta id="panorama-serviceConsolePage" value="Tutorial: Creación de una canalización para pilas de prueba y pilas de producción" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Tutorial: Creación de una canalización para pilas de prueba y pilas de producción - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,aprovisionamiento de recursos,configuración de recursos,administración de la infraestructura,CloudFormer,Pila de CloudFormation,Conjunto de pilas de CloudFormation,Plantilla de CloudFormation,conjunto de cambios" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guía del usuario",
+        "item" : "https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Entrega continua con CodePipeline",
+        "item" : "https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Tutorial: Creación de una canalización para pilas de prueba y pilas de producción",
+        "item" : "https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentación</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">Guía del usuario</a></div><div id="page-toc-src"><a href="#w9aac21c11b5">Requisitos previos</a><a href="#w9aac21c11b7">Información general del tutorial</a><a href="#w9aac21c11b9">Paso 1: Editar el artefacto y cargarlo en un bucket de S3</a><a href="#w9aac21c11c11">Paso 2: Crear la pila de la canalización</a><a href="#w9aac21c11c13">Paso 3: Visualizar la pila de WordPress</a><a href="#w9aac21c11c15">Paso 4: limpie los recursos</a><a href="#w9aac21c11c19">Véase también</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="continuous-delivery-codepipeline-basic-walkthrough">Tutorial: Creación de una canalización para pilas de prueba y pilas de producción</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Imagine un proceso de publicación en el que envía una plantilla de AWS CloudFormation que AWS CloudFormation utiliza a continuación para crear una pila de prueba de forma automática. Después de revisar la pila de prueba, puede obtener una vista previa de cómo modificarán sus cambios la pila de producción y, a continuación, decidir si desea implementarlos. Para aplicar este flujo de trabajo, podría usar AWS CloudFormation para crear la pila de prueba, eliminar la pila de prueba, crear un conjunto de cambios y, a continuación, ejecutar el conjunto de cambios. No obstante, con cada acción deberá interactuar manualmente con AWS CloudFormation. En este tutorial vamos a crear una canalización de CodePipeline que automatiza muchas de estas acciones, lo que le ayudará a conseguir un flujo de trabajo de entrega continua con sus pilas de AWS CloudFormation.</p>
+    <h2 id="w9aac21c11b5">Requisitos previos</h2>
+    <p>Este tutorial presupone que ha utilizado CodePipeline y AWS CloudFormation, y sabe cómo funcionan las canalizaciones, las pilas y las plantillas de AWS CloudFormation. Para obtener más información sobre CodePipeline, consulte la <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/">Guía del usuario de AWS CodePipeline</a>. También debe contar con un <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html">bucket</a> de Amazon S3 en la región de AWS en la que creará la canalización.</p>
+    <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>importante</h6></div><div class="awsdocs-note-text"><p>La plantilla de ejemplo de WordPress crea una instancia de EC2 que requiere una conexión a Internet. Compruebe que dispone de una VPC y subred predeterminadas que permitan el tráfico a Internet.</p></div></div>
+   
+    <h2 id="w9aac21c11b7">Información general del tutorial</h2>
+    <p>En este tutorial se crea una canalización para un sitio de WordPress de ejemplo en una pila. La canalización se divide en tres fases. Cada fase debe contener al menos una acción, que es una tarea que la canalización realiza sobre los artefactos (la entrada que usted especifica). Una fase organiza las acciones en una canalización. CodePipeline debe completar todas las acciones de una fase antes de que esta procese nuevos artefactos; por ejemplo, cuando haya enviado nuevas entradas para volver a ejecutar la canalización.</p>
+    <p>Al final de este tutorial tendrá una canalización que aplicará el siguiente flujo de trabajo:</p>
+    <div class="orderedlist">
+       
+       
+       
+    <ol><li>
+        <p>La primera fase de la canalización recupera un artefacto de origen (una plantilla de AWS CloudFormation y sus archivos de configuración) de un repositorio.</p>
+        <p>Preparará un artefacto que incluirá una plantilla de WordPress de ejemplo y lo cargará en un bucket de S3.</p>
+      </li><li>
+        <p>En la segunda fase, la canalización crea una pila de prueba y, a continuación, espera su aprobación.</p>
+        <p>Después de revisar la pila de prueba, puede elegir entre continuar con la canalización original o crear y enviar otro artefacto para realizar cambios. Si da su aprobación, esta fase elimina la pila de prueba y, a continuación, la canalización continúa con la siguiente fase.</p>
+      </li><li>
+        <p>En la tercera fase, la canalización crea un conjunto de cambios para una pila de producción y, a continuación, espera su aprobación.</p>
+        <p>En la ejecución inicial, no habrá una pila de producción. El conjunto de cambios muestra todos los recursos que AWS CloudFormation creará. Si da su aprobación, esta fase ejecuta el conjunto de cambios y crea la pila de producción.</p>
+      </li></ol></div>
+    <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>nota</h6></div><div class="awsdocs-note-text"><p>AWS CloudFormation es un servicio gratuito. Sin embargo, se le cobrará por los recursos de AWS que incluya en la pila, como la instancia de EC2, aplicando la tarifa actual para cada una de ellos. Para obtener más información sobre los precios de AWS, consulte la página de detalles correspondiente a cada producto en <a href="https://aws.amazon.com/" rel="noopener noreferrer" target="_blank"><span>http://aws.amazon.com</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p></div></div>
+   
+    <h2 id="w9aac21c11b9">Paso 1: Editar el artefacto y cargarlo en un bucket de S3</h2>
+    <p>Antes de crear la canalización, debe configurar el repositorio de origen y los archivos. CodePipeline copia estos archivos de origen en el <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html">almacén de artefactos</a> de su canalización y, a continuación, los utiliza para llevar a cabo las acciones de la canalización, como, por ejemplo, crear una pila de AWS CloudFormation.</p>
+    <p>Cuando se usa Amazon Simple Storage Service (Amazon S3) como repositorio de origen, CodePipeline requiere que comprima los archivos de origen antes de cargarlos a un bucket de S3. El archivo comprimido es un artefacto de CodePipeline que puede contener una plantilla de AWS CloudFormation, un archivo de configuración de plantilla o ambos. En la guía proporcionamos un artefacto que contiene como ejemplo una plantilla de WordPress y dos archivos de configuración de plantilla. Los dos archivos de configuración especifican los valores de los parámetros de la plantilla de WordPress. CodePipeline los utiliza cuando crea las pilas de WordPress. Un archivo contiene los valores de los parámetros para una pila de prueba y el otro para una pila de producción. Tendrá que editar los archivos de configuración, por ejemplo, para especificar el nombre de un par de claves de EC2 de su propiedad. Para obtener más información acerca de los artefactos, consulte <a href="./continuous-delivery-codepipeline-cfn-artifacts.html">Artefactos de AWS CloudFormation</a>.</p>
+    <p>Después de crear el artefacto, deberá cargarlo en un bucket de S3.</p>
+    <div class="procedure"><h6>Para editar y cargar el artefacto</h6><ol><li>
+        <p>Descargue y abra el artefacto de ejemplo: <a href="https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/wordpress-single-instance.zip" rel="noopener noreferrer" target="_blank"><span>https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/wordpress-single-instance.zip</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p>
+        <p>El artefacto contiene tres archivos:</p>
+        <div class="itemizedlist">
+           
+           
+           
+        <ul class="itemizedlist"><li class="listitem">
+            <p>La plantilla de WordPress de ejemplo: <code class="code">wordpress-single-instance.yaml</code></p>
+          </li><li class="listitem">
+            <p>El archivo de configuración de plantilla para la pila de prueba: <code class="code">test-stack-configuration.json</code> </p>
+          </li><li class="listitem">
+            <p>El archivo de configuración de plantilla para la pila de producción: <code class="code">prod-stack-configuration.json</code></p>
+          </li></ul></div>
+      </li><li>
+        <p>Extraiga todos los archivos y, a continuación, utilice cualquier editor de texto para modificar los archivos de configuración de la plantilla.</p>
+        <p>Abra los archivos de configuración para comprobar que contienen los pares clave-valor que se asignarán a los parámetros de la plantilla de WordPress. Los archivos de configuración especifican los valores de los parámetros que la canalización utiliza al crear las pilas de prueba y de producción.</p>
+        <p>Edite el archivo <code class="code">test-stack-configuration.json</code> para especificar los valores de los parámetros para la pila de prueba y el archivo <code class="code">prod-stack-configuration.json</code> para la pila de producción.</p>
+        <div class="itemizedlist">
+           
+           
+        <ul class="itemizedlist"><li class="listitem">
+            <p>Cambie los valores de las claves <code class="code">DBPassword</code> y <code class="code">DBRootPassword</code> por contraseñas que sirvan para iniciar sesión en la base de datos de WordPress. Siguiendo la definición de la plantilla de WordPress, los valores de los parámetros solo pueden contener caracteres alfanuméricos.</p>
+          </li><li class="listitem">
+            <p>Cambie el valor de la clave <code class="code">KeyName</code> por un nombre de par de claves de EC2 existente en la región en la que creará la canalización.</p>
+          </li></ul></div>
+      </li><li>
+        <p>Agregue los archivos de configuración modificados al archivo (<code class="code">.zip</code>) del artefacto original sustituyendo los archivos duplicados.</p>
+        <p>Ahora tiene un artefacto personalizado que puede cargar en un bucket de S3.</p>
+      </li><li>
+        <p><a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/UploadingObjectsintoAmazonS3.html">Cargue el artefacto en un bucket de S3 de su propiedad.</a></p>
+        <p>Observe la ubicación del archivo. Tendrá que especificarla después al crear la canalización.</p>
+        <p>Notas sobre el artefacto y el bucket de S3:</p>
+        <div class="itemizedlist">
+           
+           
+           
+           
+        <ul class="itemizedlist"><li class="listitem">
+            <p>Utilice un bucket que se encuentre en la misma región de AWS en la que creará la canalización.</p>
+          </li><li class="listitem">
+            <p>CodePipeline requiere que el bucket tenga el <a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/enable-bucket-versioning.html">control de versiones habilitado</a>.</p>
+          </li><li class="listitem">
+            <p>También puede utilizar como repositorio de origen servicios que no requieren comprimir los archivos antes de cargarlos, como GitHub o CodeCommit.</p>
+          </li><li class="listitem">
+            <p>Los artefactos pueden contener información confidencial, por ejemplo contraseñas. <a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/EditingPermissionsonanObject.html">Limite el acceso</a> para que solo los usuarios autorizados puedan ver el archivo. Al hacerlo, asegúrese de que CodePipeline siga teniendo acceso al archivo.</p>
+          </li></ul></div>
+      </li></ol></div>
+    <p>Ahora tiene un artefacto que CodePipeline puede incluir en la canalización. En el siguiente paso, especificará la ubicación del artefacto y creará la canalización de WordPress.</p>
+   
+    <h2 id="w9aac21c11c11">Paso 2: Crear la pila de la canalización</h2>
+    <p>Para crear la canalización de WordPress, utilizará una plantilla de AWS CloudFormation de ejemplo. Además de crear la canalización, la plantilla configura roles del servicio de AWS Identity and Access Management (IAM) para CodePipeline y AWS CloudFormation, un bucket de S3 para el almacén de artefactos de CodePipeline y un tema de Amazon Simple Notification Service (Amazon SNS) al que la canalización envía notificaciones, como, por ejemplo, las relacionadas con comentarios. La plantilla de ejemplo facilita las tareas de aprovisionamiento y configuración de estos recursos en una única pila de AWS CloudFormation.</p>
+    <p>Para obtener más detalles sobre la configuración de la canalización, consulte <a href="#codepipeline-basic-walkthrough-template-details">Operaciones que realiza la canalización</a>.</p>
+    <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>importante</h6></div><div class="awsdocs-note-text"><p>La plantilla de ejemplo de WordPress crea una instancia de EC2 que requiere una conexión a Internet. Compruebe que su VPC y subred predeterminadas permiten dirigir tráfico a Internet.</p></div></div>
+    <div class="procedure"><h6>Para crear la pila de la canalización</h6><ol><li>
+        <p>Descargue la plantilla de ejemplo en <a href="https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/basic-pipeline.yml" rel="noopener noreferrer" target="_blank"><span>https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/basic-pipeline.yml</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>. Guárdela en su equipo.</p>
+      </li><li>
+        <p>Abra la consola de AWS CloudFormation en <a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p>
+      </li><li>
+        <p>Elija una región de AWS compatible con CodePipeline y AWS CloudFormation.</p>
+        <p>Para obtener más información, consulte <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">Regiones y puntos de enlace de AWS</a> en la <em>Referencia general de AWS</em>.</p>
+      </li><li>
+        <p>Seleccione <b>Crear pila</b>.</p>
+      </li><li>
+        <p>En <b>Specify template (Especificar plantilla)</b>, elija <b>Upload a template file (Cargar un archivo de plantilla)</b> y, a continuación, elija la plantilla que acaba de descargar, <code class="code">basic-pipeline.yml</code>.</p>
+      </li><li>
+        <p>Seleccione <b>Siguiente</b>.</p>
+      </li><li>
+        <p>Para <b>Stack name (Nombre de pila)</b>, escriba <code class="code">sample-WordPress-pipeline</code>.</p>
+      </li><li>
+        <p>En la sección <b>Parameters (Parámetros)</b> especifique los valores siguientes para los parámetros y, a continuación, elija <b>Next (Siguiente)</b>. Al configurar los parámetros de la pila, si mantuvo los mismos nombres para la plantilla de WordPress y sus archivos de configuración, puede utilizar los valores predeterminados. En caso contrario, especifique los nombres de archivo que utilizó.</p>
+        <div class="variablelist">
+           
+           
+           
+           
+        <dl>
+            <dt><span class="term"><b>PipelineName</b></span></dt>
+            <dd>
+              <p>Nombre de la canalización, por ejemplo <code class="code">WordPress-test-pipeline</code>.</p>
+            </dd>
+           
+            <dt><span class="term"><b>S3 Bucket</b></span></dt>
+            <dd>
+              <p>Nombre del bucket de S3 donde guardó el artefacto (archivo <code class="code">.zip</code>).</p>
+            </dd>
+           
+            <dt><span class="term"><b>SourceS3Key</b></span></dt>
+            <dd>
+              <p>El nombre de archivo de su artefacto. Si ha guardado el artefacto en una carpeta, inclúyala como parte del nombre de archivo, como <code class="code">folder/subfolder/wordpress-single-instance.zip</code>.</p>
+            </dd>
+           
+            <dt><span class="term"><b>Correo electrónico</b></span></dt>
+            <dd>
+              <p>Dirección de correo electrónico a la que CodePipeline envía la notificación de la canalización, por ejemplo, <code class="code">myemail@example.com</code>.</p>
+            </dd>
+          </dl></div>
+      </li><li>
+        <p>Para este tutorial, no tiene que añadir etiquetas ni especificar una configuración avanzada, así que elija <b>Next (Siguiente)</b>.</p>
+      </li><li>
+        <p>Asegúrese de que el nombre de la pila y la URL de la plantilla sean correctos y elija <b>Create stack (Crear pila)</b>.</p>
+      </li><li>
+        <p>Para confirmar que es consciente de que AWS CloudFormation podría crear recursos de IAM, seleccione la casilla de verificación.</p>
+      </li></ol></div>
+    <p>Podría llevarle varios minutos a AWS CloudFormation crear la pila. Para monitorizar el progreso, vea los eventos de la pila. Para obtener más información, consulte <a href="./cfn-console-view-stack-data-resources.html">Visualización de recursos y datos de la pila de AWS CloudFormation en la AWS Management Console</a>.</p>
+    <p>Una vez creada la pila, CodePipeline inicia la nueva canalización. Para ver el estado, consulte la <a href="https://console.aws.amazon.com/codepipeline/" rel="noopener noreferrer" target="_blank"><span>consola de CodePipeline</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>. En la lista de canalizaciones, elija <b>WordPress-test-pipeline</b>.</p>
+     
+      <h3 id="codepipeline-basic-walkthrough-template-details">Operaciones que realiza la canalización</h3>
+      <p>En esta sección se explican las tres fases de la canalización a través de fragmentos de código de la plantilla de la canalización de WordPress de ejemplo.</p>
+       
+        <h4 id="w9aac21c11c11c15b5">Fase 1: Origen</h4>
+        <p>La primera fase de la canalización es una fase de origen en la que usted especifica la ubicación de su código fuente. Cada vez que envíe una revisión a esta ubicación, CodePipeline volverá a ejecutar la canalización.</p>
+        <p>El código fuente se encuentra en un bucket de S3 y se identifica mediante su nombre de archivo. Especificó estos valores para los parámetros de entrada al crear la pila de la canalización. Para permitir usar el artefacto de origen en las fases posteriores, el fragmento especifica la propiedad <code class="code">OutputArtifacts</code>, con el nombre <code class="code">TemplateSource</code>. Para utilizar este artefacto en fases posteriores, especifique <code class="code">TemplateSource</code> como artefacto de entrada.</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">- Name: S3Source
+  Actions:
+    - Name: TemplateSource
+      ActionTypeId:
+        Category: Source
+        Owner: AWS
+        Provider: S3
+        Version: '1'
+      Configuration:
+        S3Bucket: !Ref 'S3Bucket'
+        S3ObjectKey: !Ref 'SourceS3Key'
+      OutputArtifacts:
+        - Name: TemplateSource</code></pre>
+       
+       
+        <h4 id="w9aac21c11c11c15b7">Fase 2: TestStage</h4>
+        <p>En la fase <code class="code">TestStage</code>, la canalización crea la pila de prueba, espera a su aprobación y, a continuación, elimina la pila de prueba.</p>
+        <p>Para la acción <code class="code">CreateStack</code>, la canalización utiliza el archivo de configuración de prueba y la plantilla de WordPress para crear la pila de prueba. Ambos archivos se encuentran en el artefacto de entrada <code class="code">TemplateSource</code>, que se trae de la fase de origen. El fragmento de código utiliza el modo de acción <code class="code">REPLACE_ON_FAILURE</code>. Si se produce algún error durante la creación de la pila, la canalización la sustituye para que no sea necesario limpiar o resolver problemas de la pila antes de poder volver a ejecutar la canalización. Este modo de acción es útil para una iteración rápida en pilas de prueba. Para la propiedad <code class="code">RoleArn</code>, el valor es un rol del servicio AWS CloudFormation declarado en otro lugar de la plantilla.</p>
+        <p>La acción <code class="code">ApproveTestStack</code> detiene la canalización y envía una notificación a la dirección de correo electrónico que especificó al crear la pila de la canalización. Mientras la canalización está en pausa, puede comprobar la pila de prueba de WordPress y sus recursos. Uso de CodePipeline para <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals-approve-or-reject.html">aprobar o rechazar</a> esta acción. La propiedad <code class="code">CustomData</code> incluye una descripción de la acción que va a aprobar, que la canalización añade al correo electrónico de notificación.</p>
+        <p>Después de aprobar esta acción, CodePipeline pasa a la acción <code class="code">DeleteTestStack</code> y elimina la pila de prueba de WordPress y sus recursos.</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">- Name: TestStage
+  Actions:
+    - Name: CreateStack
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      InputArtifacts:
+        - Name: TemplateSource
+      Configuration:
+        ActionMode: REPLACE_ON_FAILURE
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref TestStackName
+        TemplateConfiguration: !Sub "TemplateSource::$<span>{</span>TestStackConfig}"
+        TemplatePath: !Sub "TemplateSource::$<span>{</span>TemplateFileName}"
+      RunOrder: '1'
+    - Name: ApproveTestStack
+      ActionTypeId:
+        Category: Approval
+        Owner: AWS
+        Provider: Manual
+        Version: '1'
+      Configuration:
+        NotificationArn: !Ref CodePipelineSNSTopic
+        CustomData: !Sub 'Do you want to create a change set against the production stack and delete the $<span>{</span>TestStackName} stack?'
+      RunOrder: '2'
+    - Name: DeleteTestStack
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      Configuration:
+        ActionMode: DELETE_ONLY
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref TestStackName
+      RunOrder: '3'</code></pre>
+       
+       
+        <h4 id="w9aac21c11c11c15b9">Fase 3: ProdStage</h4>
+        <p>La fase <code class="code">ProdStage</code> de la canalización crea un conjunto de cambios en la pila de producción existente, espera a su aprobación y, a continuación, ejecuta el conjunto de cambios.</p>
+        <p>Un conjunto de cambios proporciona una vista previa de todas las modificaciones que AWS CloudFormation hará a su pila de producción antes de su aplicación. En la primera ejecución de la canalización, no habrá una pila de producción en ejecución. El conjunto de cambios muestra las acciones que AWS CloudFormation realizó al crear la pila de prueba. Para crear el conjunto de cambios, la acción <code class="code">CreateChangeSet</code> utiliza el ejemplo de plantilla de WordPress y la configuración de plantilla para producción del artefacto de entrada <code class="code">TemplateSource</code>.</p>
+        <p>De forma similar a la fase anterior, la acción <code class="code">ApproveChangeSet</code> detiene la canalización y envía una notificación por correo electrónico. Mientras la canalización está en pausa, puede ver el conjunto de cambios para comprobar todas las modificaciones propuestas a la pila de producción de WordPress. Use CodePipeline para <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals-approve-or-reject.html">aprobar o rechazar</a> esta acción y así continuar o detener la canalización, respectivamente.</p>
+        <p>Después de aprobar esta acción, <code class="code">ExecuteChangeSet</code> ejecuta el conjunto de cambios, de forma que AWS CloudFormation realice todas las acciones descritas en él. Para la ejecución inicial, AWS CloudFormation crea la pila de producción de WordPress. En las ejecuciones posteriores, AWS CloudFormation actualiza la pila.</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copiar"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">- Name: ProdStage
+  Actions:
+    - Name: CreateChangeSet
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      InputArtifacts:
+        - Name: TemplateSource
+      Configuration:
+        ActionMode: CHANGE_SET_REPLACE
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref ProdStackName
+        ChangeSetName: !Ref ChangeSetName
+        TemplateConfiguration: !Sub "TemplateSource::$<span>{</span>ProdStackConfig}"
+        TemplatePath: !Sub "TemplateSource::$<span>{</span>TemplateFileName}"
+      RunOrder: '1'
+    - Name: ApproveChangeSet
+      ActionTypeId:
+        Category: Approval
+        Owner: AWS
+        Provider: Manual
+        Version: '1'
+      Configuration:
+        NotificationArn: !Ref CodePipelineSNSTopic
+        CustomData: !Sub 'A new change set was created for the $<span>{</span>ProdStackName} stack. Do you want to implement the changes?'
+      RunOrder: '2'
+    - Name: ExecuteChangeSet
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      Configuration:
+        ActionMode: CHANGE_SET_EXECUTE
+        ChangeSetName: !Ref ChangeSetName
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref ProdStackName
+      RunOrder: '3'</code></pre>
+       
+     
+   
+    <h2 id="w9aac21c11c13">Paso 3: Visualizar la pila de WordPress</h2>
+    <p>Como CodePipeline se ejecuta en la canalización, utiliza AWS CloudFormation para crear pilas de prueba y de producción. Para ver el estado de estas pilas y su salida, utilice la consola de AWS CloudFormation.</p>
+    <div class="procedure"><h6>Para ver una pila</h6><ol><li>
+        <p>Abra la consola de AWS CloudFormation en <a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p>
+      </li><li>
+        <p>Dependiendo de si la canalización se encuentra en la fase de prueba o de producción, elija la pila <code class="code">Test-MyWordPressSite</code> o la pila <code class="code">Prod-MyWordPressSite</code>.</p>
+      </li><li>
+        <p>Para comprobar el estado de la pila, vea los <a href="./cfn-console-view-stack-data-resources.html">eventos</a> de la pila.</p>
+      </li></ol></div>
+    <p>Si la pila se encuentra en estado de error, observe el motivo del estado para encontrar el error de la pila. Corrija el error y, a continuación, vuelva a ejecutar la canalización. Si la pila se encuentra en el estado <code class="code">CREATE_COMPLETE</code>, observe sus salidas para determinar la URL del sitio de WordPress.</p>
+    <p>Ha utilizado CodePipeline con éxito para crear un flujo de trabajo de entrega continua para un sitio de WordPress de ejemplo. Si envía cambios al bucket de S3, CodePipeline detectará automáticamente la nueva versión y volverá a ejecutar la canalización. Este flujo de trabajo facilita el envío y la comprobación de los cambios antes de aplicarlos al sitio de producción.</p>
+   
+    <h2 id="w9aac21c11c15">Paso 4: limpie los recursos</h2>
+    <p>Para asegurarse de que no se le cobra por servicios no deseados, elimine los recursos.</p>
+    <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>importante</h6></div><div class="awsdocs-note-text"><p>Elimine las pilas de prueba y producción de WordPress antes de eliminar la pila de la canalización. La pila de la canalización contiene un rol de servicio necesario para eliminar las pilas de WordPress. Si ha eliminado primero la pila de la canalización, puede <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DeleteStack.html">asociar el nombre de recurso de Amazon (ARN) de otro rol de servicio</a> a las pilas de WordPress y, a continuación, eliminarlas.</p></div></div>
+    <div class="procedure"><h6>Para eliminar objetos del almacén de artefactos</h6><ol><li><p>Abra la consola de Amazon S3 en <a href="https://console.aws.amazon.com/s3/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/s3/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p></li><li>
+        <p>Elija el bucket de S3 que CodePipeline ha utilizado como almacén de artefactos de la canalización.</p>
+        <p>El nombre del bucket tiene este formato: <code class="code"><code class="replaceable">stackname-artifactstorebucket-id</code></code>. Si ha seguido este tutorial, el nombre del bucket puede ser similar al ejemplo siguiente: <code class="code">sample-WordPress-pipeline-artifactstorebucket-12345abcd12345</code>.</p>
+      </li><li>
+        <p>Elimine todos los objetos del bucket de S3 del almacén de artefactos.</p>
+        <p>Al eliminar la pila de la canalización en el paso siguiente, el bucket debe estar vacío. De lo contrario, AWS CloudFormation no podrá eliminar el bucket.</p>
+      </li></ol></div>
+    <div class="procedure"><h6>Para eliminar pilas</h6><ol><li>
+        <p>Desde la consola de AWS CloudFormation, elija la pila que desea eliminar.</p>
+        <p>Si las pilas de WordPress creadas por la canalización siguen en ejecución, elíjalas en primer lugar. De forma predeterminada, los nombres de las pilas son <code class="code">Test-MyWordPressSite</code> y <code class="code">Prod-MyWordPressSite</code>.</p>
+        <p>Si ya ha eliminado las pilas de WordPress, elija la pila <code class="code">sample-WordPress-pipeline</code>.</p>
+      </li><li>
+        <p>Elija <b>Actions (Acciones)</b> y, a continuación, elija <b>Delete Stack (Eliminar pila)</b>.</p>
+      </li><li>
+        <p>En el mensaje de confirmación, elija <b>Yes, Delete (Sí, eliminar)</b>.</p>
+      </li></ol></div>
+    <p>AWS CloudFormation elimina la pila y todos sus recursos, como la instancia de EC2, el tema de notificación, el rol de servicio y la canalización.</p>
+    <p>Ahora que sabe cómo crear un flujo de trabajo de AWS CloudFormation básico con CodePipeline, puede utilizar la plantilla y los artefactos de ejemplo como punto de partida para crear los suyos.</p>
+   
+    <h2 id="w9aac21c11c19">Véase también</h2>
+    <p>Los recursos relacionados siguientes pueden serle de ayuda cuando trabaje con estos parámetros.</p>
+    <div class="itemizedlist">
+       
+       
+       
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p>Para obtener más información sobre los parámetros de acción de AWS CloudFormation en CodePipeline, consulte la referencia de configuración de acciones de <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CloudFormation.html">AWS CloudFormation</a> en la <em>Guía del usuario de AWS CodePipeline</em>.</p>
+      </li><li class="listitem">
+        <p>Para ver valores de plantilla de ejemplo según el proveedor de acción, como para el campo <code class="code">Owner</code> o los campos <code class="code">configuration</code>, consulte la <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference.html">Action structure reference</a> (Referencia de estructura de acciones) en la <em>Guía del usuario de AWS CodePipeline</em>.</p>
+      </li><li class="listitem">
+        <p>Para descargar las plantillas de la pila de canalización de ejemplo en formato YAML o JSON, consulte los tutoriales que se encuentran en <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-cloudformation.html">Creación de una canalización con AWS CloudFormation</a> en la <em>Guía del usuario de AWS CodePipeline</em>.</p>
+      </li><li class="listitem">
+        <p>Para ver un archivo de configuración de la plantilla de ejemplo, consulte <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/continuous-delivery-codepipeline-cfn-artifacts.html">Artefactos de AWS CloudFormation</a>.</p>
+      </li></ul></div>
+  <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Aviso" /> <strong>JavaScript está desactivado o no está disponible en su navegador.</strong></p><p>Para utilizar la documentación de AWS, debe estar habilitado JavaScript. Para obtener más información, consulte las páginas de ayuda de su navegador.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenciones del documento</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./continuous-delivery-codepipeline.html">Entrega continua</div><div id="next" class="next-link" accesskey="n" href="./continuous-delivery-codepipeline-action-reference.html">Referencia de propiedades de configuración</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - Sí</div><div class="content"><p>Gracias por hacernos saber que estamos haciendo un buen trabajo.</p><p>Si tiene un momento, díganos qué es lo que le ha gustado para que podamos seguir trabajando en esa línea.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">¿Le ha servido de ayuda esta página? - No</div><div class="content"><p>Gracias por informarnos de que debemos trabajar en esta página. Lamentamos haberle defraudado.</p><p>Si tiene un momento, díganos cómo podemos mejorar la documentación.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Comentarios" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
