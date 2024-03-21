@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="it-IT"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Spostamento di risorse tra stack - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="refactor-stacks" /><meta name="default_state" content="refactor-stacks" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" /><meta name="description" content="Utilizzare la funzionalità resource import per spostare le risorse tra stack." /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="Guida per l'utente" /><meta name="abstract" content="Crea e gestisci le implementazioni AWS dell'infrastruttura in modo prevedibile e ripetuto utilizzando questa guida per AWS CloudFormation l'utente." /><meta name="guide-locale" content="it_it" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="Guida per l'utente" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="Guida per l'utente" /><meta id="panorama-serviceConsolePage" value="Spostamento di risorse tra stack" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Spostamento di risorse tra stack - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/refactor-stacks.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,provisioning delle risorse,configurazione delle risorse,gestione dell'infrastruttura,CloudFormer,CloudFormation pila,CloudFormation modello,set di modifiche" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guida per l'utente",
+        "item" : "https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Utilizzo degli stack di",
+        "item" : "https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/stacks.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Spostamento di risorse tra stack",
+        "item" : "https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/stacks.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentazione</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">Guida per l'utente</a></div><div id="page-toc-src"><a href="#refactor-stacks-console">Refactoring di uno stack utilizzando la AWS Management Console</a><a href="#refactor-stacks-cli">Refactoring di uno stack utilizzando la AWS CLI</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Le traduzioni sono generate tramite traduzione automatica. In caso di conflitto tra il contenuto di una traduzione e la versione originale in Inglese, quest'ultima prevarrà.</p></awsui-alert><h1 class="topictitle" id="refactor-stacks">Spostamento di risorse tra stack</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Utilizzando la funzionalità <code class="code">resource import</code>, è possibile spostare le risorse tra stack o eseguirne il <em>refactoring</em>. Prima di tutto è necessario aggiungere una policy di eliminazione <code class="code">Retain</code> alla risorsa da spostare per fare in modo che la risorsa venga mantenuta quando viene rimossa dallo stack di origine e importata nello stack di destinazione.</p><div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>Importante</h6></div><div class="awsdocs-note-text"><p>Non tutte le risorse supportano le operazioni di importazione. Consulta <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-supported-resources.html">Risorse che supportano le operazioni di importazione</a> prima di rimuovere una risorsa dallo stack. Se rimuovi una risorsa che non supporta le operazioni di importazione dallo stack, non potrai importarla in un altro stack o riportarla nello stack di origine.</p></div></div>
+      <h2 id="refactor-stacks-console">Refactoring di uno stack utilizzando la AWS Management Console</h2>
+      
+      <div class="procedure"><ol><li>
+            <p>Nel modello di origine specificare una <code class="code">Retain</code> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html">DeletionPolicy</a> per la risorsa che si desidera spostare.</p>
+            <p>Nel seguente modello di origine di esempio, <code class="code">Games</code> è la destinazione di questo refactoring.</p>
+            <div class="example"><h6>Esempio JSON</h6><div class="example-contents"><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Import test",
+    "Resources": <span>{</span>
+        "ServiceTable":<span>{</span>
+           "Type":"AWS::DynamoDB::Table",
+           "Properties":<span>{</span>
+              "TableName":"Service",
+              "AttributeDefinitions":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "AttributeType":"S"
+                 }
+              ],
+              "KeySchema":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "KeyType":"HASH"
+                 }
+              ],
+              "ProvisionedThroughput":<span>{</span>
+                 "ReadCapacityUnits":5,
+                 "WriteCapacityUnits":1
+              }
+           }
+        },
+        "GamesTable": <span>{</span>
+            "Type": "AWS::DynamoDB::Table",
+            <b>"DeletionPolicy": "Retain",</b>
+            "Properties": <span>{</span>
+                "TableName": "Games",
+                "AttributeDefinitions": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "AttributeType": "S"
+                    }
+                ],
+                "KeySchema": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "KeyType": "HASH"
+                    }
+                ],
+                "ProvisionedThroughput": <span>{</span>
+                    "ReadCapacityUnits": 5,
+                    "WriteCapacityUnits": 1
+                }
+            }
+        }
+    }
+}</code></pre></div></div>
+            
+         </li><li>
+            <p>Aprire la console AWS CloudFormation per eseguire un aggiornamento dello stack per applicare la policy di eliminazione.</p>
+            <ol><li>
+                  <p>Nella pagina <b>Stacks (Stack)</b> con lo stack selezionato, scegliere <b>Update (Aggiorna)</b>.</p>
+         </li><li>
+                  <p>In <b>Prepare template (Prepara modello)</b>, scegliere <b>Replace current template (Sostituisci modello corrente)</b>.</p>
+               </li><li>
+                  <p>In <b>Specify template (Specifica modello)</b>, fornire il modello di origine aggiornato con l'attributo <code class="code">DeletionPolicy</code> su <code class="code">GamesTable</code>, quindi scegliere <b>Next (Successivo)</b>.</p>  
+                  <div class="itemizedlist">
+                      
+                      
+                  <ul class="itemizedlist"><li class="listitem">
+                        <p>Scegliere <b>Amazon URL S3 (URL Amazon S3)</b>, quindi specificare l'URL per il modello di origine aggiornato nella casella di testo.</p>
+                     </li><li class="listitem">
+                        <p>Scegliere <b>Upload a template file (Carica un file modello)</b>, quindi cercare il file modello di origine aggiornato.</p>
+                     </li></ul></div>
+               </li><li>
+                  <p>Nella pagina <b>Specify stack details (Specifica dettagli stack)</b>, non sono necessarie modifiche. Seleziona <b>Successivo</b>.</p>
+               </li><li>
+                  <p>Nella pagina <b>Configure stack options (Configura opzioni stack)</b> non sono necessarie modifiche. Seleziona <b>Successivo</b>.</p>
+               </li><li>
+                  <p>Nella pagina <b>Review <code class="replaceable">stack_name (Rivedi stack_name)</code></b>, controllare le modifiche. Se il modello contiene risorse IAM, selezionare<b>I acknowledge that this template may create IAM resources (Acconsento che questo modello possa creare risorse IAM)</b> per specificare che si desidera utilizzare risorse IAM nel modello. Per ulteriori informazioni sull'utilizzo delle risorse IAM nei modelli, consulta <a href="./using-iam-template.html">Controllo dell'accesso con AWS Identity and Access Management</a>. Quindi, aggiornare lo stack di origine creando un set di modifiche o aggiornare direttamente lo stack di origine.</p>
+               </li></ol>
+         </li><li>
+            <p>Rimuovi la risorsa , i parametri  correlati e gli output dal modello di origine, quindi aggiungili al modello di destinazione.</p>
+            <p>Il modello di origine ora è simile al seguente.</p>
+            <div class="example"><h6>Esempio JSON</h6><div class="example-contents"><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Import test",
+    "Resources": <span>{</span>
+        "ServiceTable":<span>{</span>
+           "Type":"AWS::DynamoDB::Table",
+           "Properties":<span>{</span>
+              "TableName":"Service",
+              "AttributeDefinitions":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "AttributeType":"S"
+                 }
+              ],
+              "KeySchema":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "KeyType":"HASH"
+                 }
+              ],
+              "ProvisionedThroughput":<span>{</span>
+                 "ReadCapacityUnits":5,
+                 "WriteCapacityUnits":1
+              }
+           }
+        }
+    }
+}</code></pre></div></div>
+            <p>Il seguente modello di destinazione di esempio ha attualmente la risorsa <code class="code">PlayersTable</code> e ora contiene anche <code class="code">GamesTable</code>.</p>
+            <div class="example"><h6>Esempio JSON</h6><div class="example-contents"><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Import test",
+    "Resources": <span>{</span>
+        "PlayersTable": <span>{</span>
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": <span>{</span>
+                "TableName": "Players",
+                "AttributeDefinitions": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "AttributeType": "S"
+                    }
+                ],
+                "KeySchema": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "KeyType": "HASH"
+                    }
+                ],
+                "ProvisionedThroughput": <span>{</span>
+                    "ReadCapacityUnits": 5,
+                    "WriteCapacityUnits": 1
+                }
+            }
+        },
+        "GamesTable": <span>{</span>
+            "Type": "AWS::DynamoDB::Table",
+            <b>"DeletionPolicy": "Retain",</b>
+            "Properties": <span>{</span>
+                "TableName": "Games",
+                "AttributeDefinitions": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "AttributeType": "S"
+                    }
+                ],
+                "KeySchema": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "KeyType": "HASH"
+                    }
+                ],
+                "ProvisionedThroughput": <span>{</span>
+                    "ReadCapacityUnits": 5,
+                    "WriteCapacityUnits": 1
+                }
+            }
+        }
+    }
+}</code></pre></div></div>
+         </li><li>
+            <p>Ripeti i passaggi 2-3 per aggiornare nuovamente lo stack di origine, questa volta per eliminare la risorsa di destinazione dallo stack.</p>
+         </li><li>
+            <p>Eseguire un'operazione di importazione per aggiungere <code class="code">GamesTable</code> allo stack di destinazione.</p> 
+            <ol><li>
+                  <p>Nella pagina <b>Stacks (Stack)</b> con lo stack padre selezionato, scegliere <b>Stack actions (Operazioni stack)</b>, quindi scegliere <b>Import resources into stack (Importa risorse nello stack)</b>.</p>
+                  <div class="mediaobject">
+                      
+                        <img src="images/stack-actions-import.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                        L' opzione Importa risorse nello stack nella console.&#xA;                     " />
+                      
+                      
+                  </div>
+               </li><li>
+            <p>Leggere la pagina <b>Import overview (Panoramica importazione)</b> per un elenco di elementi da fornire durante questa operazione. Quindi, seleziona <b>Next</b> (Successivo).</p>
+         </li><li>
+            <p>Nella pagina <b>Specify template</b> (Specifica modello) completa una delle seguenti operazioni, quindi scegli <b>Next</b> (Avanti).</p>
+            <div class="itemizedlist">
+                
+                
+            <ul class="itemizedlist"><li class="listitem">
+                  <p>Scegliere <b>Amazon S3 URL (URL Amazon S3)</b>, quindi specificare un URL nella casella di testo.</p>
+               </li><li class="listitem">
+                  <p>Scegliere <b>Upload a template file (Carica un file modello)</b>, quindi cercare un file da caricare.</p>
+               </li></ul></div>
+         </li><li>
+            <p>Nella pagina <b>Identify resources (Identifica risorse)</b>, identificare la risorsa che si sta spostando (in questo esempio <code class="code">GamesTable</code>).</p>
+            <div class="orderedlist">
+                
+                
+                
+            <ol><li>
+                  <p>In <b>Identifier property (Proprietà identificatore)</b>, scegliere il tipo di identificatore di risorsa. Ad esempio, una risorsa <code class="code">AWS::DynamoDB::Table</code> può essere identificata utilizzando la proprietà <code class="code">TableName</code>.</p>
+               </li><li>
+                  <p>In <b>Identifier value (Valore identificatore)</b>, digitare il valore effettivo della proprietà. Ad esempio, <code class="code"><code class="replaceable">GamesTables</code></code>.</p>
+                  <div class="mediaobject">
+                      
+                        <img src="images/resources-to-import-identifiers.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                        La pagina relativa all'identificazione delle risorse nella console.&#xA;                     " />
+                      
+                      
+                  </div>
+               </li><li>
+                  <p>Seleziona <b>Successivo</b>.</p>
+               </li></ol></div>
+         </li><li>
+            <p>Nella pagina <b>Specify stack details (Specifica dettagli stack)</b>, modificare i parametri, quindi scegliere <b>Next (Successivo)</b>. Questo crea automaticamente un set di modifiche.</p>
+            <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>Importante</h6></div><div class="awsdocs-note-text"><p>L'operazione di importazione ha esito negativo se si modificano i parametri esistenti che iniziano un'operazione di creazione, aggiornamento o eliminazione.</p></div></div>
+         </li><li>
+            <p>Nella pagina <b>Review <code class="replaceable">stack-name</code></b>(Rivedi nome stack), verificare che venga importata la risorsa corretta, quindi scegliere <b>Import resources (Importa risorse)</b>. In questo modo il set di modifiche creato nell'ultima fase viene avviato automaticamente. Tutti i <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-add-tags.html">tag a livello di stack</a> vengono applicati alle risorse importate in questo momento.</p>
+         </li><li>
+            <p>Per lo stack padre viene visualizzato il riquadro <b>Events (Eventi)</b> della pagina <b>Stack details (Dettagli stack)</b>.</p>
+            <div class="mediaobject">
+                
+                  <img src="images/import-events.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                  La scheda Eventi nella console.&#xA;               " />
+                
+                
+            </div>
+            <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Nota</h6></div><div class="awsdocs-note-text"><p>Non è necessario eseguire il rilevamento della deviazione nello stack padre dopo questa operazione di importazione perché la risorsa <code class="code">AWS::CloudFormation::Stack</code> è già gestita da AWS CloudFormation.</p></div></div>
+         </li></ol>
+         </li></ol></div>
+      
+    
+      <h2 id="refactor-stacks-cli">Refactoring di uno stack utilizzando la AWS CLI</h2>
+   <div class="procedure"><ol><li>
+         <p>Nel modello di origine specificare una <code class="code">Retain</code> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html">DeletionPolicy</a> per la risorsa che si desidera spostare.</p>
+         <p>Nel seguente modello di origine di esempio, <code class="code">GamesTable</code> è la destinazione di questo refactoring.</p>
+         <div class="example"><h6>Esempio JSON</h6><div class="example-contents"><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Import test",
+    "Resources": <span>{</span>
+        "ServiceTable":<span>{</span>
+           "Type":"AWS::DynamoDB::Table",
+           "Properties":<span>{</span>
+              "TableName":"Service",
+              "AttributeDefinitions":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "AttributeType":"S"
+                 }
+              ],
+              "KeySchema":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "KeyType":"HASH"
+                 }
+              ],
+              "ProvisionedThroughput":<span>{</span>
+                 "ReadCapacityUnits":5,
+                 "WriteCapacityUnits":1
+              }
+           }
+        },
+        "GamesTable": <span>{</span>
+            "Type": "AWS::DynamoDB::Table",
+            <b>"DeletionPolicy": "Retain",</b>
+            "Properties": <span>{</span>
+                "TableName": "Games",
+                "AttributeDefinitions": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "AttributeType": "S"
+                    }
+                ],
+                "KeySchema": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "KeyType": "HASH"
+                    }
+                ],
+                "ProvisionedThroughput": <span>{</span>
+                    "ReadCapacityUnits": 5,
+                    "WriteCapacityUnits": 1
+                }
+            }
+        }
+    }
+}</code></pre></div></div>
+      </li><li>
+         <p>Aggiornare lo stack di origine per applicare la policy di eliminazione alla risorsa.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh ">aws cloudformation update-stack --stack-name "<code class="replaceable">source-stack-name</code>"</code></pre>
+      </li><li>
+         <p>Rimuovi la risorsa , i parametri  correlati e gli output dal modello di origine, quindi aggiungili al modello di destinazione.</p>
+         <p>Il modello di origine ora è simile al seguente.</p>
+         <div class="example"><h6>Esempio JSON</h6><div class="example-contents"><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Import test",
+    "Resources": <span>{</span>
+        "ServiceTable":<span>{</span>
+           "Type":"AWS::DynamoDB::Table",
+           "Properties":<span>{</span>
+              "TableName":"Service",
+              "AttributeDefinitions":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "AttributeType":"S"
+                 }
+              ],
+              "KeySchema":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "KeyType":"HASH"
+                 }
+              ],
+              "ProvisionedThroughput":<span>{</span>
+                 "ReadCapacityUnits":5,
+                 "WriteCapacityUnits":1
+              }
+           }
+        }
+    }
+}</code></pre></div></div>
+         <p>Il seguente modello di destinazione di esempio ha attualmente la risorsa <code class="code">PlayersTable</code> e ora contiene anche <code class="code">GamesTable</code>.</p>
+         <div class="example"><h6>Esempio JSON</h6><div class="example-contents"><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Import test",
+    "Resources": <span>{</span>
+        "PlayersTable": <span>{</span>
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": <span>{</span>
+                "TableName": "Players",
+                "AttributeDefinitions": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "AttributeType": "S"
+                    }
+                ],
+                "KeySchema": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "KeyType": "HASH"
+                    }
+                ],
+                "ProvisionedThroughput": <span>{</span>
+                    "ReadCapacityUnits": 5,
+                    "WriteCapacityUnits": 1
+                }
+            }
+        },
+        "GamesTable": <span>{</span>
+            "Type": "AWS::DynamoDB::Table",
+            <b>"DeletionPolicy": "Retain",</b>
+            "Properties": <span>{</span>
+                "TableName": "Games",
+                "AttributeDefinitions": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "AttributeType": "S"
+                    }
+                ],
+                "KeySchema": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "KeyType": "HASH"
+                    }
+                ],
+                "ProvisionedThroughput": <span>{</span>
+                    "ReadCapacityUnits": 5,
+                    "WriteCapacityUnits": 1
+                }
+            }
+        }
+    }
+}</code></pre></div></div>
+      </li><li>
+         <p>Aggiornare lo stack di origine per eliminare la risorsa <code class="code">GamesTable</code> e i relativi parametri e output dallo stack.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh ">aws cloudformation update-stack --stack-name "<code class="replaceable">source-stack-name</code>"</code></pre>
+      </li><li>
+         <p>Crea un set di modifiche di tipo <code class="code">IMPORT</code> con i seguenti parametri. <code class="code">--resources-to-import</code> non supporta YAML in linea.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">&gt;</code><code class="userinput">aws cloudformation create-change-set
+    --stack-name <code class="replaceable">TargetStack</code> --change-set-name <code class="replaceable">ImportChangeSet</code>
+    <b>--change-set-type <code class="replaceable">IMPORT</code>
+    --resources-to-import "[<span>{</span>\"ResourceType\":\"<code class="replaceable">AWS::DynamoDB::Table</code>\",\"LogicalResourceId\":\"<code class="replaceable">GamesTable</code>\",\"ResourceIdentifier\":<span>{</span>\"<code class="replaceable">TableName</code>\":\"<code class="replaceable">Games</code>\"}}]"</b>
+    --template-body <code class="replaceable">file://templateToImport.json</code></code></code></pre>
+         <p>AWS CLI supporta anche i file di testo come input per il parametro <code class="code">resources-to-import</code>, come mostrato nell'esempio precedente.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="text ">--resources-to-import <code class="replaceable">file://resourcesToImport.txt</code></code></pre>
+          <p>In questa spiegazione passo per passo, <code class="replaceable">file://resourceToImport.txt</code> contiene quanto segue.</p>
+          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">[
+  <span>{</span>
+      "ResourceType":"AWS::DynamoDB::Table",
+      "LogicalResourceId":"GamesTable",
+      "ResourceIdentifier": <span>{</span>
+        "TableName":"Games"
+      }
+  }
+]</code></pre>
+      </li><li>
+         <p>Esaminare il set di modifiche per assicurarsi che la risorsa corretta venga importata nello stack di destinazione.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh ">aws cloudformation describe-change-set --change-set-name <code class="replaceable">ImportChangeSet</code></code></pre>
+      </li><li>
+          <p>Avvia il set di modifiche per importare la risorsa nello stack di destinazione. Tutti i <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-add-tags.html">tag a livello di stack</a> vengono applicati alle risorse importate in questo momento. Al completamento dell'operazione <code class="code">(IMPORT_COMPLETE)</code>, la risorsa viene importata correttamente.</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh ">aws cloudformation execute-change-set --change-set-name <code class="replaceable">ImportChangeSet</code> --stack-name (TargetStackName)</code></pre>
+         <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Nota</h6></div><div class="awsdocs-note-text"><p>Non è necessario eseguire il rilevamento della deviazione nello stack di destinazione dopo questa operazione di importazione perché la risorsa è già gestita da AWS CloudFormation.</p></div></div>
+      </li></ol></div>
+   <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Avvertimento" /> <strong>JavaScript è disabilitato o non è disponibile nel tuo browser.</strong></p><p>Per usare la documentazione AWS, JavaScript deve essere abilitato. Consulta le pagine della guida del browser per le istruzioni.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenzioni dei documenti</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./stack-failure-options.html">Opzioni di errore degli stack</div><div id="next" class="next-link" accesskey="n" href="./resource-import-supported-resources.html">Supporto per tipi di risorse</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Questa pagina ti è stata utile? - Sì</div><div class="content"><p>Grazie per averci comunicato che stiamo facendo un buon lavoro!</p><p>Se hai un momento, ti invitiamo a dirci che cosa abbiamo fatto che ti è piaciuto così possiamo offrirti altri contenuti simili.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/refactor-stacks.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Questa pagina ti è stata utile? - No</div><div class="content"><p>Grazie per averci comunicato che questa pagina ha bisogno di essere modificata. Siamo spiacenti di non aver soddisfatto le tue esigenze.</p><p>Se hai un momento, ti invitiamo a dirci come possiamo migliorare la documentazione.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/refactor-stacks.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

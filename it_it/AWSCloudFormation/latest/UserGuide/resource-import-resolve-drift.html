@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="it-IT"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Risoluzione della deviazione con un'operazione di importazione - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="resource-import-resolve-drift" /><meta name="default_state" content="resource-import-resolve-drift" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" /><meta name="description" content="Ci possono essere casi in cui la configurazione di una risorsa ha deviato dalla configurazione prevista e si desidera accettare la nuova configurazione come configurazione prevista. Nella maggior parte dei casi, è possibile risolvere i risultati della deviazione aggiornando la definizione della risorsa nel modello di stack con una nuova configurazione e quindi eseguire un aggiornamento dello stack. Tuttavia, se la nuova configurazione aggiorna una proprietà della risorsa che richiede la sostituzione, la risorsa verrà ricreata durante l'aggiornamento dello stack. Se si desidera mantenere la risorsa esistente, è possibile utilizzare la caratteristica di importazione delle risorse per aggiornare la risorsa e risolvere i risultati della deviazione senza causare la sostituzione della risorsa." /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="Guida per l'utente" /><meta name="abstract" content="Crea e gestisci le implementazioni AWS dell'infrastruttura in modo prevedibile e ripetuto utilizzando questa guida per AWS CloudFormation l'utente." /><meta name="guide-locale" content="it_it" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="Guida per l'utente" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="Guida per l'utente" /><meta id="panorama-serviceConsolePage" value="Risoluzione della deviazione con un'operazione di importazione" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Risoluzione della deviazione con un'operazione di importazione - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,provisioning delle risorse,configurazione delle risorse,gestione dell'infrastruttura,CloudFormer,CloudFormation pila,CloudFormation modello,set di modifiche" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Guida per l'utente",
+        "item" : "https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Utilizzo degli stack di",
+        "item" : "https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/stacks.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Rilevamento di modifiche non gestite della configurazione di stack e risorse",
+        "item" : "https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Risoluzione della deviazione con un'operazione di importazione",
+        "item" : "https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Documentazione</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">Guida per l'utente</a></div><div id="page-toc-src"><a href="#resource-import-resolve-drift-console">Risolvere la deriva con un'operazione di importazione utilizzando la console CloudFormation</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Le traduzioni sono generate tramite traduzione automatica. In caso di conflitto tra il contenuto di una traduzione e la versione originale in Inglese, quest'ultima prevarrà.</p></awsui-alert><h1 class="topictitle" id="resource-import-resolve-drift">Risoluzione della deviazione con un'operazione di importazione</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Ci possono essere casi in cui la configurazione di una risorsa ha deviato dalla configurazione prevista e si desidera accettare la nuova configurazione come configurazione prevista. Nella maggior parte dei casi, è possibile risolvere i risultati della deviazione aggiornando la definizione della risorsa nel modello di stack con una nuova configurazione e quindi eseguire un aggiornamento dello stack. Tuttavia, se la nuova configurazione aggiorna una proprietà della risorsa che richiede la sostituzione, la risorsa verrà ricreata durante l'aggiornamento dello stack. Se si desidera mantenere la risorsa esistente, è possibile utilizzare la caratteristica di importazione delle risorse per aggiornare la risorsa e risolvere i risultati della deviazione senza causare la sostituzione della risorsa.</p><p>La risoluzione della deviazione per una risorsa tramite un'operazione di importazione consiste nelle fasi di base riportate di seguito.</p><div class="itemizedlist">
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p><a href="#resource-import-resolve-drift-console-step-01-update-stack">Aggiungere un attributo DeletionPolicy, impostato su Retain, alla risorsa</a>. In questo modo la risorsa esistente viene mantenuta anziché eliminata quando viene rimossa dallo stack.</p>
+            </li><li class="listitem">
+                <p><a href="#resource-import-resolve-drift-console-step-02-remove-drift">Rimuovere la risorsa dal modello ed eseguire un'operazione di aggiornamento dello stack</a>. Questa operazione rimuove la risorsa dallo stack, ma non la elimina.</p>
+            </li><li class="listitem">
+                <p><a href="#resource-import-resolve-drift-console-step-03-update-template">Descrivere lo stato effettivo della risorsa nel modello di stack e quindi importare nuovamente la risorsa esistente nello stack</a>. Questa operazione aggiunge nuovamente la risorsa nello stack e risolve le differenze di proprietà che causavano i risultati di deviazione.</p>
+            </li></ul></div><p>Per ulteriori informazioni sull'importazione delle risorse, consulta <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import.html">Portare le risorse esistenti nella gestione CloudFormation</a>. Per un elenco delle risorse che supportano le operazioni di importazione, consulta <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-supported-resources.html">Risorse che supportano le operazioni di importazione</a>.</p><p>In questo esempio, viene utilizzato il modello seguente, denominato <code class="code">templateToImport.json</code>.</p><awsdocs-tabs><dl style="display: none">
+            <dt>Example JSON</dt><dd tab-id="tab_json">
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Import test",
+    "Resources": <span>{</span>
+         "ServiceTable":<span>{</span>
+           "Type":"AWS::DynamoDB::Table",
+           "Properties":<span>{</span>
+              "TableName":"Service",
+              "AttributeDefinitions":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "AttributeType":"S"
+                 }
+              ],
+              "KeySchema":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "KeyType":"HASH"
+                 }
+              ],
+              "BillingMode": "PROVISIONED",
+              "ProvisionedThroughput":<span>{</span>
+                 "ReadCapacityUnits":5,
+                 "WriteCapacityUnits":1
+              }
+           }
+        },
+        "GamesTable": <span>{</span>
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": <span>{</span>
+                "TableName": "Games",
+                "AttributeDefinitions": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "AttributeType": "S"
+                    }
+                ],
+                "KeySchema": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "KeyType": "HASH"
+                    }
+                ],
+                "BillingMode": "PROVISIONED",
+                "ProvisionedThroughput": <span>{</span>
+                    "ReadCapacityUnits": 5,
+                    "WriteCapacityUnits": 1
+                }
+            }
+        }
+    }
+}</code></pre>
+                </dd>
+            <dt>Example YAML</dt><dd tab-id="example-yaml">
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">AWSTemplateFormatVersion: 2010-09-09
+Description: Import test
+Resources:
+  ServiceTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: Service
+      AttributeDefinitions:
+        - AttributeName: key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: key
+          KeyType: HASH
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 1
+  GamesTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: Games
+      AttributeDefinitions:
+        - AttributeName: key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: key
+          KeyType: HASH
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 1</code></pre>
+                </dd>
+        </dl></awsdocs-tabs><p>In questo esempio, supponiamo che un utente abbia modificato una risorsa <em>al di fuori</em> di CloudFormation. Dopo aver eseguito il rilevamento della deviazione, abbiamo scoperto che è <code class="code">GamesTable</code> stato modificato da <code class="code">BillingMode</code> in <code class="code">PAY_PER_REQUEST</code>. Per ulteriori informazioni, consulta <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">Rilevamento di modifiche non gestite della configurazione di stack e risorse</a>.</p><div class="mediaobject">
+             
+                <img src="images/drift-results-gamestable.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                I risultati della deviazione mostrano i risultati previsti ed effettivi nella console.&#xA;            " />
+             
+             
+        </div><p>Il nostro stack è ora obsoleto, le nostre risorse sono attive, ma vogliamo preservare la configurazione delle risorse desiderata. Possiamo farlo risolvendo la deviazione attraverso un'operazione di importazione, senza interrompere i servizi.</p>
+            <h2 id="resource-import-resolve-drift-console">Risolvere la deriva con un'operazione di importazione utilizzando la console CloudFormation</h2>
+       
+                <h3 id="resource-import-resolve-drift-console-step-01-update-stack">Fase 1. Aggiornare lo stack con la policy di eliminazione Retain</h3>
+                <div class="procedure"><h6>Per aggiornare lo stack utilizzando un attributo <code class="code">DeletionPolicy</code> con l'opzione <code class="code">Retain</code></h6><ol><li><p>Accedere alla AWS Management Console e aprire la console di AWS CloudFormation all'indirizzo <a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p></li><li>
+                        
+                        <p>Nella pagina <b>Stacks (stack)</b> scegliere lo stack che ha deviato.</p>
+                    </li><li>
+                        <p>Scegliere <b>Update (Aggiorna)</b>, quindi <b>Replace current template (Sostituisci modello corrente)</b> dal riquadro dei dettagli dello stack.</p>
+                    </li><li>
+                        <p>Nella pagina <b>Specify template (Specifica modello)</b> fornire il modello aggiornato contenente l'attributo <code class="code">DeletionPolicy</code> con l'opzione <code class="code">Retain</code> utilizzando uno dei seguenti metodi:</p>
+                        <div class="itemizedlist">
+                             
+                             
+                        <ul class="itemizedlist"><li class="listitem">
+                                <p>Scegliere <b>Amazon S3 URL (URL Amazon S3)</b>, quindi specificare l'URL per il tuo modello nella casella di testo.</p>
+                            </li><li class="listitem">
+                                <p>Scegliere <b>Upload a template file (Carica un file modello)</b>, quindi cercare il modello.</p>
+                            </li></ul></div>
+                        <p>Quindi, seleziona <b>Next</b> (Successivo).</p>
+                    </li><li>
+                        <p>Esaminare la pagina <b>Specify stack details (Specifica dettagli stack)</b> e scegliere <b>Next (Avanti)</b>.</p>
+                    </li><li>
+                        <p>Esaminare la pagina <b>Configure stack options (Configura opzioni stack)</b> e scegliere <b>Next (Avanti)</b>.</p>
+                    </li><li>
+                        <p>Nella pagina <b>Review <code class="replaceable">stack name</code> (Esamina nome stack)</b> scegliere <b>Update stack (Aggiorna stack)</b>.</p>
+                    </li></ol></div>
+                <p><em>Risultati</em>: nella pagina <b>Events (Eventi)</b> dello stack, lo stato è <code class="code">UPDATE_COMPLETE</code>.</p>
+                <p>Per risolvere la deviazione attraverso un'operazione di importazione, senza interrompere i servizi, specificare un attributo <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html">DeletionPolicy</a> <code class="code">Retain</code> per le risorse che si desidera rimuovere dallo stack. Nell'esempio seguente è stato aggiunto un attributo <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html">DeletionPolicy</a> impostato su <code class="code">Retain</code>, alla risorsa <code class="code">GamesTable</code>.</p>
+                <awsdocs-tabs><dl style="display: none">
+                    <dt>Example JSON</dt><dd tab-id="example-json">
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">    "GamesTable": <span>{</span>
+        "Type": "AWS::DynamoDB::Table",
+        <b>"DeletionPolicy": "Retain",</b>
+        "Properties": <span>{</span>
+            "TableName": "Games",</code></pre>
+                        </dd>
+                    <dt>Example YAML</dt><dd tab-id="example-yaml">
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">  GamesTable:
+    Type: 'AWS::DynamoDB::Table'
+   <b>DeletionPolicy: Retain</b>
+    Properties:
+      TableName: Games</code></pre>
+                        </dd>
+                </dl></awsdocs-tabs>
+             
+       
+                <h3 id="resource-import-resolve-drift-console-step-02-remove-drift">Fase 2. Rimozione delle risorse deviate, dei parametri correlati e degli output</h3>
+                <div class="procedure"><h6>Per rimuovere le risorse deviate, i parametri correlati e gli output</h6><ol><li>
+                        <p>Scegliere <b>Update (Aggiorna)</b>, quindi <b>Replace current template (Sostituisci modello corrente)</b> dal riquadro dei dettagli dello stack.</p>
+                    </li><li>
+                        <p>Nella pagina <b>Specify template (Specifica modello)</b> fornire al modello aggiornato le risorse, i parametri correlati e gli output rimossi dal modello di stack utilizzando uno dei seguenti metodi:</p>
+                        <div class="itemizedlist">
+                             
+                             
+                        <ul class="itemizedlist"><li class="listitem">
+                                <p>Scegliere <b>Amazon S3 URL (URL Amazon S3)</b>, quindi specificare l'URL per il tuo modello nella casella di testo.</p>
+                            </li><li class="listitem">
+                                <p>Scegliere <b>Upload a template file (Carica un file modello)</b>, quindi cercare il modello.</p>
+                            </li></ul></div>
+                        <p>Quindi, seleziona <b>Next</b> (Successivo).</p>
+                    </li><li>
+                        <p>Esaminare la pagina <b>Specify stack details (Specifica dettagli stack)</b> e scegliere <b>Next (Avanti)</b>.</p>
+                    </li><li>
+                        <p>Esaminare la pagina <b>Configure stack options (Configura opzioni stack)</b> e scegliere <b>Next (Avanti)</b>.</p>
+                    </li><li>
+                        <p>Nella pagina <b>Review <code class="replaceable">stack name</code> (Esamina nome stack)</b> scegliere <b>Update stack (Aggiorna stack)</b>.</p>
+                    </li></ol></div>
+                <p><em>Risultati</em>: <b>Logical ID (ID logico)</b> <code class="code">GamesTable</code> ha lo stato <code class="code">DELETE_SKIPPED</code> nella pagina <b>Events (Eventi)</b> dello stack.</p>
+                <p>Attendere fino a che CloudFormation completa l'operazione di aggiornamento dello stack. Al termine dell'operazione di aggiornamento dello stack, rimuovere la risorsa, i parametri correlati e gli output dal modello di stack. Quindi, importare il modello aggiornato. Dopo aver completato queste operazioni, il modello di esempio sarà simile al seguente.</p>
+                <awsdocs-tabs><dl style="display: none">
+                    <dt>Example JSON</dt><dd tab-id="example-json">
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Import test",
+    "Resources": <span>{</span>
+         "ServiceTable":<span>{</span>
+           "Type":"AWS::DynamoDB::Table",
+           "Properties":<span>{</span>
+              "TableName":"Service",
+              "AttributeDefinitions":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "AttributeType":"S"
+                 }
+              ],
+              "KeySchema":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "KeyType":"HASH"
+                 }
+              ],
+              "BillingMode": "PROVISIONED",
+              "ProvisionedThroughput":<span>{</span>
+                 "ReadCapacityUnits":5,
+                 "WriteCapacityUnits":1
+              }
+           }
+        }
+    }
+}</code></pre>
+                        </dd>
+                    <dt>Example YAML</dt><dd tab-id="example-yaml">
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">AWSTemplateFormatVersion: 2010-09-09
+Description: Import test
+Resources:
+  ServiceTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: Service
+      AttributeDefinitions:
+        - AttributeName: key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: key
+          KeyType: HASH
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 1</code></pre>
+                        </dd>
+                </dl></awsdocs-tabs>
+             
+       
+                <h3 id="resource-import-resolve-drift-console-step-03-update-template">Fase 3. Aggiornamento del modello in modo che corrisponda allo stato attivo delle risorse</h3>
+                <div class="procedure"><h6>Per aggiornare il modello in modo che corrisponda allo stato attivo delle risorse</h6><ol><li>
+                        <p>Per importare il modello aggiornato, scegliere <b>Stack actions (Operazioni stack)a</b> quindi scegliere <b>Import resources into stack (Importa risorse nello stack)</b>.</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/stack-actions-import.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                                L' opzione Importa risorse nello stack nella console.&#xA;                            " />
+                             
+                             
+                        </div>
+                    </li><li>
+                        <p>Esaminare la pagina <b>Import overview (Panoramica importazione)</b> per un elenco di elementi da fornire durante questa operazione, quindi scegliere <b>Next (Avanti)</b>.</p>
+                    </li><li>
+                        <p>Nella pagina <b>Specify model (Specifica modello)</b>, fornire il modello aggiornato utilizzando uno dei metodi descritti di seguito.</p>
+                        <div class="itemizedlist">
+                             
+                             
+                        <ul class="itemizedlist"><li class="listitem">
+                                <p>Scegliere <b>Amazon S3 URL (URL Amazon S3)</b>, quindi specificare l'URL per il tuo modello nella casella di testo.</p>
+                            </li><li class="listitem">
+                                <p>Scegliere <b>Upload a template file (Carica un file modello)</b>, quindi cercare il modello.</p>
+                            </li></ul></div>
+                        <p>Quindi, seleziona <b>Next</b> (Successivo).</p>
+                    </li><li>
+                        <p>Nella pagina <b>Identify resources (Identifica risorse)</b>, identifica ogni risorsa di destinazione.</p>
+                        <ol><li>
+                                <p>In <b>Identifier property (Proprietà identificatore)</b>, scegliere il tipo di identificatore di risorsa. Ad esempio, la proprietà <code class="code">TableName</code> identificherà la risorsa <code class="code">AWS::DynamoDB::Table</code>.</p>
+                            </li><li>
+                                <p>In <b>Identifier value (Valore identificatore)</b>, immettere il valore effettivo della proprietà. Nel modello di esempio, <code class="code">TableName</code> per la risorsa <code class="code">GamesTable</code> è <code class="code">Games</code>.</p>
+                                <div class="mediaobject">
+                                     
+                                        <img src="images/resources-to-import-identifiers.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                                        La pagina relativa all'identificazione delle risorse nella console.&#xA;                                    " />
+                                     
+                                     
+                                </div>
+                            </li><li>
+                                <p>Seleziona <b>Successivo</b>.</p>
+                            </li></ol>
+                    </li><li>
+                        <p>Esaminare la pagina <b>Specify stack details (Specifica dettagli stack)</b> e scegliere <b>Next (Avanti)</b>.</p>
+                    </li><li>
+                        <p>Nella pagina <b>Import overview (Panoramica importazione)</b> esaminare le risorse importate, quindi scegliere <b>Import resources (Importa risorse)</b>. Questa operazione importerà il tipo di risorsa <code class="code">AWS::DynamoDB::Table</code> nello stack.</p>
+                    </li></ol></div>
+                <p><em>Risultati</em>: in questo esempio, è stata risolta la deviazione delle risorse attraverso un'operazione di importazione, senza interrompere i servizi. È possibile controllare lo stato di avanzamento di un'operazione di importazione nella console CloudFormation nella scheda Events (Eventi). Le risorse importate avranno uno stato <code class="code">IMPORT_COMPLETE</code> seguito da uno stato <code class="code">CREATE_COMPLETE</code> con <b>Resource import complete (Importazione risorse completata)</b> come motivo dello stato.</p>
+                <p>Attendere fino a che CloudFormation completa l'operazione di aggiornamento dello stack. Al termine dell'operazione di aggiornamento dello stack, aggiornare il modello in modo che corrisponda allo stato effettivo di deviazione delle risorse. Ad esempio, <code class="code">BillingMode</code> verrà impostato su <code class="code">PAY_PER_REQUEST</code> e <code class="code">ReadCapacityUnits</code> e <code class="code">WriteCapacityUnits</code> saranno impostati su <code class="code">0</code>.</p>
+                <awsdocs-tabs><dl style="display: none">
+                    <dt>Example JSON</dt><dd tab-id="example-json">
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Import test",
+    "Resources": <span>{</span>
+         "ServiceTable":<span>{</span>
+           "Type":"AWS::DynamoDB::Table",
+           "Properties":<span>{</span>
+              "TableName":"Service",
+              "AttributeDefinitions":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "AttributeType":"S"
+                 }
+              ],
+              "KeySchema":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "KeyType":"HASH"
+                 }
+              ],
+              "BillingMode": "PROVISIONED",
+              "ProvisionedThroughput":<span>{</span>
+                 "ReadCapacityUnits":5,
+                 "WriteCapacityUnits":1
+              }
+           }
+        },
+        "GamesTable": <span>{</span>
+            "Type": "AWS::DynamoDB::Table",
+            "DeletionPolicy": "Retain",
+            "Properties": <span>{</span>
+                "TableName": "Games",
+                "AttributeDefinitions": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "AttributeType": "S"
+                    }
+                ],
+                "KeySchema": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "KeyType": "HASH"
+                    }
+                ],
+                <b>"BillingMode": "PAY_PER_REQUEST",</b>
+                "ProvisionedThroughput": <span>{</span>
+                    "ReadCapacityUnits": 0,
+                    "WriteCapacityUnits": 0
+                }
+            }
+        }
+    }
+}
+</code></pre>
+                        </dd>
+                    <dt>Example YAML</dt><dd tab-id="example-yaml">
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copia"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">AWSTemplateFormatVersion: 2010-09-09
+Description: Import test
+Resources:
+  ServiceTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: Service
+      AttributeDefinitions:
+        - AttributeName: key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: key
+          KeyType: HASH
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 1
+  GamesTable:
+    Type: 'AWS::DynamoDB::Table'
+    DeletionPolicy: Retain
+    Properties:
+      TableName: Games
+      AttributeDefinitions:
+        - AttributeName: key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: key
+          KeyType: HASH
+      <b>BillingMode: PAY_PER_REQUEST</b>
+      ProvisionedThroughput:
+        ReadCapacityUnits: 0
+        WriteCapacityUnits: 0</code></pre>
+                        </dd>
+                </dl></awsdocs-tabs>
+             
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Avvertimento" /> <strong>JavaScript è disabilitato o non è disponibile nel tuo browser.</strong></p><p>Per usare la documentazione AWS, JavaScript deve essere abilitato. Consulta le pagine della guida del browser per le istruzioni.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Convenzioni dei documenti</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./detect-drift-resource.html">Rilevamento della deviazione su singole risorse di stack</div><div id="next" class="next-link" accesskey="n" href="./resource-import.html">Inserire le risorse esistenti nella  CloudFormation  gestione</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Questa pagina ti è stata utile? - Sì</div><div class="content"><p>Grazie per averci comunicato che stiamo facendo un buon lavoro!</p><p>Se hai un momento, ti invitiamo a dirci che cosa abbiamo fatto che ti è piaciuto così possiamo offrirti altri contenuti simili.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Questa pagina ti è stata utile? - No</div><div class="content"><p>Grazie per averci comunicato che questa pagina ha bisogno di essere modificata. Siamo spiacenti di non aver soddisfatto le tue esigenze.</p><p>Se hai un momento, ti invitiamo a dirci come possiamo migliorare la documentazione.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
