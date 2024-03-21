@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>スタックのリソースが更新されないようにする - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="protect-stack-resources" /><meta name="default_state" content="protect-stack-resources" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" /><meta name="description" content="AWS CloudFormation スタックポリシーを使用して、スタックの更新中にスタックのリソースが意図せずに更新または削除されるのを防止します。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="ユーザーガイド" /><meta name="abstract" content="このユーザーガイドでは、AWS CloudFormation を使用して、予測かつ再現可能な方法で、AWS インフラストラクチャのデプロイを作成して管理します。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="ユーザーガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="ユーザーガイド" /><meta id="panorama-serviceConsolePage" value="スタックのリソースが更新されないようにする" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>スタックのリソースが更新されないようにする - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,リソースのプロビジョニング,リソース構成,インフラストラクチャ管理,CloudFormer,CloudFormation スタック,CloudFormation StackSet,CloudFormation テンプレート,変更セット" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "ユーザーガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "スタックの操作",
+        "item" : "https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacks.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "AWS CloudFormation スタックの更新",
+        "item" : "https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "スタックのリソースが更新されないようにする",
+        "item" : "https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">ユーザーガイド</a></div><div id="page-toc-src"><a href="#stack-policy-intro-example">スタックポリシーの例</a><a href="#stack-policy-reference">スタックポリシーの定義</a><a href="#protect-stack-resources-protecting">スタックポリシーの設定</a><a href="#protect-stack-resources-updating">保護されたリソースの更新</a><a href="#protect-stack-resources-modifying">スタックポリシーの変更 </a><a href="#stack-policy-samples">スタックポリシーのその他の例</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="protect-stack-resources">スタックのリソースが更新されないようにする</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>スタックを作成するとき、すべてのリソースですべての更新アクションが許可されます。デフォルトでは、スタック更新アクセス権限を持つユーザーであれば誰でもスタック内のすべてのリソースを更新できます。更新処理中、リソースの中断や完全な置き換えが必要になった場合は、新しい物理 ID やまったく新しいストレージが使用される結果になります。スタックポリシーを使用すると、スタックの更新中に<a href="./aws-template-resource-type-ref.html">スタックのリソース</a>が意図せずに更新または削除されるのを防止できます。スタックポリシーは、指定したリソースに対して実行できる更新アクションを定義する JSON ドキュメントです。</p><p>スタックポリシーを設定すると、デフォルトでスタック内のすべてのリソースが保護されます。特定のリソースでの更新を許可するには、スタックポリシーでこれらのリソースに対して <code class="code">Allow</code> ステートメントを明示的に指定します。1 つのスタックに定義できるスタックポリシーは 1 つのみですが、1 つのポリシー内で複数のリソースを保護することができます。スタックポリシーは、スタックを更新しようとするすべての AWS CloudFormation ユーザーに適用されます。異なるスタックポリシーを異なるユーザーに関連付けることはできません。</p><p>スタックポリシーは、スタックの更新時のみ適用されます。AWS Identity and Access Management (IAM) ポリシーのようなアクセスコントロールは提供しません。特定のスタックリソースを誤って更新しないように、スタックポリシーはフェイルセーフメカニズムとしてのみ使用してください。AWS リソースまたはアクションへのアクセスを制御するには、IAM を使用します。</p><div class="highlights" id="inline-topiclist"><h6>トピック</h6><ul><li><a href="#stack-policy-intro-example">スタックポリシーの例</a></li><li><a href="#stack-policy-reference">スタックポリシーの定義</a></li><li><a href="#protect-stack-resources-protecting">スタックポリシーの設定</a></li><li><a href="#protect-stack-resources-updating">保護されたリソースの更新</a></li><li><a href="#protect-stack-resources-modifying">スタックポリシーの変更 </a></li><li><a href="#stack-policy-samples">スタックポリシーのその他の例</a></li></ul></div>
+   <h2 id="stack-policy-intro-example">スタックポリシーの例</h2>
+    <p>次のスタックポリシーの例は、<code class="code">ProductionDatabase</code> リソースの更新が禁止されます。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    },
+    <span>{</span>
+      "Effect" : "Deny",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "LogicalResourceId/ProductionDatabase"
+    }
+  ]
+}</code></pre>
+    <p>スタックポリシーを設定すると、デフォルトですべてのリソースが保護されます。すべてのリソースの更新を許可するには、すべてのリソースですべてのアクションを許可する <code class="code">Allow</code> ステートメントを追加します。<code class="code">Allow</code> ステートメントではすべてのリソースが指定されますが、<code class="code">ProductionDatabase</code> 論理 ID を持つリソースに関しては明示的な <code class="code">Deny</code> ステートメントが優先されます。この <code class="code">Deny</code> ステートメントにより、置き換えや削除など、すべての更新アクションが <code class="code">ProductionDatabase</code> リソースで禁止されます。</p>
+    <p><code class="code">Principal</code> 要素が必要ですが、ワイルドカード (<code class="code">*</code>) のみサポートされています。つまり、ステートメントはすべての<a href="https://docs.aws.amazon.com/glossary/latest/reference/glos-chap.html#principal">プリンシパル</a>に適用されます。</p>
+    <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>スタックの更新時に、更新された他のリソースに依存するリソースは AWS CloudFormation により自動的に更新されます。たとえば、AWS CloudFormation が更新されたリソースを参照するリソースを更新するとします。AWS CloudFormation は自動更新されたリソースに物理的な変更 (リソースの ID など) は一切加えませんが、これらのリソースにスタックポリシーが関連付けられている場合は、リソースを更新するためのアクセス許可が必要です。</p></div></div>
+   
+   <h2 id="stack-policy-reference">スタックポリシーの定義</h2>
+    <p>スタックを作成するとき、スタックポリシーは設定されないため、すべてのリソースですべての更新アクションが許可されます。スタックリソースを更新アクションから保護するには、スタックポリシーを定義し、そのポリシーをスタックに設定します。スタックポリシーは、AWS CloudFormation ユーザーが実行できる AWS CloudFormation スタック更新アクションとアクションが適用されるリソースを定義する JSON ドキュメントです。スタックポリシーを含むテキストファイルを指定するか、入力することにより、スタックの作成時にスタックポリシーを設定します。スタックにスタックポリシーを設定した場合、明示的に許可されていないすべての更新がデフォルトで拒否されます。</p>
+    <p>スタックポリシーは、<code class="code">Effect</code>、<code class="code">Action</code>、<code class="code">Principal</code>、<code class="code">Resource</code>、<code class="code">Condition</code> の 5 つの要素によって定義します。スタックポリシーの構文を次の擬似コードに示します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "<code class="replaceable">Deny_or_Allow</code>",
+      "Action" : "<code class="replaceable">update_actions</code>",
+      "Principal" : "*",
+      "Resource" : "LogicalResourceId/<code class="replaceable">resource_logical_ID</code>",
+      "Condition" : <span>{</span>
+        "<code class="replaceable">StringEquals_or_StringLike</code>" : <span>{</span>
+          "ResourceType" : [<code class="replaceable">resource_type, ...</code>]
+        }
+      }
+    }
+  ]
+}</code></pre>
+    <div class="variablelist">
+       
+       
+       
+       
+       
+    <dl>
+        <dt><span class="term"><code class="code">Effect</code></span></dt>
+        <dd>
+          <p>指定されたリソースでの指定されたアクションを拒否するかまたは許可するかを決定します。<code class="code">Deny</code> または <code class="code">Allow</code> のみ指定できます ( など)。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"Effect" : "Deny"</code></pre>
+          <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>重要</h6></div><div class="awsdocs-note-text"><p>スタックポリシーに重複ステートメントが含まれる場合 (リソースでの更新を許可するステートメントと拒否するステートメントの両方)、常に <code class="code">Deny</code> ステートメントが <code class="code">Allow</code> ステートメントより優先されます。リソースが必ず保護されるようにするには、そのリソースに対して <code class="code">Deny</code> ステートメントを使用します。</p></div></div>
+        </dd>
+       
+        <dt><span class="term">アクション</span></dt>
+        <dd>
+          <p>拒否または許可する更新アクションを指定します。</p><div class="variablelist">
+               
+               
+               
+               
+            <dl>
+                <dt><span class="term">Update:Modify</span></dt>
+                <dd>
+                  <p>変更の適用中にリソースで中断が発生しない更新アクションまたはなんらかの中断が発生する更新アクションを指定します。すべてのリソースで物理 ID が保持されます。</p>
+                </dd>
+               
+                <dt><span class="term">Update:Replace</span></dt>
+                <dd>
+                  <p>リソースが再作成される更新アクションを指定します。AWS CloudFormation は、指定された更新が適用された新しいリソースを作成した後、古いリソースを削除します。リソースが再作成されるため、新しいリソースの物理 ID が変更される場合があります。</p>
+                </dd>
+               
+                <dt><span class="term">Update:Delete</span></dt>
+                <dd>
+                  <p>リソースが削除される更新アクションを指定します。スタックテンプレートから完全にリソースを削除する更新の場合は、このアクションを使用する必要があります。</p>
+                </dd>
+               
+                <dt><span class="term">更新:*</span></dt>
+                <dd>
+                  <p>すべての更新アクションを指定します。アスタリスクは、すべての更新アクションを表すワイルドカードです。</p>
+                </dd>
+              </dl></div>
+          <p>次の例では、replace アクションと delete アクションのみを指定しています。</p>
+          <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"Action" : ["Update:Replace", "Update:Delete"]</code></pre>
+          <p>1 つのアクションを除くすべての更新アクションを許可するには、<code class="code">NotAction</code> を使用します。たとえば、<code class="code">Update:Delete</code> を除くすべての更新アクションを許可するには、次の例に示すように <code class="code">NotAction</code> を使用します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Allow",
+      "NotAction" : "Update:Delete",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+          <p>スタックの更新の詳細については、「<a href="./using-cfn-updating-stacks.html">AWS CloudFormation スタックの更新</a>」を参照してください。</p>
+        </dd>
+       
+        <dt><span class="term">Principal</span></dt>
+        <dd>
+          <p><code class="code">Principal</code> 要素は、ポリシーを適用するエンティティを指定します。この要素は必須ですが、ワイルドカード (<code class="code">*</code>) のみサポートされています。つまり、ポリシーはすべての<a href="https://docs.aws.amazon.com/glossary/latest/reference/glos-chap.html#principal">プリンシパル</a>に適用されます。</p>
+        </dd>
+       
+        <dt><span class="term">リソース</span></dt>
+        <dd>
+          <p>ポリシーを適用するリソースの論理 ID を指定します。<a href="./aws-template-resource-type-ref.html">リソースのタイプ</a>を指定するには、<code class="code">Condition</code> 要素を使用します。</p>
+          <p>1 つのリソースを指定するには、論理 ID を使用します。例:</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"Resource" : ["LogicalResourceId/myEC2instance"]</code></pre>
+          <p>論理 ID には、ワイルドカードを使用できます。たとえば、すべての関連リソースに共通の論理 ID プレフィックスを使用している場合、ワイルドカードを使用してすべてのリソースを指定できます。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"Resource" : ["LogicalResourceId/CriticalResource*"]</code></pre>
+          <p>これらのリソースに対して <code class="code">Not</code> 要素を使用することもできます。たとえば、1 つを除くすべてのリソースに対する更新を許可するには、<code class="code">NotResource</code> 要素を使用してそのリソースを保護します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "NotResource" : "LogicalResourceId/ProductionDatabase"
+    }
+  ]
+}</code></pre>
+          <p>スタックポリシーを設定した場合、明示的に許可されていないすべての更新が拒否されます。<code class="code">ProductionDatabase</code> リソース以外のリソースに対する更新をすべて許可することで、<code class="code">ProductionDatabase</code> リソースに対する更新を拒否します。</p>
+        </dd>
+       
+        <dt><span class="term">条件</span></dt>
+        <dd>
+          <p>ポリシーを適用する<a href="./aws-template-resource-type-ref.html">リソースタイプ</a>を指定します。論理 ID を指定するには、<code class="code">Resource</code> 要素を使用します。</p>
+          <p>次の例に示すように、EC2 インスタンスや RDS DB インスタンスのようなリソースタイプを指定できます。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+  <span>{</span>
+    "Effect" : "Deny",
+    "Principal" : "*",
+    "Action" : "Update:*",
+    "Resource" : "*",
+    "Condition" : <span>{</span>
+      "StringEquals" : <span>{</span>
+        "ResourceType" : ["AWS::EC2::Instance", "AWS::RDS::DBInstance"]
+      }
+    }
+  },
+  <span>{</span>
+    "Effect" : "Allow",
+    "Principal" : "*",
+    "Action" : "Update:*",
+    "Resource" : "*"
+  }
+  ]
+}</code></pre>
+          <p><code class="code">Allow</code> ステートメントはすべてのリソースに更新アクセス権限を付与し、<code class="code">Deny</code> ステートメントは EC2 および RDS DB インスタンスに対する更新を拒否します。<code class="code">Deny</code> ステートメントは、すべてのアクションを常にオーバーライドします。</p>
+          <p>リソースタイプでワイルドカードを使用できます。たとえば、次の例に示すように、ワイルドカードを使用して、すべての Amazon EC2 リソース (— インスタンス、セキュリティグループ、サブネット— など) に対する更新アクセス許可を拒否できます。</p>
+         <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"Condition" : <span>{</span>
+  "StringLike" : <span>{</span>
+    "ResourceType" : ["AWS::EC2::*"]
+  }
+}</code></pre>
+          <p>ワイルドカードを使用する場合は、<code class="code">StringLike</code> 条件を使用する必要があります。</p>
+        </dd>
+      </dl></div>
+   
+   <h2 id="protect-stack-resources-protecting">スタックポリシーの設定</h2>
+    <p>スタックを作成する際にスタックのポリシーを適用するには、コンソールまたは AWS CLI を使用します。AWS CLI を使用して、既存のスタックにスタックポリシーを適用することもできます。スタックのポリシーを適用すると、スタックからそれを削除することはできません。ただし、AWS CLI を使用して変更することはできます。</p>
+    <p>スタックポリシーは、スタックを更新しようとするすべての AWS CloudFormation ユーザーに適用されます。異なるスタックポリシーを異なるユーザーに関連付けることはできません。</p>
+    <p>ポリシーの記述方法については、「<a href="#stack-policy-reference">スタックポリシーの定義</a>」を参照してください。</p>
+    <div class="procedure"><h6>スタックの作成時にスタックポリシーを設定するには (コンソール)</h6><ol><li><p><a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> で AWS CloudFormation コンソール を開きます。</p></li><li>
+        <p>[<b>CloudFormation Stacks</b>] ページで、[<b>スタックの作成</b>] を選択します。</p>
+      </li><li>
+        <p>[スタックの作成] ウィザードの [<b>Configure stack options (スタックオプションの設定)</b>] ページで、[<b>詳細設定</b>] セクションを展開し、[<b>スタックのポリシー</b>] を選択します。</p>
+      </li><li>
+        <p>次のようにスタックポリシーを指定します。</p>
+        <div class="itemizedlist">
+           
+           
+        <ul class="itemizedlist"><li class="listitem"><p>コンソールにポリシーを直接作成するには、[<b>Enter stack policy (スタックポリシーの入力)</b>] を選択し、テキストフィールドにスタックポリシーを直接入力します。</p></li><li class="listitem"><p>別のファイルで定義されたポリシーを使用するには、[<b>ファイルのアップロード</b>] を選択し、[<b>ファイルの選択</b>] を選択して、スタックポリシーを含むファイルを選択します。</p></li></ul></div>
+      </li></ol></div>
+    <div class="procedure"><h6>スタックの作成時にスタックポリシーを設定するには (AWS CLI)</h6><ul><li>
+        <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/create-stack.html">aws cloudformation create-stack</a></code> コマンドを使用する際、<code class="code">--stack-policy-body</code> オプションを使用して変更されたポリシーを入力するか、<code class="code">--stack-policy-url</code> オプションを使用してポリシーを含むファイルを指定します。</p>
+      </li></ul></div>
+    <div class="procedure"><h6>既存のスタックでスタックポリシーを設定するには (AWS CLI のみ)</h6><ul><li>
+        <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/set-stack-policy.html">aws cloudformation set-stack-policy</a></code> コマンドを使用する際、<code class="code">--stack-policy-body</code> オプションを使用して変更されたポリシーを入力するか、<code class="code">--stack-policy-url</code> オプションを使用してポリシーを含むファイルを指定します。</p>
+        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>既存のスタックにポリシーを追加するには、AWS CloudFormation <code class="code"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_SetStackPolicy.html">SetStackPolicy</a></code> アクションに対するアクセス権限が必要です。</p></div></div>
+      </li></ul></div>
+   
+   <h2 id="protect-stack-resources-updating">保護されたリソースの更新</h2>
+    <p>保護されたリソースを更新するには、スタックポリシーをオーバーライドする一時ポリシーを作成し、それらのリソースでの更新を許可します。スタックを更新するときにオーバーライドポリシーを指定します。オーバーライドポリシーによって、スタックポリシーが永続的に変更されるわけではありません。</p>
+    <p>保護されたリソースを更新するには、AWS CloudFormation の <code class="code"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_SetStackPolicy.html">SetStackPolicy</a></code> アクションに対するアクセス権限が必要です。AWS CloudFormation のアクセス権限の設定については、「<a href="./using-iam-template.html">AWS Identity and Access Management によるアクセスの制御</a>」を参照してください。</p>
+    <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>スタックの更新時に、更新された他のリソースに依存するリソースは AWS CloudFormation により自動的に更新されます。たとえば、AWS CloudFormation が更新されたリソースを参照するリソースを更新するとします。AWS CloudFormation は自動更新されたリソースに物理的な変更 (リソースの ID など) は一切加えませんが、これらのリソースにスタックポリシーが関連付けられている場合は、リソースを更新するためのアクセス許可が必要です。</p></div></div>
+    <div class="procedure"><h6>保護されたリソースを更新するには (コンソール)</h6><ol><li><p><a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> で AWS CloudFormation コンソール を開きます。</p></li><li>
+        <p>更新するスタックを選択し、[<b>Stack actions (スタックアクション)</b>]、[<b>スタックの更新</b>] の順に選択します。</p>
+      </li><li>
+        <p>スタックテンプレートを<em>変更していない</em>場合は、[<b>現在のテンプレートの使用</b>] を選択し、[<b>次へ</b>] をクリックします。テンプレートを変更した場合は、[<b>Replace current template (現在のテンプレートを置換)</b>] を選択し、[<b>Specify template (テンプレートの指定)</b>] セクションで更新されたテンプレートの場所を指定します。</p>
+        <div class="itemizedlist">
+           
+           
+        <ul class="itemizedlist"><li class="listitem">
+            <p>ローカルコンピュータに保存されているテンプレートの場合は、[<b>テンプレートファイルをアップロード</b>] を選択します。[<b>ファイルの選択</b>] を選択してファイルの場所に移動し、ファイルを選択して、[<b>次へ</b>] をクリックします。</p>
+          </li><li class="listitem">
+            <p>Amazon S3 バケットに保存されているテンプレートの場合は、[<b>Amazon S3 URL</b>] を選択します。テンプレートの URL を入力するか貼り付けて、[<b>次へ</b>] をクリックします。</p>
+            <p>バージョニングが有効なバケットにテンプレートがある場合、<code class="code">https://s3.amazonaws.com/templates/myTemplate.template?versionId=123ab1cdeKdOW5IH4GAcYbEngcpTJTDW</code> のようにテンプレートの特定バージョンを指定することもできます。詳細については、「Amazon Simple Storage Service ユーザーガイド」の「<a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/managing-objects-versioned-bucket.html">バージョニングが有効なバケット内のオブジェクトの管理</a>」を参照してください。</p>
+          </li></ul></div>
+      </li><li>
+        <p>テンプレートにパラメータが含まれている場合、[<b>Specify stack details (スタックの詳細を指定)</b>] ページで、パラメータ値を入力または変更し、[<b>次へ</b>] を選択します。</p>
+        <p>AWS CloudFormation により、スタックで現在設定されている値が各パラメータに入力されます。ただし、<code class="code">NoEcho</code> 属性を使用して宣言されたパラメータを除きます。[<b>既存の値の使用</b>] を選択することで、それらのパラメータに現在の値を使用できます。</p>
+        <p><code class="code">NoEcho</code> を使用して機密情報をマスクする方法、また動的なパラメータを使用してシークレットを管理する方法の詳細については、「<a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html#creds">テンプレートに認証情報を埋め込まない</a>」ベストプラクティスを参照してください。</p>
+      </li><li>
+        <p>オーバーライドスタックポリシーを指定します。</p>
+        <ol><li><p>[<b>Configure stack options (スタックオプションの設定)</b>] ページの [<b>詳細オプション</b>] セクションで、[<b>スタックのポリシー</b>] を選択します。</p></li><li><p>[<b>ファイルのアップロード</b>] を選択します。</p></li><li><p>[<b>ファイルの選択</b>] をクリックし、オーバーライドする側のスタックポリシーを含むファイルに移動するか、ポリシーを入力します。</p></li><li><p>[<b>Next</b>] を選択します。</p></li></ol>
+        
+        <p>オーバーライドポリシーでは、更新する保護されたリソースを対象として <code class="code">Allow</code> ステートメントを指定する必要があります。たとえば、すべての保護されたリソースを更新するには、すべての更新を許可する一時オーバーライドポリシーを指定します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>AWS CloudFormation は、この更新時のみオーバーライドポリシーを適用します。オーバーライドポリシーによって、スタックポリシーが永続的に変更されるわけではありません。スタックのポリシーを変更するには、「<a href="#protect-stack-resources-modifying">スタックポリシーの変更 </a>」を参照してください。</p></div></div>
+      </li><li>
+        <p>送信したスタック情報と変更を確認します。</p>
+        <p>パラメータ値やテンプレートの URL が適切かなど、正しい情報を送信したことを確認します。テンプレートに IAM リソースが含まれる場合は、[<b>I acknowledge that this template may create IAM resources (このテンプレートが IAM リソースを作成する可能性を認識しています)</b>] を選択して、テンプレート内の IAM リソースを使用することを指定します。テンプレート内の IAM リソースの使用の詳細については、「<a href="./using-iam-template.html">AWS Identity and Access Management によるアクセスの制御</a>」を参照してください。</p>
+        <p>[<b>変更のプレビュー</b>] セクションで、必要な変更がすべて AWS CloudFormation により加えられることを確認します。たとえば、追加、削除、または変更しようとしているリソースが AWS CloudFormation によって追加、削除、変更されることを確認します。AWS CloudFormation は、スタックの変更セットを作成することによりこのプレビューを生成します。詳細については、「<a href="./using-cfn-updating-stacks-changesets.html">変更セットを使用したスタックの更新</a>」を参照してください。</p>
+      </li><li>
+        <p>変更内容が適切であることを確認できたら、[<b>更新</b>] をクリックします。</p>
+        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>この時点で、変更セットを表示するオプションを使用すると、提案された更新をより徹底的に確認することもできます。これを行うには、<b>[Update]</b> (更新) の代わりに <b>[View change set]</b> (変更セットを表示) をクリックしてください。CloudFormation により、更新に基づいて生成された変更セットが表示されます。スタックの更新を実行する準備ができたら、[<b>実行</b>] をクリックします。</p></div></div>
+        <p>CloudFormation により、スタックの [<b>Stack details (スタックの詳細)</b>] ページが表示されます。スタックの状況が <b>UPDATE_IN_PROGRESS</b> になっていることを確認できます。CloudFormation によるスタックの更新が正常に完了したら、スタックの状況が <b>UPDATE_COMPLETE</b> に設定されます。</p>
+        <p>スタックの更新が失敗した場合、CloudFormation によって変更が自動的にロールバックされ、スタックの状況が <b>UPDATE_ROLLBACK_COMPLETE</b> に設定されます。</p>
+      </li></ol></div>
+    <div class="procedure"><h6>保護されたリソースを更新するには (AWS CLI)</h6><ul><li>
+        <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/update-stack.html">aws cloudformation update-stack</a></code> コマンドを使用する際、<code class="code">--stack-policy-during-update-body</code> オプションを使用して変更されたポリシーを入力するか、<code class="code">--stack-policy-during-update-url</code> オプションを使用してポリシーを含むファイルを指定します。</p>
+        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>AWS CloudFormation は、この更新時のみオーバーライドポリシーを適用します。オーバーライドポリシーによって、スタックポリシーが永続的に変更されるわけではありません。スタックのポリシーを変更するには、「<a href="#protect-stack-resources-modifying">スタックポリシーの変更 </a>」を参照してください。</p></div></div>
+      </li></ul></div>
+   
+   <h2 id="protect-stack-resources-modifying">スタックポリシーの変更 </h2>
+    <p>追加のリソースを保護するか、リソースから保護を削除するには、スタックポリシーを変更します。たとえば、保護するデータベースをスタックに追加するときは、そのデータベースの <code class="code">Deny</code> ステートメントをスタックポリシーに追加します。ポリシーを変更するには、<code class="code"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_SetStackPolicy.html">SetStackPolicy</a></code> アクションを使用するアクセス権限が必要です。</p>
+    <p>AWS CLI を使用して、スタックポリシーを変更します。</p>
+    <div class="procedure"><h6>スタックポリシーを変更するには (AWS CLI)</h6><ul><li>
+        <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/set-stack-policy.html">aws cloudformation set-stack-policy</a></code> コマンドを使用する際、<code class="code">--stack-policy-body</code> オプションを使用して変更されたポリシーを入力するか、<code class="code">--stack-policy-url</code> オプションを使用してポリシーを含むファイルを指定します。</p>
+      </li></ul></div>
+    <p>スタックポリシーは削除できません。すべてのリソースからすべて保護を削除するには、すべてのリソースに対するすべてのアクションを明示的に許可するようにポリシーを変更します。次のポリシーは、すべてのリソースですべての更新を許可します。</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+   
+   <h2 id="stack-policy-samples">スタックポリシーのその他の例</h2>
+    <p>次のポリシー例では、すべてのスタックリソースの更新を禁止する方法、特定のリソースの更新を禁止する方法、特定のタイプの更新を禁止する方法を示します。</p>
+     
+     <h3 id="w9aac25c17c29c21b5">すべてのスタックリソースの更新を禁止する</h3>
+      <p>すべてのスタックリソースの更新を禁止するため、次のポリシーでは、すべてのリソースのすべての更新アクションに対して <code class="code">Deny</code> ステートメントを指定しています。</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Deny",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+     
+     
+     <h3 id="w9aac25c17c29c21b7">1 つのリソースの更新を禁止する</h3>
+      <p>次のポリシーでは、<code class="code">MyDatabase</code> という論理 ID を持つデータベースについて、すべての更新アクションを拒否します。また、<code class="code">Allow</code> ステートメントにより、他のすべてのスタックリソースにおいてすべての更新アクションを許可します。<code class="code">Deny</code> ステートメントは常に許可アクションをオーバーライドするため、<code class="code">Allow</code> ステートメントは <code class="code">MyDatabase</code> リソースには適用されません。</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Deny",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "LogicalResourceId/MyDatabase"
+    },
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+      <p>デフォルト拒否を使用することで、前の例と同じ結果が得られます。スタックポリシーを設定した場合、明示的に許可されていないすべての更新が AWS CloudFormation により拒否されます。次のポリシーでは、デフォルトで拒否されている <code class="code">ProductionDatabase</code> リソースを除くすべてのリソースの更新が許可されます。</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "NotResource" : "LogicalResourceId/ProductionDatabase"
+    }
+  ]
+}</code></pre>
+      <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>重要</h6></div><div class="awsdocs-note-text"><p>デフォルト拒否の使用にはリスクがあります。ポリシーの他の場所で <code class="code">Allow</code> ステートメントを使用している場合 (ワイルドカードを使用する <code class="code">Allow</code> ステートメントなど)、知らないうちに意図しないリソースに更新アクセス権限を付与する可能性があります。ただし、明示的な拒否はすべての許可アクションをオーバーライドするため、<code class="code">Deny</code> ステートメントを使用することでリソースが保護されることを保証できます。</p></div></div>
+     
+     
+     <h3 id="w9aac25c17c29c21b9">特定のリソースタイプについてすべてのインスタンスの更新を禁止する</h3>
+      <p>次のポリシーは、RDS DB インスタンスリソースタイプについて、すべての更新アクションを拒否します。また、<code class="code">Allow</code> ステートメントにより、他のすべてのスタックリソースにおいてすべての更新アクションを許可します。<code class="code">Allow</code> ステートメントは常に許可アクションをオーバーライドするため、<code class="code">Deny</code> ステートメントは RDS DB インスタンスリソースには適用されません。</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Deny",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*",
+      "Condition" : <span>{</span>
+        "StringEquals" : <span>{</span>
+          "ResourceType" : ["AWS::RDS::DBInstance"]
+        }
+      }
+    },
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+     
+     
+     <h3 id="w9aac25c17c29c21c11">特定のインスタンスについて置き換え更新を防止する</h3>
+      <p>次のポリシーは、<code class="code">MyInstance</code> という論理 ID を持つインスタンスの置き換えが発生する更新を拒否します。また、<code class="code">Allow</code> ステートメントにより、他のすべてのスタックリソースにおいてすべての更新アクションを許可します。<code class="code">Deny</code> ステートメントは常に許可アクションをオーバーライドするため、<code class="code">Allow</code> ステートメントは <code class="code">MyInstance</code> リソースには適用されません。</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Deny",
+      "Action" : "Update:Replace",
+      "Principal": "*",
+      "Resource" : "LogicalResourceId/MyInstance"
+    },
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+     
+     
+     <h3 id="w9aac25c17c29c21c13">ネストされたスタックの更新を禁止する</h3>
+      <p>次のポリシーは、AWS CloudFormation スタックリソースタイプ (ネストされたスタック) におけるすべての更新アクションを拒否します。また、<code class="code">Allow</code> ステートメントにより、他のすべてのスタックリソースにおいてすべての更新アクションを許可します。<code class="code">Deny</code> ステートメントは常に許可アクションをオーバーライドするため、<code class="code">Allow</code> ステートメントは AWS CloudFormation リソースには適用されません。</p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Statement" : [
+    <span>{</span>
+      "Effect" : "Deny",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*",
+      "Condition" : <span>{</span>
+        "StringEquals" : <span>{</span>
+          "ResourceType" : ["AWS::CloudFormation::Stack"]
+        }
+      }
+    },
+    <span>{</span>
+      "Effect" : "Allow",
+      "Action" : "Update:*",
+      "Principal": "*",
+      "Resource" : "*"
+    }
+  ]
+}</code></pre>
+     
+  <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./using-cfn--stack-update-cancel.html">スタック更新のキャンセル</div><div id="next" class="next-link" accesskey="n" href="./using-cfn-updating-stacks-continueupdaterollback.html">更新のロールバックを続ける</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

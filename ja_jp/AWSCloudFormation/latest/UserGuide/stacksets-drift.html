@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>スタックセット内のアンマネージド型の構成変更の検出 - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="stacksets-drift" /><meta name="default_state" content="stacksets-drift" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="description" content="スタックとスタックに含まれるリソースを CloudFormation で管理している場合でも、ユーザーは CloudFormation の外部でそれらのリソースを変更できます。ユーザーは、リソースを作成した基盤となるサービスを使用してリソースを直接編集できます。スタックセットでドリフト検出を実行すると、そのスタックセットに属するスタックインスタンスのいずれかが予想される構成と異なっているか、または ドリフト しているかを判断できます。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="ユーザーガイド" /><meta name="abstract" content="このユーザーガイドでは、AWS CloudFormation を使用して、予測かつ再現可能な方法で、AWS インフラストラクチャのデプロイを作成して管理します。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="ユーザーガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="ユーザーガイド" /><meta id="panorama-serviceConsolePage" value="スタックセット内のアンマネージド型の構成変更の検出" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>スタックセット内のアンマネージド型の構成変更の検出 - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,リソースのプロビジョニング,リソース構成,インフラストラクチャ管理,CloudFormer,CloudFormation スタック,CloudFormation StackSet,CloudFormation テンプレート,変更セット" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "ユーザーガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "AWS CloudFormation StackSets の操作",
+        "item" : "https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "スタックセット内のアンマネージド型の構成変更の検出",
+        "item" : "https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">ユーザーガイド</a></div><div id="page-toc-src"><a href="#stacksets-drift-how">CloudFormation がスタックセットでドリフト検出を実行する方法</a><a href="#stacksets-drift-stop">スタックセットでのドリフト検出の停止</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="stacksets-drift">スタックセット内のアンマネージド型の構成変更の検出</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>スタックとスタックに含まれるリソースを CloudFormation で管理している場合でも、ユーザーは CloudFormation の外部でそれらのリソースを変更できます。ユーザーは、リソースを作成した基盤となるサービスを使用してリソースを直接編集できます。スタックセットでドリフト検出を実行すると、そのスタックセットに属するスタックインスタンスのいずれかが予想される構成と異なっているか、または<em>ドリフト</em>しているかを判断できます。</p>
+        <h2 id="stacksets-drift-how">CloudFormation がスタックセットでドリフト検出を実行する方法</h2>
+        <p>CloudFormation がスタックセットでドリフト検出を実行する場合、スタックセット内の各スタックインスタンスに関連付けられたスタックでドリフト検出が実行されます。これを行うために、CloudFormation は、スタック内の各リソースの現在の状態を、スタックのテンプレート、および指定された入力パラメータで定義されているリソースの予想される状態と比較します。リソースの現在の状態が予想される状態と異なる場合、そのリソースはドリフトしたものとみなされます。スタック内の 1 つ以上のリソースがドリフトしている場合、スタック自体がドリフトしたとみなされ、スタックが関連付けられているスタックインスタンスもドリフトしたとみなされます。スタックセット内の 1 つ以上のスタックインスタンスがドリフトした場合、スタックセット自体がドリフトしたとみなされます。</p>
+        <p>ドリフト検出では、管理されていない変更、つまり CloudFormation の外部にあるスタックに加えられた変更を識別します。スタックセットレベルではなく、CloudFormation を介してスタックに直接行った変更は、ドリフトとはみなされません。たとえば、スタックセットのスタックインスタンスに関連付けられたスタックがあるとします。CloudFormation を使用してそのスタックを更新して別のテンプレートを使用した場合、そのスタックのテンプレートがスタックセットに属する他のスタックのテンプレートとは異なるようになった場合でも、ドリフトとはみなされません。これは、スタックが CloudFormation で予想されるテンプレートとパラメータ構成を一致させるためです。</p>
+        <p>CloudFormation がスタックでドリフト検出を実行する方法の詳細については、<a href="./using-cfn-stack-drift.html">スタックとリソースに対するアンマネージド型構成変更の検出</a> を参照してください。</p>
+        <p>CloudFormation では各スタックで個別にドリフト検出を実行するため、スタックがドリフトしているかどうかを判断する際に、オーバーライドされたパラメータ値が考慮されます。スタックインスタンスでのテンプレートパラメータのオーバーライドの詳細については、「<a href="./stackinstances-override.html">スタックインスタンスのパラメータを上書きする</a>」を参照してください。</p>
+        <p>スタックインスタンスに関連付けられた<a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">スタックで直接</a>ドリフト検出を実行する場合、これらのドリフト結果は [<b>StackSets</b>] コンソールページからは利用できません。</p>
+
+    <div class="procedure"><h6>AWS Management Console を使用してスタックのドリフトを検出するには</h6><ol><li><p><a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> で AWS CloudFormation コンソール を開きます。</p></li><li>
+            <p>[<b>StackSets</b>] ページで、ドリフト検出を実行するスタックセットを選択します。</p>
+        </li><li>
+            <p>[<b>アクション</b>] メニューから、[<b>Detect drifts (ドリフトを検出)</b>] を選択します。</p>
+            <p>CloudFormation により、選択されたスタックセットに対してドリフト検出が開始されたことを示す情報バーが表示されます。</p>
+        </li><li>
+            <p>オプション: ドリフト検出オペレーションの進行状況を監視するには:</p>
+            <ol><li>
+                    <p>スタックセット名を選択して、[<b>Stackset details (スタックセットの詳細)</b>] ページを表示します。</p>
+                </li><li>
+                    <p>[<b>オペレーション</b>] タブを選択し、ドリフト検出オペレーションを選択してから、[<b>View drift details (ドリフトの詳細の表示)</b>] を選択します。</p>
+                </li></ol>
+            <p>CloudFormation に [<b>Operation details (オペレーションの詳細)</b>] ダイアログボックスが表示されます。</p>
+        </li><li>
+            <p>CloudFormation がドリフト検出オペレーションを完了するまで待ちます。ドリフト検出オペレーションが完了すると、CloudFormation によって、スタックセットの [<b>ドリフトステータス</b>] と [<b>前回のドリフトチェック時間</b>] が更新されます。これらのフィールドは、選択したスタックセットの <b>[StackSet details]</b> (StackSet の詳細) ページの <b>[Overview]</b> (概要) タブにリストされます。</p>
+            <p>スタックセットに含まれるスタックインスタンスの数や、スタックセットに含まれるリソースの数によっては、ドリフト検出操作に時間がかかる場合があります。一度に実行できるドリフト検出オペレーションは、特定のスタックセットで 1 つだけです。情報バーを閉じた後でも、CloudFormation によってドリフト検出オペレーションが継続されます。</p>
+        </li><li>
+            <p>スタックセット内のスタックインスタンスのドリフト検出結果を確認するには、[<b>スタックインスタンス</b>] タブを選択します。</p>
+            <p>[<b>スタックの名前</b>] 列には、各スタックインスタンスに関連付けられたスタックの名前がリストされ、[<b>ドリフトステータス</b>] 列にはスタックのドリフトステータスがリストされます。スタックの 1 つ以上のリソースがドリフトした場合、スタックはドリフトしたと見なされます。</p>
+        </li><li>
+            <p>特定のスタックインスタンスに関連付けられたスタックのドリフト検出結果を確認するには、次の手順を実行します。</p>
+            <ol><li>
+                    <p><b>[操作]</b> タブを選択します。</p>
+                </li><li>
+                    <p>確認するドリフト検出結果のドリフト操作を選択します。分割パネルには、スタックインスタンスのステータスと選択した操作の理由が表示されます。ドリフト操作の場合、ステータス理由の列にはスタックインスタンスのドリフトステータスが表示されます。</p>
+                </li><li>
+                    <p>確認するドリフト詳細のスタックインスタンスを選択し、<b>[リソースドリフトを表示]</b> を選択します。<b>「リソースドリフト」</b>ページの <b>[リソースドリフトステータス]</b> テーブルでは、各スタックリソースはそれぞれのドリフトのステータスと、リソースにドリフト検出が実行された最後の時間が一覧表示されます。各リソースの論理 ID と物理 ID は、それらを識別しやすくするために表示されます。</p>
+                </li></ol>
+        </li><li>
+            <p>ドリフトステータスに基づいてリソースをソートするには、[<b>ドリフトステータス</b>] 列を使用します。</p>
+            <p>変更されたリソースの詳細を表示する方法</p>
+            <ol><li>
+                    <p>リソースを選択した状態で、<b>[ドリフト詳細の表示]</b> を選択します。</p>
+                    <p>CloudFormation には、その特定リソースのドリフト詳細ページが表示されます。このページには、リソースの違いが一覧表示されます。リソースの予想プロパティ値と現在のプロパティ値も一覧表示されます。</p>
+                    <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>スタックが現在サインインしているリージョンとアカウントと異なるリージョンやアカウントに属している場合、<b>[ドリフトを検出]</b> ボタンは無効になり、詳細を表示できなくなります。</p></div></div>
+                </li></ol>
+            <div class="mediaobject">
+                 
+                    <img src="images/console-stacks-drifts-drift-details-differences-1.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                    [ドリフト詳細] ページの [リソースドリフトステータス] セクションには、ドリフト検出をサポートするスタックに各リソースのドリフト情報が含まれています。詳細には、ドリフトステータス、意図した値、現在のプロパティ値などがあります。&#xA;                " style="max-width:100%" />
+                 
+                 
+            </div>
+
+        </li></ol></div><div class="procedure"><h6>AWS CLI を使用してスタックのドリフトを検出するには</h6><p>AWS CLI を使用してスタック全体のドリフトを検出するには、次の <code class="code">aws
+                cloudformation</code> コマンドを使用します。</p><div class="itemizedlist">
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/detect-stack-set-drift.html">detect-stack-set-drift</a></code> はスタックでドリフト検出オペレーションを開始します。</p>
+            </li><li class="listitem">
+                <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/describe-stack-set-operation.html">describe-stack-set-operation</a></code> はスタックドリフト検出動作の状態を監視します。</p>
+            </li><li class="listitem">
+                <p>ドリフト検出操作が完了したら、次のコマンドを使用して必要なドリフト情報を返します。</p>
+                <div class="itemizedlist">
+                     
+                     
+                     
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <p>スタックセットに関する詳細情報（スタックセットで最後に<em>完了した</em>ドリフト操作に関する詳細情報を含む）を返すには、<code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/describe-stack-set.html">describe-stack-set</a></code> を使用します。(進行中のドリフト操作に関する情報は含まれません。)</p>
+                    </li><li class="listitem">
+                        <p>各インスタンスのドリフトステータスと最後にチェックされたドリフト時間を含む、スタックセットに属するスタックインスタンスのリストを返すには、<code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-stack-instances.html">list-stack-instances</a></code> を使用します。</p>
+                    </li><li class="listitem">
+                        <p>特定のスタックインスタンスに関する詳細情報（ドリフトステータスや最後にチェックされたドリフト時間など）を返すには、<code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/describe-stack-instance.html">describe-stack-instance</a></code> を使用します。</p>
+                    </li><li class="listitem">
+                        <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-stack-instance-resource-drifts.html">list-stack-instance-resource-drifts</a></code> を使用して、スタックインスタンス内の各リソースのドリフトステータスに関する詳細情報を返します。</p>
+                    </li><li class="listitem">
+                        <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/stack-instance-resource-drifts-summary.html">stack-instance-resource-drifts-summary</a></code> を使用してスタックインスタンスのリソースドリフトに関する概要情報を返します。</p>
+                    </li></ul></div>
+            </li></ul></div><ol><li>
+            <p>スタックセット全体と関連するスタックインスタンスのドリフトを検出するには、<code class="code">detect-stack-set-drift</code> を使用します。</p>
+            <p>次の例では、スタックセット <code class="code">stack-set-drift-example</code> でドリフト検出を開始します。</p>
+
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation detect-stack-set-drift \
+    --stack-set-name stack-set-drift-example</code>
+<code class="computeroutput" copy="false"><span>{</span>
+    "OperationId": "c36e44aa-3a83-411a-b503-cb611example"
+}</code></code></pre>
+        </li><li>
+            <p>スタックセットドリフト検出オペレーションは長時間実行されるオペレーションとなる可能性があるため、<code class="code">describe-stack-set-operation</code> を使用してドリフトオペレーションのステータスを監視します。このコマンドは、<code class="code">detect-stack-set-drift</code> コマンドによって返されたスタックセットオペレーション ID を受け取ります。</p>
+            <p>次の例では、前の例のオペレーション ID を使用して、スタックセットドリフト検出オペレーションに関する情報を返します。この例では、オペレーションはまだ実行中です。このスタックセットに関連付けられている 7 つのスタックインスタンスのうち、1 つのスタックインスタンスがすでにドリフトしていて、2 つのインスタンスが同期しており、残り 4 つのスタックインスタンスのドリフト検出はまだ進行中であることがわかりました。1 つのインスタンスがドリフトしているため、スタックセット自体のドリフトステータスは <code class="code">DRIFTED</code> になります。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-set-operation \
+    --stack-set-name stack-set-drift-example \
+    --operation-id c36e44aa-3a83-411a-b503-cb611example</code>
+<code class="computeroutput" copy="false">
+<span>{</span>
+    "StackSetOperation": <span>{</span>
+        "Status": "RUNNING",
+        "AdministrationRoleARN": "arn:aws:iam::123456789012:role/AWSCloudFormationStackSetAdministrationRole",
+        "OperationPreferences": <span>{</span>
+            "RegionOrder": []
+        },
+        "ExecutionRoleName": "AWSCloudFormationStackSetExecutionRole",
+        "StackSetDriftDetectionDetails": <span>{</span>
+            "DriftedStackInstancesCount": 1,
+            "TotalStackInstancesCount": 7,
+            "LastDriftCheckTimestamp": "2019-12-04T20:34:28.543Z",
+            "InSyncStackInstancesCount": 2,
+            "InProgressStackInstancesCount": 4,
+            "DriftStatus": "DRIFTED",
+            "FailedStackInstancesCount": 0
+        },
+        "Action": "DETECT_DRIFT",
+        "CreationTimestamp": "2019-12-04T20:33:13.673Z",
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22example",
+        "OperationId": "c36e44aa-3a83-411a-b503-cb611example"
+    }
+}</code></code></pre>
+            <p>後で同じコマンドを実行した、この例ではドリフト検出操作が完了した後に返される情報を示しています。このスタックセットに関連付けられている合計 7 つのスタックインスタンスのうち 2 つがドリフトしているため、スタックセット自体のドリフトステータスは <code class="code">DRIFTED</code> になっています。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-set-operation \
+    --stack-set-name stack-set-drift-example \
+    --operation-id c36e44aa-3a83-411a-b503-cb611example</code>
+<code class="computeroutput" copy="false">
+<span>{</span>
+    "StackSetOperation": <span>{</span>
+        "Status": "SUCCEEDED",
+        "AdministrationRoleARN": "arn:aws:iam::123456789012:role/AWSCloudFormationStackSetAdministrationRole",
+        "OperationPreferences": <span>{</span>
+            "RegionOrder": []
+        } 
+        "ExecutionRoleName": "AWSCloudFormationStackSetExecutionRole",
+        "EndTimestamp": "2019-12-04T20:37:32.829Z",
+        "StackSetDriftDetectionDetails": <span>{</span>
+            "DriftedStackInstancesCount": 2,
+            "TotalStackInstancesCount": 7,
+            "LastDriftCheckTimestamp": "2019-12-04T20:36:55.612Z",
+            "InSyncStackInstancesCount": 5,
+            "InProgressStackInstancesCount": 0,
+            "DriftStatus": "DRIFTED",
+            "FailedStackInstancesCount": 0
+        },
+        "Action": "DETECT_DRIFT",
+        "CreationTimestamp": "2019-12-04T20:33:13.673Z",
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22example",
+        "OperationId": "c36e44aa-3a83-411a-b503-cb611example"
+    }
+}</code></code></pre>
+        </li><li>
+            <p>スタックセット ドリフトの検出操作が完了したら、<code class="code">describe-stack-set</code>、<code class="code">list-stack-instances</code>、<code class="code">describe-stack-instance</code>、<code class="code">list-stack-instance-resource-drifts</code> コマンドを使用して結果を確認します。</p>
+            <p><code class="code">describe-stack-set</code> コマンドには、<code class="code">describe-stack-set-operation</code> コマンドで返されるのと同じ詳細なドリフト情報が含まれます。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-set \
+    --stack-set-name stack-set-drift-example</code>
+<code class="computeroutput" copy="false"><span>{</span>
+    "StackSet": <span>{</span>
+        "Status": "ACTIVE",
+        "Description": "Demonstration of drift detection on stack sets.",
+        "Parameters": [],
+        "Tags": [
+            <span>{</span>
+                "Value": "Drift detection",
+                "Key": "Feature"
+            }
+        ], 
+        "ExecutionRoleName": "AWSCloudFormationStackSetExecutionRole",
+        "Capabilities": [],
+        "AdministrationRoleARN": "arn:aws:iam::123456789012:role/AWSCloudFormationStackSetAdministrationRole",
+        "StackSetDriftDetectionDetails": <span>{</span>
+            "DriftedStackInstancesCount": 2,
+            "TotalStackInstancesCount": 7,
+            "LastDriftCheckTimestamp": "2019-12-04T20:36:55.612Z",
+            "InProgressStackInstancesCount": 0,
+            "DriftStatus": "DRIFTED",
+            "DriftDetectionStatus": "COMPLETED",
+            "InSyncStackInstancesCount": 5,
+            "FailedStackInstancesCount": 0
+        },
+        "StackSetARN": "arn:aws:cloudformation:us-east-1:123456789012:stackset/stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22example",
+        "TemplateBody": [details omitted],
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22ebexample",
+        "StackSetName": "stack-set-drift-example"
+    }
+}</code></code></pre>
+            <p><code class="code">list-stack-instances</code> コマンドを使用して、各スタックインスタンスのドリフトステータスなど、スタックセットに関連付けられたスタックインスタンスに関する概要情報を返すことができます。</p>
+            <p>この例では、ドリフトステータス フィルターを <code class="code">DRIFTED</code> に設定した状態で例のスタックセットに <code class="code">list-stack-instances</code> を実行すると、2 つのスタックインスタンスのうち、どちらが <code class="code">DRIFTED</code> のドリフトステータスになっているかを特定できるようになります。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation list-stack-instances \
+    --stack-set-name stack-set-drift-example \
+    --filters Name=DRIFT_STATUS,Values=DRIFTED</code>
+<code class="computeroutput" copy="false"><span>{</span>
+"Summaries": [
+        <span>{</span>
+"StackId": "arn:aws:cloudformation:eu-west-1:123456789012:stack/StackSet-stack-set-drift-example-b0fb6083-60c0-4e39-af15-2f071e0db90c/0e4f0940-16d4-11ea-93d8-0641cexample",
+            "Status": "CURRENT",
+            "Account": "012345678910",
+            "Region": "eu-west-1",
+            "LastDriftCheckTimestamp": "2019-12-04T20:37:32.687Z",
+            "DriftStatus": "DRIFTED",
+            "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22eexample
+            "LastOperationId": "c36e44aa-3a83-411a-b503-cb611example"
+        },
+        <span>{</span>
+            "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/StackSet-stack-set-drift-example-b7fde68e-e541-44c2-b33d-ef2e2988071a/008e6030-16d4-11ea-8090-12f89example",
+            "Status": "CURRENT",
+            "Account": "123456789012",
+            "Region": "us-east-1",
+            "LastDriftCheckTimestamp": "2019-12-04T20:34:28.275Z",
+            "DriftStatus": "DRIFTED",
+            "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22eexample"
+            "LastOperationId": "c36e44aa-3a83-411a-b503-cb611example"
+        },
+        
+        [additional stack instances omitted]
+ 
+    ]
+}</code></code></pre>
+            <p><code class="code">describe-stack-instance</code> コマンドでもこの情報は返されますが、以下の例のように 1 つのスタックインスタンスに対する情報です。</p>
+
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-instance \
+    --stack-set-name stack-set-drift-example \
+    --stack-instance-account 012345678910 --stack-instance-region us-east-1</code>
+<code class="computeroutput" copy="false"><span>{</span>
+    "StackInstance": <span>{</span>
+        "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/StackSet-stack-set-drift-example-b7fde68e-e541-44c2-b33d-ef2e2988071a/008e6030-16d4-11ea-8090-12f89example",
+        "Status": "CURRENT",
+        "Account": "123456789012",
+        "Region": "us-east-1",
+        "ParameterOverrides": [],
+        "DriftStatus": "DRIFTED",
+        "LastDriftCheckTimestamp": "2019-12-04T20:34:28.275Z",
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22eexample"
+        "LastOperationId": "c36e44aa-3a83-411a-b503-cb611example"
+    }
+}</code></code></pre>
+        </li><li>
+            <p>どのスタックインスタンスがドリフトしたかを特定したら、<code class="code">list-stack-instances</code> または <code class="code">describe-stack-instance</code> コマンドで返されるスタックインスタンスに関する情報を使用して<a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-stack-instance-resource-drifts.html">list-stack-instance-resource-drifts</a> を実行できます。このコマンドは、スタックでどのリソースが、特定のドリフト操作でドリフトしたかに関する詳細情報を返します。</p>
+            <p>次の例では、<code class="code">stack-instance-resource-drift-statuses</code> パラメーターを使用して、以前のドリフト操作の例で変更または削除されたリソースのスタックドリフト情報を要求しています。リクエストは、2 つのプロパティに関する詳細とそれぞれの変更された値を含め、変更された 1 つのリソースに関する情報を返します。リソースは削除されていません。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation list-stack-instance-resource-drifts \
+    --stack-set-name my-stack-set-with-resource-drift \
+    --stack-instance-account 123456789012 \
+    --stack-instance-region us-east-1 \
+    --operation-id c36e44aa-3a83-411a-b503-cb611example \
+    --stack-instance-resource-drift-statuses MODIFIED DELETED</code>
+
+<code class="computeroutput" copy="false"><span>{</span>
+    "Summaries": [
+        <span>{</span>
+            "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/my-stack-set-with-resource-drift/489e5570-df85-11e7-a7d9-50example",
+            "ResourceType": "AWS::SQS::Queue",
+            "Timestamp": "2018-03-26T17:23:34.489Z",
+            "PhysicalResourceId": "https://sqs.us-east-1.amazonaws.com/123456789012/my-stack-with-resource-drift-Queue-494PBHCO76H4",
+            "StackResourceDriftStatus": "MODIFIED",
+            "PropertyDifferences": [
+                <span>{</span>
+                    "PropertyPath": "/DelaySeconds",
+                    "ActualValue": "120",
+                    "ExpectedValue": "20",
+                    "DifferenceType": "NOT_EQUAL"
+                },
+                <span>{</span>
+                    "PropertyPath": "/RedrivePolicy/maxReceiveCount",
+                    "ActualValue": "12",
+                    "ExpectedValue": "10",
+                    "DifferenceType": "NOT_EQUAL"
+                }
+            ],
+            "LogicalResourceId": "Queue"
+        }
+    ]
+}</code></code></pre>
+        </li></ol></div>
+        <h2 id="stacksets-drift-stop">スタックセットでのドリフト検出の停止</h2>
+        <p>スタックセットのドリフト検出は長時間実行されるオペレーションになる可能性があるため、スタックセットで現在実行中のドリフト検出オペレーションを停止するのが望ましい場合があります。</p>
+        <div class="procedure"><h6>AWS Management Console を使用してスタックセットのドリフト検出を停止するには</h6><ol><li><p><a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> で AWS CloudFormation コンソール を開きます。</p></li><li>
+                <p>[<b>StackSets</b>] ページで、スタックセットの名前を選択します。</p>
+                <p>CloudFormation に選択したスタック [<b>StackSets details (スタックセットの詳細)</b>] ページが表示されます。</p>
+            </li><li>
+                <p>[<b>StackSets details (セットのスタックセットの詳細)</b>] ページで、[<b>オペレーション</b>] タブを選択し、ドリフト検出オペレーションを選択します。</p>
+            </li><li>
+                <p>[<b>Stop operation (オペレーションを停止)</b>] を選択します。</p>
+            </li></ol></div>
+        <div class="procedure"><h6>AWS CLI を使用してスタックセットのドリフト検出を停止するには</h6><ul><li>
+                <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/stop-stack-set-operation.html">stop-stack-set-operation</a></code>コマンドを実行します。ドリフト検出スタックセットオペレーションのスタックセット名とオペレーション ID の両方を指定する必要があります。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation stop-stack-set-operation \
+    --stack-set-name stack-set-drift-example \
+    --operation-id 624af370-311a-11e8-b6b7-500cexample</code></code></pre>
+            </li></ul></div>
+    <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./stacksets-account-gating.html">ターゲットアカウントゲート</div><div id="next" class="next-link" accesskey="n" href="./stacksets-import.html">スタックをスタックセットにインポートする。</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-drift.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-drift.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

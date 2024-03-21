@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>チュートリアル: テストおよび本稼働スタック用のパイプラインを構築する - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="continuous-delivery-codepipeline-basic-walkthrough" /><meta name="default_state" content="continuous-delivery-codepipeline-basic-walkthrough" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="description" content="継続的な配信ワークフローに使用する多数の AWS CloudFormation アクションを自動化する CodePipeline パイプラインを構築する方法を説明します。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="ユーザーガイド" /><meta name="abstract" content="このユーザーガイドでは、AWS CloudFormation を使用して、予測かつ再現可能な方法で、AWS インフラストラクチャのデプロイを作成して管理します。" /><meta name="guide-locale" content="ja_jp" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="ユーザーガイド" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="ユーザーガイド" /><meta id="panorama-serviceConsolePage" value="チュートリアル: テストおよび本稼働スタック用のパイプラインを構築する" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>チュートリアル: テストおよび本稼働スタック用のパイプラインを構築する - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,リソースのプロビジョニング,リソース構成,インフラストラクチャ管理,CloudFormer,CloudFormation スタック,CloudFormation StackSet,CloudFormation テンプレート,変更セット" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "ユーザーガイド",
+        "item" : "https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "CodePipeline を使用した継続的デリバリー",
+        "item" : "https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "チュートリアル: テストおよび本稼働スタック用のパイプラインを構築する",
+        "item" : "https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">ドキュメント</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">ユーザーガイド</a></div><div id="page-toc-src"><a href="#w9aac21c11b5">前提条件</a><a href="#w9aac21c11b7">チュートリアルの概要</a><a href="#w9aac21c11b9">ステップ 1: アーティファクトを編集し、S3 バケットにアップロードする</a><a href="#w9aac21c11c11">ステップ 2: パイプラインスタックを作成する</a><a href="#w9aac21c11c13">ステップ 3: WordPress スタックの表示</a><a href="#w9aac21c11c15">ステップ 4: リソースをクリーンアップする</a><a href="#w9aac21c11c19">以下も参照してください。</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="continuous-delivery-codepipeline-basic-walkthrough">チュートリアル: テストおよび本稼働スタック用のパイプラインを構築する</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>AWS CloudFormation テンプレートを送信すると、AWS CloudFormation でそれを使用して自動的にテストスタックが構築されるリリースプロセスを考えてみてください。テストスタックを確認してから、変更によって本稼働スタックがどのように変更されるかをプレビューして、実装するかどうかを選択できます。このワークフローは、AWS CloudFormation を使用してテストスタックの構築、テストスタックの削除、変更設定の作成、そして変更設定の実行を行うことで実現できます。ただし、各アクションで、手動で AWS CloudFormation を操作する必要があります。このウォークスルーでは、このようなアクションの多くを自動化する CodePipeline パイプラインを構築し、AWS CloudFormation スタックで継続的な配信ワークフローを実現します。</p>
+    <h2 id="w9aac21c11b5">前提条件</h2>
+    <p>このウォークスルーは、お客様は CodePipeline と AWS CloudFormation を使用した経験があり、パイプライン、AWS CloudFormation テンプレート、スタックの動作について理解していることを前提としています。CodePipeline の詳細については、<a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/">AWS CodePipeline ユーザーガイド</a>を参照してください。また、パイプラインを作成するのと同じ AWS リージョンに Amazon S3 <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html">バケット</a>がある必要があります。</p>
+    <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>重要</h6></div><div class="awsdocs-note-text"><p>サンプルの WordPress テンプレートは、インターネットへの接続を必要とする EC2 インスタンスを作成します。インターネットへのトラフィックを許可しているデフォルト VPC とサブネットがあることを確認してください。</p></div></div>
+   
+    <h2 id="w9aac21c11b7">チュートリアルの概要</h2>
+    <p>このウォークスルーでは、スタックにある WordPress サンプルサイト用のパイプラインを構築します。パイプラインは、3 つのステージに分かれています。各ステージに少なくとも 1 つのアクションが含まれている必要があります。このアクションは、お客様のアーティファクト (入力) に対してパイプラインが実行するタスクです。ステージはパイプラインのアクションを整理します。ステージが新しいアーティファクトを処理する前に (例えば、パイプラインを再実行する新しい入力を送信した場合)、CodePipeline は 1 つのステージですべてのアクションを完了する必要があります。</p>
+    <p>このウォークスルーを完了すると、次のワークフローを実行するパイプラインができあがります。</p>
+    <div class="orderedlist">
+       
+       
+       
+    <ol><li>
+        <p>パイプラインの最初のステージで、リポジトリからソースアーティファクト (AWS CloudFormation テンプレートおよび構成ファイル) を取得します。</p>
+        <p>WordPress のサンプルテンプレートを含むアーティファクトを準備して、S3 バケットにアップロードします。</p>
+      </li><li>
+        <p>2 番目のステージで、パイプラインはテストスタックを作成し、承認を待ちます。</p>
+        <p>テストスタックを確認した後、元のパイプラインを使用して続行するか、別のアーティファクトを作成して送信することで変更を加えるかを選択できます。承認すると、このステージはテストスタックを削除し、パイプラインは次のステージに進みます。</p>
+      </li><li>
+        <p>3 番目のステージで、パイプラインは本稼働スタックに対する変更セットを作成し、承認を待ちます。</p>
+        <p>初めて実行する場合は、本稼働スタックはありません。変更設定には、AWS CloudFormation によって作成されるリソースがすべて表示されます。承認すると、このステージは変更セットを実行し、本番用スタックを構築します。</p>
+      </li></ol></div>
+    <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注記</h6></div><div class="awsdocs-note-text"><p>AWS CloudFormation は無料サービスです。ただし、スタックに含める EC2 インスタンスなどの AWS リソースには、それぞれの現在の料金が課金されます。AWS 料金に関する詳細については、<a href="https://aws.amazon.com/" rel="noopener noreferrer" target="_blank"><span>http://aws.amazon.com</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> で各製品の詳細ページを参照してください。</p></div></div>
+   
+    <h2 id="w9aac21c11b9">ステップ 1: アーティファクトを編集し、S3 バケットにアップロードする</h2>
+    <p>パイプラインを構築する前に、ソースリポジトリとファイルをセットアップする必要があります。CodePipeline はこれらのソースファイルをパイプラインの<a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html">アーティファクトストア</a>にコピーし、AWS CloudFormation スタックの作成など、パイプライン内でアクションの実行に使用されます。</p>
+    <p>ソースリポジトリとして Amazon Simple Storage Service (Amazon S3) を使用する場合、CodePipeline ではソースファイルを zip にしてから S3 バケットにアップロードする必要があります。zip ファイルは、AWS CloudFormation テンプレート、テンプレート構成ファイル、またはその両方を含む CodePipeline アーティファクトです。WordPress サンプルテンプレートと 2 つのテンプレート構成ファイルを含むアーティファクトが用意されています。2 つの構成ファイルは、WordPress テンプレートのパラメータ値を指定します。CodePipeline は WordPress スタックを作成時に使用します。ファイルの 1 つにはテストスタック用のパラメーター値、もう 1 つには本稼働スタック用のパラメーター値が含まれます。たとえばお客様が所有する既存の EC2 キーペア名を指定するために、構成ファイルを編集する必要があります。アーティファクトの詳細については、「<a href="./continuous-delivery-codepipeline-cfn-artifacts.html">AWS CloudFormation アーティファクト</a>」を参照してください。</p>
+    <p>アーティファクトを構築したら、S3 バケットにアップロードします。</p>
+    <div class="procedure"><h6>アーティファクトを編集してアップロードするには</h6><ol><li>
+        <p>サンプルアーティファクトをダウンロードして開きます (<a href="https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/wordpress-single-instance.zip" rel="noopener noreferrer" target="_blank"><span>https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/wordpress-single-instance.zip</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>)。</p>
+        <p>アーティファクトには 3 つのファイルが含まれています。</p>
+        <div class="itemizedlist">
+           
+           
+           
+        <ul class="itemizedlist"><li class="listitem">
+            <p>WordPress サンプルテンプレート: <code class="code">wordpress-single-instance.yaml</code></p>
+          </li><li class="listitem">
+            <p>テストスタック用テンプレート構成ファイル: <code class="code">test-stack-configuration.json</code> </p>
+          </li><li class="listitem">
+            <p>本稼働スタック用テンプレート構成ファイル: <code class="code">prod-stack-configuration.json</code></p>
+          </li></ul></div>
+      </li><li>
+        <p>ファイルをすべて展開し、任意のテキストエディタを使用してテンプレート構成ファイルを変更します。</p>
+        <p>構成ファイルを開いて、WordPress テンプレートのパラメーターにマッピングするキーと値のペアが含まれていることを確認します。構成ファイルは、パイプラインがテストスタックおよび本稼働スタックを作成するときに使用するパラメーター値を指定します。</p>
+        <p>テストスタック用のパラメーター値を指定するには <code class="code">test-stack-configuration.json</code> ファイルを編集します。本稼働スタック用には <code class="code">prod-stack-configuration.json</code> ファイルです。</p>
+        <div class="itemizedlist">
+           
+           
+        <ul class="itemizedlist"><li class="listitem">
+            <p><code class="code">DBPassword</code> キーおよび <code class="code">DBRootPassword</code> キーの値の値を、WordPress データベースへのログインに使用するパスワードに変更します。WordPress テンプレートで定義されたとおり、このパラメーターの値は英文字のみを使用する必要があります。</p>
+          </li><li class="listitem">
+            <p><code class="code">KeyName</code> キーの値を、パイプラインを作成するリージョンにある既存の EC2 キーペア名に変更します。</p>
+          </li></ul></div>
+      </li><li>
+        <p>変更した構成ファイルを元のアーティファクト (<code class="code">.zip</code>) ファイルに追加して、重複したファイルを置き換えます。</p>
+        <p>これで、S3 バケットにアップロードできるカスタマイズされたアーティファクトができました。</p>
+      </li><li>
+        <p><a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/UploadingObjectsintoAmazonS3.html">お客様が所有する S3 バケットにアーティファクトをアップロードします。</a></p>
+        <p>ファイルの場所をメモしておきます。パイプラインを構築するときに、このファイルの場所を指定します。</p>
+        <p>アーティファクトおよび S3 バケットに関する注意事項:</p>
+        <div class="itemizedlist">
+           
+           
+           
+           
+        <ul class="itemizedlist"><li class="listitem">
+            <p>パイプラインを作成する AWS リージョンと同じリージョンに存在するバケットを使用します。</p>
+          </li><li class="listitem">
+            <p>CodePipeline では、バケットは<a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/enable-bucket-versioning.html">バージョニングが有効</a>になっている必要があります。</p>
+          </li><li class="listitem">
+            <p>ソースリポジトリには、GitHub や CodeCommit など、ファイルをアップロードする前に zip 化する必要がないサービスも使用できます。</p>
+          </li><li class="listitem">
+            <p>アーティファクトには、パスワードなどの機密情報が含まれることがあります。<a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/EditingPermissionsonanObject.html">アクセスを制限</a>して、許可されたユーザーのみがファイルを表示できるようにしてください。これを行う際、CodePipeline がファイルにアクセスできるようにしてください。</p>
+          </li></ul></div>
+      </li></ol></div>
+    <p>これで、CodePipeline がパイプラインに引き込むことができるアーティファクトができました。次のステップでは、アーティファクトの位置を指定して、WordPress のパイプラインを構築します。</p>
+   
+    <h2 id="w9aac21c11c11">ステップ 2: パイプラインスタックを作成する</h2>
+    <p>WordPress パイプラインを作成するには、サンプルの AWS CloudFormation テンプレートを使用します。パイプラインの構築に加えて、テンプレートは CodePipeline と AWS CloudFormation 用に AWS Identity and Access Management (IAM) サービスロール、CodePipeline アーティファクトストア用の S3 バケット、Amazon Simple Notification Service (Amazon SNS) トピック (レビューの通知など、パイプラインが通知を送付する送信先) をセットアップします。サンプルテンプレートを使用すると、単一の AWS CloudFormation スタック内のこのようなリソースを簡単にプロビジョンし設定できます。</p>
+    <p>パイプラインの構成の詳細については、「<a href="#codepipeline-basic-walkthrough-template-details">パイプラインの仕組み</a>」を参照してください。</p>
+    <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>重要</h6></div><div class="awsdocs-note-text"><p>サンプルの WordPress テンプレートは、インターネットへの接続を必要とする EC2 インスタンスを作成します。ご使用のデフォルト VPC とサブネットがインターネットへのトラフィックを許可していることを確認してください。</p></div></div>
+    <div class="procedure"><h6>パイプラインスタックを作成するには</h6><ol><li>
+        <p><a href="https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/basic-pipeline.yml" rel="noopener noreferrer" target="_blank"><span>https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/basic-pipeline.yml</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> でサンプルテンプレートをダウンロードします。ご使用のコンピューターに保存します。</p>
+      </li><li>
+        <p><a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation/ で AWS CloudFormation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> コンソール を開きます。</p>
+      </li><li>
+        <p>CodePipeline と AWS CloudFormation をサポートする AWS リージョンを選択します。</p>
+        <p>詳細については、「AWS 全般のリファレンス」の「<a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">AWS のリージョンとエンドポイント</a>」を参照してください。</p>
+      </li><li>
+        <p><b>[スタックの作成]</b> を選択します。</p>
+      </li><li>
+        <p>[<b>Specify template (テンプレートの指定)</b>] で [<b>Upload a template file (テンプレートファイルのアップロード)</b>] を選択し、先ほどダウンロードしたテンプレート <code class="code">basic-pipeline.yml</code> を選択します。</p>
+      </li><li>
+        <p>[<b>Next</b>] を選択します。</p>
+      </li><li>
+        <p>[<b>スタックの名前</b>] に <code class="code">sample-WordPress-pipeline</code> を入力します。</p>
+      </li><li>
+        <p>[<b>パラメータ</b>] セクションで、次のパラメータ値を指定し、[<b>次へ</b>] を選択します。WordPress テンプレートとその構成ファイルの名前を同じにしている場合は、スタックのパラメーターを構成する際にデフォルト値を使用できます。そうでない場合は、使用するファイル名を指定します。</p>
+        <div class="variablelist">
+           
+           
+           
+           
+        <dl>
+            <dt><span class="term"><b>PipelineName</b></span></dt>
+            <dd>
+              <p>パイプラインの名前 (たとえば <code class="code">WordPress-test-pipeline</code>)。</p>
+            </dd>
+           
+            <dt><span class="term"><b>S3 バケット</b></span></dt>
+            <dd>
+              <p>アーティファクト (<code class="code">.zip</code> ファイル) を保存した S3 バケットの名前。</p>
+            </dd>
+           
+            <dt><span class="term"><b>SourceS3Key</b></span></dt>
+            <dd>
+              <p>アーティファクトのファイル名。アーティファクトをフォルダに保存した場合、<code class="code">folder/subfolder/wordpress-single-instance.zip</code> のように、ファイル名の一部に含めます。</p>
+            </dd>
+           
+            <dt><span class="term"><b>Email</b>(メール)</span></dt>
+            <dd>
+              <p>CodePipeline からのパイプラインの通知を受信するメールアドレス (<code class="code">myemail@example.com</code> など)。</p>
+            </dd>
+          </dl></div>
+      </li><li>
+        <p>このチュートリアルでは、タグの追加も詳細設定の指定も不要です。[<b>次へ</b>] を選択します。</p>
+      </li><li>
+        <p>スタック名とテンプレート URL が正しいことを確認し、[<b>スタックの作成</b>] を選択します。</p>
+      </li><li>
+        <p>AWS CloudFormation が IAM リソースを作成する可能性があることを認識していることを確認するには、チェックボックスをオンにします。</p>
+      </li></ol></div>
+    <p>AWS CloudFormation によってスタックが作成されるまでに数分かかることもあります。進捗状況を監視するには、スタックイベントを確認します。詳細については、「<a href="./cfn-console-view-stack-data-resources.html">AWS Management Console での AWS CloudFormation スタックデータとリソースの表示</a>」を参照してください。</p>
+    <p>スタックが作成されると、CodePipeline は新しいパイプラインを開始します。ステータスを表示するには、「<a href="https://console.aws.amazon.com/codepipeline/" rel="noopener noreferrer" target="_blank"><span>CodePipeline コンソール</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>」を参照してください。パイプラインのリストから、[<b>WordPress-test-pipeline</b>] を選択します。</p>
+     
+      <h3 id="codepipeline-basic-walkthrough-template-details">パイプラインの仕組み</h3>
+      <p>このセクションでは、WordPress パイプラインテンプレートの例のスニペットを使用して、パイプラインの 3 つのステージについて説明します。</p>
+       
+        <h4 id="w9aac21c11c11c15b5">ステージ 1: Source</h4>
+        <p>パイプラインの最初のステージはソースステージです。ここでソースコードの位置を指定します。この場所にリビジョンをプッシュするたびに、CodePipeline はパイプラインを再実行します。</p>
+        <p>ソースコードは S3 バケットにあり、ファイル名で識別されます。パイプラインのスタックを作成するときに、これらの値を入力パラメーター値として指定しました。その後のステージでソースアーティファクトを使用できるように、スニペットでは <code class="code">OutputArtifacts</code> プロパティを <code class="code">TemplateSource</code> という名前で指定しています。この後のステージでこのアーティファクトを使用するには、入力アーティファクトに <code class="code">TemplateSource</code> を指定します。</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">- Name: S3Source
+  Actions:
+    - Name: TemplateSource
+      ActionTypeId:
+        Category: Source
+        Owner: AWS
+        Provider: S3
+        Version: '1'
+      Configuration:
+        S3Bucket: !Ref 'S3Bucket'
+        S3ObjectKey: !Ref 'SourceS3Key'
+      OutputArtifacts:
+        - Name: TemplateSource</code></pre>
+       
+       
+        <h4 id="w9aac21c11c11c15b7">ステージ 2: TestStage</h4>
+        <p><code class="code">TestStage</code> ステージでは、パイプラインはテストスタックを作成し、承認を待ってから、テストスタックを削除します。</p>
+        <p><code class="code">CreateStack</code> アクションでは、パイプラインはテスト構成ファイルおよび WordPress テンプレートを使用してテストスタックを作成します。ファイルはどちらもソースステージで持ち込まれた <code class="code">TemplateSource</code> 入力アーティファクトに含まれています。このスニペットでは、<code class="code">REPLACE_ON_FAILURE</code> アクションモードを使用します。スタックの作成が失敗すると、パイプラインはこれを置き換えます。パイプラインを再実行する前にスタックを消去したりトラブルシューティングする必要はありません。アクションモードは、テストスタックですばやく反復処理する場合に便利です。<code class="code">RoleArn</code> プロパティの値は、テンプレートの他の場所で指定されている AWS CloudFormation サービスロールです。</p>
+        <p><code class="code">ApproveTestStack</code> アクションはパイプラインを一時停止し、パイプラインスタックの作成時に指定された E メールアドレスに通知を送信します。パイプラインが一時停止している間に、WordPress テストスタックとそのリソースを確認できます。CodePipeline を使用してこのアクションを<a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals-approve-or-reject.html">承認または却下</a>します。<code class="code">CustomData</code> プロパティには、承認するアクションの説明が含まれています。これはパイプラインによって通知 E メールに追加されています。</p>
+        <p>このアクションを承認すると、CodePipeline は <code class="code">DeleteTestStack</code> アクションに移行し、テスト WordPress スタックおよびそのリソースを削除します。</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">- Name: TestStage
+  Actions:
+    - Name: CreateStack
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      InputArtifacts:
+        - Name: TemplateSource
+      Configuration:
+        ActionMode: REPLACE_ON_FAILURE
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref TestStackName
+        TemplateConfiguration: !Sub "TemplateSource::$<span>{</span>TestStackConfig}"
+        TemplatePath: !Sub "TemplateSource::$<span>{</span>TemplateFileName}"
+      RunOrder: '1'
+    - Name: ApproveTestStack
+      ActionTypeId:
+        Category: Approval
+        Owner: AWS
+        Provider: Manual
+        Version: '1'
+      Configuration:
+        NotificationArn: !Ref CodePipelineSNSTopic
+        CustomData: !Sub 'Do you want to create a change set against the production stack and delete the $<span>{</span>TestStackName} stack?'
+      RunOrder: '2'
+    - Name: DeleteTestStack
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      Configuration:
+        ActionMode: DELETE_ONLY
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref TestStackName
+      RunOrder: '3'</code></pre>
+       
+       
+        <h4 id="w9aac21c11c11c15b9">ステージ 3: ProdStage</h4>
+        <p>パイプラインの <code class="code">ProdStage</code> ステージでは、既存の本稼働スタックに対する変更セットを作成し、承認を待ってから、変更セットを実行します。</p>
+        <p>AWS CloudFormation が本稼働スタックに対して行うすべての変更を、実装前に変更セットで確認できます。初めてパイプラインを実行する場合は、実行中の本稼働スタックはありません。変更セットには、テストスタック作成時に AWS CloudFormation が実行したアクションが表示されます。<code class="code">CreateChangeSet</code> アクションは、変更セットの作成に、<code class="code">TemplateSource</code> 入力アーティファクトからの WordPress サンプルテンプレートおよび本稼働テンプレート構成を使用します。</p>
+        <p>前のステージと同様に、<code class="code">ApproveChangeSet</code> アクションでパイプラインが一時停止し、E メール通知が送信されます。パイプラインが一時停止している間に、変更セットを確認して、本稼働 WordPress スタックに対する変更案をすべて確認できます。CodePipeline を使用して、このアクションを<a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals-approve-or-reject.html">承認または却下</a>し、それに合わせてパイプラインを続行または停止します。</p>
+        <p>アクションを承認した場合、<code class="code">ExecuteChangeSet</code> アクションによって変更セットが実行されるため、変更セットに記述されたアクションがすべて AWS CloudFormation によって実行されます。初めて実行する場合は、AWS CloudFormation によって WordPress 本稼働スタックが作成されます。それ以降の実行では、AWS CloudFormation はそのスタックを更新します。</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="コピー"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">- Name: ProdStage
+  Actions:
+    - Name: CreateChangeSet
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      InputArtifacts:
+        - Name: TemplateSource
+      Configuration:
+        ActionMode: CHANGE_SET_REPLACE
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref ProdStackName
+        ChangeSetName: !Ref ChangeSetName
+        TemplateConfiguration: !Sub "TemplateSource::$<span>{</span>ProdStackConfig}"
+        TemplatePath: !Sub "TemplateSource::$<span>{</span>TemplateFileName}"
+      RunOrder: '1'
+    - Name: ApproveChangeSet
+      ActionTypeId:
+        Category: Approval
+        Owner: AWS
+        Provider: Manual
+        Version: '1'
+      Configuration:
+        NotificationArn: !Ref CodePipelineSNSTopic
+        CustomData: !Sub 'A new change set was created for the $<span>{</span>ProdStackName} stack. Do you want to implement the changes?'
+      RunOrder: '2'
+    - Name: ExecuteChangeSet
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      Configuration:
+        ActionMode: CHANGE_SET_EXECUTE
+        ChangeSetName: !Ref ChangeSetName
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref ProdStackName
+      RunOrder: '3'</code></pre>
+       
+     
+   
+    <h2 id="w9aac21c11c13">ステップ 3: WordPress スタックの表示</h2>
+    <p>CodePipeline はパイプラインを実行中に、AWS CloudFormation を使用してテストスタックと本稼働スタックを作成します。これらのスタックのステータスとその出力を表示するには、AWS CloudFormation コンソールを使用します。</p>
+    <div class="procedure"><h6>スタックを表示するには</h6><ol><li>
+        <p><a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation/ で AWS CloudFormation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> コンソール を開きます。</p>
+      </li><li>
+        <p>パイプラインがテストステージにあるか本稼働ステージにあるかによって、<code class="code">Test-MyWordPressSite</code> または <code class="code">Prod-MyWordPressSite</code> スタックを選択します。</p>
+      </li><li>
+        <p>スタックのステータスを確認するには、スタック<a href="./cfn-console-view-stack-data-resources.html">イベント</a>を表示します。</p>
+      </li></ol></div>
+    <p>スタックが失敗状態の場合は、ステータスの理由を参照してスタックのエラーを見つけください。エラーを修正してから、パイプラインを再実行します。スタックが <code class="code">CREATE_COMPLETE</code> 状態にある場合は、その出力を表示して WordPress サイトの URL を取得します。</p>
+    <p>これで、CodePipeline を使用してサンプルの WordPress サイト用の継続的な配信フローを正常に構築できました。S3 バケットに変更を送信すると、CodePipeline は自動的に新しいバージョンを検出し、パイプラインを再実行します。このワークフローによって、本稼働サイトに変更を加える前に、簡単に変更を送信してテストできます。</p>
+   
+    <h2 id="w9aac21c11c15">ステップ 4: リソースをクリーンアップする</h2>
+    <p>不要なサービスに対して課金されないように、リソースを削除します。</p>
+    <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>重要</h6></div><div class="awsdocs-note-text"><p>パイプラインのスタックを削除する前に、テストおよび本稼働の WordPress スタックを削除します。パイプラインのスタックには、WordPress スタックを削除するために必要なサービスロールが含まれています。先にパイプラインのスタックを削除する場合は、WordPress スタックに<a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DeleteStack.html">別のサービスロールの Amazon リソースネーム (ARN) を関連付け</a>てから、それらを削除できます。</p></div></div>
+    <div class="procedure"><h6>アーティファクトストアのオブジェクトを削除するには</h6><ol><li><p><a href="https://console.aws.amazon.com/s3/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/s3/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> で Amazon S3 コンソールを開きます。</p></li><li>
+        <p>パイプラインのアーティファクトストアとして CodePipeline が使用した S3 バケットを選択します。</p>
+        <p>バケット名の形式は次の通りです。<code class="code"><code class="replaceable">stackname-artifactstorebucket-id</code></code>このウォークスルーに従った場合は、バケット名は次の例に似たものになります。<code class="code">sample-WordPress-pipeline-artifactstorebucket-12345abcd12345</code></p>
+      </li><li>
+        <p>アーティファクトストア S3 バケットのすべてのオブジェクトを削除します。</p>
+        <p>次のステップでパイプラインのスタックを削除する際、このバケットは空である必要があります。そうしないと、AWS CloudFormation がバケットを削除できません。</p>
+      </li></ol></div>
+    <div class="procedure"><h6> スタックを削除するには</h6><ol><li>
+        <p>AWS CloudFormation コンソールから、削除するスタックを選択します。</p>
+        <p>パイプラインによって作成された WordPress スタックがまだ実行中であれば、それらを最初に選択します。デフォルトでは、スタック名は <code class="code">Test-MyWordPressSite</code> および <code class="code">Prod-MyWordPressSite</code> です。</p>
+        <p>既に WordPress スタックを削除してある場合は、<code class="code">sample-WordPress-pipeline</code> スタックを選択します。</p>
+      </li><li>
+        <p>[<b>アクション</b>] を選択してから、[<b>スタックの削除</b>] を選択します。</p>
+      </li><li>
+        <p>確認メッセージで、[<b>はい、削除する</b>] を選択します。</p>
+      </li></ol></div>
+    <p>AWS CloudFormation がスタックおよび EC2 インスタンス、通知トピック、サービスロール、パイプラインなどのスタックのリソースをすべて削除します。</p>
+    <p>これで CodePipeline で基本的な AWS CloudFormation ワークフローの構築方法を理解いただいため、サンプルのテンプレートとアーティファクトを開始点として使用して、独自のものを構築できます。</p>
+   
+    <h2 id="w9aac21c11c19">以下も参照してください。</h2>
+    <p>これらのパラメータを利用する際に役立つ関連リソースは以下の通りです。</p>
+    <div class="itemizedlist">
+       
+       
+       
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p>CodePipeline の AWS CloudFormation アクションパラメータの詳細については、「AWS CodePipeline ユーザーガイド」の「<a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CloudFormation.html">AWS CloudFormation</a> アクション構成リファレンス」を参照してください。</p>
+      </li><li class="listitem">
+        <p>アクションプロバイダーごとのテンプレート値における例の場合 (<code class="code">Owner</code> フィールドまたは <code class="code">configuration</code> フィールドなど)、「AWS CodePipeline ユーザーガイド」の「<a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference.html">アクション構造のリファレンス</a>」を参照してください。</p>
+      </li><li class="listitem">
+        <p>YAML または JSON 形式のパイプラインスタックテンプレートの例をダウンロードするには、「AWS CodePipeline ユーザーガイド」の「<a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-cloudformation.html">AWS CloudFormation でパイプラインの作成</a>」のチュートリアルを参照してください。</p>
+      </li><li class="listitem">
+        <p>構成ファイルのテンプレートの例については、「<a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/continuous-delivery-codepipeline-cfn-artifacts.html">AWS CloudFormation アーティファクト</a>」を参照してください。</p>
+      </li></ul></div>
+  <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>ブラウザで JavaScript が無効になっているか、使用できません。</strong></p><p>AWS ドキュメントを使用するには、JavaScript を有効にする必要があります。手順については、使用するブラウザのヘルプページを参照してください。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">ドキュメントの表記規則</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./continuous-delivery-codepipeline.html">継続的デリバリー</div><div id="next" class="next-link" accesskey="n" href="./continuous-delivery-codepipeline-action-reference.html">構成プロパティのリファレンス</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">このページは役に立ちましたか? - はい</div><div class="content"><p>ページが役に立ったことをお知らせいただき、ありがとうございます。</p><p>お時間がある場合は、何が良かったかお知らせください。今後の参考にさせていただきます。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">このページは役に立ちましたか? - いいえ</div><div class="content"><p>このページは修正が必要なことをお知らせいただき、ありがとうございます。ご期待に沿うことができず申し訳ありません。</p><p>お時間がある場合は、ドキュメントを改善する方法についてお知らせください。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="フィードバック" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
