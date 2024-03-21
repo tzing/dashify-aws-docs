@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>演练：为测试和生产堆栈构建管道 - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="continuous-delivery-codepipeline-basic-walkthrough" /><meta name="default_state" content="continuous-delivery-codepipeline-basic-walkthrough" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="description" content="了解如何构建 CodePipeline 管道来实现多个 AWS CloudFormation 操作的自动化，以达到持续交付工作流的目的。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="用户指南" /><meta name="abstract" content="根据此用户指南，使用 AWS CloudFormation 以可预见方式反复创建和管理 AWS 基础设施部署。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="用户指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="用户指南" /><meta id="panorama-serviceConsolePage" value="演练：为测试和生产堆栈构建管道" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>演练：为测试和生产堆栈构建管道 - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,资源预置,资源配置,基础设施管理,CloudFormer,CloudFormation 堆栈,CloudFormation 堆栈集,CloudFormation 模板,更改集" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "用户指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "利用 CodePipeline 进行持续交付",
+        "item" : "https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "演练：为测试和生产堆栈构建管道",
+        "item" : "https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">用户指南</a></div><div id="page-toc-src"><a href="#w9aac21c11b5">先决条件</a><a href="#w9aac21c11b7">演练概述</a><a href="#w9aac21c11b9">步骤 1：编辑构件并将构件上传到 S3 存储桶</a><a href="#w9aac21c11c11">步骤 2：创建管道堆栈</a><a href="#w9aac21c11c13">步骤 3：查看 WordPress 堆栈</a><a href="#w9aac21c11c15">步骤 4：清理资源</a><a href="#w9aac21c11c19">另请参阅</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="continuous-delivery-codepipeline-basic-walkthrough">演练：为测试和生产堆栈构建管道</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>设想一个发布流程：您提交一个 AWS CloudFormation 模板，然后 AWS CloudFormation 使用该模板自动构建测试堆栈。在您审查测试堆栈后，可预览您的更改将如何修改生产堆栈，然后选择是否实施更改。要完成此工作流程，您可使用 AWS CloudFormation 构建测试堆栈、删除测试堆栈、创建更改集，然后执行更改集。但是，在每个操作中，您都需要手动与 AWS CloudFormation 进行交互。在此演练中，我们将构建一个 CodePipeline 管道来实现上述多个操作的自动化，从而帮助您使用 AWS CloudFormation 堆栈实现持续交付工作流。</p>
+    <h2 id="w9aac21c11b5">先决条件</h2>
+    <p>该演练假定您使用过 CodePipeline 和 AWS CloudFormation，并且知道管道以及 AWS CloudFormation 模板和堆栈的工作方式。有关 CodePipeline 的更多信息，请参阅《AWS CodePipeline 用户指南》。您创建管道的同一 AWS 区域中还需要有一个 Amazon S3 <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html">存储桶</a>。</p>
+    <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>重要</h6></div><div class="awsdocs-note-text"><p>示例 WordPress 模板将创建需要 Internet 连接的 EC2 实例。检查您是否有允许 Internet 流量的默认 VPC 和子网。</p></div></div>
+   
+    <h2 id="w9aac21c11b7">演练概述</h2>
+    <p>此演练在堆栈中为示例 WordPress 站点构建一个管道。此管道分为三个阶段。每个阶段均必须包含至少一个操作，此操作是管道将在您的构件 (您的输入) 上执行的任务。阶段在管道中组织操作。CodePipeline 必须完成阶段中的所有操作，然后阶段才会处理新构件，例如，您提交新输入以重新运行管道。</p>
+    <p>在此演练结束时，您将获得执行以下工作流程的管道：</p>
+    <div class="orderedlist">
+       
+       
+       
+    <ol><li>
+        <p>管道的第一个阶段从存储库中检索源构件 (AWS CloudFormation 模板及其配置文件)。</p>
+        <p>您将准备一个包含示例 WordPress 模板的构件并将该构件上传到 S3 存储桶。</p>
+      </li><li>
+        <p>在第二个阶段，管道将创建测试堆栈，然后等待您审批。</p>
+        <p>在您审查测试堆栈后，可选择继续使用原来的管道或创建并提交另一个构件以进行更改。如果您批准，该阶段将删除测试堆栈，然后管道将继续下一阶段。</p>
+      </li><li>
+        <p>在第三个阶段，管道将针对生产堆栈创建更改集，然后等待您审批。</p>
+        <p>在初始运行中，您将没有生产堆栈。更改集显示 AWS CloudFormation 将创建的所有资源。如果您批准，该阶段将执行更改集并构建您的生产堆栈。</p>
+      </li></ol></div>
+    <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>AWS CloudFormation 是一项免费服务。但是，将按各种资源当前的费率向您收取您在堆栈中包含的 AWS 资源 (如 EC2 实例) 的费用。有关 AWS 定价的详细信息，请参阅 <a href="https://aws.amazon.com/" rel="noopener noreferrer" target="_blank"><span>http://aws.amazon.com</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> 上每种产品的详细信息页。</p></div></div>
+   
+    <h2 id="w9aac21c11b9">步骤 1：编辑构件并将构件上传到 S3 存储桶</h2>
+    <p>在构建管道之前，您必须设置源存储库和文件。CodePipeline 将这些源文件复制到管道的<a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html">构件存储</a>中，然后使用它们在管道中执行操作，例如，创建 AWS CloudFormation 堆栈。</p>
+    <p>在将 Amazon Simple Storage Service (Amazon S3) 作为源存储库时，CodePipeline 要求您压缩源文件，然后再将它们上传到 S3 存储桶中。压缩的文件是可包含 AWS CloudFormation 模板和/或模板配置文件的 CodePipeline 构件。我们提供了一个包含一个示例 WordPress 模板和两个模板配置文件的构件。两个配置文件指定 WordPress 模板的参数值。CodePipeline 在创建 WordPress 堆栈时使用这些值。一个文件包含测试堆栈的参数值，另一个文件包含生产堆栈的参数值。您将需要编辑配置文件来指定您拥有的现有 EC2 密钥对名称。有关构件的更多信息，请参阅 <a href="./continuous-delivery-codepipeline-cfn-artifacts.html">AWS CloudFormation 构件</a>。</p>
+    <p>在构建构件后，将构件上传到 S3 存储桶。</p>
+    <div class="procedure"><h6>编辑和上传项目</h6><ol><li>
+        <p>下载并打开示例构件：<a href="https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/wordpress-single-instance.zip" rel="noopener noreferrer" target="_blank"><span>https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/wordpress-single-instance.zip</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p>
+        <p>此构件包含三个文件：</p>
+        <div class="itemizedlist">
+           
+           
+           
+        <ul class="itemizedlist"><li class="listitem">
+            <p>示例 WordPress 模板：<code class="code">wordpress-single-instance.yaml</code></p>
+          </li><li class="listitem">
+            <p>测试堆栈的模板配置文件：<code class="code">test-stack-configuration.json</code></p>
+          </li><li class="listitem">
+            <p>生产堆栈的模板配置文件：<code class="code">prod-stack-configuration.json</code></p>
+          </li></ul></div>
+      </li><li>
+        <p>提取所有文件，然后使用任意文本编辑器修改模板配置文件。</p>
+        <p>打开配置文件以查看这些文件是否包含映射到 WordPress 模板参数的键值对。配置文件指定您的管道在创建测试堆栈和生产堆栈时使用的参数值。</p>
+        <p>编辑 <code class="code">test-stack-configuration.json</code> 文件以为测试堆栈指定参数值并为生产堆栈指定 <code class="code">prod-stack-configuration.json</code> 文件。</p>
+        <div class="itemizedlist">
+           
+           
+        <ul class="itemizedlist"><li class="listitem">
+            <p>将 <code class="code">DBPassword</code> 和 <code class="code">DBRootPassword</code> 密钥的值更改为您可用于登录 WordPress 数据库的密码。如 WordPress 模板中所定义，参数值必须仅包含字母数字字符。</p>
+          </li><li class="listitem">
+            <p>将 <code class="code">KeyName</code> 密钥的值更改为您将在其中创建管道的区域中的现有 EC2 密钥对名称。</p>
+          </li></ul></div>
+      </li><li>
+        <p>将修改的配置文件添加到原始构件 (<code class="code">.zip</code>) 文件，并替换重复文件。</p>
+        <p>您现在已拥有可上传到 S3 存储桶的自定义构件。</p>
+      </li><li>
+        <p><a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/UploadingObjectsintoAmazonS3.html">将构件上传到您拥有的 S3 存储桶。</a></p>
+        <p>记下文件的位置。您将在构建管道时指定此文件的位置。</p>
+        <p>有关构件和 S3 存储桶的备注：</p>
+        <div class="itemizedlist">
+           
+           
+           
+           
+        <ul class="itemizedlist"><li class="listitem">
+            <p>使用位于您将在其中创建管道的同一 AWS 区域中的桶。</p>
+          </li><li class="listitem">
+            <p>CodePipeline 要求存储桶<a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/enable-bucket-versioning.html">已启用版本控制</a>。</p>
+          </li><li class="listitem">
+            <p>您还可将不要求您在上传文件之前压缩文件的服务 (如 GitHub 或 CodeCommit) 用于源存储库。</p>
+          </li><li class="listitem">
+            <p>构件可包含密码等敏感信息。<a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/EditingPermissionsonanObject.html">限制访问</a>以便仅允许的用户可查看文件。当您这样做时，确保 CodePipeline 仍可访问文件。</p>
+          </li></ul></div>
+      </li></ol></div>
+    <p>您现已具有一个构件，CodePipeline 可将此构件拉入您的管道中。在下一步中，您将指定构件的位置并构建 WordPress 管道。</p>
+   
+    <h2 id="w9aac21c11c11">步骤 2：创建管道堆栈</h2>
+    <p>为了创建 WordPress 管道，您将使用示例 AWS CloudFormation 模板。除了构建管道以外，该模板还为 CodePipeline 和 AWS CloudFormation 设置 AWS Identity and Access Management（IAM）服务角色，为 CodePipeline 构件存储设置 S3 桶，以及设置管道将通知（如有关审核的通知）发送到的 Amazon Simple Notification Service（Amazon SNS）主题。示例模板使您能够在单一 AWS CloudFormation 堆栈中轻松预置和配置这些资源。</p>
+    <p>有关管道配置的更多详细信息，请参阅<a href="#codepipeline-basic-walkthrough-template-details">管道的用途</a>。</p>
+    <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>重要</h6></div><div class="awsdocs-note-text"><p>示例 WordPress 模板将创建需要 Internet 连接的 EC2 实例。检查您的默认 VPC 和子网是否允许到 Internet 的流量。</p></div></div>
+    <div class="procedure"><h6>创建管道堆栈</h6><ol><li>
+        <p>从 <a href="https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/basic-pipeline.yml" rel="noopener noreferrer" target="_blank"><span>https://s3.amazonaws.com/cloudformation-examples/user-guide/continuous-deployment/basic-pipeline.yml</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> 下载示例模板。将该模板保存到您的计算机上。</p>
+      </li><li>
+        <p>打开 AWS CloudFormation 控制台，地址：<a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p>
+      </li><li>
+        <p>选择一个支持 CodePipeline 和 AWS CloudFormation 的 AWS 区域。</p>
+        <p>有关更多信息，请参阅 <em>AWS 一般参考</em> 中的 <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html">AWS Regions and endpoints</a>。</p>
+      </li><li>
+        <p>选择<b>创建堆栈</b>。</p>
+      </li><li>
+        <p>在 <b>Specify template (指定模板)</b> 下，选择 <b>Upload a template file (上传模板文件)</b>，然后选择您刚下载的模板 <code class="code">basic-pipeline.yml</code>。</p>
+      </li><li>
+        <p>选择<b>下一步</b>。</p>
+      </li><li>
+        <p>对于 <b>Stack name</b>，键入 <code class="code">sample-WordPress-pipeline</code>。</p>
+      </li><li>
+        <p>在 <b>Parameters</b> 部分中，指定下列参数值，然后选择 <b>Next</b>。设置堆栈参数时，如果您保留 WordPress 模板及其配置文件的相同名称，则可使用默认值。否则，请指定您使用的文件名。</p>
+        <div class="variablelist">
+           
+           
+           
+           
+        <dl>
+            <dt><span class="term"><b>PipelineName</b></span></dt>
+            <dd>
+              <p>管道的名称，如 <code class="code">WordPress-test-pipeline</code>。</p>
+            </dd>
+           
+            <dt><span class="term"><b>S3Bucket</b></span></dt>
+            <dd>
+              <p>您将构件 (<code class="code">.zip</code> 文件) 保存到的 S3 存储桶的名称。</p>
+            </dd>
+           
+            <dt><span class="term"><b>SourceS3Key</b></span></dt>
+            <dd>
+              <p>构件的文件名。如果您已将构件保存到文件夹中，则可将其作为文件名的一部分包含，如 <code class="code">folder/subfolder/wordpress-single-instance.zip</code>。</p>
+            </dd>
+           
+            <dt><span class="term"><b>电子邮件</b></span></dt>
+            <dd>
+              <p>CodePipeline 将管道通知发送到的电子邮件地址，如 <code class="code">myemail@example.com</code>。</p>
+            </dd>
+          </dl></div>
+      </li><li>
+        <p>在本演练中，您无需添加标记或指定高级设置，因此请选择 <b>Next</b>。</p>
+      </li><li>
+        <p>确保堆栈名称和模板 URL 正确，然后选择 <b>Create stack (创建堆栈)</b>。</p>
+      </li><li>
+        <p>要确认您知道 AWS CloudFormation 可能会创建 IAM 资源，请选中该复选框。</p>
+      </li></ol></div>
+    <p>AWS CloudFormation 可能需要几分钟的时间以创建堆栈。要监控进度，可查看堆栈事件。有关更多信息，请参阅<a href="./cfn-console-view-stack-data-resources.html">在 AWS Management Console上查看 AWS CloudFormation 堆栈数据和资源</a>。</p>
+    <p>在创建您的堆栈后，CodePipeline 将启动您的新管道。要查看其状态，请参阅 <a href="https://console.aws.amazon.com/codepipeline/" rel="noopener noreferrer" target="_blank"><span>CodePipeline 控制台</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。从管道列表中，选择 <b>WordPress-test-pipeline</b>。</p>
+     
+      <h3 id="codepipeline-basic-walkthrough-template-details">管道的用途</h3>
+      <p>此部分使用示例 WordPress 管道模板中的代码段介绍管道的三个阶段。</p>
+       
+        <h4 id="w9aac21c11c11c15b5">第 1 阶段：源</h4>
+        <p>管道的第 1 阶段是您指定源代码位置的源阶段。每当您将修订推送到此位置时，CodePipeline 都将重新运行您的管道。</p>
+        <p>源代码位于 S3 桶中，并由其文件名标识。您在创建管道堆栈时已将这些值指定为输入参数值。为了允许在后续阶段使用源构件，代码段将指定 <code class="code">OutputArtifacts</code> 属性以及名称为 <code class="code">TemplateSource</code>。要在后面的阶段中使用此构件，可将 <code class="code">TemplateSource</code> 指定为输入构件。</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">- Name: S3Source
+  Actions:
+    - Name: TemplateSource
+      ActionTypeId:
+        Category: Source
+        Owner: AWS
+        Provider: S3
+        Version: '1'
+      Configuration:
+        S3Bucket: !Ref 'S3Bucket'
+        S3ObjectKey: !Ref 'SourceS3Key'
+      OutputArtifacts:
+        - Name: TemplateSource</code></pre>
+       
+       
+        <h4 id="w9aac21c11c11c15b7">第 2 阶段：TestStage</h4>
+        <p>在 <code class="code">TestStage</code> 阶段，管道将创建测试堆栈，等待审批，然后删除测试堆栈。</p>
+        <p>对于 <code class="code">CreateStack</code> 操作，管道将使用测试配置文件和 WordPress 模板创建测试堆栈。这两个文件都包含在通过源阶段引入的 <code class="code">TemplateSource</code> 输入构件中。代码段将使用 <code class="code">REPLACE_ON_FAILURE</code> 操作模式。如果堆栈创建失败，管道将替换堆栈，这样一来，您无需清除堆栈或对堆栈进行故障排除，即可重新运行管道。操作模式对于快速迭代测试堆栈很有用。对于 <code class="code">RoleArn</code> 属性，该值是在模板中的其他位置声明的 AWS CloudFormation 服务角色。</p>
+        <p><code class="code">ApproveTestStack</code> 操作将暂停管道并向您在创建管道堆栈时指定的电子邮件地址发送通知。在管道暂停时，您可检查 WordPress 测试堆栈及其资源。可以使用 CodePipeline <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals-approve-or-reject.html">批准或拒绝</a>该操作。<code class="code">CustomData</code> 属性包含对您正审批的操作的描述，它是由管道添加到通知电子邮件的。</p>
+        <p>在批准该操作后，CodePipeline 将移到 <code class="code">DeleteTestStack</code> 操作并删除测试 WordPress 堆栈及其资源。</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">- Name: TestStage
+  Actions:
+    - Name: CreateStack
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      InputArtifacts:
+        - Name: TemplateSource
+      Configuration:
+        ActionMode: REPLACE_ON_FAILURE
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref TestStackName
+        TemplateConfiguration: !Sub "TemplateSource::$<span>{</span>TestStackConfig}"
+        TemplatePath: !Sub "TemplateSource::$<span>{</span>TemplateFileName}"
+      RunOrder: '1'
+    - Name: ApproveTestStack
+      ActionTypeId:
+        Category: Approval
+        Owner: AWS
+        Provider: Manual
+        Version: '1'
+      Configuration:
+        NotificationArn: !Ref CodePipelineSNSTopic
+        CustomData: !Sub 'Do you want to create a change set against the production stack and delete the $<span>{</span>TestStackName} stack?'
+      RunOrder: '2'
+    - Name: DeleteTestStack
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      Configuration:
+        ActionMode: DELETE_ONLY
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref TestStackName
+      RunOrder: '3'</code></pre>
+       
+       
+        <h4 id="w9aac21c11c11c15b9">第 3 阶段：ProdStage</h4>
+        <p>管道的 <code class="code">ProdStage</code> 阶段将针对现有生产堆栈创建更改集，等待审批，然后执行更改集。</p>
+        <p>更改集在实施 AWS CloudFormation 将对生产堆栈进行的所有修改之前提供这些修改的预览。在您首次运行管道时，您将没有正在运行的生产堆栈。更改集显示 AWS CloudFormation 在创建测试堆栈时执行的操作。要创建更改集，<code class="code">CreateChangeSet</code> 操作将使用 WordPress 示例模板和 <code class="code">TemplateSource</code> 输入构件中的生产模板配置。</p>
+        <p>与上一阶段类似，<code class="code">ApproveChangeSet</code> 操作将暂停管道并发送电子邮件通知。在管道暂停后，您可查看更改集以检查针对生产 WordPress 堆栈的所有建议的修改。可以使用 CodePipeline <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals-approve-or-reject.html">批准或拒绝</a>该操作以相应地继续运行或停止管道。</p>
+        <p>在您批准该操作后，<code class="code">ExecuteChangeSet</code> 操作执行更改集，以便 AWS CloudFormation 执行更改集中描述的所有操作。在初始运行中，AWS CloudFormation 将创建 WordPress 生产堆栈。在后续运行中，AWS CloudFormation 将更新堆栈。</p>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">- Name: ProdStage
+  Actions:
+    - Name: CreateChangeSet
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      InputArtifacts:
+        - Name: TemplateSource
+      Configuration:
+        ActionMode: CHANGE_SET_REPLACE
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref ProdStackName
+        ChangeSetName: !Ref ChangeSetName
+        TemplateConfiguration: !Sub "TemplateSource::$<span>{</span>ProdStackConfig}"
+        TemplatePath: !Sub "TemplateSource::$<span>{</span>TemplateFileName}"
+      RunOrder: '1'
+    - Name: ApproveChangeSet
+      ActionTypeId:
+        Category: Approval
+        Owner: AWS
+        Provider: Manual
+        Version: '1'
+      Configuration:
+        NotificationArn: !Ref CodePipelineSNSTopic
+        CustomData: !Sub 'A new change set was created for the $<span>{</span>ProdStackName} stack. Do you want to implement the changes?'
+      RunOrder: '2'
+    - Name: ExecuteChangeSet
+      ActionTypeId:
+        Category: Deploy
+        Owner: AWS
+        Provider: CloudFormation
+        Version: '1'
+      Configuration:
+        ActionMode: CHANGE_SET_EXECUTE
+        ChangeSetName: !Ref ChangeSetName
+        RoleArn: !GetAtt [CFNRole, Arn]
+        StackName: !Ref ProdStackName
+      RunOrder: '3'</code></pre>
+       
+     
+   
+    <h2 id="w9aac21c11c13">步骤 3：查看 WordPress 堆栈</h2>
+    <p>由于 CodePipeline 在整个管道中运行，因此，它使用 AWS CloudFormation 创建测试和生产堆栈。要查看这些堆栈的状态及其输出，可使用 AWS CloudFormation 控制台。</p>
+    <div class="procedure"><h6>查看堆栈</h6><ol><li>
+        <p>打开 AWS CloudFormation 控制台，地址：<a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p>
+      </li><li>
+        <p>根据您的管道是处于测试阶段还是生产阶段，选择 <code class="code">Test-MyWordPressSite</code> 或 <code class="code">Prod-MyWordPressSite</code> 堆栈。</p>
+      </li><li>
+        <p>要查看堆栈状态，可查看堆栈<a href="./cfn-console-view-stack-data-resources.html">事件</a>。</p>
+      </li></ol></div>
+    <p>如果堆栈处于故障状态，可查看状态描述以找出堆栈错误。修复错误，然后重新运行管道。如果堆栈处于 <code class="code">CREATE_COMPLETE</code> 状态，请查看其输出以获取您的 WordPress 站点的 URL。</p>
+    <p>您已成功使用 CodePipeline 为示例 WordPress 站点构建持续交付工作流程。如果您将更改提交到 S3 存储桶，CodePipeline 将自动检测新版本，然后重新运行您的管道。利用此工作流程，可以在更改生产站点之前更轻松地提交和测试更改。</p>
+   
+    <h2 id="w9aac21c11c15">步骤 4：清理资源</h2>
+    <p>要确保不因任何不必要的服务而产生费用，请删除您的资源。</p>
+    <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>重要</h6></div><div class="awsdocs-note-text"><p>在删除管道堆栈前，删除测试和生产 WordPress 堆栈。管道堆栈包含删除 WordPress 堆栈所需的服务角色。如果您已先删除管道堆栈，则可<a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DeleteStack.html">关联另一个服务角色 Amazon 资源名称（ARN）</a> 与 WordPress 堆栈，然后删除它们。</p></div></div>
+    <div class="procedure"><h6>删除构件存储中的对象</h6><ol><li><p>通过以下网址打开 Amazon S3 控制台：<a href="https://console.aws.amazon.com/s3/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/s3/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p></li><li>
+        <p>选择 CodePipeline 用作管道构件存储的 S3 存储桶。</p>
+        <p>此存储桶的名称遵循以下格式：<code class="code"><code class="replaceable">stackname-artifactstorebucket-id</code></code>。如果您已按照此演练操作，此存储桶的名称可能看上去与以下示例类似：<code class="code">sample-WordPress-pipeline-artifactstorebucket-12345abcd12345</code>。</p>
+      </li><li>
+        <p>删除构件存储 S3 存储桶中的所有对象。</p>
+        <p>当您在下一步中删除管道堆栈时，此存储桶必须为空。否则，AWS CloudFormation 将无法删除此存储桶。</p>
+      </li></ol></div>
+    <div class="procedure"><h6>删除堆栈</h6><ol><li>
+        <p>从 AWS CloudFormation 控制台中，选择要删除的堆栈。</p>
+        <p>如果管道创建的 WordPress 堆栈仍在运行，请先选择它们。默认情况下，堆栈名称为 <code class="code">Test-MyWordPressSite</code> 和 <code class="code">Prod-MyWordPressSite</code>。</p>
+        <p>如果您已删除 WordPress 堆栈，请选择 <code class="code">sample-WordPress-pipeline</code> 堆栈。</p>
+      </li><li>
+        <p>选择 <b>Actions</b>)（操作），然后选择 <b>Delete Stack</b>（删除堆栈）。</p>
+      </li><li>
+        <p>在确认消息中，选择 <b>Yes, Delete</b>。</p>
+      </li></ol></div>
+    <p>AWS CloudFormation 将删除堆栈的所有堆栈资源，如 EC2 实例、通知主题、服务角色和管道。</p>
+    <p>现在您已了解如何使用 CodePipeline 构建基本 AWS CloudFormation 工作流，您可以将示例模板和构件作为起点以构建自己的工作流。</p>
+   
+    <h2 id="w9aac21c11c19">另请参阅</h2>
+    <p>下列相关资源可帮助您处理这些参数。</p>
+    <div class="itemizedlist">
+       
+       
+       
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p>有关 CodePipeline 中 AWS CloudFormation 操作参数的更多信息，请参阅《AWS CodePipeline 用户指南》中的 <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CloudFormation.html">AWS CloudFormation</a> 操作配置引用。</p>
+      </li><li class="listitem">
+        <p>有关操作提供方的示例模板值，例如 <code class="code">Owner</code> 字段或 <code class="code">configuration</code> 字段的值，请参阅《AWS CodePipeline 用户指南》中的<a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference.html">操作结构参考</a>。</p>
+      </li><li class="listitem">
+        <p>要下载 YAML 或 JSON 格式的示例管道堆栈模板，请参阅《AWS CodePipeline 用户指南》中<a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-cloudformation.html">使用 AWS CloudFormation 创建管道</a>下的教程。</p>
+      </li><li class="listitem">
+        <p>有关示例模板配置文件，请参阅 <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/continuous-delivery-codepipeline-cfn-artifacts.html">AWS CloudFormation 构件</a>。</p>
+      </li></ul></div>
+  <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./continuous-delivery-codepipeline.html">持续交付</div><div id="next" class="next-link" accesskey="n" href="./continuous-delivery-codepipeline-action-reference.html">配置属性参考</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-basic-walkthrough.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

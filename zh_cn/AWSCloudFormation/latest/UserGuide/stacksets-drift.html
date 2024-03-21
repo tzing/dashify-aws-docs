@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>检测堆栈集中的非托管配置更改 - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="stacksets-drift" /><meta name="default_state" content="stacksets-drift" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="description" content="即使在您通过 CloudFormation 管理堆栈及其包含的资源时，用户也可以在 CloudFormation 外部更改这些资源。用户可以使用创建资源的底层服务直接编辑资源。通过对堆栈集执行偏差检测，您可以确定属于该堆栈集的任何堆栈实例是否与它们的预期配置不同或 已偏离 。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="用户指南" /><meta name="abstract" content="根据此用户指南，使用 AWS CloudFormation 以可预见方式反复创建和管理 AWS 基础设施部署。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="用户指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="用户指南" /><meta id="panorama-serviceConsolePage" value="检测堆栈集中的非托管配置更改" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>检测堆栈集中的非托管配置更改 - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,资源预置,资源配置,基础设施管理,CloudFormer,CloudFormation 堆栈,CloudFormation 堆栈集,CloudFormation 模板,更改集" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "用户指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "使用 AWS CloudFormation StackSets",
+        "item" : "https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "检测堆栈集中的非托管配置更改",
+        "item" : "https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">用户指南</a></div><div id="page-toc-src"><a href="#stacksets-drift-how">CloudFormation 如何对堆栈集执行偏差检测</a><a href="#stacksets-drift-stop">在堆栈集上停止偏差检测</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="stacksets-drift">检测堆栈集中的非托管配置更改</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>即使在您通过 CloudFormation 管理堆栈及其包含的资源时，用户也可以在 CloudFormation 外部更改这些资源。用户可以使用创建资源的底层服务直接编辑资源。通过对堆栈集执行偏差检测，您可以确定属于该堆栈集的任何堆栈实例是否与它们的预期配置不同或<em>已偏离</em>。</p>
+        <h2 id="stacksets-drift-how">CloudFormation 如何对堆栈集执行偏差检测</h2>
+        <p>在 CloudFormation 对堆栈集执行偏差检测时，它对与堆栈集中的每个堆栈实例关联的堆栈执行偏差检测。为此，CloudFormation 将堆栈中的每个资源的当前状态与该资源的预期状态进行比较，该状态是堆栈的模板以及任何指定的输入参数中定义的。如果资源的当前状态不同于预期状态，则认为该资源已偏离。如果堆栈中的一个或多个资源已偏离，则将堆栈本身视为已偏离，并将与堆栈关联的堆栈实例也视为已偏离。如果堆栈集中的一个或多个堆栈实例已偏离，则将堆栈集本身视为已偏离。</p>
+        <p>偏差检测确定非托管更改；即，在 CloudFormation 外部对堆栈进行的更改。直接通过 CloudFormation 对堆栈进行的更改（而不是在堆栈集级别）不会被视为偏差。例如，假设您具有一个与堆栈集的堆栈实例关联的堆栈。如果您使用 CloudFormation 更新该堆栈以使用不同的模板，则不会将其视为偏差，即使该堆栈现在具有与属于堆栈集的任何其他堆栈不同的模板。这是因为，该堆栈仍与它在 CloudFormation 中的预期模板和参数配置匹配。</p>
+        <p>有关 CloudFormation 如何对堆栈执行偏差检测的详细信息，请参阅<a href="./using-cfn-stack-drift.html">检测堆栈和资源的非托管配置更改</a>。</p>
+        <p>由于分别 CloudFormation 对每个堆栈执行偏差检测，因此，它在确定堆栈是否偏离时考虑任何覆盖的参数值。有关在堆栈实例中覆盖模板参数的更多信息，请参阅<a href="./stackinstances-override.html">覆盖堆栈实例上的参数</a>。</p>
+        <p>如果<a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">直接</a>对与堆栈实例关联的堆栈执行偏差检测，则无法在 <b>StackSets</b> 控制台页面中查看这些偏差结果。</p>
+
+    <div class="procedure"><h6>使用 AWS Management Console检测堆栈集上的偏差</h6><ol><li><p>打开 AWS CloudFormation 控制台，地址：<a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p></li><li>
+            <p>在 <b>StackSets (堆栈集)</b> 页面上，选择要执行偏差检测的堆栈集。</p>
+        </li><li>
+            <p>从 <b>Actions (操作)</b> 菜单中，选择 <b>Detect drifts (检测偏差)</b>。</p>
+            <p>CloudFormation 将显示一个信息栏，以指示为选定的堆栈集启动了偏差检测。</p>
+        </li><li>
+            <p>可选：要监控偏差检测操作进度，请执行以下操作：</p>
+            <ol><li>
+                    <p>选择堆栈集名称以显示 <b>Stackset details</b> (堆栈集详细信息) 页面。</p>
+                </li><li>
+                    <p>选择 <b>Operations (操作)</b> 选项卡，选择偏差检测操作，然后选择 <b>View drift details (查看偏差详细信息)</b>。</p>
+                </li></ol>
+            <p>CloudFormation 显示 <b>Operation details</b> (操作详细信息) 对话框。</p>
+        </li><li>
+            <p>请耐心等待，直到 CloudFormation 完成偏差检测操作。在偏差检测操作完成时，CloudFormation 将更新堆栈集的 <b>Drift status (偏差状态)</b> 和 <b>Last drift check time (上次偏差检查时间)</b>。这些字段在选定堆栈集的 <b>StackSet details</b>（堆栈集详细信息）页面的 <b>Overview</b>（概述）选项卡上列出。</p>
+            <p>偏差检测操作可能需要一些时间，具体取决于堆栈集中包含的堆栈实例数量以及堆栈集中包含的资源数量。您一次只能在给定堆栈集上运行一个偏差检测操作。即使您关闭信息栏，CloudFormation 也会继续执行偏差检测操作。</p>
+        </li><li>
+            <p>要查看堆栈集中的堆栈实例的偏差检测结果，请选择 <b>Stack instances (堆栈实例)</b> 选项卡。</p>
+            <p><b>Stack name (堆栈名称)</b> 列列出与每个堆栈实例关联的堆栈的名称，<b>Drift status (偏差状态)</b> 列列出该堆栈的偏差状态。如果堆栈的一个或多个资源已偏离，则认为堆栈已偏离。</p>
+        </li><li>
+            <p>要查看与特定堆栈实例关联的堆栈的偏差检测结果，请执行以下操作：</p>
+            <ol><li>
+                    <p>选择<b>操作</b>选项卡。</p>
+                </li><li>
+                    <p>选择要查看其偏差检测结果的偏差操作。拆分面板将显示堆栈实例状态和所选操作的原因。对于偏差操作，状态原因列显示堆栈实例的偏差状态。</p>
+                </li><li>
+                    <p>选择要查看其偏差详细信息的堆栈实例，然后选择<b>查看资源偏差</b>。在<b>资源偏差</b>页面上的<b>资源偏差状态</b>中，会列出每个堆栈资源及其偏差状态，以及最后一次在资源上启动偏差检测的时间。将会显示每个资源的逻辑 ID 和物理 ID，以帮助您识别它们。</p>
+                </li></ol>
+        </li><li>
+            <p>您可以使用<b>偏差状态</b>列根据资源偏差状态对资源排序。</p>
+            <p>查看已修改资源的详细信息：</p>
+            <ol><li>
+                    <p>选定资源后，选择<b>查看偏差详细信息</b>。</p>
+                    <p>CloudFormation 会显示该资源的偏差详细信息页面。此页面列出资源的差异。其中还列出资源的预期和当前属性值。</p>
+                    <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>如果堆栈所属的区域和账户与您当前登录的地区和账户不同，则<b>检测偏差</b>按钮将被禁用，您将无法查看详细信息。</p></div></div>
+                </li></ol>
+            <div class="mediaobject">
+                 
+                    <img src="images/console-stacks-drifts-drift-details-differences-1.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                    偏差详细信息页面上的资源偏差状态部分，其中包含堆栈中支持偏差检测的每个资源的偏差信息。详细信息包括偏差状态以及预期的和当前的属性值。&#xA;                " style="max-width:100%" />
+                 
+                 
+            </div>
+
+        </li></ol></div><div class="procedure"><h6>使用 AWS CLI检测堆栈集上的偏差</h6><p>要使用 AWS CLI 在整个堆栈上检测偏差，请使用以下 <code class="code">aws
+                cloudformation</code> 命令：</p><div class="itemizedlist">
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/detect-stack-set-drift.html">detect-stack-set-drift</a></code>，用于对堆栈启动偏差检测操作。</p>
+            </li><li class="listitem">
+                <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/describe-stack-set-operation.html">describe-stack-set-operation</a></code>，用于监控堆栈偏差检测操作的状态。</p>
+            </li><li class="listitem">
+                <p>在偏差检测操作完成后，可以使用以下命令返回所需的偏差信息：</p>
+                <div class="itemizedlist">
+                     
+                     
+                     
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <p>使用 <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/describe-stack-set.html">describe-stack-set</a></code> 返回有关堆栈集的详细信息，包括有关堆栈集的上次<em>完成</em> 的偏差操作的详细信息。（不包括有关正在执行的偏差操作的信息。）</p>
+                    </li><li class="listitem">
+                        <p>使用 <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-stack-instances.html">list-stack-instances</a></code> 返回属于堆栈集的堆栈实例的列表，包括每个实例的偏差状态和上次偏差检查时间。</p>
+                    </li><li class="listitem">
+                        <p>使用 <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/describe-stack-instance.html">describe-stack-instance</a></code> 返回有关特定堆栈实例的详细信息，包括其偏差状态和上次偏差检查时间。</p>
+                    </li><li class="listitem">
+                        <p>使用 <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-stack-instance-resource-drifts.html">list-stack-instance-resource-drifts</a></code> 返回有关堆栈实例中每个资源的偏差状态的详细信息。</p>
+                    </li><li class="listitem">
+                        <p>使用 <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/stack-instance-resource-drifts-summary.html">stack-instance-resource-drifts-summary</a></code> 返回有关堆栈实例的资源偏差的摘要信息。</p>
+                    </li></ul></div>
+            </li></ul></div><ol><li>
+            <p>使用 <code class="code">detect-stack-set-drift</code> 检测整个堆栈集及其关联堆栈实例上的偏差。</p>
+            <p>以下示例对 <code class="code">stack-set-drift-example</code> 堆栈集启动偏差检测。</p>
+
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation detect-stack-set-drift \
+    --stack-set-name stack-set-drift-example</code>
+<code class="computeroutput" copy="false"><span>{</span>
+    "OperationId": "c36e44aa-3a83-411a-b503-cb611example"
+}</code></code></pre>
+        </li><li>
+            <p>由于堆栈集偏差检测操作可能是长时间运行的操作，因此，请使用 <code class="code">describe-stack-set-operation</code> 监控偏差操作的状态。该命令使用 <code class="code">detect-stack-set-drift</code> 命令返回的堆栈集操作 ID。</p>
+            <p>以下示例使用上一示例中的操作 ID 返回有关堆栈集偏差检测操作的信息。在此示例中，该操作仍在运行。在与该堆栈集关联的七个堆栈实例中，发现一个堆栈实例已偏离，两个实例正在进行同步，而其余四个堆栈实例仍在进行偏差检测。由于一个实例已偏离，堆栈集本身的偏差状态现在为 <code class="code">DRIFTED</code>。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-set-operation \
+    --stack-set-name stack-set-drift-example \
+    --operation-id c36e44aa-3a83-411a-b503-cb611example</code>
+<code class="computeroutput" copy="false">
+<span>{</span>
+    "StackSetOperation": <span>{</span>
+        "Status": "RUNNING",
+        "AdministrationRoleARN": "arn:aws:iam::123456789012:role/AWSCloudFormationStackSetAdministrationRole",
+        "OperationPreferences": <span>{</span>
+            "RegionOrder": []
+        },
+        "ExecutionRoleName": "AWSCloudFormationStackSetExecutionRole",
+        "StackSetDriftDetectionDetails": <span>{</span>
+            "DriftedStackInstancesCount": 1,
+            "TotalStackInstancesCount": 7,
+            "LastDriftCheckTimestamp": "2019-12-04T20:34:28.543Z",
+            "InSyncStackInstancesCount": 2,
+            "InProgressStackInstancesCount": 4,
+            "DriftStatus": "DRIFTED",
+            "FailedStackInstancesCount": 0
+        },
+        "Action": "DETECT_DRIFT",
+        "CreationTimestamp": "2019-12-04T20:33:13.673Z",
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22example",
+        "OperationId": "c36e44aa-3a83-411a-b503-cb611example"
+    }
+}</code></code></pre>
+            <p>该示例稍后执行相同的命令，以显示在偏差检测操作完成后返回的信息。在与该堆栈集关联的总共 7 个堆栈实例中，有两个实例已偏离，从而使堆栈集本身的偏差状态显示为 <code class="code">DRIFTED</code>。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-set-operation \
+    --stack-set-name stack-set-drift-example \
+    --operation-id c36e44aa-3a83-411a-b503-cb611example</code>
+<code class="computeroutput" copy="false">
+<span>{</span>
+    "StackSetOperation": <span>{</span>
+        "Status": "SUCCEEDED",
+        "AdministrationRoleARN": "arn:aws:iam::123456789012:role/AWSCloudFormationStackSetAdministrationRole",
+        "OperationPreferences": <span>{</span>
+            "RegionOrder": []
+        } 
+        "ExecutionRoleName": "AWSCloudFormationStackSetExecutionRole",
+        "EndTimestamp": "2019-12-04T20:37:32.829Z",
+        "StackSetDriftDetectionDetails": <span>{</span>
+            "DriftedStackInstancesCount": 2,
+            "TotalStackInstancesCount": 7,
+            "LastDriftCheckTimestamp": "2019-12-04T20:36:55.612Z",
+            "InSyncStackInstancesCount": 5,
+            "InProgressStackInstancesCount": 0,
+            "DriftStatus": "DRIFTED",
+            "FailedStackInstancesCount": 0
+        },
+        "Action": "DETECT_DRIFT",
+        "CreationTimestamp": "2019-12-04T20:33:13.673Z",
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22example",
+        "OperationId": "c36e44aa-3a83-411a-b503-cb611example"
+    }
+}</code></code></pre>
+        </li><li>
+            <p>在堆栈集偏差检测操作完成后，请使用 <code class="code">describe-stack-set</code>、<code class="code">list-stack-instances</code>、<code class="code">describe-stack-instance</code> 和 <code class="code">list-stack-instance-resource-drifts</code> 命令查看结果。</p>
+            <p><code class="code">describe-stack-set</code> 命令包括 <code class="code">describe-stack-set-operation</code> 命令返回的相同详细偏差信息。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-set \
+    --stack-set-name stack-set-drift-example</code>
+<code class="computeroutput" copy="false"><span>{</span>
+    "StackSet": <span>{</span>
+        "Status": "ACTIVE",
+        "Description": "Demonstration of drift detection on stack sets.",
+        "Parameters": [],
+        "Tags": [
+            <span>{</span>
+                "Value": "Drift detection",
+                "Key": "Feature"
+            }
+        ], 
+        "ExecutionRoleName": "AWSCloudFormationStackSetExecutionRole",
+        "Capabilities": [],
+        "AdministrationRoleARN": "arn:aws:iam::123456789012:role/AWSCloudFormationStackSetAdministrationRole",
+        "StackSetDriftDetectionDetails": <span>{</span>
+            "DriftedStackInstancesCount": 2,
+            "TotalStackInstancesCount": 7,
+            "LastDriftCheckTimestamp": "2019-12-04T20:36:55.612Z",
+            "InProgressStackInstancesCount": 0,
+            "DriftStatus": "DRIFTED",
+            "DriftDetectionStatus": "COMPLETED",
+            "InSyncStackInstancesCount": 5,
+            "FailedStackInstancesCount": 0
+        },
+        "StackSetARN": "arn:aws:cloudformation:us-east-1:123456789012:stackset/stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22example",
+        "TemplateBody": [details omitted],
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22ebexample",
+        "StackSetName": "stack-set-drift-example"
+    }
+}</code></code></pre>
+            <p>您可以使用 <code class="code">list-stack-instances</code> 命令返回有关与堆栈集关联的堆栈实例的摘要信息，包括每个堆栈实例的偏差状态。</p>
+            <p>在本示例中，通过对示例堆栈集执行 <code class="code">list-stack-instances</code> 并将偏差状态筛选设置为 <code class="code">DRIFTED</code>，我们可以确定哪两个堆栈实例具有 <code class="code">DRIFTED</code> 偏差状态。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation list-stack-instances \
+    --stack-set-name stack-set-drift-example \
+    --filters Name=DRIFT_STATUS,Values=DRIFTED</code>
+<code class="computeroutput" copy="false"><span>{</span>
+"Summaries": [
+        <span>{</span>
+"StackId": "arn:aws:cloudformation:eu-west-1:123456789012:stack/StackSet-stack-set-drift-example-b0fb6083-60c0-4e39-af15-2f071e0db90c/0e4f0940-16d4-11ea-93d8-0641cexample",
+            "Status": "CURRENT",
+            "Account": "012345678910",
+            "Region": "eu-west-1",
+            "LastDriftCheckTimestamp": "2019-12-04T20:37:32.687Z",
+            "DriftStatus": "DRIFTED",
+            "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22eexample
+            "LastOperationId": "c36e44aa-3a83-411a-b503-cb611example"
+        },
+        <span>{</span>
+            "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/StackSet-stack-set-drift-example-b7fde68e-e541-44c2-b33d-ef2e2988071a/008e6030-16d4-11ea-8090-12f89example",
+            "Status": "CURRENT",
+            "Account": "123456789012",
+            "Region": "us-east-1",
+            "LastDriftCheckTimestamp": "2019-12-04T20:34:28.275Z",
+            "DriftStatus": "DRIFTED",
+            "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22eexample"
+            "LastOperationId": "c36e44aa-3a83-411a-b503-cb611example"
+        },
+        
+        [additional stack instances omitted]
+ 
+    ]
+}</code></code></pre>
+            <p><code class="code">describe-stack-instance</code> 命令也返回该信息，但仅为单个堆栈实例返回该信息，如以下示例所示。</p>
+
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-instance \
+    --stack-set-name stack-set-drift-example \
+    --stack-instance-account 012345678910 --stack-instance-region us-east-1</code>
+<code class="computeroutput" copy="false"><span>{</span>
+    "StackInstance": <span>{</span>
+        "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/StackSet-stack-set-drift-example-b7fde68e-e541-44c2-b33d-ef2e2988071a/008e6030-16d4-11ea-8090-12f89example",
+        "Status": "CURRENT",
+        "Account": "123456789012",
+        "Region": "us-east-1",
+        "ParameterOverrides": [],
+        "DriftStatus": "DRIFTED",
+        "LastDriftCheckTimestamp": "2019-12-04T20:34:28.275Z",
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22eexample"
+        "LastOperationId": "c36e44aa-3a83-411a-b503-cb611example"
+    }
+}</code></code></pre>
+        </li><li>
+            <p>在确定哪些堆栈实例存在偏差后，您可以使用由 <code class="code">list-stack-instances</code> 或 <code class="code">describe-stack-instance</code> 命令返回的有关堆栈实例的信息以执行 <a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-stack-instance-resource-drifts.html">list-stack-instance-resource-drifts</a>。该命令会返回详细信息，说明对于特定偏差操作而言，堆栈中的哪些资源已产生偏差。</p>
+            <p>以下示例使用 <code class="code">stack-instance-resource-drift-statuses</code> 参数来请求在上一个偏差操作示例中已修改或删除的资源的堆栈偏差信息。该请求会返回有关已修改的一个资源的信息，包括有关其中两个属性及其已更改值的详细信息。不会删除任何资源。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation list-stack-instance-resource-drifts \
+    --stack-set-name my-stack-set-with-resource-drift \
+    --stack-instance-account 123456789012 \
+    --stack-instance-region us-east-1 \
+    --operation-id c36e44aa-3a83-411a-b503-cb611example \
+    --stack-instance-resource-drift-statuses MODIFIED DELETED</code>
+
+<code class="computeroutput" copy="false"><span>{</span>
+    "Summaries": [
+        <span>{</span>
+            "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/my-stack-set-with-resource-drift/489e5570-df85-11e7-a7d9-50example",
+            "ResourceType": "AWS::SQS::Queue",
+            "Timestamp": "2018-03-26T17:23:34.489Z",
+            "PhysicalResourceId": "https://sqs.us-east-1.amazonaws.com/123456789012/my-stack-with-resource-drift-Queue-494PBHCO76H4",
+            "StackResourceDriftStatus": "MODIFIED",
+            "PropertyDifferences": [
+                <span>{</span>
+                    "PropertyPath": "/DelaySeconds",
+                    "ActualValue": "120",
+                    "ExpectedValue": "20",
+                    "DifferenceType": "NOT_EQUAL"
+                },
+                <span>{</span>
+                    "PropertyPath": "/RedrivePolicy/maxReceiveCount",
+                    "ActualValue": "12",
+                    "ExpectedValue": "10",
+                    "DifferenceType": "NOT_EQUAL"
+                }
+            ],
+            "LogicalResourceId": "Queue"
+        }
+    ]
+}</code></code></pre>
+        </li></ol></div>
+        <h2 id="stacksets-drift-stop">在堆栈集上停止偏差检测</h2>
+        <p>由于对堆栈集的偏差检测可能是长时间运行的操作，因此，在某些情况下，您可能希望停止当前对堆栈集运行的偏差检测操作。</p>
+        <div class="procedure"><h6>使用 AWS Management Console停止对堆栈集的偏差检测</h6><ol><li><p>打开 AWS CloudFormation 控制台，地址：<a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p></li><li>
+                <p>在 <b>StackSets (堆栈集)</b> 页面上，选择堆栈集的名称。</p>
+                <p>CloudFormation 将显示选定堆栈集的 <b>StackSets details</b> (堆栈集详细信息) 页面。</p>
+            </li><li>
+                <p>在 <b>StackSets details (堆栈集详细信息)</b> 页面上，选择 <b>Operations (操作)</b> 选项卡，然后选择偏差检测操作。</p>
+            </li><li>
+                <p>选择 <b>Stop operation (停止操作)</b>。</p>
+            </li></ol></div>
+        <div class="procedure"><h6>使用 AWS CLI停止对堆栈集的偏差检测</h6><ul><li>
+                <p>使用 <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/stop-stack-set-operation.html">stop-stack-set-operation</a></code> 命令。您必须同时提供堆栈集名称和偏差检测堆栈集操作的操作 ID。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation stop-stack-set-operation \
+    --stack-set-name stack-set-drift-example \
+    --operation-id 624af370-311a-11e8-b6b7-500cexample</code></code></pre>
+            </li></ul></div>
+    <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./stacksets-account-gating.html">目标账户门</div><div id="next" class="next-link" accesskey="n" href="./stacksets-import.html">将堆栈导入堆栈集。</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/stacksets-drift.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/stacksets-drift.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

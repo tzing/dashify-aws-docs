@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>使用 AWS CloudFormation 通过 CodeDeploy 执行 ECS 蓝/绿部署 - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="blue-green" /><meta name="default_state" content="blue-green" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/blue-green.html" /><meta name="description" content="使用 AWS CloudFormation 模板，通过 AWS CodeDeploy 管理 ECS 蓝/绿部署。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="用户指南" /><meta name="abstract" content="根据此用户指南，使用 AWS CloudFormation 以可预见方式反复创建和管理 AWS 基础设施部署。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/blue-green.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="用户指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="用户指南" /><meta id="panorama-serviceConsolePage" value="使用 AWS CloudFormation 通过 CodeDeploy 执行 ECS 蓝/绿部署" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>使用 AWS CloudFormation 通过 CodeDeploy 执行 ECS 蓝/绿部署 - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/blue-green.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/blue-green.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/blue-green.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,资源预置,资源配置,基础设施管理,CloudFormer,CloudFormation 堆栈,CloudFormation 堆栈集,CloudFormation 模板,更改集" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "用户指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "使用 AWS CloudFormation 模板",
+        "item" : "https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/template-guide.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "使用 AWS CloudFormation 通过 CodeDeploy 执行 ECS 蓝/绿部署",
+        "item" : "https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/template-guide.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">用户指南</a></div><div id="page-toc-src"><a href="#blue-green-required">使用 CloudFormation 资源对蓝/绿部署建模</a><a href="#blue-green-resources">触发绿色部署的资源更新</a><a href="#blue-green-considerations">使用 CloudFormation 管理 ECS 蓝/绿部署时的注意事项</a><a href="#blue-green-setup">准备模板以执行 ECS 蓝/绿部署</a><a href="#blue-green-changesets">查看蓝/绿部署的更改集</a><a href="#blue-green-events">查看蓝/绿部署的堆栈事件</a><a href="#blue-green-template-reference">模板参考</a><a href="#blue-green-iam">蓝/绿部署所需的 IAM 权限</a><a href="#blue-green-template-example">模板示例</a></div><div id="page-filters" style="display:none"><filter label="All" id="All"></filter><filter label="JSON" id="JSON"></filter><filter label="YAML" id="YAML"></filter></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="blue-green">使用 AWS CloudFormation 通过 CodeDeploy 执行 ECS 蓝/绿部署</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>您可以使用 CloudFormation 通过 AWS CodeDeploy 进行 ECS 蓝/绿部署。蓝/绿部署是  CodeDeploy 提供的一种安全部署策略，旨在最大限度地减少因应用程序版本更改而造成的中断。这通过创建新的应用程序环境（称为<em>绿色</em>）以及当前为实时流量提供服务的应用程序（称为<em>蓝色</em>）来实现。这样就可以在您的实时流量从蓝色传送到绿色并随后关闭蓝色资源之前，对绿色环境进行一段时间的监视和测试。</p><p>使用 CloudFormation 执行 ECS 蓝/绿部署时，首先创建一个堆栈模板，为蓝色和绿色应用程序环境定义资源，包括指定要使用的流量路由和稳定设置。接下来，基于该模板创建一个堆栈；这会生成蓝色（当前）应用程序。CloudFormation 仅在堆栈创建过程中创建蓝色资源。绿色部署的资源仅在需要时才会创建。</p><p>然后，如果在将来的堆栈更新中更新蓝色应用程序中的任务定义或任务集资源，CloudFormation 会执行以下操作：</p><div class="itemizedlist">
+         
+         
+         
+    <ul class="itemizedlist"><li class="listitem"><p>生成所有必需的绿色应用程序环境资源</p></li><li class="listitem"><p>根据指定的流量路由参数转移流量</p></li><li class="listitem"><p>删除蓝色资源</p></li></ul></div><p>如果在绿色部署成功和完成之前的任何时刻发生错误，CloudFormation 会将堆栈回滚到启动整个绿色部署之前的状态。</p><p>要使 CloudFormation 能够在堆栈上执行蓝/绿部署，请在其堆栈模板中包括以下信息：</p><div class="itemizedlist">
+         
+         
+    <ul class="itemizedlist"><li class="listitem"><p>模板中调用 <code class="code">AWS::CodeDeployBlueGreen</code> 转换的 <code class="code">Transform</code> 部分，以及调用 <code class="code">AWS::CodeDeploy::BlueGreen</code> 挂钩的 <code class="code">Hook</code> 部分。</p></li><li class="listitem"><p>如果在堆栈更新过程中替换，则至少一个 ECS 资源将触发蓝/绿部署。目前，这些资源是 <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskdefinition.html"><code class="code">AWS::ECS::TaskDefinition</code></a> 和 <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskset.html"><code class="code">AWS::ECS::TaskSet</code></a>。</p></li></ul></div><p>然后，如果您启动堆栈更新来更新上述资源的任何属性，而且该更新需要 CloudFormation 替换资源，则 CloudFormation 会执行如上所述的蓝/绿部署。有关资源更新行为的更多信息，请参阅<a href="./using-cfn-updating-stacks-update-behaviors.html">堆栈资源的更新行为</a>。</p><p>在某些情况下，您可能想要在创建堆栈<em>之前</em>将堆栈模板设置为启用蓝/绿部署。但是，您也可以增加功能，以便让 CloudFormation 对现有堆栈执行蓝/绿部署。为此，请将必要的信息添加到堆栈的现有模板中。</p><p>此外，我们建议您在启动堆栈更新之前让 CloudFormation 为绿色部署生成更改集。这样您就可以查看将对堆栈进行的实际更改。有关更多信息，请参阅<a href="./using-cfn-updating-stacks-changesets.html">使用更改集更新堆栈</a>。</p>
+        <h2 id="blue-green-required">使用 CloudFormation 资源对蓝/绿部署建模</h2>
+        <p>为了使用 CodeDeploy 通过 CloudFormation 执行 ECS 蓝/绿部署，您的模板需要包含为部署建模所需的资源，例如 Amazon ECS 服务和负载均衡器。如需更详细地了解这些资源代表了什么，请参阅《AWS CodeDeploy 用户指南》中的<a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-steps-ecs.html#deployment-steps-prerequisites-ecs">开始 Amazon ECS 部署之前</a>。</p>
+        <div class="table-container"><div class="table-contents"><table id="w1348aac17c33c25b5"><thead>
+                    <tr>
+                        <th>要求</th>
+                        <th>资源</th>
+                        <th>必需/可选</th>
+                        <th>如果替换，则触发蓝/绿部署</th>
+                    </tr>
+                </thead>
+                    <tr>
+                        <td tabindex="-1">Amazon ECS 集群</td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-cluster.html"><code class="code">AWS::ECS::Cluster</code></a></td>
+                        <td tabindex="-1">可选。可以使用默认集群。</td>
+                        <td tabindex="-1">否</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">Amazon ECS 服务</td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-service.html"><code class="code">AWS::ECS::Service</code></a></td>
+                        <td tabindex="-1">必需。</td>
+                        <td tabindex="-1">否</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">应用程序或网络负载均衡器</td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ecs-service-loadbalancer.html"><code class="code">AWS::ECS::Service
+       LoadBalancer</code></a></td>
+                        <td tabindex="-1">必需。</td>
+                        <td tabindex="-1">否</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">生产侦听器</td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listener.html"><code class="code">AWS::ElasticLoadBalancingV2::Listener</code></a></td>
+                        <td tabindex="-1">必需。</td>
+                        <td tabindex="-1">否</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">测试侦听器 </td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listener.html"><code class="code">AWS::ElasticLoadBalancingV2::Listener</code></a></td>
+                        <td tabindex="-1">可选。</td>
+                        <td tabindex="-1">否</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">两个目标组</td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html"><code class="code">AWS::ElasticLoadBalancingV2::TargetGroup</code></a></td>
+                        <td tabindex="-1">必需。</td>
+                        <td tabindex="-1">否</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">Amazon ECS 任务定义 </td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskdefinition.html"><code class="code">AWS::ECS::TaskDefinition</code></a></td>
+                        <td tabindex="-1">必需。</td>
+                        <td tabindex="-1">是</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">您的 Amazon ECS 应用程序的容器</td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ecs-taskdefinition-containerdefinitions.html#cfn-ecs-taskdefinition-containerdefinition-name.html"><code class="code">AWS::ECS::TaskDefinition ContainerDefinition Name</code></a></td>
+                        <td tabindex="-1">必需。</td>
+                        <td tabindex="-1">否</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">您的替换任务集的端口</td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ecs-taskdefinition-portmapping.html#cfn-ecs-taskdefinition-portmapping-containerport"><code class="code">AWS::ECS::TaskDefinition PortMapping ContainerPort</code></a></td>
+                        <td tabindex="-1">必需。</td>
+                        <td tabindex="-1">否</td>
+                    </tr>
+                </table></div></div>
+     
+        <h2 id="blue-green-resources">触发绿色部署的资源更新</h2>
+        <p>如果您执行堆栈更新，以便更新需要为以下 ECS 资源<a href="./using-cfn-updating-stacks-update-behaviors.html">替换</a>的任何属性，CloudFormation 将启动绿色部署：</p>
+        <div class="itemizedlist">
+             
+             
+        <ul class="itemizedlist"><li class="listitem"><p><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskdefinition.html"><code class="code">AWS::ECS::TaskDefinition</code></a></p></li><li class="listitem"><p><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskset.html"><code class="code">AWS::ECS::TaskSet</code></a> </p></li></ul></div>
+        
+        <p>更新不需要进行资源替换的这些资源中的属性不会触发绿色部署。</p>
+        <p>您不能在同一堆栈更新中包括上述资源的更新以及对其他资源的更新。如果您需要更新上面列表中的资源以及同一堆栈中的其他资源，请执行以下操作之一：</p>
+        <div class="itemizedlist">
+             
+             
+        <ul class="itemizedlist"><li class="listitem"><p>执行两个单独的堆栈更新操作：一个仅包括对上述资源的更新，另一个单独的堆栈更新包括对任何其他资源的更改。</p></li><li class="listitem"><p>从模板中删除 <code class="code">Transform</code> 和 <code class="code">Hook</code> 部分，然后执行堆栈更新。在这种情况下，CloudFormation 不会执行绿色部署。</p></li></ul></div>
+     
+        <h2 id="blue-green-considerations">使用 CloudFormation 管理 ECS 蓝/绿部署时的注意事项</h2>
+        <p>在使用 CloudFormation 定义蓝/绿部署时，应考虑以下事项：</p>
+        <div class="itemizedlist">
+             
+             
+             
+             
+             
+             
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem"><p>只有对特定资源的更新才会启动绿色部署，如 <a href="#blue-green-resources">触发绿色部署的资源更新</a> 中所述。</p></li><li class="listitem"><p>您不能在同一堆栈更新中包括启动绿色部署的资源更新和对其他资源的更新，如 <a href="#blue-green-resources">触发绿色部署的资源更新</a> 中所述。</p></li><li class="listitem"><p>您只能将单个 ECS 服务指定为部署目标。</p></li><li class="listitem"><p>在绿色部署期间，CodeDeploy 服务无法更新其值由 CloudFormation 模糊处理的参数，并且会导致错误和堆栈更新失败。其中包括：</p>
+            <div class="itemizedlist">
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem"><p>使用 <code class="code">NoEcho</code> 属性定义的参数。</p></li><li class="listitem"><p>使用动态引用从外部服务检索其值的参数。有关更多信息，请参阅<a href="./dynamic-references.html">使用动态引用以指定模板值</a>。</p></li></ul></div>
+            </li><li class="listitem"><p>要取消仍在进行的绿色部署，请取消 CloudFormation 中的堆栈更新，而不是 CodeDeploy 或 ECS。有关更多信息，请参阅<a href="./using-cfn--stack-update-cancel.html">取消堆栈更新</a>。（更新完成后，您无法取消它。但是，您可以使用之前的任何设置再次更新堆栈。）</p></li><li class="listitem"><p>对于定义了蓝/绿 ECS 部署的模板，当前不支持声明 <a href="./outputs-section-structure.html">输出</a> 或使用 <a href="./intrinsic-function-reference-importvalue.html">Fn::ImportValue</a> 从其他堆栈导入值。</p></li><li class="listitem"><p>对于定义了蓝/绿 ECS 部署的模板，当前不支持 <a href="./resource-import.html">使用 CloudFormation 对现有资源进行管理</a>。</p></li><li class="listitem"><p>您不能在包含嵌套堆栈资源的模板中使用 <code class="code">AWS::CodeDeploy::BlueGreen</code> 挂钩。</p></li><li class="listitem"><p>您不能在<a href="./using-cfn-nested-stacks.html">嵌套堆栈</a>中使用 <code class="code">AWS::CodeDeploy::BlueGreen</code> 挂钩。</p></li></ul></div>
+        <p>如需了解使用 CloudFormation 通过 CodeDeploy 执行 ECS 蓝/绿部署与仅使用 CodeDeploy 的标准 Amazon ECS 部署有何不同，请参阅《AWS CodeDeploy 用户指南》中的<a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-create-prerequisites.html">通过 CloudFormation 执行的 Amazon ECS 蓝/绿部署与标准 Amazon ECS 部署之间的差异</a>。</p>
+     
+        <h2 id="blue-green-setup">准备模板以执行 ECS 蓝/绿部署</h2>
+        <p>要在堆栈上启用蓝/绿部署，请在执行堆栈更新之前在堆栈模板中包含以下部分。</p>
+        <div class="itemizedlist">
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem"><p>将 <code class="code">AWS::CodeDeployBlueGreen</code> 转换的引用添加到模板中：</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">    "Transform": [
+        "AWS::CodeDeployBlueGreen"
+    ],</code></pre>
+</li><li class="listitem"><p>添加调用 <code class="code">AWS::CodeDeploy::BlueGreen</code> 挂钩并指定部署属性的 <code class="code">Hook</code> 部分。使用下面的模板参考作为指导。</p></li><li class="listitem"><p>在 <code class="code">Resources</code> 部分中，定义部署的蓝色和绿色资源。</p></li></ul></div>
+        <p>您可以在第一次创建模板时（即创建堆栈本身之前）添加这些部分，也可以在执行堆栈更新之前将它们添加到现有模板中。如果是为新堆栈指定蓝/绿部署，则 CloudFormation 只在堆栈创建期间创建蓝色资源 - 仅当在堆栈更新期间需要绿色部署的资源时才会创建它们。</p>
+
+     
+        <h2 id="blue-green-changesets">查看蓝/绿部署的更改集</h2>
+        <p>我们强烈建议您在执行会启动绿色部署的堆栈更新之前创建更改集。这样便可在执行堆栈更新之前查看对堆栈作出的实际更改。请注意，资源更改可能不会按堆栈更新期间的执行顺序列出。有关更多信息，请参阅<a href="./using-cfn-updating-stacks-changesets.html">使用更改集更新堆栈</a>。</p>
+     
+        <h2 id="blue-green-events">查看蓝/绿部署的堆栈事件</h2>
+        <p>您可以在 <b>Stack</b>（堆栈）页面的 <b>Events</b>（事件）选项卡上，使用 AWS CLI 查看 ECS 部署的每个步骤生成的堆栈事件。有关更多信息，请参阅<a href="./using-cfn-updating-stacks-monitor-stack.html">监控堆栈更新的进度</a>。</p>
+     
+        <h2 id="blue-green-template-reference">模板参考</h2>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"Hooks": <span>{</span>
+  "Logical ID": <span>{</span>
+    "Properties": <span>{</span>
+      "TrafficRoutingConfig": <span>{</span>
+        "Type": "Traffic routing type",
+        "TimeBasedCanary": <span>{</span>
+          "StepPercentage": Integer,
+          "BakeTimeMins": Integer
+        },
+        "TimeBasedLinear": <span>{</span>
+          "StepPercentage": Integer,
+          "BakeTimeMins": Integer
+        }
+      },
+      "AdditionalOptions": <span>{</span>"TerminationWaitTimeInMinutes": Integer},
+      "LifecycleEventHooks": <span>{</span>
+        "BeforeInstall": "FunctionName",
+        "AfterInstall": "FunctionName",
+        "AfterAllowTestTraffic": "FunctionName",
+        "BeforeAllowTraffic": "FunctionName",
+        "AfterAllowTraffic": "FunctionName"
+      },
+      "ServiceRole": "CodeDeployServiceRoleName",
+      "Applications": [
+        <span>{</span>
+          "Target": <span>{</span>
+            "Type": "AWS::ECS::Service",
+            "LogicalID": "Resource Logical ID"
+          },
+          "ECSAttributes": <span>{</span>
+            "TaskDefinitions": [
+              "AWS::ECS::TaskDefinition Resource Logical ID (Blue)",
+              "AWS::ECS::TaskDefinition Resource Logical ID (Green)"
+            ],
+            "TaskSets": [
+              "AWS::ECS::TaskSet Resource Logical ID (Blue)",
+              "AWS::ECS::TaskSet Resource Logical ID (Green)"
+            ],
+            "TrafficRouting": <span>{</span>
+              "ProdTrafficRoute": <span>{</span>
+                "Type": "AWS::ElasticLoadBalancingV2::Listener",
+                "LogicalID": "Resource Logical ID (Production)"
+              },
+              "TestTrafficRoute": <span>{</span>
+                "Type": "AWS::ElasticLoadBalancingV2::Listener",
+                "LogicalID": "Resource Logical ID (Test)"
+              },
+              "TargetGroups": [
+                "AWS::ElasticLoadBalancingV2::TargetGroup Resource Logical ID (Blue)",
+                "AWS::ElasticLoadBalancingV2::TargetGroup Resource Logical ID (Green)"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "Type": "AWS::CodeDeploy::BlueGreen"
+  }
+}</code></pre>
+         
+            <h3 id="blue-green-template-reference-props">属性</h3>
+            <div class="variablelist">
+                 
+                 
+            <dl>
+                    <dt><span class="term"><code class="code">Logical ID</code></span></dt>
+                    <dd>
+                        <p>逻辑 ID 必须为字母数字 (A-Za-z0-9)，并且在模板中具有唯一性。</p>
+                        <p><em>必需</em>：是</p>
+                        <div class="variablelist">
+                             
+                        <dl>
+                                <dt><span class="term"><code class="code">Properties</code></span></dt>
+                                <dd>
+                                    <p>挂钩的属性。</p>
+                                    <p><em>必需</em>：是</p>
+                                    <div class="variablelist">
+                                         
+                                         
+                                         
+                                         
+                                         
+                                    <dl>
+                                            <dt><span class="term"><code class="code">TrafficRoutingConfig</code></span></dt>
+                                            <dd>
+                                                <p>流量路由配置设置。</p>
+                                                <p><em>必需</em>：否</p>
+                                                <p>默认配置为基于时间的 canary 流量转移，具有 15% 的步骤百分比和五分钟的稳定时间。</p>
+                                                <div class="variablelist">
+                                                    
+                                                     
+                                                <dl>
+                                                        <dt><span class="term"><code class="code">Type</code></span></dt>
+                                                        <dd>
+                                                            <p>部署配置使用的流量转移类型。</p>
+                                                            <p>有效值：AllAtOnce | TimeBasedCanary | TimeBasedLinear</p>
+                                                            <p><em>必需</em>：是</p>
+                                                            <div class="variablelist">
+                                                                 
+                                                                 
+                                                            <dl>
+                                                                    <dt><span class="term"><code class="code">TimeBasedCanary</code></span></dt>
+                                                                    <dd>
+                                                                        <p>指定一个配置，以两个增量将流量从部署的一个版本转移到另一个版本。</p>
+                                                                        <p><em>必需</em>：如果指定 <code class="code">TimeBasedCanary</code> 作为流量路由类型，则必须包含 <code class="code">TimeBasedCanary</code> 参数。</p>
+                                                                        <div class="variablelist">
+                                                                             
+                                                                        <dl>
+                                                                                <dt><span class="term"><code class="code">StepPercentage</code></span></dt>
+                                                                                <dd>
+                                                                                    <p>在 <code class="code">TimeBasedCanary</code> 部署的第一个增量中要转移的流量百分比。步骤百分比必须为 14% 或更大。</p>
+                                                                                    <p><em>必需</em>：否</p>
+                                                                                </dd>
+                                                                            </dl></div>
+                                                                        <div class="variablelist">
+                                                                             
+                                                                        <dl>
+                                                                                <dt><span class="term"><code class="code">BakeTimeMins</code></span></dt>
+                                                                                <dd>
+                                                                                    <p><code class="code">TimeBasedCanary</code> 部署的第一次和第二次流量转移之间的分钟数。</p>
+                                                                                    <p><em>必需</em>：否</p>
+                                                                                </dd>
+                                                                            </dl></div>
+                                                                    </dd>
+                                                                 
+                                                                    <dt><span class="term"><code class="code">TimeBasedLinear</code></span></dt>
+                                                                    <dd>
+                                                                        <p>指定一个配置，以相等的增量将流量从部署的一个版本转移到另一个版本，每个增量之间的分钟数相等。</p>
+                                                                        <p><em>必需</em>：如果指定 <code class="code">TimeBasedLinear</code> 作为流量路由类型，则必须包含 <code class="code">TimeBasedLinear</code> 参数。</p>
+                                                                        <div class="variablelist">
+                                                                             
+                                                                        <dl>
+                                                                                <dt><span class="term"><code class="code">StepPercentage</code></span></dt>
+                                                                                <dd>
+                                                                                    <p>在 <code class="code">TimeBasedLinear</code> 部署的每个增量开始时转移的流量百分比。步骤百分比必须为 14% 或更大。</p>
+                                                                                    <p><em>必需</em>：否</p>
+                                                                                </dd>
+                                                                            </dl></div>
+                                                                        <div class="variablelist">
+                                                                             
+                                                                        <dl>
+                                                                                <dt><span class="term"><code class="code">BakeTimeMins</code></span></dt>
+                                                                                <dd>
+                                                                                    <p><code class="code">TimeBasedLinear</code> 部署的每次增量流量转移之间的分钟数。</p>
+                                                                                    <p><em>必需</em>：否</p>
+                                                                                </dd>
+                                                                            </dl></div>
+                                                                    </dd>
+                                                                </dl></div>
+                                                        </dd>
+                                                    </dl></div>
+                                            </dd>
+                                         
+                                            <dt><span class="term"><code class="code">AdditionalOptions</code></span></dt>
+                                            <dd>
+                                                <p>蓝/绿部署的其他选项。</p>
+                                                <p><em>必需</em>：否</p>
+                                                <div class="variablelist">
+                                                     
+                                                <dl>
+                                                        <dt><span class="term"><code class="code">TerminationWaitTimeInMinutes</code></span></dt>
+                                                        <dd>
+                                                            <p>指定终止蓝色资源之前等待的时间（以分钟为单位）。</p>
+                                                            <p><em>必需</em>：否</p>
+                                                        </dd>
+                                                    </dl></div>
+                                            </dd>
+                                         
+                                            <dt><span class="term"><code class="code">LifecycleEventHooks</code></span></dt>
+                                            <dd>
+                                                <p>使用生命周期事件挂钩指定 CodeDeploy 可以调用的用于验证部署的 Lambda 函数。对于部署生命周期事件，您可以使用相同函数或不同函数。验证测试完成后，Lambda AfterAllowTraffic 函数会回调 CodeDeploy 并提供 <code class="code">Succeeded</code> 或 <code class="code">Failed</code> 结果。</p>
+                                                <p>有关更多信息，请参阅《AWS CodeDeploy 用户指南》中的 <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/reference-appspec-file-structure-hooks.html">AppSpec 的“hooks”部分</a>。</p>
+                                                <p><em>必需</em>：否</p>
+                                                <div class="variablelist">
+                                                     
+                                                     
+                                                     
+                                                     
+                                                     
+                                                <dl>
+                                                        <dt><span class="term"><code class="code">BeforeInstall</code></span></dt>
+                                                        <dd>
+                                                            <p>用于在创建替换任务集之前运行任务的函数。</p>
+                                                            <p><em>必需</em>：否</p>
+                                                        </dd>
+                                                     
+                                                        <dt><span class="term"><code class="code">AfterInstall</code></span></dt>
+                                                        <dd>
+                                                            <p>用于在创建替换任务集并且其中一个目标组与之关联后运行任务的函数。</p>
+                                                            <p><em>必需</em>：否</p>
+                                                        </dd>
+                                                     
+                                                        <dt><span class="term"><code class="code">AfterAllowTestTraffic</code></span></dt>
+                                                        <dd>
+                                                            <p>用于在测试侦听器为替换任务集提供流量后运行任务的函数。</p>
+                                                            <p><em>必需</em>：否</p>
+                                                        </dd>
+                                                     
+                                                        <dt><span class="term"><code class="code">BeforeAllowTraffic</code></span></dt>
+                                                        <dd>
+                                                            <p>用于在第二个目标组与替换任务集关联之后但在流量转移到替换任务集之前运行任务的函数。</p>
+                                                            <p><em>必需</em>：否</p>
+                                                        </dd>
+                                                     
+                                                        <dt><span class="term"><code class="code">AfterAllowTraffic</code></span></dt>
+                                                        <dd>
+                                                            <p>用于在第二个目标组为替换任务集提供流量后运行任务的函数。</p>
+                                                            <p><em>必需</em>：否</p>
+                                                        </dd>
+                                                    </dl></div>
+                                            </dd>
+                                         
+                                            <dt><span class="term"><code class="code">ServiceRole</code></span></dt>
+                                            <dd>
+                                                <p>CloudFormation 用于执行蓝绿部署的执行角色。有关必要权限的列表，请参阅 <a href="#blue-green-iam">蓝/绿部署所需的 IAM 权限</a>。</p>
+                                                <p><em>必需</em>：是</p>
+                                            </dd>
+                                         
+                                            <dt><span class="term"><code class="code">Applications</code></span></dt>
+                                            <dd>
+                                                <p>指定 Amazon ECS 应用程序的属性。</p>
+                                                <p><em>必需</em>：是</p>
+                                                <div class="variablelist">
+                                                     
+                                                     
+                                                <dl>
+                                                        <dt><span class="term"><code class="code">Target</code></span></dt>
+                                                        <dd>
+                                                            <p></p>
+                                                            <p><em>必需</em>：是</p>
+                                                            <div class="variablelist">
+                                                                 
+                                                                 
+                                                            <dl>
+                                                                    <dt><span class="term"><code class="code">Type</code></span></dt>
+                                                                    <dd>
+                                                                        <p>资源的类型。</p>
+                                                                        <p><em>必需</em>：是</p>
+                                                                    </dd>
+                                                                 
+                                                                    <dt><span class="term"><code class="code">LogicalID</code></span></dt>
+                                                                    <dd>
+                                                                        <p>资源的逻辑 ID。</p>
+                                                                        <p><em>必需</em>：是</p>
+                                                                    </dd>
+                                                                </dl></div>
+                                                        </dd>
+                                                     
+                                                        <dt><span class="term"><code class="code">ECSAttributes</code></span></dt>
+                                                        <dd>
+                                                            <p>代表 Amazon ECS 应用程序部署的各种需求的资源。</p>
+                                                            <p><em>必需</em>：是</p>
+                                                            <div class="variablelist">
+                                                                 
+                                                                 
+                                                                 
+                                                            <dl>
+                                                                    <dt><span class="term"><code class="code">TaskDefinitions</code></span></dt>
+                                                                    <dd>
+                                                                        <p>运行包含 Amazon ECS 应用程序的 Docker 容器所用的 <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskdefinition.html"><code class="code">AWS::ECS::TaskDefinition</code></a> 资源的逻辑 ID。</p>
+                                                                        <p><em>必需</em>：是</p>
+                                                                    </dd>
+                                                                 
+                                                                    <dt><span class="term"><code class="code">TaskSets</code></span></dt>
+                                                                    <dd>
+                                                                        <p>用作应用程序任务集的 <code class="code">AWS::ECS::TaskSet</code> 资源的逻辑 ID。</p>
+                                                                        <p><em>必需</em>：是</p>
+                                                                    </dd>
+                                                                 
+                                                                    <dt><span class="term"><code class="code">TrafficRouting</code></span></dt>
+                                                                    <dd>
+                                                                        <p>指定用于流量路由的资源。</p>
+                                                                        <p><em>必需</em>：是</p>
+                                                                        <div class="variablelist">
+                                                                             
+                                                                             
+                                                                             
+                                                                        <dl>
+                                                                                <dt><span class="term"><code class="code">ProdTrafficRoute</code></span></dt>
+                                                                                <dd>
+                                                                                    <p>负载均衡器将流量定向到目标组所用的侦听器。</p>
+                                                                                    <p><em>必需</em>：是</p>
+                                                                                    <div class="variablelist">
+                                                                                         
+                                                                                         
+                                                                                    <dl>
+                                                                                            <dt><span class="term"><code class="code">Type</code></span></dt>
+                                                                                            <dd>
+                                                                                                <p>资源的类型。<code class="code">AWS::ElasticLoadBalancingV2::Listener</code></p>
+                                                                                                <p><em>必需</em>：是</p>
+                                                                                            </dd>
+                                                                                         
+                                                                                            <dt><span class="term"><code class="code">LogicalID</code></span></dt>
+                                                                                            <dd>
+                                                                                                <p>资源的逻辑 ID。</p>
+                                                                                                <p><em>必需</em>：是</p>
+                                                                                            </dd>
+                                                                                        </dl></div>
+                                                                                </dd>
+                                                                             
+                                                                                <dt><span class="term"><code class="code">TestTrafficRoute</code></span></dt>
+                                                                                <dd>
+                                                                                    <p>负载均衡器将流量定向到目标组所用的侦听器。</p>
+                                                                                    <p><em>必需</em>：是</p>
+                                                                                    <div class="variablelist">
+                                                                                         
+                                                                                         
+                                                                                    <dl>
+                                                                                            <dt><span class="term"><code class="code">Type</code></span></dt>
+                                                                                            <dd>
+                                                                                                <p>资源的类型。<code class="code">AWS::ElasticLoadBalancingV2::Listener</code></p>
+                                                                                                <p><em>必需</em>：是</p>
+                                                                                            </dd>
+                                                                                         
+                                                                                            <dt><span class="term"><code class="code">LogicalID</code></span></dt>
+                                                                                            <dd>
+                                                                                                <p>资源的逻辑 ID。</p>
+                                                                                                <p><em>必需</em>：否</p>
+                                                                                            </dd>
+                                                                                        </dl></div>
+                                                                                </dd>
+                                                                             
+                                                                                <dt><span class="term"><code class="code">TargetGroups</code></span></dt>
+                                                                                <dd>
+                                                                                    <p>用作目标组以将流量传送到注册目标的资源的逻辑 ID。</p>
+                                                                                    <p><em>必需</em>：是</p>
+                                                                                </dd>
+                                                                            </dl></div>
+                                                                    </dd>
+                                                                </dl></div>
+                                                        </dd>
+                                                    </dl></div>
+                                            </dd>
+                                        </dl></div>
+                                </dd>
+                            </dl></div>
+                    </dd>
+                    
+                 
+                    <dt><span class="term"><code class="code">Type</code></span></dt>
+                    <dd>
+                        <p>挂钩的类型。<code class="code">AWS::ElasticLoadBalancingV2::Listener</code></p>
+                        <p><em>必需</em>：是</p>
+                    </dd>
+                </dl></div>
+         
+     
+        <h2 id="blue-green-iam">蓝/绿部署所需的 IAM 权限</h2>
+        <p>为了使 CloudFormation 成功执行蓝绿部署，您必须具有以下 CodeDeploy 权限：</p>
+        <div class="itemizedlist">
+             
+             
+        <ul class="itemizedlist"><li class="listitem"><p><code class="code">codedeploy:Get*</code></p></li><li class="listitem"><p><code class="code">codedeploy:CreateCloudFormationDeployment</code></p></li></ul></div>
+        <p>有关更多信息，请参阅《AWS Identity and Access Management 用户指南》中的 <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awscodedeploy.html">CodeDeploy 的操作、资源和条件键</a>。</p>
+     
+        <h2 id="blue-green-template-example">模板示例</h2>
+        <p>以下示例通过 CodeDeploy 设置 ECS 蓝/绿部署，流量路由进度为每步 15%，每步之间的稳定期为 5 分钟。使用模板创建堆栈将预置部署的初始配置。</p>
+        <p>如果您随后对需要替换的 <code class="code">"BlueTaskSet"</code> 资源中的属性进行了任何更改，则 CloudFormation 会在堆栈更新过程中启动绿色部署。</p>
+        <div id="JSON" name="JSON" class="section langfilter">
+            <h3 id="blue-green-template-example.json">JSON</h3>
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "Parameters": <span>{</span>
+        "Vpc": <span>{</span>
+            "Type": "AWS::EC2::VPC::Id"
+        },
+        "Subnet1": <span>{</span>
+            "Type": "AWS::EC2::Subnet::Id"
+        },
+        "Subnet2": <span>{</span>
+            "Type": "AWS::EC2::Subnet::Id"
+        }
+    },
+    "Transform": [
+        "AWS::CodeDeployBlueGreen"
+    ],
+    "Hooks": <span>{</span>
+        "CodeDeployBlueGreenHook": <span>{</span>
+            "Properties": <span>{</span>
+                "TrafficRoutingConfig": <span>{</span>
+                    "Type": "TimeBasedCanary",
+                    "TimeBasedCanary": <span>{</span>
+                        "StepPercentage": 15,
+                        "BakeTimeMins": 5
+                    }
+                },
+                "Applications": [
+                    <span>{</span>
+                        "Target": <span>{</span>
+                            "Type": "AWS::ECS::Service",
+                            "LogicalID": "ECSDemoService"
+                        },
+                        "ECSAttributes": <span>{</span>
+                            "TaskDefinitions": [
+                                "BlueTaskDefinition",
+                                "GreenTaskDefinition"
+                            ],
+                            "TaskSets": [
+                                "BlueTaskSet",
+                                "GreenTaskSet"
+                            ],
+                            "TrafficRouting": <span>{</span>
+                                "ProdTrafficRoute": <span>{</span>
+                                    "Type": "AWS::ElasticLoadBalancingV2::Listener",
+                                    "LogicalID": "ALBListenerProdTraffic"
+                                },
+                                "TargetGroups": [
+                                    "ALBTargetGroupBlue",
+                                    "ALBTargetGroupGreen"
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            "Type": "AWS::CodeDeploy::BlueGreen"
+        }
+    },
+    "Resources": <span>{</span>
+        "ExampleSecurityGroup": <span>{</span>
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": <span>{</span>
+                "GroupDescription": "Security group for ec2 access",
+                "VpcId": <span>{</span>
+                    "Ref": "Vpc"
+                },
+                "SecurityGroupIngress": [
+                    <span>{</span>
+                        "IpProtocol": "tcp",
+                        "FromPort": 80,
+                        "ToPort": 80,
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    <span>{</span>
+                        "IpProtocol": "tcp",
+                        "FromPort": 8080,
+                        "ToPort": 8080,
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    <span>{</span>
+                        "IpProtocol": "tcp",
+                        "FromPort": 22,
+                        "ToPort": 22,
+                        "CidrIp": "0.0.0.0/0"
+                    }
+                ]
+            }
+        },
+        "ALBTargetGroupBlue": <span>{</span>
+            "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+            "Properties": <span>{</span>
+                "HealthCheckIntervalSeconds": 5,
+                "HealthCheckPath": "/",
+                "HealthCheckPort": "80",
+                "HealthCheckProtocol": "HTTP",
+                "HealthCheckTimeoutSeconds": 2,
+                "HealthyThresholdCount": 2,
+                "Matcher": <span>{</span>
+                    "HttpCode": "200"
+                },
+                "Port": 80,
+                "Protocol": "HTTP",
+                "Tags": [
+                    <span>{</span>
+                        "Key": "Group",
+                        "Value": "Example"
+                    }
+                ],
+                "TargetType": "ip",
+                "UnhealthyThresholdCount": 4,
+                "VpcId": <span>{</span>
+                    "Ref": "Vpc"
+                }
+            }
+        },
+        "ALBTargetGroupGreen": <span>{</span>
+            "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+            "Properties": <span>{</span>
+                "HealthCheckIntervalSeconds": 5,
+                "HealthCheckPath": "/",
+                "HealthCheckPort": "80",
+                "HealthCheckProtocol": "HTTP",
+                "HealthCheckTimeoutSeconds": 2,
+                "HealthyThresholdCount": 2,
+                "Matcher": <span>{</span>
+                    "HttpCode": "200"
+                },
+                "Port": 80,
+                "Protocol": "HTTP",
+                "Tags": [
+                    <span>{</span>
+                        "Key": "Group",
+                        "Value": "Example"
+                    }
+                ],
+                "TargetType": "ip",
+                "UnhealthyThresholdCount": 4,
+                "VpcId": <span>{</span>
+                    "Ref": "Vpc"
+                }
+            }
+        },
+        "ExampleALB": <span>{</span>
+            "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+            "Properties": <span>{</span>
+                "Scheme": "internet-facing",
+                "SecurityGroups": [
+                    <span>{</span>
+                        "Ref": "ExampleSecurityGroup"
+                    }
+                ],
+                "Subnets": [
+                    <span>{</span>
+                        "Ref": "Subnet1"
+                    },
+                    <span>{</span>
+                        "Ref": "Subnet2"
+                    }
+                ],
+                "Tags": [
+                    <span>{</span>
+                        "Key": "Group",
+                        "Value": "Example"
+                    }
+                ],
+                "Type": "application",
+                "IpAddressType": "ipv4"
+            }
+        },
+        "ALBListenerProdTraffic": <span>{</span>
+            "Type": "AWS::ElasticLoadBalancingV2::Listener",
+            "Properties": <span>{</span>
+                "DefaultActions": [
+                    <span>{</span>
+                        "Type": "forward",
+                        "ForwardConfig": <span>{</span>
+                            "TargetGroups": [
+                                <span>{</span>
+                                    "TargetGroupArn": <span>{</span>
+                                        "Ref": "ALBTargetGroupBlue"
+                                    },
+                                    "Weight": 1
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "LoadBalancerArn": <span>{</span>
+                    "Ref": "ExampleALB"
+                },
+                "Port": 80,
+                "Protocol": "HTTP"
+            }
+        },
+        "ALBListenerProdRule": <span>{</span>
+            "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
+            "Properties": <span>{</span>
+                "Actions": [
+                    <span>{</span>
+                        "Type": "forward",
+                        "ForwardConfig": <span>{</span>
+                            "TargetGroups": [
+                                <span>{</span>
+                                    "TargetGroupArn": <span>{</span>
+                                        "Ref": "ALBTargetGroupBlue"
+                                    },
+                                    "Weight": 1
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "Conditions": [
+                    <span>{</span>
+                        "Field": "http-header",
+                        "HttpHeaderConfig": <span>{</span>
+                            "HttpHeaderName": "User-Agent",
+                            "Values": [
+                                "Mozilla"
+                            ]
+                        }
+                    }
+                ],
+                "ListenerArn": <span>{</span>
+                    "Ref": "ALBListenerProdTraffic"
+                },
+                "Priority": 1
+            }
+        },
+        "ECSTaskExecutionRole": <span>{</span>
+            "Type": "AWS::IAM::Role",
+            "Properties": <span>{</span>
+                "AssumeRolePolicyDocument": <span>{</span>
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        <span>{</span>
+                            "Sid": "",
+                            "Effect": "Allow",
+                            "Principal": <span>{</span>
+                                "Service": "ecs-tasks.amazonaws.com"
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                },
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+                ]
+            }
+        },
+        "BlueTaskDefinition": <span>{</span>
+            "Type": "AWS::ECS::TaskDefinition",
+            "Properties": <span>{</span>
+                "ExecutionRoleArn": <span>{</span>
+                    "Fn::GetAtt": [
+                        "ECSTaskExecutionRole",
+                        "Arn"
+                    ]
+                },
+                "ContainerDefinitions": [
+                    <span>{</span>
+                        "Name": "DemoApp",
+                        "Image": "nginxdemos/hello:latest",
+                        "Essential": true,
+                        "PortMappings": [
+                            <span>{</span>
+                                "HostPort": 80,
+                                "Protocol": "tcp",
+                                "ContainerPort": 80
+                            }
+                        ]
+                    }
+                ],
+                "RequiresCompatibilities": [
+                    "FARGATE"
+                ],
+                "NetworkMode": "awsvpc",
+                "Cpu": "256",
+                "Memory": "512",
+                "Family": "ecs-demo"
+            }
+        },
+        "ECSDemoCluster": <span>{</span>
+            "Type": "AWS::ECS::Cluster",
+            "Properties": <span>{</span>}
+        },
+        "ECSDemoService": <span>{</span>
+            "Type": "AWS::ECS::Service",
+            "Properties": <span>{</span>
+                "Cluster": <span>{</span>
+                    "Ref": "ECSDemoCluster"
+                },
+                "DesiredCount": 1,
+                "DeploymentController": <span>{</span>
+                    "Type": "EXTERNAL"
+                }
+            }
+        },
+        "BlueTaskSet": <span>{</span>
+            "Type": "AWS::ECS::TaskSet",
+            "Properties": <span>{</span>
+                "Cluster": <span>{</span>
+                    "Ref": "ECSDemoCluster"
+                },
+                "LaunchType": "FARGATE",
+                "NetworkConfiguration": <span>{</span>
+                    "AwsVpcConfiguration": <span>{</span>
+                        "AssignPublicIp": "ENABLED",
+                        "SecurityGroups": [
+                            <span>{</span>
+                                "Ref": "ExampleSecurityGroup"
+                            }
+                        ],
+                        "Subnets": [
+                            <span>{</span>
+                                "Ref": "Subnet1"
+                            },
+                            <span>{</span>
+                                "Ref": "Subnet2"
+                            }
+                        ]
+                    }
+                },
+                "PlatformVersion": "1.4.0",
+                "Scale": <span>{</span>
+                    "Unit": "PERCENT",
+                    "Value": 100
+                },
+                "Service": <span>{</span>
+                    "Ref": "ECSDemoService"
+                },
+                "TaskDefinition": <span>{</span>
+                    "Ref": "BlueTaskDefinition"
+                },
+                "LoadBalancers": [
+                    <span>{</span>
+                        "ContainerName": "DemoApp",
+                        "ContainerPort": 80,
+                        "TargetGroupArn": <span>{</span>
+                            "Ref": "ALBTargetGroupBlue"
+                        }
+                    }
+                ]
+            }
+        },
+        "PrimaryTaskSet": <span>{</span>
+            "Type": "AWS::ECS::PrimaryTaskSet",
+            "Properties": <span>{</span>
+                "Cluster": <span>{</span>
+                    "Ref": "ECSDemoCluster"
+                },
+                "Service": <span>{</span>
+                    "Ref": "ECSDemoService"
+                },
+                "TaskSetId": <span>{</span>
+                    "Fn::GetAtt": [
+                        "BlueTaskSet",
+                        "Id"
+                    ]
+                }
+            }
+        }
+    }
+}</code></pre>
+
+        </div>
+        <div id="YAML" name="YAML" class="section langfilter">
+            <h3 id="blue-green-template-example.yaml">YAML</h3>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">Parameters:
+  Vpc:
+    Type: 'AWS::EC2::VPC::Id'
+  Subnet1:
+    Type: 'AWS::EC2::Subnet::Id'
+  Subnet2:
+    Type: 'AWS::EC2::Subnet::Id'
+Transform:
+  - 'AWS::CodeDeployBlueGreen'
+Hooks:
+  CodeDeployBlueGreenHook:
+    Properties:
+      TrafficRoutingConfig:
+        Type: TimeBasedCanary
+        TimeBasedCanary:
+          StepPercentage: 15
+          BakeTimeMins: 5
+      Applications:
+        - Target:
+            Type: 'AWS::ECS::Service'
+            LogicalID: ECSDemoService
+          ECSAttributes:
+            TaskDefinitions:
+              - BlueTaskDefinition
+              - GreenTaskDefinition
+            TaskSets:
+              - BlueTaskSet
+              - GreenTaskSet
+            TrafficRouting:
+              ProdTrafficRoute:
+                Type: 'AWS::ElasticLoadBalancingV2::Listener'
+                LogicalID: ALBListenerProdTraffic
+              TargetGroups:
+                - ALBTargetGroupBlue
+                - ALBTargetGroupGreen
+    Type: 'AWS::CodeDeploy::BlueGreen'
+Resources:
+  ExampleSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Security group for ec2 access
+      VpcId: !Ref Vpc
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+  ALBTargetGroupBlue:
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Properties:
+      HealthCheckIntervalSeconds: 5
+      HealthCheckPath: /
+      HealthCheckPort: '80'
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 2
+      HealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '200'
+      Port: 80
+      Protocol: HTTP
+      Tags:
+        - Key: Group
+          Value: Example
+      TargetType: ip
+      UnhealthyThresholdCount: 4
+      VpcId: !Ref Vpc
+  ALBTargetGroupGreen:
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Properties:
+      HealthCheckIntervalSeconds: 5
+      HealthCheckPath: /
+      HealthCheckPort: '80'
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 2
+      HealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '200'
+      Port: 80
+      Protocol: HTTP
+      Tags:
+        - Key: Group
+          Value: Example
+      TargetType: ip
+      UnhealthyThresholdCount: 4
+      VpcId: !Ref Vpc
+  ExampleALB:
+    Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    Properties:
+      Scheme: internet-facing
+      SecurityGroups:
+        - !Ref ExampleSecurityGroup
+      Subnets:
+        - !Ref Subnet1
+        - !Ref Subnet2
+      Tags:
+        - Key: Group
+          Value: Example
+      Type: application
+      IpAddressType: ipv4
+  ALBListenerProdTraffic:
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      DefaultActions:
+        - Type: forward
+          ForwardConfig:
+            TargetGroups:
+              - TargetGroupArn: !Ref ALBTargetGroupBlue
+                Weight: 1
+      LoadBalancerArn: !Ref ExampleALB
+      Port: 80
+      Protocol: HTTP
+  ALBListenerProdRule:
+    Type: 'AWS::ElasticLoadBalancingV2::ListenerRule'
+    Properties:
+      Actions:
+        - Type: forward
+          ForwardConfig:
+            TargetGroups:
+              - TargetGroupArn: !Ref ALBTargetGroupBlue
+                Weight: 1
+      Conditions:
+        - Field: http-header
+          HttpHeaderConfig:
+            HttpHeaderName: User-Agent
+            Values:
+              - Mozilla
+      ListenerArn: !Ref ALBListenerProdTraffic
+      Priority: 1
+  ECSTaskExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: ''
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy'
+  BlueTaskDefinition:
+    Type: 'AWS::ECS::TaskDefinition'
+    Properties:
+      ExecutionRoleArn: !GetAtt 
+        - ECSTaskExecutionRole
+        - Arn
+      ContainerDefinitions:
+        - Name: DemoApp
+          Image: 'nginxdemos/hello:latest'
+          Essential: true
+          PortMappings:
+            - HostPort: 80
+              Protocol: tcp
+              ContainerPort: 80
+      RequiresCompatibilities:
+        - FARGATE
+      NetworkMode: awsvpc
+      Cpu: '256'
+      Memory: '512'
+      Family: ecs-demo
+  ECSDemoCluster:
+    Type: 'AWS::ECS::Cluster'
+    Properties: <span>{</span>}
+  ECSDemoService:
+    Type: 'AWS::ECS::Service'
+    Properties:
+      Cluster: !Ref ECSDemoCluster
+      DesiredCount: 1
+      DeploymentController:
+        Type: EXTERNAL
+  BlueTaskSet:
+    Type: 'AWS::ECS::TaskSet'
+    Properties:
+      Cluster: !Ref ECSDemoCluster
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsVpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups:
+            - !Ref ExampleSecurityGroup
+          Subnets:
+            - !Ref Subnet1
+            - !Ref Subnet2
+      PlatformVersion: 1.4.0
+      Scale:
+        Unit: PERCENT
+        Value: 100
+      Service: !Ref ECSDemoService
+      TaskDefinition: !Ref BlueTaskDefinition
+      LoadBalancers:
+        - ContainerName: DemoApp
+          ContainerPort: 80
+          TargetGroupArn: !Ref ALBTargetGroupBlue
+  PrimaryTaskSet:
+    Type: 'AWS::ECS::PrimaryTaskSet'
+    Properties:
+      Cluster: !Ref ECSDemoCluster
+      Service: !Ref ECSDemoService
+      TaskSetId: !GetAtt 
+        - BlueTaskSet
+        - Id</code></pre>
+        </div>
+    <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./modules.html">使用模块</div><div id="next" class="next-link" accesskey="n" href="./cfn-regexes.html">使用正则表达式</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/blue-green.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/blue-green.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

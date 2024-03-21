@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>通过导入操作消除偏差 - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="resource-import-resolve-drift" /><meta name="default_state" content="resource-import-resolve-drift" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" /><meta name="description" content="在某些情况下，资源的配置可能已偏离其预期配置，而您希望接受新配置作为预期配置。在大多数情况下，您可以通过使用新配置更新堆栈模板中的资源定义来消除偏差结果，然后执行堆栈更新。但是，如果新配置更新了需要替换的资源属性，则在堆栈更新期间将重新创建该资源。如果要保留现有资源，则可以使用资源导入功能来更新资源并消除偏差结果，而不会导致替换资源。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="用户指南" /><meta name="abstract" content="根据此用户指南，使用 AWS CloudFormation 以可预见方式反复创建和管理 AWS 基础设施部署。" /><meta name="guide-locale" content="zh_cn" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="用户指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="用户指南" /><meta id="panorama-serviceConsolePage" value="通过导入操作消除偏差" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>通过导入操作消除偏差 - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,资源预置,资源配置,基础设施管理,CloudFormer,CloudFormation 堆栈,CloudFormation 堆栈集,CloudFormation 模板,更改集" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "用户指南",
+        "item" : "https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "使用 堆栈",
+        "item" : "https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/stacks.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "检测堆栈和资源的非托管配置更改",
+        "item" : "https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "通过导入操作消除偏差",
+        "item" : "https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文档</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">用户指南</a></div><div id="page-toc-src"><a href="#resource-import-resolve-drift-console">使用 CloudFormation 控制台通过导入操作消除偏差</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="resource-import-resolve-drift">通过导入操作消除偏差</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>在某些情况下，资源的配置可能已偏离其预期配置，而您希望接受新配置作为预期配置。在大多数情况下，您可以通过使用新配置更新堆栈模板中的资源定义来消除偏差结果，然后执行堆栈更新。但是，如果新配置更新了需要替换的资源属性，则在堆栈更新期间将重新创建该资源。如果要保留现有资源，则可以使用资源导入功能来更新资源并消除偏差结果，而不会导致替换资源。</p><p>通过导入操作消除资源偏差的过程包括以下基本步骤：</p><div class="itemizedlist">
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p><a href="#resource-import-resolve-drift-console-step-01-update-stack">将设置为 Retain 的 DeletionPolicy 属性添加到资源中</a>。这可确保在从堆栈中移除现有资源时，保留而不是删除该资源。</p>
+            </li><li class="listitem">
+                <p><a href="#resource-import-resolve-drift-console-step-02-remove-drift">从模板中移除资源并运行堆栈更新操作</a>。这将从堆栈中移除资源，但不会删除它。</p>
+            </li><li class="listitem">
+                <p><a href="#resource-import-resolve-drift-console-step-03-update-template">描述资源在堆栈模板中的实际状态，然后将现有资源导入回堆栈</a>。这会将资源添加回堆栈中，并消除导致了偏差结果的属性差异。</p>
+            </li></ul></div><p>有关资源导入的更多信息，请参阅<a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import.html">使用 CloudFormation 对现有资源进行管理</a>。有关支持导入的资源列表，请参阅<a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-supported-resources.html">支持导入操作的资源</a>。</p><p>在此示例中，我们使用以下名为 <code class="code">templateToImport.json</code> 的模板。</p><awsdocs-tabs><dl style="display: none">
+            <dt>Example JSON</dt><dd tab-id="tab_json">
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Import test",
+    "Resources": <span>{</span>
+         "ServiceTable":<span>{</span>
+           "Type":"AWS::DynamoDB::Table",
+           "Properties":<span>{</span>
+              "TableName":"Service",
+              "AttributeDefinitions":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "AttributeType":"S"
+                 }
+              ],
+              "KeySchema":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "KeyType":"HASH"
+                 }
+              ],
+              "BillingMode": "PROVISIONED",
+              "ProvisionedThroughput":<span>{</span>
+                 "ReadCapacityUnits":5,
+                 "WriteCapacityUnits":1
+              }
+           }
+        },
+        "GamesTable": <span>{</span>
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": <span>{</span>
+                "TableName": "Games",
+                "AttributeDefinitions": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "AttributeType": "S"
+                    }
+                ],
+                "KeySchema": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "KeyType": "HASH"
+                    }
+                ],
+                "BillingMode": "PROVISIONED",
+                "ProvisionedThroughput": <span>{</span>
+                    "ReadCapacityUnits": 5,
+                    "WriteCapacityUnits": 1
+                }
+            }
+        }
+    }
+}</code></pre>
+                </dd>
+            <dt>Example YAML</dt><dd tab-id="example-yaml">
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">AWSTemplateFormatVersion: 2010-09-09
+Description: Import test
+Resources:
+  ServiceTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: Service
+      AttributeDefinitions:
+        - AttributeName: key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: key
+          KeyType: HASH
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 1
+  GamesTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: Games
+      AttributeDefinitions:
+        - AttributeName: key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: key
+          KeyType: HASH
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 1</code></pre>
+                </dd>
+        </dl></awsdocs-tabs><p>在此示例中，我们假设用户更改了 CloudFormation <em>之外</em>的资源。运行偏差检测后，我们发现 <code class="code">GamesTable</code> 的 <code class="code">BillingMode</code> 已修改为 <code class="code">PAY_PER_REQUEST</code>。有关偏差检测的更多信息，请参阅<a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">检测堆栈和资源的非托管配置更改</a>。</p><div class="mediaobject">
+             
+                <img src="images/drift-results-gamestable.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                偏差结果在控制台中显示预期结果和实际结果。&#xA;            " />
+             
+             
+        </div><p>我们的堆栈现在已经过时，我们的资源处于活动状态，但我们希望保留预期的资源配置。为此，我们可以通过导入操作来消除偏差，而不会中断服务。</p>
+            <h2 id="resource-import-resolve-drift-console">使用 CloudFormation 控制台通过导入操作消除偏差</h2>
+       
+                <h3 id="resource-import-resolve-drift-console-step-01-update-stack">第 1 步 使用 Retain 删除策略更新堆栈</h3>
+                <div class="procedure"><h6>使用带有 <code class="code">Retain</code> 选项的 <code class="code">DeletionPolicy</code> 属性更新堆栈</h6><ol><li><p>登录到 AWS Management Console 并打开 AWS CloudFormation 控制台 <a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p></li><li>
+                        
+                        <p>在<b>堆栈</b>页面上，选择已偏差的堆栈。</p>
+                    </li><li>
+                        <p>选择<b>更新</b>，然后从堆栈详细信息窗格中选择<b>替换当前模板</b>。</p>
+                    </li><li>
+                        <p>在<b>指定模板</b>页面上，使用下列方法之一提供更新的模板，其中包含带有 <code class="code">Retain</code> 选项的 <code class="code">DeletionPolicy</code> 属性：</p>
+                        <div class="itemizedlist">
+                             
+                             
+                        <ul class="itemizedlist"><li class="listitem">
+                                <p>选择 <b>Amazon S3 URL</b>，然后在文本框中指定您的模板的 URL。</p>
+                            </li><li class="listitem">
+                                <p>选择 <b>Upload a template file (上传模板文件)</b>，然后浏览您的模板。</p>
+                            </li></ul></div>
+                        <p>然后选择<b>下一步</b>。</p>
+                    </li><li>
+                        <p>查看<b>指定堆栈详细信息</b>页面，然后选择<b>下一步</b>。</p>
+                    </li><li>
+                        <p>查看<b>配置堆栈选项</b>页面，然后选择<b>下一步</b>。</p>
+                    </li><li>
+                        <p>在<b>查看 <code class="replaceable">stack-name</code></b> 页面上，选择<b>更新堆栈</b>。</p>
+                    </li></ol></div>
+                <p><em>结果</em>：在堆栈的<b>事件</b>页面上，状态为 <code class="code">UPDATE_COMPLETE</code>。</p>
+                <p>要在不中断服务的情况下通过导入操作消除偏差，请为要从堆栈中移除的资源指定 <code class="code">Retain</code> <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html">DeletionPolicy</a>。在以下示例中，我们向 <code class="code">GamesTable</code> 资源添加了一个设置为 <code class="code">Retain</code> 的 <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html">DeletionPolicy</a> 属性。</p>
+                <awsdocs-tabs><dl style="display: none">
+                    <dt>Example JSON</dt><dd tab-id="example-json">
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">    "GamesTable": <span>{</span>
+        "Type": "AWS::DynamoDB::Table",
+        <b>"DeletionPolicy": "Retain",</b>
+        "Properties": <span>{</span>
+            "TableName": "Games",</code></pre>
+                        </dd>
+                    <dt>Example YAML</dt><dd tab-id="example-yaml">
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">  GamesTable:
+    Type: 'AWS::DynamoDB::Table'
+   <b>DeletionPolicy: Retain</b>
+    Properties:
+      TableName: Games</code></pre>
+                        </dd>
+                </dl></awsdocs-tabs>
+             
+       
+                <h3 id="resource-import-resolve-drift-console-step-02-remove-drift">第 2 步 移除偏差的资源、相关参数和输出</h3>
+                <div class="procedure"><h6>移除偏差的资源、相关参数和输出</h6><ol><li>
+                        <p>选择<b>更新</b>，然后从堆栈详细信息窗格中选择<b>替换当前模板</b>。</p>
+                    </li><li>
+                        <p>在<b>指定模板</b>页面上，使用下列方法之一提供更新的模板，该模板的资源、相关参数和输出已从堆栈模板中移除：</p>
+                        <div class="itemizedlist">
+                             
+                             
+                        <ul class="itemizedlist"><li class="listitem">
+                                <p>选择 <b>Amazon S3 URL</b>，然后在文本框中指定您的模板的 URL。</p>
+                            </li><li class="listitem">
+                                <p>选择 <b>Upload a template file (上传模板文件)</b>，然后浏览您的模板。</p>
+                            </li></ul></div>
+                        <p>然后选择<b>下一步</b>。</p>
+                    </li><li>
+                        <p>查看<b>指定堆栈详细信息</b>页面，然后选择<b>下一步</b>。</p>
+                    </li><li>
+                        <p>查看<b>配置堆栈选项</b>页面，然后选择<b>下一步</b>。</p>
+                    </li><li>
+                        <p>在<b>查看 <code class="replaceable">stack-name</code></b> 页面上，选择<b>更新堆栈</b>。</p>
+                    </li></ol></div>
+                <p><em>结果</em>：<b>逻辑 ID</b> <code class="code">GamesTable</code> 在堆栈的<b>事件</b>页面上具有状态 <code class="code">DELETE_SKIPPED</code>。</p>
+                <p>等待 CloudFormation 完成堆栈更新操作。堆栈更新操作完成后，从堆栈模板中移除资源、相关参数和输出。然后，导入更新后的模板。完成这些操作后，示例模板现在如下所示。</p>
+                <awsdocs-tabs><dl style="display: none">
+                    <dt>Example JSON</dt><dd tab-id="example-json">
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Import test",
+    "Resources": <span>{</span>
+         "ServiceTable":<span>{</span>
+           "Type":"AWS::DynamoDB::Table",
+           "Properties":<span>{</span>
+              "TableName":"Service",
+              "AttributeDefinitions":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "AttributeType":"S"
+                 }
+              ],
+              "KeySchema":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "KeyType":"HASH"
+                 }
+              ],
+              "BillingMode": "PROVISIONED",
+              "ProvisionedThroughput":<span>{</span>
+                 "ReadCapacityUnits":5,
+                 "WriteCapacityUnits":1
+              }
+           }
+        }
+    }
+}</code></pre>
+                        </dd>
+                    <dt>Example YAML</dt><dd tab-id="example-yaml">
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">AWSTemplateFormatVersion: 2010-09-09
+Description: Import test
+Resources:
+  ServiceTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: Service
+      AttributeDefinitions:
+        - AttributeName: key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: key
+          KeyType: HASH
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 1</code></pre>
+                        </dd>
+                </dl></awsdocs-tabs>
+             
+       
+                <h3 id="resource-import-resolve-drift-console-step-03-update-template">第 3 步 更新模板以匹配资源的实时状态</h3>
+                <div class="procedure"><h6>更新模板以匹配资源的实时状态</h6><ol><li>
+                        <p>要导入更新后的模板，请选择<b>堆栈操作</b>，然后选择<b>将资源导入到堆栈</b>。</p>
+                        <div class="mediaobject">
+                             
+                                <img src="images/stack-actions-import.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                                控制台中的 Import resources into stack (将资源导入到堆栈) 选项。&#xA;                            " />
+                             
+                             
+                        </div>
+                    </li><li>
+                        <p>在<b>导入概述</b>页面上，查看在该操作期间需要提供的内容列表，然后选择<b>下一步</b>。</p>
+                    </li><li>
+                        <p>在<b>指定模板</b>页面上，使用下列方法之一提供更新的模板：</p>
+                        <div class="itemizedlist">
+                             
+                             
+                        <ul class="itemizedlist"><li class="listitem">
+                                <p>选择 <b>Amazon S3 URL</b>，然后在文本框中指定您的模板的 URL。</p>
+                            </li><li class="listitem">
+                                <p>选择 <b>Upload a template file (上传模板文件)</b>，然后浏览您的模板。</p>
+                            </li></ul></div>
+                        <p>然后选择<b>下一步</b>。</p>
+                    </li><li>
+                        <p>在 <b>Identify resources</b>（标识资源）页面上，标识每个目标资源。</p>
+                        <ol><li>
+                                <p>在 <b>Identifier property (标识符属性)</b> 下面，选择资源标识符的类型。例如，<code class="code">TableName</code> 属性标识 <code class="code">AWS::DynamoDB::Table</code> 资源。</p>
+                            </li><li>
+                                <p>在<b>标识符值</b>下，输入实际属性值。在示例模板中，<code class="code">GamesTable</code> 资源的 <code class="code">TableName</code> 为 <code class="code">Games</code>。</p>
+                                <div class="mediaobject">
+                                     
+                                        <img src="images/resources-to-import-identifiers.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                                        控制台中的 Identify resources (标识资源) 页面。&#xA;                                    " />
+                                     
+                                     
+                                </div>
+                            </li><li>
+                                <p>选择 <b>Next</b>（下一步）。</p>
+                            </li></ol>
+                    </li><li>
+                        <p>查看<b>指定堆栈详细信息</b>页面，然后选择<b>下一步</b>。</p>
+                    </li><li>
+                        <p>在<b>导入概述</b>页面上，查看正在导入的资源，然后选择<b>导入资源</b>。这会将 <code class="code">AWS::DynamoDB::Table</code> 资源类型导入回您的堆栈中。</p>
+                    </li></ol></div>
+                <p><em>结果</em>：在此示例中，我们通过导入操作消除了资源偏差，而不会中断服务。您可以在 CloudFormation 控制台的“Events (事件)”选项卡中检查导入操作的进度。导入的资源将具有 <code class="code">IMPORT_COMPLETE</code> 状态，后跟 <code class="code">CREATE_COMPLETE</code> 状态，并且<b>资源导入完成</b>作为状态原因。</p>
+                <p>等待 CloudFormation 完成堆栈更新操作。堆栈更新操作完成后，更新模板以匹配资源的实际偏差状态。例如，<code class="code">BillingMode</code> 将设置为 <code class="code">PAY_PER_REQUEST</code>，<code class="code">ReadCapacityUnits</code> 和 <code class="code">WriteCapacityUnits</code> 将设置为 <code class="code">0</code>。</p>
+                <awsdocs-tabs><dl style="display: none">
+                    <dt>Example JSON</dt><dd tab-id="example-json">
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Import test",
+    "Resources": <span>{</span>
+         "ServiceTable":<span>{</span>
+           "Type":"AWS::DynamoDB::Table",
+           "Properties":<span>{</span>
+              "TableName":"Service",
+              "AttributeDefinitions":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "AttributeType":"S"
+                 }
+              ],
+              "KeySchema":[
+                 <span>{</span>
+                    "AttributeName":"key",
+                    "KeyType":"HASH"
+                 }
+              ],
+              "BillingMode": "PROVISIONED",
+              "ProvisionedThroughput":<span>{</span>
+                 "ReadCapacityUnits":5,
+                 "WriteCapacityUnits":1
+              }
+           }
+        },
+        "GamesTable": <span>{</span>
+            "Type": "AWS::DynamoDB::Table",
+            "DeletionPolicy": "Retain",
+            "Properties": <span>{</span>
+                "TableName": "Games",
+                "AttributeDefinitions": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "AttributeType": "S"
+                    }
+                ],
+                "KeySchema": [
+                    <span>{</span>
+                        "AttributeName": "key",
+                        "KeyType": "HASH"
+                    }
+                ],
+                <b>"BillingMode": "PAY_PER_REQUEST",</b>
+                "ProvisionedThroughput": <span>{</span>
+                    "ReadCapacityUnits": 0,
+                    "WriteCapacityUnits": 0
+                }
+            }
+        }
+    }
+}
+</code></pre>
+                        </dd>
+                    <dt>Example YAML</dt><dd tab-id="example-yaml">
+                            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="复制"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">AWSTemplateFormatVersion: 2010-09-09
+Description: Import test
+Resources:
+  ServiceTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: Service
+      AttributeDefinitions:
+        - AttributeName: key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: key
+          KeyType: HASH
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 1
+  GamesTable:
+    Type: 'AWS::DynamoDB::Table'
+    DeletionPolicy: Retain
+    Properties:
+      TableName: Games
+      AttributeDefinitions:
+        - AttributeName: key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: key
+          KeyType: HASH
+      <b>BillingMode: PAY_PER_REQUEST</b>
+      ProvisionedThroughput:
+        ReadCapacityUnits: 0
+        WriteCapacityUnits: 0</code></pre>
+                        </dd>
+                </dl></awsdocs-tabs>
+             
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>Javascript 在您的浏览器中被禁用或不可用。</strong></p><p>要使用 Amazon Web Services 文档，必须启用 Javascript。请参阅浏览器的帮助页面以了解相关说明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文档惯例</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./detect-drift-resource.html">在单个堆栈资源上检测偏差</div><div id="next" class="next-link" accesskey="n" href="./resource-import.html">使用 CloudFormation 对现有资源进行管理</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此页面对您有帮助吗？- 是</div><div class="content"><p>感谢您对我们工作的肯定！</p><p>如果不耽误您的时间，请告诉我们做得好的地方，让我们做得更好。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此页面对您有帮助吗？- 否</div><div class="content"><p>感谢您告诉我们本页内容还需要完善。很抱歉让您失望了。</p><p>如果不耽误您的时间，请告诉我们如何改进文档。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="反馈" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/resource-import-resolve-drift.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
