@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ko-KR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>AWS CloudFormation을 사용하여 CodeDeploy를 통한 ECS 블루/그린 배포 수행 - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="blue-green" /><meta name="default_state" content="blue-green" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/blue-green.html" /><meta name="description" content="AWS CloudFormation 템플릿을 사용하여 AWS CodeDeploy를 통한 ECS 블루/그린 배포를 관리할 수 있습니다." /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="사용자 가이드" /><meta name="abstract" content="이 사용 설명서와 AWS CloudFormation을 사용하여 AWS 인프라 배포를 예상한 대로 반복해서 생성 및 관리합니다." /><meta name="guide-locale" content="ko_kr" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/blue-green.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/blue-green.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="사용자 가이드" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="사용자 가이드" /><meta id="panorama-serviceConsolePage" value="AWS CloudFormation을 사용하여 CodeDeploy를 통한 ECS 블루/그린 배포 수행" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>AWS CloudFormation을 사용하여 CodeDeploy를 통한 ECS 블루/그린 배포 수행 - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/blue-green.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/blue-green.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/blue-green.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,리소스 프로비저닝,리소스 구성,인프라 관리,CloudFormer,CloudFormation 스택,CloudFormation stackset,CloudFormation 템플릿,변경 세트" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "사용자 가이드",
+        "item" : "https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "AWS CloudFormation 템플릿 사용",
+        "item" : "https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/template-guide.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "AWS CloudFormation을 사용하여 CodeDeploy를 통한 ECS 블루/그린 배포 수행",
+        "item" : "https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/template-guide.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">aws-documentation</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">사용자 가이드</a></div><div id="page-toc-src"><a href="#blue-green-required">CloudFormation 리소스를 사용하여 블루/그린 배포 모델링</a><a href="#blue-green-resources">그린 배포를 트리거하는 리소스 업데이트</a><a href="#blue-green-considerations">CloudFormation을 사용하여 ECS 블루/그린 배포를 관리할 때 고려 사항</a><a href="#blue-green-setup">ECS 블루/그린 배포를 수행하기 위한 템플릿 준비</a><a href="#blue-green-changesets">블루/그린 배포에 대한 변경 세트 검토</a><a href="#blue-green-events">블루/그린 배포에 대한 스택 이벤트 보기</a><a href="#blue-green-template-reference">템플릿 참조</a><a href="#blue-green-iam">블루/그린 배포에 필요한 IAM 권한</a><a href="#blue-green-template-example">템플릿 예제</a></div><div id="page-filters" style="display:none"><filter label="All" id="All"></filter><filter label="JSON" id="JSON"></filter><filter label="YAML" id="YAML"></filter></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="blue-green">AWS CloudFormation을 사용하여 CodeDeploy를 통한 ECS 블루/그린 배포 수행</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>CloudFormation을 사용하여 AWS CodeDeploy를 통한 ECS 블루/그린 배포를 수행할 수 있습니다. 블루/그린 배포는 애플리케이션 버전 변경으로 인한 중단을 최소화하기 위해  CodeDeploy에서 제공하는 안전한 배포 전략입니다. 이 작업은 라이브 트래픽을 제공하는 현재 애플리케이션(<em>블루</em>라고 함)과 새 애플리케이션 환경(<em>그린</em>이라고 함)을 생성하여 수행됩니다. 이렇게 하면 라이브 트래픽이 블루에서 그린으로 라우팅되고 이후에 블루 리소스가 해제되기 전에 그린 환경을 모니터링하고 테스트할 수 있는 시간을 확보할 수 있습니다.</p><p>CloudFormation을 사용하여 ECS 블루/그린 배포를 수행하는 경우 사용할 트래픽 라우팅 및 안정화 설정 지정을 포함해 블루 및 그린 애플리케이션 환경 모두에 리소스를 정의하는 스택 템플릿을 먼저 생성합니다. 그런 다음, 해당 템플릿에서 스택을 생성합니다. 그러면 블루 (현재) 애플리케이션이 생성됩니다. CloudFormation은 스택 생성 중에만 블루 리소스를 생성합니다. 그린 배포에 대한 리소스는 필요할 때까지 생성되지 않습니다.</p><p>따라서 향후 스택 업데이트에서 블루 애플리케이션의 작업 정의 또는 작업 세트 리소스를 업데이트하는 경우 CloudFormation은 다음을 수행합니다.</p><div class="itemizedlist">
+         
+         
+         
+    <ul class="itemizedlist"><li class="listitem"><p>필요한 모든 그린 애플리케이션 환경 리소스 생성</p></li><li class="listitem"><p>지정된 트래픽 라우팅 파라미터를 기반으로 트래픽 이동</p></li><li class="listitem"><p>블루 리소스 삭제</p></li></ul></div><p>그린 배포가 성공하고 완료되기 전에 오류가 발생하면 CloudFormation은 전체 그린 배포가 시작되기 전의 상태로 스택을 롤백합니다.</p><p>CloudFormation이 스택에서 블루/그린 배포를 수행할 수 있도록 하려면 다음 정보를 스택 템플릿에 포함시킵니다.</p><div class="itemizedlist">
+         
+         
+    <ul class="itemizedlist"><li class="listitem"><p><code class="code">AWS::CodeDeployBlueGreen</code> 변환을 호출하는 템플릿의 <code class="code">Transform</code> 섹션 및 <code class="code">AWS::CodeDeploy::BlueGreen</code> 후크를 호출하는 <code class="code">Hook</code> 섹션</p></li><li class="listitem"><p>스택 업데이트 중에 대체되는 경우 블루/그린 배포를 트리거하는 하나 이상의 ECS 리소스 (현재, <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskdefinition.html"><code class="code">AWS::ECS::TaskDefinition</code></a> 및 <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskset.html"><code class="code">AWS::ECS::TaskSet</code></a>가 이러한 리소스에 해당됩니다.)</p></li></ul></div><p>그리고 위의 리소스(CloudFormation에서 대체해야 하는 리소스)의 속성을 업데이트하는 스택 업데이트를 시작하면 CloudFormation은 위에 설명된 대로 블루/그린 배포를 수행합니다. 리소스 업데이트 동작에 대한 자세한 내용은 <a href="./using-cfn-updating-stacks-update-behaviors.html">스택 리소스의 업데이트 동작</a> 단원을 참조하십시오.</p><p>경우에 따라 스택을 <em>생성하기 전에</em> 블루/그린 배포를 활성화하도록 스택 템플릿을 설정해야 합니다. 그러나 CloudFormation이 블루/그린 배포를 기존 스택에 수행하도록 하는 기능을 추가할 수도 있습니다. 이렇게 하려면 필요한 정보를 스택의 기존 템플릿에 추가합니다.</p><p>또한 스택 업데이트를 시작하기 전에 CloudFormation에서 그린 배포에 대한 변경 세트를 생성하도록 하는 것이 좋습니다. 이렇게 하면 스택에 수행될 실제 변경 사항을 검토할 수 있습니다. 자세한 내용은 <a href="./using-cfn-updating-stacks-changesets.html">변경 세트를 사용하여 스택 업데이트</a> 단원을 참조하십시오.</p>
+        <h2 id="blue-green-required">CloudFormation 리소스를 사용하여 블루/그린 배포 모델링</h2>
+        <p>CodeDeploy을 사용하여 CloudFormation를 통한 ECS 블루/그린 배포를 수행하려면 Amazon ECS 서비스 및 로드 밸런서와 같이 배포를 모델링하는 리소스를 템플릿에 포함해야 합니다. 이러한 리소스 의미에 대한 자세한 내용을 알아보려면 <em>AWS CodeDeploy 사용 설명서</em>의 <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-steps-ecs.html#deployment-steps-prerequisites-ecs">Amazon ECS 배포를 시작하기 전에</a>를 참조하세요.</p>
+        <div class="table-container"><div class="table-contents"><table id="w1348aac17c33c25b5"><thead>
+                    <tr>
+                        <th>요구 사항</th>
+                        <th>Resource</th>
+                        <th>필수/선택</th>
+                        <th>대체될 경우 블루/그린 배포 트리거</th>
+                    </tr>
+                </thead>
+                    <tr>
+                        <td tabindex="-1">Amazon ECS 클러스터</td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-cluster.html"><code class="code">AWS::ECS::Cluster</code></a></td>
+                        <td tabindex="-1">선택 사항입니다. 기본 클러스터를 사용할 수 있습니다.</td>
+                        <td tabindex="-1">아니요</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">Amazon ECS 서비스</td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-service.html"><code class="code">AWS::ECS::Service</code></a></td>
+                        <td tabindex="-1">필수 사항입니다.</td>
+                        <td tabindex="-1">아니요</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">애플리케이션 또는 Network Load Balancer</td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ecs-service-loadbalancer.html"><code class="code">AWS::ECS::Service
+       LoadBalancer</code></a></td>
+                        <td tabindex="-1">필수 사항입니다.</td>
+                        <td tabindex="-1">아니요</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">프로덕션 리스너</td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listener.html"><code class="code">AWS::ElasticLoadBalancingV2::Listener</code></a></td>
+                        <td tabindex="-1">필수 사항입니다.</td>
+                        <td tabindex="-1">아니요</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">테스트 리스너 </td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listener.html"><code class="code">AWS::ElasticLoadBalancingV2::Listener</code></a></td>
+                        <td tabindex="-1">선택 사항입니다.</td>
+                        <td tabindex="-1">아니요</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">대상 그룹 두 개</td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html"><code class="code">AWS::ElasticLoadBalancingV2::TargetGroup</code></a></td>
+                        <td tabindex="-1">필수 사항입니다.</td>
+                        <td tabindex="-1">아니요</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">Amazon ECS 작업 정의 </td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskdefinition.html"><code class="code">AWS::ECS::TaskDefinition</code></a></td>
+                        <td tabindex="-1">필수 사항입니다.</td>
+                        <td tabindex="-1">예</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">Amazon ECS 애플리케이션의 컨테이너</td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ecs-taskdefinition-containerdefinitions.html#cfn-ecs-taskdefinition-containerdefinition-name.html"><code class="code">AWS::ECS::TaskDefinition ContainerDefinition Name</code></a></td>
+                        <td tabindex="-1">필수 사항입니다.</td>
+                        <td tabindex="-1">아니요</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">대체 작업 세트의 포트</td>
+                        <td tabindex="-1"><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ecs-taskdefinition-portmapping.html#cfn-ecs-taskdefinition-portmapping-containerport"><code class="code">AWS::ECS::TaskDefinition PortMapping ContainerPort</code></a></td>
+                        <td tabindex="-1">필수 사항입니다.</td>
+                        <td tabindex="-1">아니요</td>
+                    </tr>
+                </table></div></div>
+     
+        <h2 id="blue-green-resources">그린 배포를 트리거하는 리소스 업데이트</h2>
+        <p>다음 ECS 리소스를 <a href="./using-cfn-updating-stacks-update-behaviors.html">대체</a>해야 하는 속성을 업데이트하는 스택 업데이트를 수행하면 CloudFormation에서 그린 배포를 시작합니다.</p>
+        <div class="itemizedlist">
+             
+             
+        <ul class="itemizedlist"><li class="listitem"><p><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskdefinition.html"><code class="code">AWS::ECS::TaskDefinition</code></a></p></li><li class="listitem"><p><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskset.html"><code class="code">AWS::ECS::TaskSet</code></a> </p></li></ul></div>
+        
+        <p>리소스 대체가 필요하지 않은 이러한 리소스의 속성을 업데이트해도 그린 배포가 트리거되지 않습니다.</p>
+        <p>동일한 스택 업데이트에서 다른 리소스에 대한 업데이트와 함께 위의 리소스에 대한 업데이트를 포함시킬 수 없습니다. 동일한 스택의 다른 리소스와 함께 위 목록의 리소스를 업데이트해야 하는 경우 다음 중 하나를 수행합니다.</p>
+        <div class="itemizedlist">
+             
+             
+        <ul class="itemizedlist"><li class="listitem"><p>두 개의 별도 스택 업데이트 작업을 수행합니다. 즉, 위의 리소스에 대한 업데이트만 포함시키는 작업과 기타 리소스에 대한 변경 사항을 포함시키는 별도의 스택 업데이트 작업을 수행합니다.</p></li><li class="listitem"><p>템플릿에서 <code class="code">Transform</code> 및 <code class="code">Hook</code> 섹션을 제거한 다음 스택 업데이트를 수행합니다. 이 경우 CloudFormation이 그린 배포를 수행하지 않습니다.</p></li></ul></div>
+     
+        <h2 id="blue-green-considerations">CloudFormation을 사용하여 ECS 블루/그린 배포를 관리할 때 고려 사항</h2>
+        <p>CloudFormation을 사용하여 블루/그린 배포를 정의하는 경우 다음 사항을 고려해야 합니다.</p>
+        <div class="itemizedlist">
+             
+             
+             
+             
+             
+             
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem"><p><a href="#blue-green-resources">그린 배포를 트리거하는 리소스 업데이트</a>에서 설명한 대로 특정 리소스에 대한 업데이트만 그린 배포를 트리거합니다.</p></li><li class="listitem"><p><a href="#blue-green-resources">그린 배포를 트리거하는 리소스 업데이트</a>에서 설명한 대로 그린 배포를 트리거하는 리소스에 대한 업데이트와 다른 리소스에 대한 업데이트를 동일한 스택 업데이트에 포함할 수 없습니다.</p></li><li class="listitem"><p>하나의 ECS 서비스만 배포 대상으로 지정할 수 있습니다.</p></li><li class="listitem"><p>CloudFormation에 의해 난독화된 값이 있는 파라미터는 그린 배포 중에 CodeDeploy 서비스에서 업데이트할 수 없으며 오류 및 스택 업데이트 실패로 이어질 수 있습니다. 다음이 포함됩니다.</p>
+            <div class="itemizedlist">
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem"><p><code class="code">NoEcho</code> 속성으로 정의된 파라미터</p></li><li class="listitem"><p>동적 참조를 사용하여 외부 서비스에서 해당 값을 검색하는 파라미터 자세한 내용은 <a href="./dynamic-references.html">동적 참조를 사용하여 템플릿 값 지정</a> 단원을 참조하십시오.</p></li></ul></div>
+            </li><li class="listitem"><p>아직 진행 중인 그린 배포를 취소하려면 CodeDeploy 또는 ECS가 아니라 CloudFormation에서 스택 업데이트를 취소하세요. 자세한 내용은 <a href="./using-cfn--stack-update-cancel.html">스택 업데이트 취소</a> 단원을 참조하십시오. (업데이트가 완료된 후에는 취소할 수 없습니다. 그러나 이전 설정으로 스택을 다시 업데이트할 수 있습니다.)</p></li><li class="listitem"><p><a href="./outputs-section-structure.html">결과</a>을 선언하거나 <a href="./intrinsic-function-reference-importvalue.html">Fn::ImportValue</a>를 사용하여 다른 스택에서 값을 가져오는 것은 현재 블루/그린 ECS 배포를 정의하는 템플릿에서 지원되지 않습니다.</p></li><li class="listitem"><p><a href="./resource-import.html">CloudFormation 관리로 기존 리소스 가져오기</a>는 현재 블루/그린 ECS 배포를 정의하는 템플릿에 대해 지원되지 않습니다.</p></li><li class="listitem"><p>중첩된 스택 리소스가 포함된 템플릿에 <code class="code">AWS::CodeDeploy::BlueGreen</code> 후크를 사용할 수 없습니다.</p></li><li class="listitem"><p><a href="./using-cfn-nested-stacks.html">중첩된 스택</a>에서 <code class="code">AWS::CodeDeploy::BlueGreen</code> 후크를 사용할 수 없습니다.</p></li></ul></div>
+        <p>CloudFormation을 사용하여 CodeDeploy를 통한 ECS 블루/그린 배포를 수행하는 방법이 CodeDeploy만 사용하는 표준 Amazon ECS 배포와 어떻게 다른지에 대한 자세한 내용을 알아보려면 <em>AWS CodeDeploy 사용 설명서</em>의 <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-create-prerequisites.html">CloudFormation을 통한 Amazon ECS 블루/그린 배포와 표준 Amazon ECS 배포의 차이점</a>을 참조하세요.</p>
+     
+        <h2 id="blue-green-setup">ECS 블루/그린 배포를 수행하기 위한 템플릿 준비</h2>
+        <p>스택에서 블루/그린 배포를 활성화하려면, 스택 업데이트를 수행하기 전에 다음 섹션을 스택 템플릿에 포함시키십시오.</p>
+        <div class="itemizedlist">
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem"><p><code class="code">AWS::CodeDeployBlueGreen</code> 변환에 대한 참조를 템플릿에 추가합니다.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">    "Transform": [
+        "AWS::CodeDeployBlueGreen"
+    ],</code></pre>
+</li><li class="listitem"><p><code class="code">AWS::CodeDeploy::BlueGreen</code> 후크를 호출하고 배포에 대한 속성을 지정하는 <code class="code">Hook</code> 섹션을 추가합니다. 아래의 템플릿 참조를 지침으로 사용하십시오.</p></li><li class="listitem"><p><code class="code">Resources</code> 섹션에서 배포에 대한 블루 및 그린 리소스를 정의합니다.</p></li></ul></div>
+        <p>템플릿을 처음으로 생성할 때(즉, 스택 자체를 만들기 전에) 이러한 섹션을 추가하거나 스택 업데이트를 수행하기 전에 기존 템플릿에 추가할 수 있습니다. 새 스택에 블루/그린 배포를 지정하는 경우 CloudFormation은 스택 생성 중에 블루 리소스만 생성하며 그린 배포에 대한 리소스는 스택 업데이트 중에 필요할 때까지 생성되지 않습니다.</p>
+
+     
+        <h2 id="blue-green-changesets">블루/그린 배포에 대한 변경 세트 검토</h2>
+        <p>그린 배포를 시작할 스택 업데이트를 수행하기 전에 변경 세트를 생성하는 것이 좋습니다. 이렇게 하면 스택 업데이트를 수행하기 전에 스택에 이루어질 실제 변경 사항을 확인할 수 있습니다. 리소스 변경 사항은 스택 업데이트 중에 수행 되는 순서대로 나열되지 않을 수 있습니다. 자세한 내용은 <a href="./using-cfn-updating-stacks-changesets.html">변경 세트를 사용하여 스택 업데이트</a> 단원을 참조하십시오.</p>
+     
+        <h2 id="blue-green-events">블루/그린 배포에 대한 스택 이벤트 보기</h2>
+        <p><b>Stack</b>(스택) 페이지의 <b>Events</b>(이벤트) 탭에서 AWS CLI를 사용하여 ECS 배포의 각 단계에서 생성된 스택 이벤트를 볼 수 있습니다. 자세한 내용은 <a href="./using-cfn-updating-stacks-monitor-stack.html">스택 업데이트 진행률 모니터링</a> 단원을 참조하십시오.</p>
+     
+        <h2 id="blue-green-template-reference">템플릿 참조</h2>
+        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="json ">"Hooks": <span>{</span>
+  "Logical ID": <span>{</span>
+    "Properties": <span>{</span>
+      "TrafficRoutingConfig": <span>{</span>
+        "Type": "Traffic routing type",
+        "TimeBasedCanary": <span>{</span>
+          "StepPercentage": Integer,
+          "BakeTimeMins": Integer
+        },
+        "TimeBasedLinear": <span>{</span>
+          "StepPercentage": Integer,
+          "BakeTimeMins": Integer
+        }
+      },
+      "AdditionalOptions": <span>{</span>"TerminationWaitTimeInMinutes": Integer},
+      "LifecycleEventHooks": <span>{</span>
+        "BeforeInstall": "FunctionName",
+        "AfterInstall": "FunctionName",
+        "AfterAllowTestTraffic": "FunctionName",
+        "BeforeAllowTraffic": "FunctionName",
+        "AfterAllowTraffic": "FunctionName"
+      },
+      "ServiceRole": "CodeDeployServiceRoleName",
+      "Applications": [
+        <span>{</span>
+          "Target": <span>{</span>
+            "Type": "AWS::ECS::Service",
+            "LogicalID": "Resource Logical ID"
+          },
+          "ECSAttributes": <span>{</span>
+            "TaskDefinitions": [
+              "AWS::ECS::TaskDefinition Resource Logical ID (Blue)",
+              "AWS::ECS::TaskDefinition Resource Logical ID (Green)"
+            ],
+            "TaskSets": [
+              "AWS::ECS::TaskSet Resource Logical ID (Blue)",
+              "AWS::ECS::TaskSet Resource Logical ID (Green)"
+            ],
+            "TrafficRouting": <span>{</span>
+              "ProdTrafficRoute": <span>{</span>
+                "Type": "AWS::ElasticLoadBalancingV2::Listener",
+                "LogicalID": "Resource Logical ID (Production)"
+              },
+              "TestTrafficRoute": <span>{</span>
+                "Type": "AWS::ElasticLoadBalancingV2::Listener",
+                "LogicalID": "Resource Logical ID (Test)"
+              },
+              "TargetGroups": [
+                "AWS::ElasticLoadBalancingV2::TargetGroup Resource Logical ID (Blue)",
+                "AWS::ElasticLoadBalancingV2::TargetGroup Resource Logical ID (Green)"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "Type": "AWS::CodeDeploy::BlueGreen"
+  }
+}</code></pre>
+         
+            <h3 id="blue-green-template-reference-props">속성</h3>
+            <div class="variablelist">
+                 
+                 
+            <dl>
+                    <dt><span class="term"><code class="code">Logical ID</code></span></dt>
+                    <dd>
+                        <p>논리적 ID는 영숫자(A-Za-z0-9)여야 하며 템플릿 내에서 고유해야 합니다.</p>
+                        <p><em>필수 항목 여부</em>: 예</p>
+                        <div class="variablelist">
+                             
+                        <dl>
+                                <dt><span class="term"><code class="code">Properties</code></span></dt>
+                                <dd>
+                                    <p>후크의 속성</p>
+                                    <p><em>필수 항목 여부</em>: 예</p>
+                                    <div class="variablelist">
+                                         
+                                         
+                                         
+                                         
+                                         
+                                    <dl>
+                                            <dt><span class="term"><code class="code">TrafficRoutingConfig</code></span></dt>
+                                            <dd>
+                                                <p>트래픽 라우팅 구성 설정</p>
+                                                <p><em>필수 항목 여부</em>: 아니요</p>
+                                                <p>기본 구성은 시간 기반 Canary 트래픽 이동으로 15% 단계 비율 및 5분 베이크 시간입니다.</p>
+                                                <div class="variablelist">
+                                                    
+                                                     
+                                                <dl>
+                                                        <dt><span class="term"><code class="code">Type</code></span></dt>
+                                                        <dd>
+                                                            <p>배포 구성에 사용되는 트래픽 이동 유형</p>
+                                                            <p>유효한 값: AllAtOnce | TimeBasedCanary | TimeBasedLinear</p>
+                                                            <p><em>필수 항목 여부</em>: 예</p>
+                                                            <div class="variablelist">
+                                                                 
+                                                                 
+                                                            <dl>
+                                                                    <dt><span class="term"><code class="code">TimeBasedCanary</code></span></dt>
+                                                                    <dd>
+                                                                        <p>배포의 한 버전에서 다른 버전으로 트래픽을 2씩 증분하여 이동하는 구성을 지정합니다.</p>
+                                                                        <p><em>필수</em>: 조건부: 트래픽 라우팅 유형으로 <code class="code">TimeBasedCanary</code>를 지정하는 경우 <code class="code">TimeBasedCanary</code> 파라미터를 포함시켜야 합니다.</p>
+                                                                        <div class="variablelist">
+                                                                             
+                                                                        <dl>
+                                                                                <dt><span class="term"><code class="code">StepPercentage</code></span></dt>
+                                                                                <dd>
+                                                                                    <p><code class="code">TimeBasedCanary</code> 배포의 첫 번째 증분에서 이동할 트래픽의 비율입니다. 단계 비율은 14% 이상이어야 합니다.</p>
+                                                                                    <p><em>필수 항목 여부</em>: 아니요</p>
+                                                                                </dd>
+                                                                            </dl></div>
+                                                                        <div class="variablelist">
+                                                                             
+                                                                        <dl>
+                                                                                <dt><span class="term"><code class="code">BakeTimeMins</code></span></dt>
+                                                                                <dd>
+                                                                                    <p><code class="code">TimeBasedCanary</code> 배포의 첫 번째와 두 번째 트래픽 이동 사이의 시간(분)입니다.</p>
+                                                                                    <p><em>필수 항목 여부</em>: 아니요</p>
+                                                                                </dd>
+                                                                            </dl></div>
+                                                                    </dd>
+                                                                 
+                                                                    <dt><span class="term"><code class="code">TimeBasedLinear</code></span></dt>
+                                                                    <dd>
+                                                                        <p>동일한 증분(각 증분 사이에 동일한 시간(분) 지정)을 사용하여 배포의 한 버전에서 다른 버전으로 트래픽을 이동하는 구성을 지정합니다.</p>
+                                                                        <p><em>필수</em>: 조건부: 트래픽 라우팅 유형으로 <code class="code">TimeBasedLinear</code>를 지정하는 경우 <code class="code">TimeBasedLinear</code> 파라미터를 포함시켜야 합니다.</p>
+                                                                        <div class="variablelist">
+                                                                             
+                                                                        <dl>
+                                                                                <dt><span class="term"><code class="code">StepPercentage</code></span></dt>
+                                                                                <dd>
+                                                                                    <p><code class="code">TimeBasedLinear</code> 배포의 각 증분이 시작될 때 이동되는 트래픽의 비율. 단계 비율은 14% 이상이어야 합니다.</p>
+                                                                                    <p><em>필수 항목 여부</em>: 아니요</p>
+                                                                                </dd>
+                                                                            </dl></div>
+                                                                        <div class="variablelist">
+                                                                             
+                                                                        <dl>
+                                                                                <dt><span class="term"><code class="code">BakeTimeMins</code></span></dt>
+                                                                                <dd>
+                                                                                    <p><code class="code">TimeBasedLinear</code> 배포의 각 증분 트래픽 이동 사이의 시간(분)</p>
+                                                                                    <p><em>필수 항목 여부</em>: 아니요</p>
+                                                                                </dd>
+                                                                            </dl></div>
+                                                                    </dd>
+                                                                </dl></div>
+                                                        </dd>
+                                                    </dl></div>
+                                            </dd>
+                                         
+                                            <dt><span class="term"><code class="code">AdditionalOptions</code></span></dt>
+                                            <dd>
+                                                <p>블루/그린 배포를 위한 추가 옵션</p>
+                                                <p><em>필수 항목 여부</em>: 아니요</p>
+                                                <div class="variablelist">
+                                                     
+                                                <dl>
+                                                        <dt><span class="term"><code class="code">TerminationWaitTimeInMinutes</code></span></dt>
+                                                        <dd>
+                                                            <p>블루 리소스를 종료하기 전에 대기할 시간(분)을 지정합니다.</p>
+                                                            <p><em>필수 항목 여부</em>: 아니요</p>
+                                                        </dd>
+                                                    </dl></div>
+                                            </dd>
+                                         
+                                            <dt><span class="term"><code class="code">LifecycleEventHooks</code></span></dt>
+                                            <dd>
+                                                <p>수명 주기 이벤트 후크를 사용하여 CodeDeploy가 배포를 검증하기 위해 호출할 수 있는 Lambda 함수를 지정합니다. 배포 수명 주기 이벤트에 동일한 함수 또는 다른 함수를 사용할 수 있습니다. 검증 테스트가 완료되면 Lambda AfterAllowTraffic 함수는 CodeDeploy를 다시 호출하고 <code class="code">Succeeded</code> 또는 <code class="code">Failed</code> 결과를 전달합니다.</p>
+                                                <p>자세한 내용을 알아보려면 <em>AWS CodeDeploy 사용 설명서</em>의 <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/reference-appspec-file-structure-hooks.html">AppSpec '후크' 섹션</a>을 참조하세요.</p>
+                                                <p><em>필수 항목 여부</em>: 아니요</p>
+                                                <div class="variablelist">
+                                                     
+                                                     
+                                                     
+                                                     
+                                                     
+                                                <dl>
+                                                        <dt><span class="term"><code class="code">BeforeInstall</code></span></dt>
+                                                        <dd>
+                                                            <p>대체 작업 세트가 생성되기 전에 작업을 실행할 때 사용하는 함수</p>
+                                                            <p><em>필수 항목 여부</em>: 아니요</p>
+                                                        </dd>
+                                                     
+                                                        <dt><span class="term"><code class="code">AfterInstall</code></span></dt>
+                                                        <dd>
+                                                            <p>대체 작업 세트가 생성되었고 대상 그룹 중 하나가 연결된 후 작업을 실행할 때 사용하는 함수</p>
+                                                            <p><em>필수 항목 여부</em>: 아니요</p>
+                                                        </dd>
+                                                     
+                                                        <dt><span class="term"><code class="code">AfterAllowTestTraffic</code></span></dt>
+                                                        <dd>
+                                                            <p>테스트 리스너가 대체 작업 세트에 트래픽을 제공한 후 작업을 실행할 때 사용하는 함수</p>
+                                                            <p><em>필수 항목 여부</em>: 아니요</p>
+                                                        </dd>
+                                                     
+                                                        <dt><span class="term"><code class="code">BeforeAllowTraffic</code></span></dt>
+                                                        <dd>
+                                                            <p>트래픽이 대체 작업 세트로 이동되기 전에 두 번째 대상 그룹이 대체 작업 세트와 연결된 후 작업을 실행할 때 사용하는 함수</p>
+                                                            <p><em>필수 항목 여부</em>: 아니요</p>
+                                                        </dd>
+                                                     
+                                                        <dt><span class="term"><code class="code">AfterAllowTraffic</code></span></dt>
+                                                        <dd>
+                                                            <p>두 번째 대상 그룹이 대체 작업 세트에 트래픽을 제공한 후 작업을 실행할 때 사용하는 함수</p>
+                                                            <p><em>필수 항목 여부</em>: 아니요</p>
+                                                        </dd>
+                                                    </dl></div>
+                                            </dd>
+                                         
+                                            <dt><span class="term"><code class="code">ServiceRole</code></span></dt>
+                                            <dd>
+                                                <p>블루 그린 배포를 수행할 때 사용하는 CloudFormation에 대한 실행 역할. 필요한 권한의 목록은 <a href="#blue-green-iam">블루/그린 배포에 필요한 IAM 권한</a> 섹션을 참조하세요.</p>
+                                                <p><em>필수 항목 여부</em>: 예</p>
+                                            </dd>
+                                         
+                                            <dt><span class="term"><code class="code">Applications</code></span></dt>
+                                            <dd>
+                                                <p>Amazon ECS 애플리케이션의 속성을 지정합니다.</p>
+                                                <p><em>필수 항목 여부</em>: 예</p>
+                                                <div class="variablelist">
+                                                     
+                                                     
+                                                <dl>
+                                                        <dt><span class="term"><code class="code">Target</code></span></dt>
+                                                        <dd>
+                                                            <p></p>
+                                                            <p><em>필수 항목 여부</em>: 예</p>
+                                                            <div class="variablelist">
+                                                                 
+                                                                 
+                                                            <dl>
+                                                                    <dt><span class="term"><code class="code">Type</code></span></dt>
+                                                                    <dd>
+                                                                        <p>리소스의 유형.</p>
+                                                                        <p><em>필수 항목 여부</em>: 예</p>
+                                                                    </dd>
+                                                                 
+                                                                    <dt><span class="term"><code class="code">LogicalID</code></span></dt>
+                                                                    <dd>
+                                                                        <p>리소스의 논리적 ID</p>
+                                                                        <p><em>필수 항목 여부</em>: 예</p>
+                                                                    </dd>
+                                                                </dl></div>
+                                                        </dd>
+                                                     
+                                                        <dt><span class="term"><code class="code">ECSAttributes</code></span></dt>
+                                                        <dd>
+                                                            <p>Amazon ECS 애플리케이션 배포의 다양한 요구 사항을 나타내는 리소스</p>
+                                                            <p><em>필수 항목 여부</em>: 예</p>
+                                                            <div class="variablelist">
+                                                                 
+                                                                 
+                                                                 
+                                                            <dl>
+                                                                    <dt><span class="term"><code class="code">TaskDefinitions</code></span></dt>
+                                                                    <dd>
+                                                                        <p>Amazon ECS 애플리케이션이 포함된 Docker 컨테이너를 실행하기 위한 <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskdefinition.html"><code class="code">AWS::ECS::TaskDefinition</code></a> 리소스의 논리적 ID</p>
+                                                                        <p><em>필수 항목 여부</em>: 예</p>
+                                                                    </dd>
+                                                                 
+                                                                    <dt><span class="term"><code class="code">TaskSets</code></span></dt>
+                                                                    <dd>
+                                                                        <p>애플리케이션의 작업 세트로 사용할 <code class="code">AWS::ECS::TaskSet</code> 리소스의 논리적 ID</p>
+                                                                        <p><em>필수 항목 여부</em>: 예</p>
+                                                                    </dd>
+                                                                 
+                                                                    <dt><span class="term"><code class="code">TrafficRouting</code></span></dt>
+                                                                    <dd>
+                                                                        <p>트래픽 라우팅에 사용되는 리소스를 지정합니다.</p>
+                                                                        <p><em>필수 항목 여부</em>: 예</p>
+                                                                        <div class="variablelist">
+                                                                             
+                                                                             
+                                                                             
+                                                                        <dl>
+                                                                                <dt><span class="term"><code class="code">ProdTrafficRoute</code></span></dt>
+                                                                                <dd>
+                                                                                    <p>대상 그룹으로 트래픽을 보내는 데 로드 밸런서에서 사용할 리스너</p>
+                                                                                    <p><em>필수 항목 여부</em>: 예</p>
+                                                                                    <div class="variablelist">
+                                                                                         
+                                                                                         
+                                                                                    <dl>
+                                                                                            <dt><span class="term"><code class="code">Type</code></span></dt>
+                                                                                            <dd>
+                                                                                                <p>리소스의 유형입니다. <code class="code">AWS::ElasticLoadBalancingV2::Listener</code> </p>
+                                                                                                <p><em>필수 항목 여부</em>: 예</p>
+                                                                                            </dd>
+                                                                                         
+                                                                                            <dt><span class="term"><code class="code">LogicalID</code></span></dt>
+                                                                                            <dd>
+                                                                                                <p>리소스의 논리적 ID</p>
+                                                                                                <p><em>필수 항목 여부</em>: 예</p>
+                                                                                            </dd>
+                                                                                        </dl></div>
+                                                                                </dd>
+                                                                             
+                                                                                <dt><span class="term"><code class="code">TestTrafficRoute</code></span></dt>
+                                                                                <dd>
+                                                                                    <p>대상 그룹으로 트래픽을 보내는 데 로드 밸런서에서 사용할 리스너</p>
+                                                                                    <p><em>필수 항목 여부</em>: 예</p>
+                                                                                    <div class="variablelist">
+                                                                                         
+                                                                                         
+                                                                                    <dl>
+                                                                                            <dt><span class="term"><code class="code">Type</code></span></dt>
+                                                                                            <dd>
+                                                                                                <p>리소스의 유형입니다. <code class="code">AWS::ElasticLoadBalancingV2::Listener</code> </p>
+                                                                                                <p><em>필수 항목 여부</em>: 예</p>
+                                                                                            </dd>
+                                                                                         
+                                                                                            <dt><span class="term"><code class="code">LogicalID</code></span></dt>
+                                                                                            <dd>
+                                                                                                <p>리소스의 논리적 ID</p>
+                                                                                                <p><em>필수 항목 여부</em>: 아니요</p>
+                                                                                            </dd>
+                                                                                        </dl></div>
+                                                                                </dd>
+                                                                             
+                                                                                <dt><span class="term"><code class="code">TargetGroups</code></span></dt>
+                                                                                <dd>
+                                                                                    <p>트래픽을 등록된 대상으로 라우팅하기 위해 대상 그룹으로 사용할 리소스의 논리적 ID</p>
+                                                                                    <p><em>필수 항목 여부</em>: 예</p>
+                                                                                </dd>
+                                                                            </dl></div>
+                                                                    </dd>
+                                                                </dl></div>
+                                                        </dd>
+                                                    </dl></div>
+                                            </dd>
+                                        </dl></div>
+                                </dd>
+                            </dl></div>
+                    </dd>
+                    
+                 
+                    <dt><span class="term"><code class="code">Type</code></span></dt>
+                    <dd>
+                        <p>후크의 유형입니다. <code class="code">AWS::ElasticLoadBalancingV2::Listener</code> </p>
+                        <p><em>필수 항목 여부</em>: 예</p>
+                    </dd>
+                </dl></div>
+         
+     
+        <h2 id="blue-green-iam">블루/그린 배포에 필요한 IAM 권한</h2>
+        <p>CloudFormation에서 블루-그린 배포를 성공적으로 수행하려면 다음 CodeDeploy 권한이 있어야 합니다.</p>
+        <div class="itemizedlist">
+             
+             
+        <ul class="itemizedlist"><li class="listitem"><p><code class="code">codedeploy:Get*</code></p></li><li class="listitem"><p><code class="code">codedeploy:CreateCloudFormationDeployment</code></p></li></ul></div>
+        <p>자세한 내용을 알아보려면 <em>AWS Identity and Access Management 사용 설명서</em>의 <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awscodedeploy.html">CodeDeploy에 사용되는 작업, 리소스 및 조건 키</a>를 참조하세요.</p>
+     
+        <h2 id="blue-green-template-example">템플릿 예제</h2>
+        <p>다음 예제에서는 CodeDeploy를 통한 ECS 블루/그린 배포를 설정합니다. 여기서, 단계당 트래픽 라우팅 진행률은 15%이고 각 단계 사이의 안정화 기간은 5분입니다. 템플릿을 이용해 스택을 생성하면 배포의 초기 구성이 프로비저닝됩니다.</p>
+        <p>따라서 <code class="code">"BlueTaskSet"</code> 리소스(대체해야 하는 리소스)의 속성을 변경한 경우 CloudFormation은 스택 업데이트의 일부로 그린 배포를 시작합니다.</p>
+        <div id="JSON" name="JSON" class="section langfilter">
+            <h3 id="blue-green-template-example.json">JSON</h3>
+<pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "Parameters": <span>{</span>
+        "Vpc": <span>{</span>
+            "Type": "AWS::EC2::VPC::Id"
+        },
+        "Subnet1": <span>{</span>
+            "Type": "AWS::EC2::Subnet::Id"
+        },
+        "Subnet2": <span>{</span>
+            "Type": "AWS::EC2::Subnet::Id"
+        }
+    },
+    "Transform": [
+        "AWS::CodeDeployBlueGreen"
+    ],
+    "Hooks": <span>{</span>
+        "CodeDeployBlueGreenHook": <span>{</span>
+            "Properties": <span>{</span>
+                "TrafficRoutingConfig": <span>{</span>
+                    "Type": "TimeBasedCanary",
+                    "TimeBasedCanary": <span>{</span>
+                        "StepPercentage": 15,
+                        "BakeTimeMins": 5
+                    }
+                },
+                "Applications": [
+                    <span>{</span>
+                        "Target": <span>{</span>
+                            "Type": "AWS::ECS::Service",
+                            "LogicalID": "ECSDemoService"
+                        },
+                        "ECSAttributes": <span>{</span>
+                            "TaskDefinitions": [
+                                "BlueTaskDefinition",
+                                "GreenTaskDefinition"
+                            ],
+                            "TaskSets": [
+                                "BlueTaskSet",
+                                "GreenTaskSet"
+                            ],
+                            "TrafficRouting": <span>{</span>
+                                "ProdTrafficRoute": <span>{</span>
+                                    "Type": "AWS::ElasticLoadBalancingV2::Listener",
+                                    "LogicalID": "ALBListenerProdTraffic"
+                                },
+                                "TargetGroups": [
+                                    "ALBTargetGroupBlue",
+                                    "ALBTargetGroupGreen"
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            "Type": "AWS::CodeDeploy::BlueGreen"
+        }
+    },
+    "Resources": <span>{</span>
+        "ExampleSecurityGroup": <span>{</span>
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": <span>{</span>
+                "GroupDescription": "Security group for ec2 access",
+                "VpcId": <span>{</span>
+                    "Ref": "Vpc"
+                },
+                "SecurityGroupIngress": [
+                    <span>{</span>
+                        "IpProtocol": "tcp",
+                        "FromPort": 80,
+                        "ToPort": 80,
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    <span>{</span>
+                        "IpProtocol": "tcp",
+                        "FromPort": 8080,
+                        "ToPort": 8080,
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    <span>{</span>
+                        "IpProtocol": "tcp",
+                        "FromPort": 22,
+                        "ToPort": 22,
+                        "CidrIp": "0.0.0.0/0"
+                    }
+                ]
+            }
+        },
+        "ALBTargetGroupBlue": <span>{</span>
+            "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+            "Properties": <span>{</span>
+                "HealthCheckIntervalSeconds": 5,
+                "HealthCheckPath": "/",
+                "HealthCheckPort": "80",
+                "HealthCheckProtocol": "HTTP",
+                "HealthCheckTimeoutSeconds": 2,
+                "HealthyThresholdCount": 2,
+                "Matcher": <span>{</span>
+                    "HttpCode": "200"
+                },
+                "Port": 80,
+                "Protocol": "HTTP",
+                "Tags": [
+                    <span>{</span>
+                        "Key": "Group",
+                        "Value": "Example"
+                    }
+                ],
+                "TargetType": "ip",
+                "UnhealthyThresholdCount": 4,
+                "VpcId": <span>{</span>
+                    "Ref": "Vpc"
+                }
+            }
+        },
+        "ALBTargetGroupGreen": <span>{</span>
+            "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+            "Properties": <span>{</span>
+                "HealthCheckIntervalSeconds": 5,
+                "HealthCheckPath": "/",
+                "HealthCheckPort": "80",
+                "HealthCheckProtocol": "HTTP",
+                "HealthCheckTimeoutSeconds": 2,
+                "HealthyThresholdCount": 2,
+                "Matcher": <span>{</span>
+                    "HttpCode": "200"
+                },
+                "Port": 80,
+                "Protocol": "HTTP",
+                "Tags": [
+                    <span>{</span>
+                        "Key": "Group",
+                        "Value": "Example"
+                    }
+                ],
+                "TargetType": "ip",
+                "UnhealthyThresholdCount": 4,
+                "VpcId": <span>{</span>
+                    "Ref": "Vpc"
+                }
+            }
+        },
+        "ExampleALB": <span>{</span>
+            "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+            "Properties": <span>{</span>
+                "Scheme": "internet-facing",
+                "SecurityGroups": [
+                    <span>{</span>
+                        "Ref": "ExampleSecurityGroup"
+                    }
+                ],
+                "Subnets": [
+                    <span>{</span>
+                        "Ref": "Subnet1"
+                    },
+                    <span>{</span>
+                        "Ref": "Subnet2"
+                    }
+                ],
+                "Tags": [
+                    <span>{</span>
+                        "Key": "Group",
+                        "Value": "Example"
+                    }
+                ],
+                "Type": "application",
+                "IpAddressType": "ipv4"
+            }
+        },
+        "ALBListenerProdTraffic": <span>{</span>
+            "Type": "AWS::ElasticLoadBalancingV2::Listener",
+            "Properties": <span>{</span>
+                "DefaultActions": [
+                    <span>{</span>
+                        "Type": "forward",
+                        "ForwardConfig": <span>{</span>
+                            "TargetGroups": [
+                                <span>{</span>
+                                    "TargetGroupArn": <span>{</span>
+                                        "Ref": "ALBTargetGroupBlue"
+                                    },
+                                    "Weight": 1
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "LoadBalancerArn": <span>{</span>
+                    "Ref": "ExampleALB"
+                },
+                "Port": 80,
+                "Protocol": "HTTP"
+            }
+        },
+        "ALBListenerProdRule": <span>{</span>
+            "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
+            "Properties": <span>{</span>
+                "Actions": [
+                    <span>{</span>
+                        "Type": "forward",
+                        "ForwardConfig": <span>{</span>
+                            "TargetGroups": [
+                                <span>{</span>
+                                    "TargetGroupArn": <span>{</span>
+                                        "Ref": "ALBTargetGroupBlue"
+                                    },
+                                    "Weight": 1
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "Conditions": [
+                    <span>{</span>
+                        "Field": "http-header",
+                        "HttpHeaderConfig": <span>{</span>
+                            "HttpHeaderName": "User-Agent",
+                            "Values": [
+                                "Mozilla"
+                            ]
+                        }
+                    }
+                ],
+                "ListenerArn": <span>{</span>
+                    "Ref": "ALBListenerProdTraffic"
+                },
+                "Priority": 1
+            }
+        },
+        "ECSTaskExecutionRole": <span>{</span>
+            "Type": "AWS::IAM::Role",
+            "Properties": <span>{</span>
+                "AssumeRolePolicyDocument": <span>{</span>
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        <span>{</span>
+                            "Sid": "",
+                            "Effect": "Allow",
+                            "Principal": <span>{</span>
+                                "Service": "ecs-tasks.amazonaws.com"
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                },
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+                ]
+            }
+        },
+        "BlueTaskDefinition": <span>{</span>
+            "Type": "AWS::ECS::TaskDefinition",
+            "Properties": <span>{</span>
+                "ExecutionRoleArn": <span>{</span>
+                    "Fn::GetAtt": [
+                        "ECSTaskExecutionRole",
+                        "Arn"
+                    ]
+                },
+                "ContainerDefinitions": [
+                    <span>{</span>
+                        "Name": "DemoApp",
+                        "Image": "nginxdemos/hello:latest",
+                        "Essential": true,
+                        "PortMappings": [
+                            <span>{</span>
+                                "HostPort": 80,
+                                "Protocol": "tcp",
+                                "ContainerPort": 80
+                            }
+                        ]
+                    }
+                ],
+                "RequiresCompatibilities": [
+                    "FARGATE"
+                ],
+                "NetworkMode": "awsvpc",
+                "Cpu": "256",
+                "Memory": "512",
+                "Family": "ecs-demo"
+            }
+        },
+        "ECSDemoCluster": <span>{</span>
+            "Type": "AWS::ECS::Cluster",
+            "Properties": <span>{</span>}
+        },
+        "ECSDemoService": <span>{</span>
+            "Type": "AWS::ECS::Service",
+            "Properties": <span>{</span>
+                "Cluster": <span>{</span>
+                    "Ref": "ECSDemoCluster"
+                },
+                "DesiredCount": 1,
+                "DeploymentController": <span>{</span>
+                    "Type": "EXTERNAL"
+                }
+            }
+        },
+        "BlueTaskSet": <span>{</span>
+            "Type": "AWS::ECS::TaskSet",
+            "Properties": <span>{</span>
+                "Cluster": <span>{</span>
+                    "Ref": "ECSDemoCluster"
+                },
+                "LaunchType": "FARGATE",
+                "NetworkConfiguration": <span>{</span>
+                    "AwsVpcConfiguration": <span>{</span>
+                        "AssignPublicIp": "ENABLED",
+                        "SecurityGroups": [
+                            <span>{</span>
+                                "Ref": "ExampleSecurityGroup"
+                            }
+                        ],
+                        "Subnets": [
+                            <span>{</span>
+                                "Ref": "Subnet1"
+                            },
+                            <span>{</span>
+                                "Ref": "Subnet2"
+                            }
+                        ]
+                    }
+                },
+                "PlatformVersion": "1.4.0",
+                "Scale": <span>{</span>
+                    "Unit": "PERCENT",
+                    "Value": 100
+                },
+                "Service": <span>{</span>
+                    "Ref": "ECSDemoService"
+                },
+                "TaskDefinition": <span>{</span>
+                    "Ref": "BlueTaskDefinition"
+                },
+                "LoadBalancers": [
+                    <span>{</span>
+                        "ContainerName": "DemoApp",
+                        "ContainerPort": 80,
+                        "TargetGroupArn": <span>{</span>
+                            "Ref": "ALBTargetGroupBlue"
+                        }
+                    }
+                ]
+            }
+        },
+        "PrimaryTaskSet": <span>{</span>
+            "Type": "AWS::ECS::PrimaryTaskSet",
+            "Properties": <span>{</span>
+                "Cluster": <span>{</span>
+                    "Ref": "ECSDemoCluster"
+                },
+                "Service": <span>{</span>
+                    "Ref": "ECSDemoService"
+                },
+                "TaskSetId": <span>{</span>
+                    "Fn::GetAtt": [
+                        "BlueTaskSet",
+                        "Id"
+                    ]
+                }
+            }
+        }
+    }
+}</code></pre>
+
+        </div>
+        <div id="YAML" name="YAML" class="section langfilter">
+            <h3 id="blue-green-template-example.yaml">YAML</h3>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">Parameters:
+  Vpc:
+    Type: 'AWS::EC2::VPC::Id'
+  Subnet1:
+    Type: 'AWS::EC2::Subnet::Id'
+  Subnet2:
+    Type: 'AWS::EC2::Subnet::Id'
+Transform:
+  - 'AWS::CodeDeployBlueGreen'
+Hooks:
+  CodeDeployBlueGreenHook:
+    Properties:
+      TrafficRoutingConfig:
+        Type: TimeBasedCanary
+        TimeBasedCanary:
+          StepPercentage: 15
+          BakeTimeMins: 5
+      Applications:
+        - Target:
+            Type: 'AWS::ECS::Service'
+            LogicalID: ECSDemoService
+          ECSAttributes:
+            TaskDefinitions:
+              - BlueTaskDefinition
+              - GreenTaskDefinition
+            TaskSets:
+              - BlueTaskSet
+              - GreenTaskSet
+            TrafficRouting:
+              ProdTrafficRoute:
+                Type: 'AWS::ElasticLoadBalancingV2::Listener'
+                LogicalID: ALBListenerProdTraffic
+              TargetGroups:
+                - ALBTargetGroupBlue
+                - ALBTargetGroupGreen
+    Type: 'AWS::CodeDeploy::BlueGreen'
+Resources:
+  ExampleSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Security group for ec2 access
+      VpcId: !Ref Vpc
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+  ALBTargetGroupBlue:
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Properties:
+      HealthCheckIntervalSeconds: 5
+      HealthCheckPath: /
+      HealthCheckPort: '80'
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 2
+      HealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '200'
+      Port: 80
+      Protocol: HTTP
+      Tags:
+        - Key: Group
+          Value: Example
+      TargetType: ip
+      UnhealthyThresholdCount: 4
+      VpcId: !Ref Vpc
+  ALBTargetGroupGreen:
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Properties:
+      HealthCheckIntervalSeconds: 5
+      HealthCheckPath: /
+      HealthCheckPort: '80'
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 2
+      HealthyThresholdCount: 2
+      Matcher:
+        HttpCode: '200'
+      Port: 80
+      Protocol: HTTP
+      Tags:
+        - Key: Group
+          Value: Example
+      TargetType: ip
+      UnhealthyThresholdCount: 4
+      VpcId: !Ref Vpc
+  ExampleALB:
+    Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    Properties:
+      Scheme: internet-facing
+      SecurityGroups:
+        - !Ref ExampleSecurityGroup
+      Subnets:
+        - !Ref Subnet1
+        - !Ref Subnet2
+      Tags:
+        - Key: Group
+          Value: Example
+      Type: application
+      IpAddressType: ipv4
+  ALBListenerProdTraffic:
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      DefaultActions:
+        - Type: forward
+          ForwardConfig:
+            TargetGroups:
+              - TargetGroupArn: !Ref ALBTargetGroupBlue
+                Weight: 1
+      LoadBalancerArn: !Ref ExampleALB
+      Port: 80
+      Protocol: HTTP
+  ALBListenerProdRule:
+    Type: 'AWS::ElasticLoadBalancingV2::ListenerRule'
+    Properties:
+      Actions:
+        - Type: forward
+          ForwardConfig:
+            TargetGroups:
+              - TargetGroupArn: !Ref ALBTargetGroupBlue
+                Weight: 1
+      Conditions:
+        - Field: http-header
+          HttpHeaderConfig:
+            HttpHeaderName: User-Agent
+            Values:
+              - Mozilla
+      ListenerArn: !Ref ALBListenerProdTraffic
+      Priority: 1
+  ECSTaskExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: ''
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy'
+  BlueTaskDefinition:
+    Type: 'AWS::ECS::TaskDefinition'
+    Properties:
+      ExecutionRoleArn: !GetAtt 
+        - ECSTaskExecutionRole
+        - Arn
+      ContainerDefinitions:
+        - Name: DemoApp
+          Image: 'nginxdemos/hello:latest'
+          Essential: true
+          PortMappings:
+            - HostPort: 80
+              Protocol: tcp
+              ContainerPort: 80
+      RequiresCompatibilities:
+        - FARGATE
+      NetworkMode: awsvpc
+      Cpu: '256'
+      Memory: '512'
+      Family: ecs-demo
+  ECSDemoCluster:
+    Type: 'AWS::ECS::Cluster'
+    Properties: <span>{</span>}
+  ECSDemoService:
+    Type: 'AWS::ECS::Service'
+    Properties:
+      Cluster: !Ref ECSDemoCluster
+      DesiredCount: 1
+      DeploymentController:
+        Type: EXTERNAL
+  BlueTaskSet:
+    Type: 'AWS::ECS::TaskSet'
+    Properties:
+      Cluster: !Ref ECSDemoCluster
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsVpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups:
+            - !Ref ExampleSecurityGroup
+          Subnets:
+            - !Ref Subnet1
+            - !Ref Subnet2
+      PlatformVersion: 1.4.0
+      Scale:
+        Unit: PERCENT
+        Value: 100
+      Service: !Ref ECSDemoService
+      TaskDefinition: !Ref BlueTaskDefinition
+      LoadBalancers:
+        - ContainerName: DemoApp
+          ContainerPort: 80
+          TargetGroupArn: !Ref ALBTargetGroupBlue
+  PrimaryTaskSet:
+    Type: 'AWS::ECS::PrimaryTaskSet'
+    Properties:
+      Cluster: !Ref ECSDemoCluster
+      Service: !Ref ECSDemoService
+      TaskSetId: !GetAtt 
+        - BlueTaskSet
+        - Id</code></pre>
+        </div>
+    <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="주의" /> <strong>javascript가 브라우저에서 비활성화되거나 사용이 불가합니다.</strong></p><p>AWS 설명서를 사용하려면 Javascript가 활성화되어야 합니다. 지침을 보려면 브라우저의 도움말 페이지를 참조하십시오.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">문서 규칙</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./modules.html">모듈 사용</div><div id="next" class="next-link" accesskey="n" href="./cfn-regexes.html">정규식 사용</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 예</div><div class="content"><p>칭찬해 주셔서 감사합니다!</p><p>잠깐 시간을 내어 좋았던 부분을 알려 주시면 더 열심히 만들어 보겠습니다.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/blue-green.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 아니요</div><div class="content"><p>이 페이지에 작업이 필요하다는 점을 알려 주셔서 감사합니다. 실망시켜 드려 죄송합니다.</p><p>잠깐 시간을 내어 설명서를 향상시킬 수 있는 방법에 대해 말씀해 주십시오.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/blue-green.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

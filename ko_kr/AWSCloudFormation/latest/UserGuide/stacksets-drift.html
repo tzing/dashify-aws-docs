@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ko-KR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>스택 세트에서 비관리형 구성 변경 감지 - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="stacksets-drift" /><meta name="default_state" content="stacksets-drift" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="description" content="CloudFormation을 통해 스택과 스택에 포함된 리소스를 관리하는 경우에도 사용자는 CloudFormation 외부에서 이러한 리소스를 변경할 수 있습니다. 사용자는 리소스를 생성하는 기본 서비스를 사용하여 리소스를 직접 편집할 수 있습니다. 스택 세트에 대해 드리프트 감지를 수행하여 해당 스택 세트에 속하는 스택 인스턴스가 예상 구성과 다른지, 아니면 트리프트 되었는지 확인할 수 있습니다." /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="사용자 가이드" /><meta name="abstract" content="이 사용 설명서와 AWS CloudFormation을 사용하여 AWS 인프라 배포를 예상한 대로 반복해서 생성 및 관리합니다." /><meta name="guide-locale" content="ko_kr" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="사용자 가이드" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="사용자 가이드" /><meta id="panorama-serviceConsolePage" value="스택 세트에서 비관리형 구성 변경 감지" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>스택 세트에서 비관리형 구성 변경 감지 - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,리소스 프로비저닝,리소스 구성,인프라 관리,CloudFormer,CloudFormation 스택,CloudFormation stackset,CloudFormation 템플릿,변경 세트" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "사용자 가이드",
+        "item" : "https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "AWS CloudFormation StackSets 작업",
+        "item" : "https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "스택 세트에서 비관리형 구성 변경 감지",
+        "item" : "https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">aws-documentation</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">사용자 가이드</a></div><div id="page-toc-src"><a href="#stacksets-drift-how">CloudFormation이 스택 세트에서 드리프트 감지를 수행하는 방법</a><a href="#stacksets-drift-stop">스택 세트에서 드리프트 감지 중지</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="stacksets-drift">스택 세트에서 비관리형 구성 변경 감지</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>CloudFormation을 통해 스택과 스택에 포함된 리소스를 관리하는 경우에도 사용자는 CloudFormation 외부에서 이러한 리소스를 변경할 수 있습니다. 사용자는 리소스를 생성하는 기본 서비스를 사용하여 리소스를 직접 편집할 수 있습니다. 스택 세트에 대해 드리프트 감지를 수행하여 해당 스택 세트에 속하는 스택 인스턴스가 예상 구성과 다른지, 아니면 <em>트리프트 되었는지</em> 확인할 수 있습니다.</p>
+        <h2 id="stacksets-drift-how">CloudFormation이 스택 세트에서 드리프트 감지를 수행하는 방법</h2>
+        <p>CloudFormation은 스택 세트에서 드리프트 감지를 수행할 때 스택 세트의 각 스택 인스턴스와 연결되는 스택에 대해 드리프트 감지를 수행합니다. 이를 위해 CloudFormation에서는 스택의 각 리소스의 현재 상태를 스택의 템플릿 및 지정된 입력 파라미터에 정의된 대로 해당 리소스의 예상 상태와 비교합니다. 리소스의 현재 상태가 예상 상태와 다를 경우 해당 리소스가 드리프트된 것으로 간주됩니다. 스택에서 하나 이상의 리소스가 드리프트되면 스택 자체가 드리프트된 것으로 간주되고 스택과 연결된 스택 인스턴스도 드리프트된 것으로 간주됩니다. 스택 세트에서 하나 이상의 스택 인스턴스가 드리프트되면 스택 세트 자체가 드리프트된 것으로 간주됩니다.</p>
+        <p>드리프트 감지는 비괸리형 변경, 즉 CloudFormation 외부의 스택에 대한 변경을 식별합니다. 스택 세트 수준에서가 아니라 직접 CloudFormation를 통해 스택을 변경하는 것은 드리프트로 간주되지 않습니다. 예를 들어 스택 세트의 스택 인스턴스와 연결된 스택이 있다고 가정합니다. CloudFormation를 사용하여 다른 템플릿을 사용하도록 해당 스택을 업데이트하는 경우에는 해당 스택에 스택 세트에 속하는 다른 스택과 다른 템플릿이 있더라도 드리프트로 간주되지 않습니다. 스택이 CloudFormation의 예상 템플릿 및 파라미터 구성과 여전히 일치하기 때문입니다.</p>
+        <p>CloudFormation이 스택에서 드리프트 감지를 수행하는 방법에 대한 자세한 내용은 <a href="./using-cfn-stack-drift.html">스택 및 리소스에 대한 비관리형 구성 변경 감지</a> 섹션을 참조하세요.</p>
+        <p>CloudFormation은 각 스택에 대해 개별적으로 드리프트 감지를 수행하므로 스택이 드리프트되었는지 여부를 결정할 때 재정의된 파라미터 값을 고려합니다. 스택 인스턴스의 템플릿 파라미터 재정의에 대한 자세한 내용은 <a href="./stackinstances-override.html">스택 인스턴스의 파라미터 재정의</a> 단원을 참조하십시오.</p>
+        <p>스택 인스턴스와 연결된 <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">스택에서 직접</a> 드리프트 감지를 수행하는 경우 <b>StackSets</b> 콘솔 페이지에서 이러한 드리프트 결과를 사용할 수 없습니다.</p>
+
+    <div class="procedure"><h6>AWS Management Console을 사용하여 스택 세트에서 드리프트를 감지하려면</h6><ol><li><p>AWS CloudFormation 콘솔(<a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>)을 엽니다.</p></li><li>
+            <p><b>스택 세트</b> 페이지에서 드리프트 감지를 수행할 스택 세트를 선택합니다.</p>
+        </li><li>
+            <p><b>작업</b> 메뉴에서 <b>Detect drifts(드리프트 감지)</b>를 선택합니다.</p>
+            <p>CloudFormation에는 선택한 스택 세트에 대해 드리프트 감지가 시작되었음을 나타내는 정보 표시줄을 표시됩니다.</p>
+        </li><li>
+            <p>선택 사항: 드리프트 감지 작업의 진행 상황을 모니터링하려면 다음을 수행합니다.</p>
+            <ol><li>
+                    <p>스택 세트 이름을 선택하여 [<b>스택 세트 세부 정보(Stackset details)</b>] 페이지를 표시합니다.</p>
+                </li><li>
+                    <p><b>작업</b> 탭을 선택하고 드리프트 감지 작업을 선택한 다음, <b>View drift details(드리프트 세부 정보 보기)</b>를 선택합니다.</p>
+                </li></ol>
+            <p>CloudFormation에 [<b>작업 세부 정보(Operation details)</b>] 대화 상자가 표시됩니다.</p>
+        </li><li>
+            <p>CloudFormation에서 드리프트 감지 작업을 완료할 때까지 기다립니다. 드리프트 감지 작업이 완료되면 CloudFormation은 스택 세트의 <b>드리프트 상태</b> 및 <b>Last drift check time(마지막 드리프트 확인 시간)</b>을 업데이트합니다. 이러한 필드는 선택한 스택 세트에 대한 <b>StackSet details</b>(스택 세트 세부 정보) 페이지의 <b>Overview</b>(개요) 탭에 나열됩니다.</p>
+            <p>드리프트 감지 작업은 스택 세트에 포함된 스택 인스턴스의 수와 스택 세트에 포함된 리소스 수에 따라 다소 시간이 걸릴 수 있습니다. 지정된 스택 세트에서 한 번에 단일 드리프트 감지 작업만 실행할 수 있습니다. CloudFormation은 정보 표시줄을 닫은 후에도 드리프트 감지 작업을 계속합니다.</p>
+        </li><li>
+            <p>스택 세트의 스택 인스턴스에 대한 드리프트 감지 결과를 검토하려면 <b>Stack instances(스택 인스턴스)</b> 탭을 선택합니다.</p>
+            <p><b>스택 이름</b> 열에는 각 스택 인스턴스와 연결된 스택의 이름이 나열되고 <b>드리프트 상태</b> 열에는 해당 스택의 드리프트 상태가 나열됩니다. 스택은 하나 이상의 리소스가 드리프트된 경우 드리프트된 것으로 간주됩니다.</p>
+        </li><li>
+            <p>특정 스택 인스턴스와 연결된 스택에 대한 드리프트 감지 결과를 검토하려면 다음을 수행합니다.</p>
+            <ol><li>
+                    <p><b>작업</b> 탭을 선택합니다.</p>
+                </li><li>
+                    <p>드리프트 감지 결과를 보려는 드리프트 작업을 선택합니다. 분할 패널에는 선택한 작업에 대한 스택 인스턴스 상태와 이유가 표시됩니다. 드리프트 작업의 경우 상태 이유 열에 스택 인스턴스의 드리프트 상태가 표시됩니다.</p>
+                </li><li>
+                    <p>드리프트 세부 정보를 보려는 스택 인스턴스를 선택하고 <b>View resource drift</b>를 선택합니다. <b>리소스 드리프트</b> 페이지의 <b>리소스 드리프트 상태</b> 테이블에서 각 스택 리소스는 드리프트 상태 및 리소스에서 드리프트 감지가 개시된 마지막 시간과 함께 나열됩니다. 각 리소스의 논리적 ID 및 물리적 ID가 표시되어 식별에 도움이 됩니다.</p>
+                </li></ol>
+        </li><li>
+            <p><b>드리프트 상태</b> 열을 사용하여 드리프트 상태에 따라 리소스를 정렬할 수 있습니다.</p>
+            <p>수정된 리소스의 세부 정보를 보려면</p>
+            <ol><li>
+                    <p>리소스를 선택한 상태에서 <b>드리프트 세부 정보 보기</b>를 선택합니다.</p>
+                    <p>CloudFormation은 해당 리소스에 대한 드리프트 세부 정보 페이지를 표시합니다. 이 페이지에는 리소스의 차이점이 나열됩니다. 또한 리소스의 예상 및 현재 속성 값이 나열됩니다.</p>
+                    <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>참고</h6></div><div class="awsdocs-note-text"><p>스택이 현재 로그인한 것과 다른 리전 및 계정에 속하는 경우 <b>드리프트 감지</b> 버튼이 비활성화되고 세부 정보를 볼 수 없습니다.</p></div></div>
+                </li></ol>
+            <div class="mediaobject">
+                 
+                    <img src="images/console-stacks-drifts-drift-details-differences-1.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                    드리프트 세부 정보 페이지의 리소스 드리프트 상태 섹션에는 드리프트 감지를 지원하는 스택의 각 리소스에 대한 드리프트 정보가 포함되어 있습니다. 세부 정보에는 드리프트 상태와 예상 및 현재 속성 값이 포함되어 있습니다.&#xA;                " style="max-width:100%" />
+                 
+                 
+            </div>
+
+        </li></ol></div><div class="procedure"><h6>AWS CLI을 사용하여 스택 세트에서 드리프트를 감지하려면</h6><p>AWS CLI를 사용하여 전체 스택의 드리프트를 감지하려면 <code class="code">aws
+                cloudformation</code> 명령을 사용합니다.</p><div class="itemizedlist">
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/detect-stack-set-drift.html">detect-stack-set-drift</a></code>는 스택의 드리프트 감지 작업을 개시합니다.</p>
+            </li><li class="listitem">
+                <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/describe-stack-set-operation.html">describe-stack-set-operation</a></code>는 스택 드리프트 감지 작업의 상태를 모니터링합니다.</p>
+            </li><li class="listitem">
+                <p>드리프트 감지 작업이 완료되면 다음 명령을 사용하여 원하는 드리프트 정보를 반환합니다.</p>
+                <div class="itemizedlist">
+                     
+                     
+                     
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/describe-stack-set.html">describe-stack-set</a></code>을 사용하여 스택 세트에서 마지막으로 <em>완료된</em> 드리프트 작업에 대한 자세한 정보를 포함하여 스택 세트에 대한 자세한 정보를 반환합니다. (진행 중인 드리프트 작업에 대한 정보는 포함되지 않습니다.)</p>
+                    </li><li class="listitem">
+                        <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-stack-instances.html">list-stack-instances</a></code>을 사용하여 각 인스턴스의 드리프트 상태 및 마지막으로 확인된 드리프트 시간을 포함하여 스택 세트에 속하는 스택 인스턴스의 목록을 반환합니다.</p>
+                    </li><li class="listitem">
+                        <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/describe-stack-instance.html">describe-stack-instance</a></code>을 사용하여 드리프트 상태 및 마지막으로 확인된 드리프트 시간을 포함하여 특정 스택 인스턴스에 대한 자세한 정보를 반환합니다.</p>
+                    </li><li class="listitem">
+                        <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-stack-instance-resource-drifts.html">list-stack-instance-resource-drifts</a></code>를 사용하여 스택 인스턴스에 있는 각 리소스의 드리프트 상태에 대한 세부 정보를 반환합니다.</p>
+                    </li><li class="listitem">
+                        <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/stack-instance-resource-drifts-summary.html">stack-instance-resource-drifts-summary</a></code>를 사용하여 스택 인스턴스의 리소스 드리프트에 대한 요약 정보를 반환합니다.</p>
+                    </li></ul></div>
+            </li></ul></div><ol><li>
+            <p><code class="code">detect-stack-set-drift</code>을 사용하여 전체 스택 세트 및 관련 스택 인스턴스에서 드리프트를 감지합니다.</p>
+            <p>다음 예제에서는 스택 세트 <code class="code">stack-set-drift-example</code>에서 드리프트 감지를 시작합니다.</p>
+
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation detect-stack-set-drift \
+    --stack-set-name stack-set-drift-example</code>
+<code class="computeroutput" copy="false"><span>{</span>
+    "OperationId": "c36e44aa-3a83-411a-b503-cb611example"
+}</code></code></pre>
+        </li><li>
+            <p>스택 드리프트 감지 작업은 오래 걸릴 수 있기 때문에 <code class="code">describe-stack-set-operation</code>를 사용하여 드리프트 감지 작업의 상태를 모니터링합니다. 이 명령은 <code class="code">detect-stack-set-drift</code> 명령에서 반환된 스택 드리프트 감지 ID를 가져옵니다.</p>
+            <p>다음 예제에서는 이전 예제의 작업 ID를 사용하여 스택 세트 드리프트 감지 작업에 대한 정보를 반환합니다. 이 예제에서는 이러한 작업이 계속 실행 중입니다. 이 스택 세트와 연결된 7개의 스택 인스턴스 중에서 스택 인스턴스 1개는 이미 드리프트된 것으로 확인되었고, 2개의 인스턴스는 동기화 중이며, 나머지 4개의 스택 인스턴스에 대한 드리프트 감지는 아직 진행 중입니다. 하나의 인스턴스가 드리프트되었으므로 스택 세트 자체의 드리프트 상태는 이제 <code class="code">DRIFTED</code>입니다.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-set-operation \
+    --stack-set-name stack-set-drift-example \
+    --operation-id c36e44aa-3a83-411a-b503-cb611example</code>
+<code class="computeroutput" copy="false">
+<span>{</span>
+    "StackSetOperation": <span>{</span>
+        "Status": "RUNNING",
+        "AdministrationRoleARN": "arn:aws:iam::123456789012:role/AWSCloudFormationStackSetAdministrationRole",
+        "OperationPreferences": <span>{</span>
+            "RegionOrder": []
+        },
+        "ExecutionRoleName": "AWSCloudFormationStackSetExecutionRole",
+        "StackSetDriftDetectionDetails": <span>{</span>
+            "DriftedStackInstancesCount": 1,
+            "TotalStackInstancesCount": 7,
+            "LastDriftCheckTimestamp": "2019-12-04T20:34:28.543Z",
+            "InSyncStackInstancesCount": 2,
+            "InProgressStackInstancesCount": 4,
+            "DriftStatus": "DRIFTED",
+            "FailedStackInstancesCount": 0
+        },
+        "Action": "DETECT_DRIFT",
+        "CreationTimestamp": "2019-12-04T20:33:13.673Z",
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22example",
+        "OperationId": "c36e44aa-3a83-411a-b503-cb611example"
+    }
+}</code></code></pre>
+            <p>이 예제에서는 나중에 동일한 명령을 수행하여 일단 드리프트 감지 작업이 완료되고 나면 반환되는 정보를 보여줍니다. 이 스택 세트와 연결된 총 7개의 스택 인스턴스 중 2개가 드리프트되어 스택 세트 자체의 드리프트 상태를 <code class="code">DRIFTED</code>로 렌더링합니다.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-set-operation \
+    --stack-set-name stack-set-drift-example \
+    --operation-id c36e44aa-3a83-411a-b503-cb611example</code>
+<code class="computeroutput" copy="false">
+<span>{</span>
+    "StackSetOperation": <span>{</span>
+        "Status": "SUCCEEDED",
+        "AdministrationRoleARN": "arn:aws:iam::123456789012:role/AWSCloudFormationStackSetAdministrationRole",
+        "OperationPreferences": <span>{</span>
+            "RegionOrder": []
+        } 
+        "ExecutionRoleName": "AWSCloudFormationStackSetExecutionRole",
+        "EndTimestamp": "2019-12-04T20:37:32.829Z",
+        "StackSetDriftDetectionDetails": <span>{</span>
+            "DriftedStackInstancesCount": 2,
+            "TotalStackInstancesCount": 7,
+            "LastDriftCheckTimestamp": "2019-12-04T20:36:55.612Z",
+            "InSyncStackInstancesCount": 5,
+            "InProgressStackInstancesCount": 0,
+            "DriftStatus": "DRIFTED",
+            "FailedStackInstancesCount": 0
+        },
+        "Action": "DETECT_DRIFT",
+        "CreationTimestamp": "2019-12-04T20:33:13.673Z",
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22example",
+        "OperationId": "c36e44aa-3a83-411a-b503-cb611example"
+    }
+}</code></code></pre>
+        </li><li>
+            <p>스택 세트 드리프트 감지 작업이 완료되면 <code class="code">describe-stack-set</code>, <code class="code">list-stack-instances</code>, <code class="code">describe-stack-instance</code> 및 <code class="code">list-stack-instance-resource-drifts</code> 명령을 사용하여 결과를 검토합니다.</p>
+            <p><code class="code">describe-stack-set</code> 명령에는 <code class="code">describe-stack-set-operation</code> 명령에서 반환된 것과 동일한 상세 드리프트 정보가 포함되어 있습니다.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-set \
+    --stack-set-name stack-set-drift-example</code>
+<code class="computeroutput" copy="false"><span>{</span>
+    "StackSet": <span>{</span>
+        "Status": "ACTIVE",
+        "Description": "Demonstration of drift detection on stack sets.",
+        "Parameters": [],
+        "Tags": [
+            <span>{</span>
+                "Value": "Drift detection",
+                "Key": "Feature"
+            }
+        ], 
+        "ExecutionRoleName": "AWSCloudFormationStackSetExecutionRole",
+        "Capabilities": [],
+        "AdministrationRoleARN": "arn:aws:iam::123456789012:role/AWSCloudFormationStackSetAdministrationRole",
+        "StackSetDriftDetectionDetails": <span>{</span>
+            "DriftedStackInstancesCount": 2,
+            "TotalStackInstancesCount": 7,
+            "LastDriftCheckTimestamp": "2019-12-04T20:36:55.612Z",
+            "InProgressStackInstancesCount": 0,
+            "DriftStatus": "DRIFTED",
+            "DriftDetectionStatus": "COMPLETED",
+            "InSyncStackInstancesCount": 5,
+            "FailedStackInstancesCount": 0
+        },
+        "StackSetARN": "arn:aws:cloudformation:us-east-1:123456789012:stackset/stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22example",
+        "TemplateBody": [details omitted],
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22ebexample",
+        "StackSetName": "stack-set-drift-example"
+    }
+}</code></code></pre>
+            <p><code class="code">list-stack-instances</code> 명령을 사용하여 각 스택 인스턴스의 드리프트 상태를 포함하여 스택 세트와 연결된 스택 인스턴스에 대한 요약 정보를 반환할 수 있습니다.</p>
+            <p>이 예제의 예제 스택 세트에서 드리프트 상태 필터를 <code class="code">DRIFTED</code>로 설정하여 <code class="code">list-stack-instances</code>를 실행하면 드리프트 상태가 <code class="code">DRIFTED</code>인 두 스택 인스턴스를 식별할 수 있습니다.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation list-stack-instances \
+    --stack-set-name stack-set-drift-example \
+    --filters Name=DRIFT_STATUS,Values=DRIFTED</code>
+<code class="computeroutput" copy="false"><span>{</span>
+"Summaries": [
+        <span>{</span>
+"StackId": "arn:aws:cloudformation:eu-west-1:123456789012:stack/StackSet-stack-set-drift-example-b0fb6083-60c0-4e39-af15-2f071e0db90c/0e4f0940-16d4-11ea-93d8-0641cexample",
+            "Status": "CURRENT",
+            "Account": "012345678910",
+            "Region": "eu-west-1",
+            "LastDriftCheckTimestamp": "2019-12-04T20:37:32.687Z",
+            "DriftStatus": "DRIFTED",
+            "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22eexample
+            "LastOperationId": "c36e44aa-3a83-411a-b503-cb611example"
+        },
+        <span>{</span>
+            "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/StackSet-stack-set-drift-example-b7fde68e-e541-44c2-b33d-ef2e2988071a/008e6030-16d4-11ea-8090-12f89example",
+            "Status": "CURRENT",
+            "Account": "123456789012",
+            "Region": "us-east-1",
+            "LastDriftCheckTimestamp": "2019-12-04T20:34:28.275Z",
+            "DriftStatus": "DRIFTED",
+            "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22eexample"
+            "LastOperationId": "c36e44aa-3a83-411a-b503-cb611example"
+        },
+        
+        [additional stack instances omitted]
+ 
+    ]
+}</code></code></pre>
+            <p>또한 <code class="code">describe-stack-instance</code> 명령은 아래 예제와 같이 단일 스택 인스턴스에 대해서도 이 정보를 반환합니다.</p>
+
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-instance \
+    --stack-set-name stack-set-drift-example \
+    --stack-instance-account 012345678910 --stack-instance-region us-east-1</code>
+<code class="computeroutput" copy="false"><span>{</span>
+    "StackInstance": <span>{</span>
+        "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/StackSet-stack-set-drift-example-b7fde68e-e541-44c2-b33d-ef2e2988071a/008e6030-16d4-11ea-8090-12f89example",
+        "Status": "CURRENT",
+        "Account": "123456789012",
+        "Region": "us-east-1",
+        "ParameterOverrides": [],
+        "DriftStatus": "DRIFTED",
+        "LastDriftCheckTimestamp": "2019-12-04T20:34:28.275Z",
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22eexample"
+        "LastOperationId": "c36e44aa-3a83-411a-b503-cb611example"
+    }
+}</code></code></pre>
+        </li><li>
+            <p>어떤 스택 인스턴스가 드리프트되었는지 확인한 후에는 <code class="code">list-stack-instances</code> 또는 <code class="code">describe-stack-instance</code> 명령에 의해 반환되는 스택 인스턴스에 대한 정보를 사용하여 <a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-stack-instance-resource-drifts.html">list-stack-instance-resource-drifts</a>를 실행할 수 있습니다. 이 명령은 특정 드리프트 작업에서 스택의 어떤 리소스가 드리프트되었는지에 대한 자세한 정보를 반환합니다.</p>
+            <p>다음 예제에서는 <code class="code">stack-instance-resource-drift-statuses</code> 파라미터를 사용하여 이전 드리프트 작업 예제에서 수정 또는 삭제된 리소스에 대한 스택 드리프트 정보를 요청합니다. 요청을 통해 수정된 리소스에 대한 정보가 반환되며, 여기에는 두 속성과 변경된 값에 대한 세부 정보가 포함됩니다. 삭제된 리소스가 없었습니다.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation list-stack-instance-resource-drifts \
+    --stack-set-name my-stack-set-with-resource-drift \
+    --stack-instance-account 123456789012 \
+    --stack-instance-region us-east-1 \
+    --operation-id c36e44aa-3a83-411a-b503-cb611example \
+    --stack-instance-resource-drift-statuses MODIFIED DELETED</code>
+
+<code class="computeroutput" copy="false"><span>{</span>
+    "Summaries": [
+        <span>{</span>
+            "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/my-stack-set-with-resource-drift/489e5570-df85-11e7-a7d9-50example",
+            "ResourceType": "AWS::SQS::Queue",
+            "Timestamp": "2018-03-26T17:23:34.489Z",
+            "PhysicalResourceId": "https://sqs.us-east-1.amazonaws.com/123456789012/my-stack-with-resource-drift-Queue-494PBHCO76H4",
+            "StackResourceDriftStatus": "MODIFIED",
+            "PropertyDifferences": [
+                <span>{</span>
+                    "PropertyPath": "/DelaySeconds",
+                    "ActualValue": "120",
+                    "ExpectedValue": "20",
+                    "DifferenceType": "NOT_EQUAL"
+                },
+                <span>{</span>
+                    "PropertyPath": "/RedrivePolicy/maxReceiveCount",
+                    "ActualValue": "12",
+                    "ExpectedValue": "10",
+                    "DifferenceType": "NOT_EQUAL"
+                }
+            ],
+            "LogicalResourceId": "Queue"
+        }
+    ]
+}</code></code></pre>
+        </li></ol></div>
+        <h2 id="stacksets-drift-stop">스택 세트에서 드리프트 감지 중지</h2>
+        <p>스택 세트에서의 드리프트 감지는 시간이 오래 걸릴 수 있으므로 스택 세트에서 현재 실행 중인 드리프트 감지 작업을 중지하려는 경우가 있을 수 있습니다.</p>
+        <div class="procedure"><h6>AWS Management Console를 사용하여 스택 세트에서 드리프트 감지를 중지하려면</h6><ol><li><p>AWS CloudFormation 콘솔(<a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>)을 엽니다.</p></li><li>
+                <p><b>스택 세트</b> 페이지에서 스택 세트의 이름을 선택합니다.</p>
+                <p>CloudFormation에는 선택한 스택 세트에 대한 [<b>스택 세트 세부 정보(StackSets details)</b>] 페이지가 표시됩니다.</p>
+            </li><li>
+                <p><b>StackSets details(스택 세트 세부 정보)</b> 페이지에서 <b>작업</b> 탭을 선택한 다음, 드리프트 감지 작업을 선택합니다.</p>
+            </li><li>
+                <p><b>Stop operation(중지 작업)</b>을 선택합니다.</p>
+            </li></ol></div>
+        <div class="procedure"><h6>AWS CLI를 사용하여 스택 세트에서 드리프트 감지를 중지하려면</h6><ul><li>
+                <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/stop-stack-set-operation.html">stop-stack-set-operation</a></code> 명령을 사용합니다. 드리프트 감지 스택 세트 작업의 스택 세트 이름과 작업 ID를 모두 제공해야 합니다.</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation stop-stack-set-operation \
+    --stack-set-name stack-set-drift-example \
+    --operation-id 624af370-311a-11e8-b6b7-500cexample</code></code></pre>
+            </li></ul></div>
+    <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="주의" /> <strong>javascript가 브라우저에서 비활성화되거나 사용이 불가합니다.</strong></p><p>AWS 설명서를 사용하려면 Javascript가 활성화되어야 합니다. 지침을 보려면 브라우저의 도움말 페이지를 참조하십시오.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">문서 규칙</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./stacksets-account-gating.html">대상 계정 게이트</div><div id="next" class="next-link" accesskey="n" href="./stacksets-import.html">스택 세트로 스택 가져오기</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 예</div><div class="content"><p>칭찬해 주셔서 감사합니다!</p><p>잠깐 시간을 내어 좋았던 부분을 알려 주시면 더 열심히 만들어 보겠습니다.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">이 페이지의 내용이 도움이 되었습니까? - 아니요</div><div class="content"><p>이 페이지에 작업이 필요하다는 점을 알려 주셔서 감사합니다. 실망시켜 드려 죄송합니다.</p><p>잠깐 시간을 내어 설명서를 향상시킬 수 있는 방법에 대해 말씀해 주십시오.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="feedback-tell-us" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
