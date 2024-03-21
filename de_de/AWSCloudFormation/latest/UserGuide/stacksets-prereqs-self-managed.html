@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="de-DE"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Selbstverwaltete Berechtigungen erteilen - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="stacksets-prereqs-self-managed" /><meta name="default_state" content="stacksets-prereqs-self-managed" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" /><meta name="description" content="Mit selbstverwalteten Berechtigungen erstellen Sie die AWS Identity and Access Management (IAM)-Rollen, die von StackSets für die Bereitstellung über Konten und hinweg benötigt werden AWS-Regionen. Diese Rollen sind erforderlich, um eine vertrauenswürdige Beziehung zwischen dem Konto, von dem aus Sie das Stack-Set verwalten, und dem Konto, für das Sie Stack-Instances bereitstellen, herzustellen. Mit diesem Berechtigungsmodell StackSets kann für jede bereitgestellt werden, AWS-Konto in der Sie über Berechtigungen zum Erstellen einer IAM-Rolle verfügen." /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="Leitfaden" /><meta name="abstract" content="Erstellen und verwalten Sie AWS Infrastrukturbereitstellungen vorhersehbar und wiederholt mithilfe von AWS CloudFormation mit diesem Benutzerhandbuch." /><meta name="guide-locale" content="de_de" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="Leitfaden" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="Leitfaden" /><meta id="panorama-serviceConsolePage" value="Selbstverwaltete Berechtigungen erteilen" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Selbstverwaltete Berechtigungen erteilen - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,Ressourcenbereitstellung,Ressourcenkonfiguration,Infrastrukturverwaltung,CloudFormer,CloudFormation -Stack,CloudFormation Stackset,CloudFormation -Vorlage,Änderungssatz" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Leitfaden",
+        "item" : "https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Arbeiten mit AWS CloudFormation StackSets",
+        "item" : "https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Voraussetzungen für Stack-Set-Operationen",
+        "item" : "https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-prereqs.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Selbstverwaltete Berechtigungen erteilen",
+        "item" : "https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-prereqs.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Dokumentation</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">Leitfaden</a></div><div id="page-toc-src"><a href="#prereqs-self-managed-permissions">Selbstverwaltete Berechtigungen</a><a href="#stacksets-prereqs-accountsetup">Einrichten von grundlegenden Berechtigungen für Operationen für Stack-Sets</a><a href="#stacksets-prereqs-advanced-perms">Einrichten von erweiterten Berechtigungsoptionen für Operationen für Stack-Sets</a><a href="#confused-deputy-mitigation">Confused-Deputy-Prävention</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Die vorliegende Übersetzung wurde maschinell erstellt. Im Falle eines Konflikts oder eines Widerspruchs zwischen dieser übersetzten Fassung und der englischen Fassung (einschließlich infolge von Verzögerungen bei der Übersetzung) ist die englische Fassung maßgeblich.</p></awsui-alert><h1 class="topictitle" id="stacksets-prereqs-self-managed">Selbstverwaltete Berechtigungen erteilen</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Mit selbstverwalteten Berechtigungen erstellen Sie die AWS Identity and Access Management (IAM)-Rollen, die von  StackSets für die Bereitstellung über Konten und hinweg benötigt werden AWS-Regionen. Diese Rollen sind erforderlich, um eine vertrauenswürdige Beziehung zwischen dem Konto, von dem aus Sie das Stack-Set verwalten, und dem Konto, für das Sie Stack-Instances bereitstellen, herzustellen. Mit diesem Berechtigungsmodell  StackSets kann für jede bereitgestellt werden, AWS-Konto in der Sie über Berechtigungen zum Erstellen einer IAM-Rolle verfügen.</p><div class="highlights" id="inline-topiclist"><h6>Themen</h6><ul><li><a href="#prereqs-self-managed-permissions">Selbstverwaltete Berechtigungen</a></li><li><a href="#stacksets-prereqs-accountsetup">Einrichten von grundlegenden Berechtigungen für Operationen für Stack-Sets</a></li><li><a href="#stacksets-prereqs-advanced-perms">Einrichten von erweiterten Berechtigungsoptionen für Operationen für Stack-Sets</a></li><li><a href="#confused-deputy-mitigation">Richten Sie globale Schlüssel ein, um Confused-Deputy-Probleme zu mindern.</a></li></ul></div>
+            <h2 id="prereqs-self-managed-permissions">Selbstverwaltete Berechtigungen</h2>
+            <p>Informationen zum Einrichten der erforderlichen Berechtigungen zum Erstellen eines <b>serviceverwalteten</b> Stack-Sets finden Sie unter <a href="./stacksets-orgs-activate-trusted-access.html">Aktivieren des vertrauenswürdigen Zugriffs mit AWS Organizations</a>.</p>
+            <p>Bevor Sie ein Stack-Set mit <b>selbstverwaltet</b> Berechtigungen erstellen, müssen Sie eine Vertrauensbeziehung zwischen dem Administrator und den Zielkonten herstellen, indem Sie IAM-Rollen in jedem Konto erstellen.</p>
+            <div class="orderedlist">
+                 
+                 
+                 
+            <ol><li>
+                    <p>Bestimmen Sie, welches AWS Konto das <em>Administratorkonto</em> ist.</p>
+                    <p>Stack-Sets werden in diesem Administratorkonto erstellt. Ein <em>Zielkonto</em> ist das Konto, in dem Sie einzelne Stacks erstellen, die einem Stack-Set angehören.</p>
+                </li><li>
+                    <p>Legen Sie fest, wie Sie Berechtigungen für die Stack-Sets strukturieren möchten:</p>
+                    <p>Die einfachste (und umfangreichste) Berechtigungskonfiguration sieht vor, dass Sie <em>allen</em> Benutzern und Gruppen im Administratorkonto die Möglichkeit zum Erstellen und Aktualisieren <em>sämtlicher</em> Stack-Sets einräumen, die über dieses Konto verwaltet werden. Wenn Sie eine feinere Kontrolle benötigen, können Sie Berechtigungen einrichten, die Folgendes angeben:</p>
+                    <div class="itemizedlist">
+                         
+                         
+                         
+                    <ul class="itemizedlist"><li class="listitem">
+                            <p>Welche Benutzer und Gruppen Stack-Set-Operationen in welchen Zielkonten erstellen können</p>
+                        </li><li class="listitem">
+                            <p>Welche Ressourcen Benutzer und Gruppen in ihre Stack-Sets einschließen können</p>
+                        </li><li class="listitem">
+                            <p>Welche Stack-Set-Operationen bestimmte Benutzer und Gruppen ausführen können</p>
+                        </li></ul></div>
+                </li><li>
+                    <p>Erstellen Sie die erforderlichen IAM-Servicerollen in Ihrem Administrator- und Ziel-Konto, um die gewünschten Berechtigungen zu definieren.</p>
+                </li></ol></div>
+         
+            <h2 id="stacksets-prereqs-accountsetup">Einrichten von grundlegenden Berechtigungen für Operationen für Stack-Sets</h2>
+            <p>Die einfachste (und umfangreichste) Berechtigungskonfiguration sieht vor, dass Sie <em>allen</em> Benutzern und Gruppen im Administratorkonto die Möglichkeit zum Erstellen und Aktualisieren <em>sämtlicher</em> Stack-Sets einräumen, die über dieses Konto verwaltet werden. Dazu erstellen Sie IAM-Servicerollen für Ihr Administratorkonto sowie alle Zielkonten. Jeder Benutzer mit Berechtigungen für das Administratorkonto verfügt dann über Berechtigungen zum Erstellen, Aktualisieren oder Löschen von beliebigen Stacks in einem der Zielkonten.</p>
+            <p>Sie müssen für das Administratorkonto und die Zielkonten Servicerollen konfigurieren, die eine Vertrauensstellung zwischen den Konten erstellen, und den Zielkonten muss die Berechtigung zum Erstellen und Verwalten der in Ihrer Vorlage beschriebenen Ressourcen gewährt werden.</p>
+            <p>Wenn Sie Ihre Berechtigungen so strukturieren, übergeben Benutzer beim Erstellen oder Aktualisieren von Stack-Sets keine Administratorrolle.</p>
+            <div class="mediaobject">
+                 
+                    <img src="images/stacksets_perms_master_target.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                    Richten Sie eine Vertrauensstellung zwischen dem Administratorkonto und den Zielkonten ein. Alle Benutzer im Administratorkonto können daraufhin beliebige Stack-Sets erstellen.&#xA;                " style="max-width:100%" />
+                 
+                 
+            </div>
+            <div class="procedure"><h6>Einrichten von Berechtigungen für alle Benutzer des Administratorkontos zum Ausführen von Stack-Set-Operationen in allen Zielkonten</h6><ol><li>
+                    <p>Erstellen Sie im Administratorkonto eine IAM-Rolle mit dem Namen <b>AWSCloudFormationStackSetAdministrationRole</b>. Erstellen Sie dazu einen Stack aus der folgenden AWS CloudFormation Vorlage, der online unter <a href="https://s3.amazonaws.com/cloudformation-stackset-sample-templates-us-east-1/AWSCloudFormationStackSetAdministrationRole.yml" rel="noopener noreferrer" target="_blank"><span>https://s3.amazonaws.com/cloudformation-stackset-sample-templates-us-east-1/AWSCloudFormationStackSetAdministrationRole.yml verfügbar ist</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>. Die mit dieser Vorlage erstellte Rolle aktiviert die folgende Richtlinie in Ihrem Administratorkonto.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17",
+  "Statement": [
+    <span>{</span>
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::*:role/AWSCloudFormationStackSetExecutionRole"
+      ],
+      "Effect": "Allow"
+    }
+  ]
+}</code></pre>
+                    <p>Die folgende Vertrauensbeziehung wird durch vorherige Vorlage erstellt.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17",
+  "Statement": [
+    <span>{</span>
+      "Effect": "Allow",
+      "Principal": <span>{</span>
+        "Service": "cloudformation.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}</code></pre>
+                    <p>Wenn Sie Stack-Instances in einem Zielkonto bereitstellen möchten, das sich in einer standardmäßig deaktivierten Region befindet, gilt es zu beachten, dass Sie auch den regionalen Service-Prinzipal für diese Region einschließen müssen. Jede standardmäßig deaktivierte Region verfügt über einen eigenen regionalen Service-Prinzipal.</p>
+                    <p>Weitere Informationen zu regionalen Endpunkten, einschließlich einer Liste von Endpunkten, finden Sie unter <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints">Regionale Endpunkte</a> im <em>allgemeinenAWS -Referenzhandbuch</em>.</p>
+                    <p>Das folgende Beispiel enthält den regionalen Service-Prinzipal (<code class="code">cloudformation.ap-east-1.amazonaws.com</code>) für die Region Asien-Pazifik (Hongkong), eine Region, die standardmäßig deaktiviert ist.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17",
+  "Statement": [
+    <span>{</span>
+      "Effect": "Allow",
+      "Principal": <span>{</span>
+        "Service": [
+            "cloudformation.amazonaws.com",
+            "cloudformation.ap-east-1.amazonaws.com"
+         ]
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}</code></pre>
+                    <p>Weitere Informationen finden Sie unter <a href="./stacksets-prereqs.html#stacksets-opt-in-regions">Durchführen von Stack-Set-Operationen mit Regionen, die standardmäßig deaktiviert sind</a>.</p>
+                </li><li>
+                    <p>Erstellen Sie in jedem Zielkonto eine Servicerolle mit dem Namen , <b>AWSCloudFormationStackSetExecutionRole</b> die dem Administratorkonto vertraut. Die Rolle muss genau diesen Namen haben. Erstellen Sie dazu einen Stack aus der folgenden AWS CloudFormation Vorlage, der online unter <a href="https://s3.amazonaws.com/cloudformation-stackset-sample-templates-us-east-1/AWSCloudFormationStackSetExecutionRole.yml" rel="noopener noreferrer" target="_blank"><span>https://s3.amazonaws.com/cloudformation-stackset-sample-templates-us-east-1/AWSCloudFormationStackSetExecutionRole.yml verfügbar ist</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>. Wenn Sie diese Vorlage verwenden, werden Sie aufgefordert, den Namen des Administratorkontos anzugeben, mit dem das Zielkonto eine Vertrauensbeziehung unterhalten muss.</p>
+                    <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>Wichtig</h6></div><div class="awsdocs-note-text"><p>Beachten Sie, dass diese Vorlage Administratorzugriff gewährt. Nachdem Sie die Vorlage verwendet haben, um eine Ausführungsrolle für das Zielkonto zu erstellen, müssen Sie die Berechtigungen in der Richtlinienanweisung auf die Typen von Ressourcen beschränken, die Sie mithilfe von erstellen StackSets.</p></div></div>
+                    <p>Die Servicerolle des Zielkontos benötigt Berechtigungen, um alle Vorgänge auszuführen, die in Ihrer AWS CloudFormation Vorlage angegeben sind. Wenn Ihre Vorlage beispielsweise einen S3-Bucket erstellt, benötigen Sie Berechtigungen zum Erstellen neuer Objekte für S3. Ihr Zielkonto benötigt immer vollständige AWS CloudFormation Berechtigungen, einschließlich Berechtigungen zum Erstellen, Aktualisieren, Löschen und Beschreiben von Stacks. Die mit dieser Vorlage erstellte Rolle aktiviert die folgende Richtlinie in einem Zielkonto.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17",
+  "Statement": [
+    <span>{</span>
+      "Effect": "Allow",
+      "Action": "*",
+      "Resource": "*"
+    }
+  ]
+}</code></pre>
+                    <p>Sie müssen die S3-Serviceaktion und Ressourcen zur <code class="code">AWSCloudFormationStackSetExecutionRole</code> Richtlinienanweisung für jedes Zielkonto hinzufügen,  StackSets damit funktioniert.  StackSets verwendet diese Berechtigungen, um den Status der Stack-Instance in den Zielkonten und im Administratorkonto zu benachrichtigen.</p>
+                    <p>Um Stacks in Zielkonten zu erstellen, die Ressourcen von anderen Services als verwenden CloudFormation, müssen Sie diese Serviceaktionen und Ressourcen der <code class="code">AWSCloudFormationStackSetExecutionRole</code> Richtlinienanweisung für jedes Zielkonto hinzufügen. Das folgende Beispiel zeigt eine Richtlinienanweisung mit den erforderlichen Berechtigungen für  StackSets.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17",
+  "Statement": [
+    <span>{</span>
+      "Effect": "Allow",
+      "Action": [
+         "cloudformation:*",
+         "s3:*"
+      ],
+      "Resource": "*"
+    }
+  ]
+}</code></pre>
+                    <p>Die folgende Vertrauensbeziehung wird durch die Vorlage erstellt. Die ID des Administratorkontos wird als <code class="replaceable">admin_account_id</code> angezeigt.</p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17",
+  "Statement": [
+    <span>{</span>
+      "Effect": "Allow",
+      "Principal": <span>{</span>
+        "AWS": "arn:aws:iam::<code class="replaceable">admin_account_id</code>:root"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}</code></pre>
+                    <p>Sie können die Vertrauensbeziehung einer vorhandenen Ausführungsrolle für ein Zielkonto so konfigurieren, dass sie einer bestimmten Rolle im Administratorkonto vertraut. Wenn Sie die Rolle im Administratorkonto löschen und eine neue als Ersatz erstellen, müssen Sie die Vertrauensbeziehungen des Zielkontos mit der neuen Administratorkontorolle konfigurieren, die im vorhergehenden Beispiel durch <code class="replaceable">admin_account_id</code> angegeben wurde.</p>
+                </li></ol></div>
+         
+            <h2 id="stacksets-prereqs-advanced-perms">Einrichten von erweiterten Berechtigungsoptionen für Operationen für Stack-Sets</h2>
+            <p>Sollten Sie eine detailliertere Kontrolle über die Stack-Sets, die von Benutzern und Gruppen über ein einziges Administratorkonto erstellt werden, benötigen, können Sie IAM-Rollen verwenden, um Folgendes anzugeben:</p>
+            <div class="itemizedlist">
+                 
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem">
+                    <p>Welche Benutzer und Gruppen Stack-Set-Operationen in welchen Zielkonten erstellen können</p>
+                </li><li class="listitem">
+                    <p>Welche Ressourcen Benutzer und Gruppen in ihre Stack-Sets einschließen können</p>
+                </li><li class="listitem">
+                    <p>Welche Stack-Set-Operationen bestimmte Benutzer und Gruppen ausführen können</p>
+                </li></ul></div>
+             
+                <h3 id="stacksets-prereqs-multiadmin">Einrichten von Berechtigungen zum Kontrollieren des Zugriffs auf das Zielkonto</h3>
+                <p>Verwenden Sie benutzerdefinierte Administratorrollen, um zu steuern, welche Benutzer und Gruppen Stack-Set-Operationen in bestimmten Zielkonten vornehmen können. Sie können steuern, welche Benutzer des Administratorkontos Stack-Set-Operationen in bestimmten Zielkonten ausführen können. Dazu erstellen Sie eine Vertrauensstellung zwischen jedem Zielkonto und einer bestimmten benutzerdefinierten Verwaltungsrolle, anstatt die <b>AWSCloudFormationStackSetAdministrationRole</b> Servicerolle im Administratorkonto selbst zu erstellen. Dann erteilen Sie bestimmten Benutzern und Gruppen die Berechtigung, die benutzerdefinierte Administratorrolle beim Ausführen von Stack-Set-Vorgängen in einem bestimmten Zielkonto zu verwenden.</p>
+                <p>Sie können beispielsweise in Ihrem Administratorkonto die Rollen A und B erstellen. Rolle A erhält die Berechtigung zum Zugriff auf Zielkonto 1 über Konto 8. Rolle B erhält die Berechtigung zum Zugriff auf Zielkonto 9 über Konto 16.</p>
+                <div class="mediaobject">
+                     
+                        <img src="images/stacksets_perms_admin_target.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                         Richten Sie eine Vertrauensstellung zwischen einer benutzerdefinierten Administratorrolle und den Zielkonten ein. Der Benutzer übergibt diese Rolle dann beim Erstellen des Stack-Sets.&#xA;                    " style="max-width:100%" />
+                     
+                     
+                </div>
+                <p>Für das Einrichten der erforderlichen Berechtigungen müssen Sie eine benutzerdefinierte Administratorrolle definieren, eine Servicerolle für das Zielkonto erstellen und Benutzern die Berechtigung zum Übergeben der benutzerdefinierten Administratorrolle beim Ausführen von Stack-Set-Operationen gewähren.</p>
+                <p>Allgemeine Vorgangsweise nach Einrichten der erforderlichen Berechtigungen: Der Benutzer muss beim Erstellen eines Stack-Sets einen benutzerdefinierten Administrator angeben. Der Benutzer benötigt die Berechtigung zum Übergeben der Rolle an AWS CloudFormation. Darüber hinaus muss die benutzerdefinierte Administratorrolle über eine Vertrauensstellung zu den für das Stack-Set angegebenen Zielkonten verfügen. AWS CloudFormation erstellt das Stack-Set und ordnet ihm die benutzerdefinierte Administratorrolle zu. Wenn Sie ein Stack-Set aktualisieren, muss der Benutzer explizit eine benutzerdefinierte Administratorrolle angeben, auch wenn es sich um die gleiche benutzerdefinierte Administratorrolle handelt, die zuvor bereits mit diesem Stack-Set verwendet wurde. AWS CloudFormation verwendet diese Rolle, um den Stack zu aktualisieren, vorbehaltlich der oben genannten Anforderungen.</p>
+                <div class="procedure"><h6>Einrichten von Berechtigungen, mit denen Benutzer und Gruppen Stack-Set-Operationen in bestimmten Zielkonten erstellen können</h6><ol><li>
+                        <p>Erstellen Sie für jedes Stack-Set eine benutzerdefinierte Administratorrolle mit Berechtigungen zum Übernehmen der <b>AWSCloudFormationStackSetExecutionRole</b> Servicerolle in den Zielkonten.</p>
+                        <p>Erstellen Sie eine <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-service.html">IAM-Servicerolle</a> mit einem benutzerdefinierten Namen unter Verwendung der folgenden Berechtigungsrichtlinie:</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17",
+  "Statement": [
+    <span>{</span>
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::<code class="replaceable">target_account_id</code>:role/AWSCloudFormationStackSetExecutionRole"
+      ],
+      "Effect": "Allow"
+    }
+  ]
+}</code></pre>
+                        <p>Falls Sie alle Zielkonten angeben möchten, verwenden Sie stattdessen die folgende Berechtigungsrichtlinie:</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17",
+  "Statement": [
+    <span>{</span>
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::<code class="replaceable">*</code>:role/AWSCloudFormationStackSetExecutionRole"
+      ],
+      "Effect": "Allow"
+    }
+  ]
+}</code></pre>
+                        <p>Beim Erstellen der Rolle müssen Sie die folgende Vertrauensrichtlinie bereitstellen, um die Vertrauensstellung zu definieren:</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span> 
+  "Version": "2012-10-17", 
+  "Statement": [ 
+    <span>{</span> 
+      "Effect": "Allow", 
+      "Principal": <span>{</span> 
+        "Service": "cloudformation.amazonaws.com" 
+      }, 
+      "Action": "sts:AssumeRole" 
+    } 
+  ] 
+}</code></pre>
+                        <p>Wenn Sie Stack-Instances in einem Zielkonto bereitstellen möchten, das sich in einer standardmäßig deaktivierten Region befindet, gilt es zu beachten, dass Sie auch den regionalen Service-Prinzipal für diese Region einschließen müssen. Jede standardmäßig nicht verfügbare Region verfügt über einen eigenen regionalen Service-Prinzipal.</p>
+                        <p>Weitere Informationen zu regionalen Endpunkten, einschließlich einer Liste von Endpunkten, finden Sie unter <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints">Regionale Endpunkte</a> im <em>allgemeinenAWS -Referenzhandbuch</em>.</p>
+                        <p>Das folgende Beispiel enthält den regionalen Service-Prinzipal (<code class="code">cloudformation.ap-east-1.amazonaws.com</code>) für die Region Asien-Pazifik (Hongkong), eine Region, die standardmäßig deaktiviert ist.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17",
+  "Statement": [
+    <span>{</span>
+      "Effect": "Allow",
+      "Principal": <span>{</span>
+        "Service": [
+            "cloudformation.amazonaws.com",
+            "cloudformation.ap-east-1.amazonaws.com"
+         ]
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}</code></pre>
+                        <p>Weitere Informationen finden Sie unter <a href="./stacksets-prereqs.html#stacksets-opt-in-regions">Durchführen von Stack-Set-Operationen mit Regionen, die standardmäßig deaktiviert sind</a>.</p>
+                    </li><li>
+                        <p>Erstellen Sie in jedem Zielkonto eine Servicerolle mit dem Namen <b>AWSCloudFormationStackSetExecutionRole</b>, die der benutzerdefinierten Verwaltungsrolle vertraut, die Sie mit diesem Konto verwenden möchten.</p>
+                        <div class="awsdocs-note awsdocs-important"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>Wichtig</h6></div><div class="awsdocs-note-text"><p>Sie müssen die Berechtigungen in der Richtlinienanweisung auf die Ressourcentypen beschränken, die Sie mithilfe von erstellen StackSets.</p></div></div>
+                        <p>Die Servicerolle des Zielkontos benötigt Berechtigungen, um alle Vorgänge auszuführen, die in Ihrer AWS CloudFormation Vorlage angegeben sind. Wenn Ihre Vorlage beispielsweise einen S3-Bucket erstellt, benötigen Sie Berechtigungen zum Erstellen neuer Objekte in S3. Ihr Zielkonto benötigt immer vollständige AWS CloudFormation
+-Berechtigungen, darunter die Berechtigungen zum Erstellen, Aktualisieren, Löschen und Beschreiben von Stacks.</p>
+                        <p>Das folgende Beispiel zeigt eine Richtlinienanweisung mit den <em>Mindestberechtigungen</em> für  StackSets . Um Stacks in Zielkonten zu erstellen, die Ressourcen von anderen Services als verwenden AWS CloudFormation, müssen Sie diese Serviceaktionen und Ressourcen der <b>AWSCloudFormationStackSetExecutionRole</b> Berechtigungsrichtlinienanweisung für jedes Zielkonto hinzufügen.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17",
+  "Statement": [
+    <span>{</span>
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:*",
+        "s3:*"
+      ],
+      "Resource": "*"
+    }
+  ]
+}</code></pre>
+                        <p>Beim Erstellen der Rolle müssen Sie die folgende Vertrauensrichtlinie bereitstellen, um die Vertrauensstellung zu definieren:</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17", 
+  "Statement": [ 
+    <span>{</span> 
+      "Effect": "Allow", 
+      "Principal": <span>{</span> 
+      "AWS": "arn:aws:iam::<code class="replaceable">admin_account_id</code>:role/<code class="replaceable">customized_admin_role</code>" 
+      }, 
+      "Action": "sts:AssumeRole"
+    } 
+  ] 
+} </code></pre>
+                    </li><li>
+                        <p>Gewähren Sie Benutzern die Berechtigung, die benutzerdefinierte Administratorrolle beim Ausführen von Stack-Set-Operationen zu übergeben.</p>
+                        <p>Fügen Sie Benutzern oder Gruppen IAM-Richtlinien an, die es ihnen ermöglichen, die passende benutzerdefinierte Administratorrolle beim Erstellen oder Aktualisieren von bestimmten Stack-Sets zu übergeben. Weitere Informationen finden Sie unter <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html">Erteilen von Berechtigungen, mit denen ein Benutzer eine Rolle an einen - AWS Service übergeben</a> kann. Im Beispiel unten bezieht sich <code class="replaceable">customized_admin_role</code> auf die Administratorrolle, die Benutzer übergeben müssen.</p>
+
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17",
+  "Statement": [
+    <span>{</span>
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetRole",
+        "iam:PassRole"
+      ],
+      "Resource": "arn:aws:iam::*:role/<code class="replaceable">customized_admin_role</code>"
+    }
+  ]
+}</code></pre>
+                    </li></ol></div>
+             
+             
+                <h3 id="stacksets-prereqs-executionrole">Einrichten von Berechtigungen zur Steuerung der Stack-Ressourcen-Aufnahme</h3>
+                <p>Verwenden Sie benutzerdefinierte Ausführungsrollen, um zu steuern, welche Stack-Ressourcen Benutzer und Gruppen in ihre Stack-Sets aufnehmen können. Sie können beispielsweise eine Gruppe einrichten, die nur Amazon S3-bezogene Ressourcen in die Stack-Sets aufnehmen können, die sie erstellen, während für ein anderes Team nur DynamoDB-Ressourcen erlaubt sind. Erstellen Sie hierzu eine Vertrauensstellung zwischen der benutzerdefinierten Administratorrolle für jede Gruppe und eine benutzerdefinierte Ausführungsrolle für jede Gruppe von Ressourcen. Die benutzerdefinierte Ausführungsrolle definiert, welche Stack-Ressourcen in Stack-Sets aufgenommen werden können. Die benutzerdefinierte Administratorrolle befindet sich im Administratorkonto, während die benutzerdefinierte Ausführungsrolle in jedem Zielkonto vorhanden ist, in dem Sie Stack-Sets mit den definierten Ressourcen erstellen möchten. Dann erteilen Sie bestimmten Benutzern und Gruppen die Berechtigung, die benutzerdefinierte Administratorrolle beim Ausführen von Stack-Set-Vorgängen zu aktivieren.</p>
+                <p>Sie können beispielsweise benutzerdefinierte Administrator Rollen A, B und C im Administratorkonto erstellen. Benutzer und Gruppen mit der Berechtigung zum Verwenden von Rolle A können Stack-Sets mit den Stack-Ressourcen erstellen, die speziell in der benutzerdefinierten Ausführungsrolle X, jedoch nicht in der Rolle Y oder Z oder einer Ressource aufgelistet sind, die nicht in einer Ausführungsrolle enthalten ist.</p>
+                <div class="mediaobject">
+                     
+                        <img src="images/stacksets_perms_admin_execution.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                         Richten Sie eine Vertrauensstellung zwischen einer benutzerdefinierten Administratorrolle und einer benutzerdefinierten Ausführungsrolle in den Zielkonten ein. Der Benutzer übergibt diese Rollen dann beim Erstellen des Stack-Sets.&#xA;                    " style="max-width:100%" />
+                     
+                     
+                </div>
+                <p>Beim Aktualisieren eines Stack-Sets muss der Benutzer explizit eine benutzerdefinierte Administratorrolle angeben, auch wenn es sich um dieselbe benutzerdefinierte Administratorrolle handelt, die zuvor mit diesem Stack-Set verwendet wurde. AWS CloudFormation führt die Aktualisierung mit der angegebenen benutzerdefinierten Administratorrolle durch, solange der Benutzer über Berechtigungen zum Ausführen von Vorgängen an diesem Stack-Set verfügt.</p>
+                <p>Entsprechend kann der Benutzer auch eine benutzerdefinierte Ausführungsrolle angeben. Wenn sie eine benutzerdefinierte Ausführungsrolle angeben, AWS CloudFormation verwendet diese Rolle, um den Stack zu aktualisieren, vorbehaltlich der oben genannten Anforderungen. Wenn der Benutzer keine benutzerdefinierte Ausführungsrolle angibt, AWS CloudFormation führt die Aktualisierung mit der benutzerdefinierten Ausführungsrolle durch, die zuvor dem Stack-Set zugeordnet war, solange der Benutzer über Berechtigungen zum Ausführen von Operationen für dieses Stack-Set verfügt.</p>
+                <div class="procedure"><h6>Einrichten von Berechtigungen, mit denen Benutzer und Gruppen Ressourcen in bestimmte Stack-Sets aufnehmen können</h6><ol><li>
+                        <p>Erstellen Sie in den Zielkonten, in denen Sie Ihre Stack-Sets erstellen möchten, eine benutzerdefinierte Ausführungsrolle, die Berechtigungen für die Services und Ressourcen erteilt, die Benutzer und Gruppen in den Stack-Sets aufnehmen dürfen.</p>
+                        <p>Das folgende Beispiel gibt die Mindestberechtigungen für Stack-Sets sowie die Berechtigung zum Erstellen von Amazon-DynamoDB-Tabellen an.</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17",
+  "Statement": [
+    <span>{</span>
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:*",
+        "s3:*",
+      ],
+      "Resource": "*"
+    },
+    <span>{</span>
+      "Effect": "Allow",
+      "Action": [
+        "dynamoDb:createTable"
+      ],
+      "Resource": "*"
+    }
+  ]
+}</code></pre>
+                        <p>Beim Erstellen der Rolle müssen Sie die folgende Vertrauensrichtlinie bereitstellen, um die Vertrauensstellung zu definieren:</p>
+                        <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17", 
+  "Statement": [ 
+    <span>{</span> 
+      "Effect": "Allow", 
+      "Principal": <span>{</span> 
+      "AWS": "arn:aws:iam::<code class="replaceable">admin_account_id</code>:role/<code class="replaceable">customized_admin_role</code>" 
+      }, 
+      "Action": "sts:AssumeRole"
+    } 
+  ] 
+} </code></pre>
+                    </li><li>
+                        <p>Erstellen Sie eine benutzerdefinierte Administratorrolle in Ihrem Administratorkonto, wie unter <a href="#stacksets-prereqs-multiadmin">Einrichten von Berechtigungen zum Kontrollieren des Zugriffs auf das Zielkonto</a> ausführlich beschrieben. Nehmen Sie eine Vertrauensstellung zwischen der benutzerdefinierten Administratorrolle und der benutzerdefinierten Ausführungsrolle auf, die verwendet werden sollen.</p>
+                        <p>Das folgende Beispiel enthält eine -<code class="code">sts::AssumeRole</code>Richtlinie für sowohl für das für das Zielkonto <b>AWSCloudFormationStackSetExecutionRole</b> definierte als auch für eine benutzerdefinierte Ausführungsrolle.</p>
+                    </li></ol></div>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17",
+   "Statement": [
+    <span>{</span>
+      "Sid": "Stmt1487980684000",
+      "Effect": "Allow",
+      "Action": [
+        "sts:AssumeRole" 
+      ],
+      "Resource": [ 
+        "arn:aws:iam::*:role/AWSCloudFormationStackSetExecutionRole",
+        "arn:aws:iam::*:role/<code class="replaceable">custom_execution_role</code>" 
+      ]
+    } 
+  ]
+}</code></pre>
+             
+             
+                <h3 id="stacksets-prereqs-iam-actions">Einrichten von Berechtigungen für bestimmte Stack-Set-Operationen</h3>
+                <p>Darüber hinaus können Sie Berechtigungen für Benutzer und Gruppen einrichten, die bestimmte Stack-Set-Operationen durchführen können, wie z. B. das Erstellen, Aktualisieren und Löschen von Stack-Sets oder Stack-Instances. Weitere Informationen finden Sie unter <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awscloudformation.html">Aktionen, Ressourcen und Bedingungsschlüssel für AWS CloudFormation</a> im <em>IAM-Benutzerhandbuch</em>.</p>
+             
+         
+            <h2 id="confused-deputy-mitigation">Richten Sie globale Schlüssel ein, um Confused-Deputy-Probleme zu mindern.</h2>
+            <p>Das Problem des verwirrten Stellvertreters ist ein Sicherheitsproblem, bei dem eine Entität, die keine Berechtigung zur Durchführung einer Aktion hat, eine privilegiertere Entität zur Durchführung der Aktion zwingen kann. In kann ein AWSserviceübergreifender Identitätswechsel zu dem Problem des verwirrten Stellvertreters führen. Ein serviceübergreifender Identitätswechsel kann auftreten, wenn ein Service (der <em>Anruf-Service</em>) einen anderen Service anruft (den <em>aufgerufenen Service</em>). Der Anruf-Service kann so manipuliert werden, dass er seine Berechtigungen verwendet, um auf die Ressourcen eines anderen Kunden zu reagieren, auf die er sonst nicht zugreifen dürfte. Um dies zu verhindern, AWS stellt Tools bereit, mit denen Sie Ihre Daten für alle Services mit Service-Prinzipalen schützen können, die Zugriff auf Ressourcen in Ihrem Konto erhalten haben.</p>
+            <p>Wir empfehlen die Verwendung der <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-sourceaccount"><code class="code">aws:SourceAccount</code></a> globalen Bedingungskontextschlüssel <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-sourcearn"><code class="code">aws:SourceArn</code></a> und in Ressourcenrichtlinien, um die Berechtigungen, die einem anderen Service AWS CloudFormation StackSets erteilt, auf die Ressource zu beschränken. Wenn Sie beide globalen Bedingungskontextschlüssel verwenden, müssen der <code class="code">aws:SourceAccount</code>-Wert und das Konto im <code class="code">aws:SourceArn</code>-Wert dieselbe Konto-ID verwenden, wenn sie in derselben Richtlinienanweisung verwendet werden.</p>
+
+            <p>Der effektivste Weg, um sich vor dem Confused-Deputy-Problem zu schützen, ist die Verwendung des globalen Bedingungskontext-Schlüssels <code class="code">aws:SourceArn</code> mit dem vollständigen ARN der Ressource. Wenn Sie den vollständigen ARN der Ressource nicht kennen oder wenn Sie mehrere Ressourcen angeben, verwenden Sie den globalen Bedingungskontext-Schlüssel <code class="code">aws:SourceArn</code> mit Platzhaltern (<code class="code">*</code>) für die unbekannten Teile des ARN. Beispiel: <code class="code">arn:aws:<code class="replaceable">cloudformation</code>::<code class="replaceable">123456789012</code>:*</code> Verwenden Sie nach Möglichkeit <code class="code">aws:SourceArn</code>, da es spezifischer ist. Verwenden Sie <code class="code">aws:SourceAccount</code> nur wenn Sie den richtigen ARN oder das ARN-Muster nicht ermitteln können.</p>
+
+
+            <p>Wenn die <b>Administratorrolle</b> in Ihrem <b>Administratorkonto</b>  StackSets übernimmt,  StackSets füllt Ihre <b>Administratorkonto</b>-ID und den  StackSets Amazon-Ressourcennamen (ARN) aus. Sie können daher Bedingungen für die <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-sourceaccount">globalen Schlüssel</a> <code class="code">aws:SourceAccount</code> und <code class="code">aws:SourceArn</code> in den Vertrauensbeziehungen definieren, um <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html">Confused-Deputy</a>-Probleme zu vermeiden. Das folgende Beispiel zeigt, wie Sie die <code class="code">aws:SourceAccount</code> globalen Bedingungskontextschlüssel <code class="code">aws:SourceArn</code> und in verwenden können StackSets , um das Confused-Deputy-Problem zu vermeiden.</p>
+            <div class="example"><h6>Beispiel Globale Schlüssel für <code class="code">aws:SourceAccount</code> und <code class="code">aws:SourceArn</code></h6><div class="example-contents"><p>Wenn Sie verwenden StackSets, definieren Sie die globalen Schlüssel <code class="code">aws:SourceAccount</code> und <code class="code">aws:SourceArn</code> in Ihrer <code class="code">AWSCloudFormationStackSetAdministrationRole</code> Vertrauensrichtlinie, um Confused-Deputy-Probleme zu vermeiden.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17",
+  "Statement": [
+    <span>{</span>
+      "Effect": "Allow",
+      "Principal": <span>{</span>
+        "Service": "cloudformation.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole",
+      "Condition": <span>{</span>
+        "StringEquals": <span>{</span>
+          "aws:SourceAccount": "<code class="replaceable">111122223333</code>"
+        },
+        "StringLike": <span>{</span>
+          "aws:SourceArn": "arn:aws:cloudformation:*:<code class="replaceable">111122223333</code>:stackset/*"
+        }
+      }
+    }
+  ]
+}</code></pre></div></div>
+            <div class="example"><h6>Beispiel StackSets ARNs</h6><div class="example-contents"><p>Geben Sie Ihre zugehörigen  StackSets ARNs für eine feinere Kontrolle an.</p><pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Version": "2012-10-17",
+  "Statement": [
+    <span>{</span>
+      "Effect": "Allow",
+      "Principal": <span>{</span>
+        "Service": "cloudformation.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole",
+      "Condition": <span>{</span>
+        "StringEquals": <span>{</span>
+          "aws:SourceAccount": "<code class="replaceable">111122223333</code>",
+          "aws:SourceArn": [
+            "arn:aws:cloudformation:<code class="replaceable">STACKSETS-REGION</code>:<code class="replaceable">111122223333</code>:stackset/<code class="replaceable">STACK-SET-ID-1</code>",
+            "arn:aws:cloudformation:<code class="replaceable">STACKSETS-REGION</code>:<code class="replaceable">111122223333</code>:stackset/<code class="replaceable">STACK-SET-ID-2</code>",
+          ]
+        }
+      }
+    }
+  ]
+}</code></pre></div></div>
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warnung" /> <strong>JavaScript ist in Ihrem Browser nicht verfügbar oder deaktiviert.</strong></p><p>Zur Nutzung der AWS-Dokumentation muss JavaScript aktiviert sein. Weitere Informationen finden auf den Hilfe-Seiten Ihres Browsers.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Dokumentkonventionen</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./stacksets-prereqs.html">Voraussetzungen für Stack-Set-Operationen</div><div id="next" class="next-link" accesskey="n" href="./stacksets-orgs-activate-trusted-access.html">Aktivieren des vertrauenswürdigen Zugriffs mit AWS Organizations</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Hat Ihnen diese Seite geholfen? – Ja</div><div class="content"><p>Vielen Dank, dass Sie uns mitgeteilt haben, dass wir gute Arbeit geleistet haben!</p><p>Würden Sie sich einen Moment Zeit nehmen, um uns mitzuteilen, was wir richtig gemacht haben, damit wir noch besser werden?</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Hat Ihnen diese Seite geholfen? – Nein</div><div class="content"><p>Vielen Dank, dass Sie uns mitgeteilt haben, dass diese Seite überarbeitet werden muss. Es tut uns Leid, dass wir Ihnen nicht weiterhelfen konnten.</p><p>Würden Sie sich einen Moment Zeit nehmen, um uns mitzuteilen, wie wir die Dokumentation verbessern können?</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="de-DE"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Makrobeispiel: Erstellen und Verwenden eines Makros - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="macros-example" /><meta name="default_state" content="macros-example" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/macros-example.html" /><meta name="description" content="Im folgenden Beispiel werden Sie durch die Verwendung von Makros geführt – von der Definition des Makros in einer Vorlage über die Erstellung einer Lambda-Funktion für das Makro bis hin zur Verwendung des Makros in einer Vorlage." /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="Leitfaden" /><meta name="abstract" content="Erstellen und verwalten Sie AWS Infrastrukturbereitstellungen vorhersehbar und wiederholt mithilfe von AWS CloudFormation mit diesem Benutzerhandbuch." /><meta name="guide-locale" content="de_de" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/macros-example.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="Leitfaden" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="Leitfaden" /><meta id="panorama-serviceConsolePage" value="Makrobeispiel: Erstellen und Verwenden eines Makros" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Makrobeispiel: Erstellen und Verwenden eines Makros - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/macros-example.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/macros-example.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/macros-example.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,Ressourcenbereitstellung,Ressourcenkonfiguration,Infrastrukturverwaltung,CloudFormer,CloudFormation -Stack,CloudFormation Stackset,CloudFormation -Vorlage,Änderungssatz" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Leitfaden",
+        "item" : "https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "Arbeiten mit AWS CloudFormation-Vorlagen",
+        "item" : "https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/template-guide.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Verwenden von AWS CloudFormation Makros zur benutzerdefinierten Verarbeitung von Vorlagen",
+        "item" : "https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/template-macros.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "Makrobeispiel: Erstellen und Verwenden eines Makros",
+        "item" : "https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/template-macros.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">Dokumentation</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">Leitfaden</a></div><div id="page-toc-src"><a href="#macros-example-definiton">Makro-Beispiel: Makro-Definitionsvorlage </a><a href="#macros-example-usage">Makro-Beispiel: Makro-Verwendungsvorlage </a><a href="#macros-example-request">Makro-Beispiel: Ereigniszuweisung anfordern </a><a href="#macros-example-function">Makro-Beispiel: Lambda-Funktionscode</a><a href="#macros-example-response">Makro-Beispiel: Lambda-Funktionsantwort</a><a href="#macros-example-processed">Makro-Beispiel: Resultierende verarbeitete Vorlage</a><a href="#template-macros-examples-awslabs">Weitere Makro-Beispiele</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>Die vorliegende Übersetzung wurde maschinell erstellt. Im Falle eines Konflikts oder eines Widerspruchs zwischen dieser übersetzten Fassung und der englischen Fassung (einschließlich infolge von Verzögerungen bei der Übersetzung) ist die englische Fassung maßgeblich.</p></awsui-alert><h1 class="topictitle" id="macros-example">Makrobeispiel: Erstellen und Verwenden eines Makros</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>Im folgenden Beispiel werden Sie durch die Verwendung von Makros geführt – von der Definition des Makros in einer Vorlage über die Erstellung einer Lambda-Funktion für das Makro bis hin zur Verwendung des Makros in einer Vorlage.</p><p>In diesem Beispiel erstellen wir ein einfaches Makro, das die angegebene Zeichenfolge anstelle des angegebenen Zielinhalts in die verarbeitete Vorlage einfügt. Dann fügen wir damit ein leeres <code class="code">WaitHandleCondition</code> an der angegebenen Stelle in der bearbeiteten Vorlage ein.</p>
+            <h2 id="macros-example-definiton">Makro-Beispiel: Makro-Definitionsvorlage </h2>
+            <p>Bevor wir ein Makro verwenden, müssen wir zunächst zwei Dinge tun: die Lambda-Funktion erstellen, die die gewünschte Vorlagenverarbeitung durchführt, und dann diese Lambda-Funktion durch Erstellen einer Makrodefinition für CloudFormation zur Verfügung stellen.</p>
+            <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Anmerkung</h6></div><div class="awsdocs-note-text"><p>Wir werden den aktuellen Code für die Lambda-Funktion später in diesem Thema untersuchen.</p></div></div>
+            <p>Die folgende Beispielvorlage enthält die Definition für unser Beispielmakro. Um das Makro in einem bestimmten CloudFormation-Konto verfügbar zu machen, erstellen wir einen Stack aus der Vorlage. Die Makrodefinition gibt den Makronamen, eine Kurzbeschreibung und Verweise auf den ARN der Lambda-Funktion an, die CloudFormation aufruft, wenn dieses Makro in einer Vorlage verwendet wird. (Wir haben keine <b>LogGroupName</b>- oder <b>LogRoleARN</b>-Eigenschaft für die Fehlerprotokollierung aufgenommen.) Weitere Informationen finden Sie unter <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloudformation-macro.html">AWS::CloudFormation::Macro</a>.</p>
+            <p>In diesem Beispiel gehen wir davon aus, dass der aus dieser Vorlage erstellte Stack den Namen <b>JavaMacroFunc</b> trägt. Da die Makro-Eigenschaft <code class="code">Name</code> auf den Stack-Namen festgelegt ist, wird das resultierende Makro ebenfalls <b>JavaMacroFunc</b> heißen.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">AWSTemplateFormatVersion: 2010-09-09
+  Resources:
+    Macro:
+      Type: AWS::CloudFormation::Macro
+      Properties:
+        Name: <code class="replaceable">!Sub '$<span>{</span>AWS::StackName}'</code>
+        Description: <code class="replaceable">Adds a blank WaitConditionHandle named 'WaitHandle'</code>
+        FunctionName: <code class="replaceable">"arn:aws:lambda:us-east-1:012345678910:function:JavaMacroFunc"</code></code></pre>
+         
+            <h2 id="macros-example-usage">Makro-Beispiel: Makro-Verwendungsvorlage </h2>
+            <p>Um unser Makro in diesem Fall zu verwenden, werden wir es mit der intrinsischen <a href="./intrinsic-function-reference-transform.html">Fn::Transform</a>-Funktion in eine Vorlage aufnehmen.</p>
+            <p>Wenn wir einen Stack mit der untenstehenden Vorlage erstellen, ruft CloudFormation unser Beispielmakro auf. Die zugrundeliegende Lambda-Funktion ersetzt eine angegebene Zeichenfolge durch eine andere angegebene Zeichenfolge. In diesem Fall wird als Ergebnis ein leerer <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-waitconditionhandle.html">AWS::CloudFormation::WaitConditionHandle</a> in die verarbeitete Vorlage eingefügt.</p>
+            <p>Beachten Sie Folgendes:</p>
+            <div class="itemizedlist">
+                 
+                 
+                 
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem">
+                    <p>Das aufzurufende Makro wird als <b>JavaMacroFunc</b> angegeben, was dem vorherigen Beispiel für Makrodefinitionen entspricht.</p>
+                </li><li class="listitem">
+                    <p>Dem Makro werden zwei Parameter, <code class="code">target</code> und <code class="code">replacement</code>, übergeben, die die Zielzeichenfolge und ihren gewünschten Ersatzwert darstellen.</p>
+                </li><li class="listitem"><p>Das Makro kann auf den Inhalt des <code class="code">Type</code>-Knotens zugreifen, da <code class="code">Type</code> ein Geschwisterelement der <code class="code">Fn::Transform</code>-Funktion ist, das sich auf das Makro bezieht.</p></li><li class="listitem"><p>Der resultierende <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-waitconditionhandle.html">AWS::CloudFormation::WaitConditionHandle</a> heißt <code class="code">2a</code>.</p></li><li class="listitem"><p>Die Vorlage enthält auch einen Vorlagenparameter (<code class="code">ExampleParameter</code>), auf den das Makro ebenfalls Zugriff hat (in diesem Fall aber nicht verwendet wird).</p></li></ul></div>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">Parameters:
+  ExampleParameter:
+    Type: String
+    Default: 'SampleMacro'
+
+Resources:
+  2a:
+    Fn::Transform:
+      Name: "JavaMacroFunc"
+      Parameters:
+        replacement: 'AWS::CloudFormation::WaitConditionHandle'
+        target: '$$REPLACEMENT$$'
+    Type: '$$REPLACEMENT$$'</code></pre>
+         
+            <h2 id="macros-example-request">Makro-Beispiel: Ereigniszuweisung anfordern </h2>
+            <p>Wenn CloudFormation unsere Beispielvorlage während der Stack-Erstellung verarbeitet, übergibt es die folgende Ereigniszuordnung an die Lambda-Funktion, auf die in der Makrodefinition <b>JavaMacroFunc</b> verwiesen wird.</p>
+            <p><code class="code">fragment</code> enthält JSON, das das Vorlagenfragment darstellt, das das Makro verarbeiten kann. Dieses Fragment besteht aus den Geschwistern des <code class="code">Fn::Transform</code>-Funktionsaufrufs, nicht aber aus dem Funktionsaufruf selbst. Außerdem enthält <code class="code">params</code> JSON, das die Makroparameter repräsentiert. In diesem Fall Ersatz und Ziel. Ebenso enthält <code class="code">templateParameterValues</code> JSON, das die für die gesamte Vorlage angegebenen Parameter repräsentiert.</p>
+            <div class="itemizedlist">
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem"><p><code class="code">region</code></p><p><code class="code">us-east-1</code></p></li><li class="listitem"><p><code class="code">accountId</code></p><p><code class="code">012345678910</code></p></li><li class="listitem"><p><code class="code">fragment</code></p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Type": "$$REPLACEMENT$$"
+}</code></pre>
+                </li><li class="listitem"><p><code class="code">transformId</code></p><p><code class="code">012345678910::JavaMacroFunc</code></p></li><li class="listitem"><p><code class="code">params</code></p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "replacement": "AWS::CloudFormation::WaitConditionHandle",
+    "target": "$$REPLACEMENT$$"
+}</code></pre>
+                </li><li class="listitem"><p><code class="code">requestId</code></p><p><code class="code">5dba79b5-f117-4de0-9ce4-d40363bfb6ab</code></p></li><li class="listitem"><p><code class="code">templateParameterValues</code></p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "ExampleParameter": "SampleMacro"
+}</code></pre>
+                </li></ul></div>
+         
+            <h2 id="macros-example-function">Makro-Beispiel: Lambda-Funktionscode</h2>
+            <p>Es folgt der aktuelle Code für die Lambda-Funktion, die dem Beispielmakro <b>JavaMacroFunc</b> zugrundeliegt. Es durchläuft das in der Antwort enthaltene Vorlagenfragment (als Zeichenfolge, Liste oder Zuordnung) und sucht nach der angegebenen Zielzeichenfolge. Wenn die angegebene Zeichenfolge gefunden wird, ersetzt die Lambda-Funktion die Zielzeichenfolge durch die angegebene Ersatzzeichenfolge. Wenn nicht, lässt die Funktion das Vorlagenfragment unverändert. Anschließend gibt die Funktion eine Zuordnung der erwarteten Eigenschaften an CloudFormation zurück, die im Folgenden ausführlich erläutert wird.</p>
+            <div class="minimized-block" data-minimized="true"><div class="minimized-content">
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="java ">package com.macroexample.lambda.demo;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+
+public class LambdaFunctionHandler implements RequestHandler&lt;Map&lt;String, Object&gt;, Map&lt;String, Object&gt;&gt; <span>{</span>
+
+	private static final String REPLACEMENT = "replacement";
+	private static final String TARGET = "target";
+	private static final String PARAMS = "params";
+	private static final String FRAGMENT = "fragment";
+	private static final String REQUESTID = "requestId";
+	private static final String STATUS = "status";
+	private static final String SUCCESS = "SUCCESS";
+	private static final String FAILURE = "FAILURE";
+    @Override
+    public Map&lt;String, Object&gt; handleRequest(Map&lt;String, Object&gt; event, Context context) <span>{</span>
+        // TODO: implement your handler
+    	final Map&lt;String, Object&gt; responseMap = new HashMap&lt;String, Object&gt;();
+        responseMap.put(REQUESTID, event.get(REQUESTID));
+        responseMap.put(STATUS, FAILURE);
+    	try <span>{</span>
+	        if (!event.containsKey(PARAMS)) <span>{</span>
+	        	throw new RuntimeException("Params are required");
+	        }
+	    	
+	        final Map&lt;String, Object&gt; params = (Map&lt;String, Object&gt;) event.get(PARAMS);
+	        if (!params.containsKey(REPLACEMENT) || !params.containsKey(TARGET)) <span>{</span>
+	        	throw new RuntimeException("replacement or target under Params are required");
+	        }
+	    	
+	    	final String replacement = (String) params.get(REPLACEMENT);
+	    	final String target = (String) params.get(TARGET);
+	    	final Object fragment = event.getOrDefault(FRAGMENT, new HashMap&lt;String, Object&gt;());
+	    	final Object retFragment;
+	    	if (fragment instanceof String) <span>{</span>
+	    		retFragment = iterateAndReplace(replacement, target, (String) fragment);
+	    	} else if (fragment instanceof List) <span>{</span>
+	    		retFragment = iterateAndReplace(replacement, target, (List&lt;Object&gt;) fragment);
+	    	} else if (fragment instanceof Map) <span>{</span>
+	    		retFragment = iterateAndReplace(replacement, target, (Map&lt;String, Object&gt;) fragment);
+	    	} else <span>{</span>
+	    		retFragment = fragment;
+	    	}
+	        responseMap.put(STATUS, SUCCESS);
+	        responseMap.put(FRAGMENT, retFragment);
+	        return responseMap;
+    	} catch (Exception e) <span>{</span>
+    		e.printStackTrace();
+    		context.getLogger().log(e.getMessage());
+    		return responseMap;
+    	}
+    }
+    
+    private Map&lt;String, Object&gt; iterateAndReplace(final String replacement, final String target, final Map&lt;String, Object&gt; fragment) <span>{</span>
+    	final Map&lt;String, Object&gt; retFragment = new HashMap&lt;String, Object&gt;();
+    	final List&lt;String&gt; replacementKeys = new ArrayList&lt;&gt;();
+    	fragment.forEach((k, v) -&gt; <span>{</span>
+    		if (v instanceof String) <span>{</span>
+    			retFragment.put(k, iterateAndReplace(replacement, target, (String)v));
+    		} else if (v instanceof List) <span>{</span>
+    			retFragment.put(k, iterateAndReplace(replacement, target, (List&lt;Object&gt;)v));
+    		} else if (v instanceof Map ) <span>{</span>
+    			retFragment.put(k, iterateAndReplace(replacement, target, (Map&lt;String, Object&gt;) v));
+    		} else <span>{</span>
+    			retFragment.put(k, v);
+    		}
+    	});
+    	return retFragment;
+    }
+
+    private List&lt;Object&gt; iterateAndReplace(final String replacement, final String target, final List&lt;Object&gt; fragment) <span>{</span>
+    	final List&lt;Object&gt; retFragment = new ArrayList&lt;&gt;();
+    	fragment.forEach(o -&gt; <span>{</span>
+    		if (o instanceof String) <span>{</span>
+    			retFragment.add(iterateAndReplace(replacement, target, (String) o));
+    		} else if (o instanceof List) <span>{</span>
+    			retFragment.add(iterateAndReplace(replacement, target, (List&lt;Object&gt;) o));
+    		} else if (o instanceof Map) <span>{</span>
+    			retFragment.add(iterateAndReplace(replacement, target, (Map&lt;String, Object&gt;) o));
+    		} else <span>{</span>
+    			retFragment.add(o);
+    		}
+    	});
+    	return retFragment;
+    }
+    
+    private String iterateAndReplace(final String replacement, final String target, final String fragment) <span>{</span>
+    	System.out.println(replacement + " == " + target + " == " + fragment );
+    	if (fragment != null AND_AND fragment.equals(target))
+    		return replacement;
+    	return fragment;
+    }
+}</code></pre>
+            <div class="minimized-fader"></div></div><div class="show-more-btn"><a href="#"><awsui-icon class="show-more-text" variant="link" name="caret-right-filled"></awsui-icon><span class="show-more-text">Mehr anzeigen</span><awsui-icon class="show-less-text" variant="link" name="caret-up-filled"></awsui-icon><span class="show-less-text">Weniger anzeigen</span></a></div></div>
+         
+            <h2 id="macros-example-response">Makro-Beispiel: Lambda-Funktionsantwort</h2>
+            <p>Es folgt die Zuweisung, welche die Lambda-Funktion zur Verarbeitung an AWS CloudFormation zurückgibt. Die <code class="code">requestId</code> stimmt mit der von CloudFormation gesendeten überein und ein <code class="code">status</code>-Wert von <code class="code">SUCCESS</code> bedeutet, dass die Lambda-Funktion das in der Anfrage enthaltene Vorlagenfragment erfolgreich verarbeitet hat. In dieser Antwort enthält <code class="code">fragment</code> JSON, das den Inhalt darstellt, der anstelle des ursprünglichen Vorlagenausschnitts in die verarbeitete Vorlage eingefügt werden soll.</p>
+            <div class="itemizedlist">
+                 
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem"><p><code class="code">requestId</code></p><p><code class="code">5dba79b5-f117-4de0-9ce4-d40363bfb6ab</code></p></li><li class="listitem"><p><code class="code">status</code></p><p><code class="code">SUCCESS</code></p></li><li class="listitem"><p><code class="code">fragment</code></p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Type": "AWS::CloudFormation::WaitConditionHandle"
+}</code></pre>
+                </li></ul></div>
+         
+            <h2 id="macros-example-processed">Makro-Beispiel: Resultierende verarbeitete Vorlage</h2>
+            <p>Nachdem CloudFormation eine erfolgreiche Antwort von der Lambda-Funktion erhalten hat, fügt es das zurückgegebene Vorlagenfragment in die bearbeitete Vorlage ein.</p>
+            <p>Nachfolgend sehen Sie die resultierende verarbeitete Vorlage für unser Beispiel. Der intrinsische <code class="code">Fn::Transform</code>-Funktionsaufruf, der auf das Makro <b>JavaMacroFunc</b> verweist, ist nicht mehr enthalten. Das von der Lambda-Funktion zurückgegebene Vorlagenfragment wird an der entsprechenden Stelle eingefügt, sodass der Inhalt <code class="code">"Type": "$$REPLACEMENT$$"</code> durch <code class="code">"Type":
+                "AWS::CloudFormation::WaitConditionHandle"</code> ersetzt wurde.</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Kopieren"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "Parameters": <span>{</span>
+        "ExampleParameter": <span>{</span>
+            "Default": "SampleMacro",
+            "Type": "String"
+        }
+    },
+    "Resources": <span>{</span>
+        "2a": <span>{</span>
+            "Type": "AWS::CloudFormation::WaitConditionHandle"
+        }
+    }
+}</code></pre>
+         
+            <h2 id="template-macros-examples-awslabs">Weitere Makro-Beispiele</h2>
+            <p>Zusätzlich zum Walkthrough in diesem Handbuch finden Sie Beispielmakros, einschließlich Quellcode und Vorlagen, im Abschnitt <a href="https://github.com/awslabs/aws-cloudformation-templates/tree/master/aws/services/CloudFormation/MacrosExamples/" rel="noopener noreferrer" target="_blank"><span>Makro-Beispiele</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> des <a href="https://github.com/awslabs" rel="noopener noreferrer" target="_blank"><span>Amazon Web Services - Labs</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>-Repositorys auf GitHub. Diese Beispiele werden "wie besehen" für Schulungszwecke zur Verfügung gestellt.</p>
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warnung" /> <strong>JavaScript ist in Ihrem Browser nicht verfügbar oder deaktiviert.</strong></p><p>Zur Nutzung der AWS-Dokumentation muss JavaScript aktiviert sein. Weitere Informationen finden auf den Hilfe-Seiten Ihres Browsers.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Dokumentkonventionen</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./template-macros.html">Vorlagenmakros</div><div id="next" class="next-link" accesskey="n" href="./modules.html">Verwenden von Modulen</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Hat Ihnen diese Seite geholfen? – Ja</div><div class="content"><p>Vielen Dank, dass Sie uns mitgeteilt haben, dass wir gute Arbeit geleistet haben!</p><p>Würden Sie sich einen Moment Zeit nehmen, um uns mitzuteilen, was wir richtig gemacht haben, damit wir noch besser werden?</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/macros-example.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Hat Ihnen diese Seite geholfen? – Nein</div><div class="content"><p>Vielen Dank, dass Sie uns mitgeteilt haben, dass diese Seite überarbeitet werden muss. Es tut uns Leid, dass wir Ihnen nicht weiterhelfen konnten.</p><p>Würden Sie sich einen Moment Zeit nehmen, um uns mitzuteilen, wie wir die Dokumentation verbessern können?</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/macros-example.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
