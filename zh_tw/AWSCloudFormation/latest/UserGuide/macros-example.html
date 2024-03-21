@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>巨集範例：建立和使用巨集 - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="macros-example" /><meta name="default_state" content="macros-example" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/macros-example.html" /><meta name="description" content="以下範例逐步介紹如何使用巨集，包括在範本中定義巨集、為巨集建立 Lambda 函數，然後在範本中使用巨集。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="使用者指南" /><meta name="abstract" content="使 AWS CloudFormation 用本使用者指南可預測並重複地建立和管理 AWS 基礎架構部署。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/macros-example.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/macros-example.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="使用者指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="使用者指南" /><meta id="panorama-serviceConsolePage" value="巨集範例：建立和使用巨集" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>巨集範例：建立和使用巨集 - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/macros-example.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/macros-example.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/macros-example.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,資源佈建,資源組態,基礎設施管理,CloudFormer,CloudFormation 堆疊,CloudFormation 堆疊集,CloudFormation 範本,變更集合" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "使用者指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "使用 AWS CloudFormation 範本",
+        "item" : "https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/template-guide.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "使用 AWS CloudFormation 巨集對範本執行自訂處理",
+        "item" : "https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/template-macros.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "巨集範例：建立和使用巨集",
+        "item" : "https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/template-macros.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">使用者指南</a></div><div id="page-toc-src"><a href="#macros-example-definiton">巨集範例：巨集定義範本 </a><a href="#macros-example-usage">巨集範例：巨集用法範本 </a><a href="#macros-example-request">巨集範例：請求事件映射 </a><a href="#macros-example-function">巨集範例：Lambda 函數程式碼</a><a href="#macros-example-response">巨集範例：Lambda 函數回應</a><a href="#macros-example-processed">巨集範例：產生的處理過範本</a><a href="#template-macros-examples-awslabs">其他巨集範例</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="macros-example">巨集範例：建立和使用巨集</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>以下範例逐步介紹如何使用巨集，包括在範本中定義巨集、為巨集建立 Lambda 函數，然後在範本中使用巨集。</p><p>在這個範例中，我們會建立簡單巨集，在處理的範本中插入指定的字串，以取代指定的目標內容。然後，我們會使用它在處理的範本中的指定位置插入空白 <code class="code">WaitHandleCondition</code>。</p>
+            <h2 id="macros-example-definiton">巨集範例：巨集定義範本 </h2>
+            <p>使用巨集之前，我們必須先做兩件事：建立 Lambda 函數來執行所需的範本處理，然後建立巨集定義，讓該 Lambda 函數可供 CloudFormation 使用。</p>
+            <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>在本主題稍後，我們會檢查 Lambda 函數的實際程式碼。</p></div></div>
+            <p>以下範例範本包含範例巨集的定義。為了讓巨集可在特定的 CloudFormation 帳戶中使用，我們從範本建立堆疊。巨集定義會指定巨集名稱、簡短描述，並於範本中使用此巨集時參考 CloudFormation 叫用的 Lambda 函數的 ARN。(我們未包含用於錯誤記錄的 <b>LogGroupName</b> 或 <b>LogRoleARN</b> 屬性。) 如需詳細資訊，請參閱 <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloudformation-macro.html">AWS::CloudFormation::Macro</a>。</p>
+            <p>在這個範例中，假設從這個範本建立的堆疊名為 <b>JavaMacroFunc</b>。由於巨集 <code class="code">Name</code> 屬性設為堆疊名稱，產生的巨集也名為 <b>JavaMacroFunc</b>。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">AWSTemplateFormatVersion: 2010-09-09
+  Resources:
+    Macro:
+      Type: AWS::CloudFormation::Macro
+      Properties:
+        Name: <code class="replaceable">!Sub '$<span>{</span>AWS::StackName}'</code>
+        Description: <code class="replaceable">Adds a blank WaitConditionHandle named 'WaitHandle'</code>
+        FunctionName: <code class="replaceable">"arn:aws:lambda:us-east-1:012345678910:function:JavaMacroFunc"</code></code></pre>
+         
+            <h2 id="macros-example-usage">巨集範例：巨集用法範本 </h2>
+            <p>為了在此案例中使用我們的巨集，我們將使用 <a href="./intrinsic-function-reference-transform.html">Fn::Transform</a> 內部函數將它納入範本中。</p>
+            <p>當我們使用以下範本建立堆疊時，CloudFormation 會呼叫我們的範例巨集。基礎 Lambda 函數會將一個指定的字串替換成另一個指定的字串。在這種情況下，結果將是空白的 <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-waitconditionhandle.html">AWS::CloudFormation::WaitConditionHandle</a> 插入處理範本。</p>
+            <p>注意下列事項：</p>
+            <div class="itemizedlist">
+                 
+                 
+                 
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem">
+                    <p>要叫用的巨集指定為 <b>JavaMacroFunc</b>，這是來自上一個巨集定義範例。</p>
+                </li><li class="listitem">
+                    <p>有兩個參數傳遞給巨集：<code class="code">target</code> 和 <code class="code">replacement</code>，代表目標字串及其所需的替換值。</p>
+                </li><li class="listitem"><p>巨集可以處理 <code class="code">Type</code> 節點的內容，因為 <code class="code">Type</code> 是參考巨集的 <code class="code">Fn::Transform</code> 函數的同級項目。</p></li><li class="listitem"><p>產生的 <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-waitconditionhandle.html">AWS::CloudFormation::WaitConditionHandle</a> 名為 <code class="code">2a</code>。</p></li><li class="listitem"><p>範本還包含巨集也可存取的範本參數：<code class="code">ExampleParameter</code> (但在這個案例中未使用)。</p></li></ul></div>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">Parameters:
+  ExampleParameter:
+    Type: String
+    Default: 'SampleMacro'
+
+Resources:
+  2a:
+    Fn::Transform:
+      Name: "JavaMacroFunc"
+      Parameters:
+        replacement: 'AWS::CloudFormation::WaitConditionHandle'
+        target: '$$REPLACEMENT$$'
+    Type: '$$REPLACEMENT$$'</code></pre>
+         
+            <h2 id="macros-example-request">巨集範例：請求事件映射 </h2>
+            <p>當 CloudFormation 在堆疊建立期間處理我們的範例範本時，它會將下列事件映射傳遞到 <b>JavaMacroFunc</b> 巨集定義中參考的 Lambda 函數。</p>
+            <p>請注意，<code class="code">fragment</code> 包含的 JSON 代表巨集可處理的範本片段。此片段由 <code class="code">Fn::Transform</code> 函數呼叫的同級項目組成，而不是函數呼叫本身。此外，<code class="code">params</code> 包含代表巨集參數的 JSON。在此案例中是 replacement 和 target。同樣地，<code class="code">templateParameterValues</code> 包含的 JSON 代表針對整個範本指定的參數。</p>
+            <div class="itemizedlist">
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem"><p><code class="code">region</code></p><p><code class="code">us-east-1</code></p></li><li class="listitem"><p><code class="code">accountId</code></p><p><code class="code">012345678910</code></p></li><li class="listitem"><p><code class="code">fragment</code></p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Type": "$$REPLACEMENT$$"
+}</code></pre>
+                </li><li class="listitem"><p><code class="code">transformId</code></p><p><code class="code">012345678910::JavaMacroFunc</code></p></li><li class="listitem"><p><code class="code">params</code></p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "replacement": "AWS::CloudFormation::WaitConditionHandle",
+    "target": "$$REPLACEMENT$$"
+}</code></pre>
+                </li><li class="listitem"><p><code class="code">requestId</code></p><p><code class="code">5dba79b5-f117-4de0-9ce4-d40363bfb6ab</code></p></li><li class="listitem"><p><code class="code">templateParameterValues</code></p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "ExampleParameter": "SampleMacro"
+}</code></pre>
+                </li></ul></div>
+         
+            <h2 id="macros-example-function">巨集範例：Lambda 函數程式碼</h2>
+            <p>以下是 <b>JavaMacroFunc</b> 範例巨集的基礎 Lambda 函數的實際程式碼。它會逐一查看回應 (不論是字串、清單或映射格式) 包含的範本片段，尋找指定的目標字串。如果找到指定的目標字串，Lambda 函數會以指定的替換字串取代目標字串。如果找不到，該函數會將範本片段保持不變。然後，該函數會將預期屬性的映射 (以下詳細討論) 傳回給 CloudFormation。</p>
+            <div class="minimized-block" data-minimized="true"><div class="minimized-content">
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="java ">package com.macroexample.lambda.demo;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+
+public class LambdaFunctionHandler implements RequestHandler&lt;Map&lt;String, Object&gt;, Map&lt;String, Object&gt;&gt; <span>{</span>
+
+	private static final String REPLACEMENT = "replacement";
+	private static final String TARGET = "target";
+	private static final String PARAMS = "params";
+	private static final String FRAGMENT = "fragment";
+	private static final String REQUESTID = "requestId";
+	private static final String STATUS = "status";
+	private static final String SUCCESS = "SUCCESS";
+	private static final String FAILURE = "FAILURE";
+    @Override
+    public Map&lt;String, Object&gt; handleRequest(Map&lt;String, Object&gt; event, Context context) <span>{</span>
+        // TODO: implement your handler
+    	final Map&lt;String, Object&gt; responseMap = new HashMap&lt;String, Object&gt;();
+        responseMap.put(REQUESTID, event.get(REQUESTID));
+        responseMap.put(STATUS, FAILURE);
+    	try <span>{</span>
+	        if (!event.containsKey(PARAMS)) <span>{</span>
+	        	throw new RuntimeException("Params are required");
+	        }
+	    	
+	        final Map&lt;String, Object&gt; params = (Map&lt;String, Object&gt;) event.get(PARAMS);
+	        if (!params.containsKey(REPLACEMENT) || !params.containsKey(TARGET)) <span>{</span>
+	        	throw new RuntimeException("replacement or target under Params are required");
+	        }
+	    	
+	    	final String replacement = (String) params.get(REPLACEMENT);
+	    	final String target = (String) params.get(TARGET);
+	    	final Object fragment = event.getOrDefault(FRAGMENT, new HashMap&lt;String, Object&gt;());
+	    	final Object retFragment;
+	    	if (fragment instanceof String) <span>{</span>
+	    		retFragment = iterateAndReplace(replacement, target, (String) fragment);
+	    	} else if (fragment instanceof List) <span>{</span>
+	    		retFragment = iterateAndReplace(replacement, target, (List&lt;Object&gt;) fragment);
+	    	} else if (fragment instanceof Map) <span>{</span>
+	    		retFragment = iterateAndReplace(replacement, target, (Map&lt;String, Object&gt;) fragment);
+	    	} else <span>{</span>
+	    		retFragment = fragment;
+	    	}
+	        responseMap.put(STATUS, SUCCESS);
+	        responseMap.put(FRAGMENT, retFragment);
+	        return responseMap;
+    	} catch (Exception e) <span>{</span>
+    		e.printStackTrace();
+    		context.getLogger().log(e.getMessage());
+    		return responseMap;
+    	}
+    }
+    
+    private Map&lt;String, Object&gt; iterateAndReplace(final String replacement, final String target, final Map&lt;String, Object&gt; fragment) <span>{</span>
+    	final Map&lt;String, Object&gt; retFragment = new HashMap&lt;String, Object&gt;();
+    	final List&lt;String&gt; replacementKeys = new ArrayList&lt;&gt;();
+    	fragment.forEach((k, v) -&gt; <span>{</span>
+    		if (v instanceof String) <span>{</span>
+    			retFragment.put(k, iterateAndReplace(replacement, target, (String)v));
+    		} else if (v instanceof List) <span>{</span>
+    			retFragment.put(k, iterateAndReplace(replacement, target, (List&lt;Object&gt;)v));
+    		} else if (v instanceof Map ) <span>{</span>
+    			retFragment.put(k, iterateAndReplace(replacement, target, (Map&lt;String, Object&gt;) v));
+    		} else <span>{</span>
+    			retFragment.put(k, v);
+    		}
+    	});
+    	return retFragment;
+    }
+
+    private List&lt;Object&gt; iterateAndReplace(final String replacement, final String target, final List&lt;Object&gt; fragment) <span>{</span>
+    	final List&lt;Object&gt; retFragment = new ArrayList&lt;&gt;();
+    	fragment.forEach(o -&gt; <span>{</span>
+    		if (o instanceof String) <span>{</span>
+    			retFragment.add(iterateAndReplace(replacement, target, (String) o));
+    		} else if (o instanceof List) <span>{</span>
+    			retFragment.add(iterateAndReplace(replacement, target, (List&lt;Object&gt;) o));
+    		} else if (o instanceof Map) <span>{</span>
+    			retFragment.add(iterateAndReplace(replacement, target, (Map&lt;String, Object&gt;) o));
+    		} else <span>{</span>
+    			retFragment.add(o);
+    		}
+    	});
+    	return retFragment;
+    }
+    
+    private String iterateAndReplace(final String replacement, final String target, final String fragment) <span>{</span>
+    	System.out.println(replacement + " == " + target + " == " + fragment );
+    	if (fragment != null AND_AND fragment.equals(target))
+    		return replacement;
+    	return fragment;
+    }
+}</code></pre>
+            <div class="minimized-fader"></div></div><div class="show-more-btn"><a href="#"><awsui-icon class="show-more-text" variant="link" name="caret-right-filled"></awsui-icon><span class="show-more-text">顯示較多</span><awsui-icon class="show-less-text" variant="link" name="caret-up-filled"></awsui-icon><span class="show-less-text">顯示較少</span></a></div></div>
+         
+            <h2 id="macros-example-response">巨集範例：Lambda 函數回應</h2>
+            <p>以下是 Lambda 函數傳回給 AWS CloudFormation 來處理的映射。<code class="code">requestId</code> 符合 CloudFormation 傳來的值，而 <code class="code">status</code> 值 <code class="code">SUCCESS</code> 表示 Lambda 函數成功處理請求中包含的範本片段。在這個回應中，<code class="code">fragment</code> 包含的 JSON 代表在所處理的範本中插入的內容，用以取代原始範本程式碼片段。</p>
+            <div class="itemizedlist">
+                 
+                 
+                 
+            <ul class="itemizedlist"><li class="listitem"><p><code class="code">requestId</code></p><p><code class="code">5dba79b5-f117-4de0-9ce4-d40363bfb6ab</code></p></li><li class="listitem"><p><code class="code">status</code></p><p><code class="code">SUCCESS</code></p></li><li class="listitem"><p><code class="code">fragment</code></p>
+                    <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "Type": "AWS::CloudFormation::WaitConditionHandle"
+}</code></pre>
+                </li></ul></div>
+         
+            <h2 id="macros-example-processed">巨集範例：產生的處理過範本</h2>
+            <p>CloudFormation 收到 Lambda 函數的成功回應之後，就會將傳回的範本片段插入所處理的範本中。</p>
+            <p>以下是我們的範例產生的處理過範本。已不包含參考 <b>JavaMacroFunc</b> 巨集的 <code class="code">Fn::Transform</code> 內部函數呼叫。Lambda 函數傳回的範本片段會納入適當的位置中，結果是內容 <code class="code">"Type": "$$REPLACEMENT$$"</code> 已替換成 <code class="code">"Type":
+                "AWS::CloudFormation::WaitConditionHandle"</code>。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "Parameters": <span>{</span>
+        "ExampleParameter": <span>{</span>
+            "Default": "SampleMacro",
+            "Type": "String"
+        }
+    },
+    "Resources": <span>{</span>
+        "2a": <span>{</span>
+            "Type": "AWS::CloudFormation::WaitConditionHandle"
+        }
+    }
+}</code></pre>
+         
+            <h2 id="template-macros-examples-awslabs">其他巨集範例</h2>
+            <p>除了本指南中的此演練，在 GitHub 上的 <a href="https://github.com/awslabs" rel="noopener noreferrer" target="_blank"><span>Amazon Web Services - Labs</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> 儲存庫<a href="https://github.com/awslabs/aws-cloudformation-templates/tree/master/aws/services/CloudFormation/MacrosExamples/" rel="noopener noreferrer" target="_blank"><span>巨集範例</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>區段中，您可以找到巨集範例，包括原始程式碼和範本。這些範例「按現狀」提供作為教學用途。</p>
+        <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./template-macros.html">範本巨集</div><div id="next" class="next-link" accesskey="n" href="./modules.html">使用模組</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/macros-example.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/macros-example.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

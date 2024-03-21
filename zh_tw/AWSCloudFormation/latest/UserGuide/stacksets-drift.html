@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>偵測堆疊集合中非受管的組態變更 - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="stacksets-drift" /><meta name="default_state" content="stacksets-drift" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="description" content="即使您管理堆疊及其中包含的資源 CloudFormation，使用者也可以在以外變更這些資源 CloudFormation。使用者可以使用建立資源的基礎服務來直接編輯資源。藉由在堆疊集合上執行漂移偵測，您可以判斷是否有任何屬於該堆疊集合的堆疊執行個體與其預期組態出現差異 (或是產生了 漂移 )。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="使用者指南" /><meta name="abstract" content="使 AWS CloudFormation 用本使用者指南可預測並重複地建立和管理 AWS 基礎架構部署。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="使用者指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="使用者指南" /><meta id="panorama-serviceConsolePage" value="偵測堆疊集合中非受管的組態變更" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>偵測堆疊集合中非受管的組態變更 - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/stacksets-drift.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,資源佈建,資源組態,基礎設施管理,CloudFormer,CloudFormation 堆疊,CloudFormation 堆疊集,CloudFormation 範本,變更集合" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "使用者指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "使用 AWS CloudFormation StackSets",
+        "item" : "https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "偵測堆疊集合中非受管的組態變更",
+        "item" : "https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">使用者指南</a></div><div id="page-toc-src"><a href="#stacksets-drift-how">如何在堆棧集上 CloudFormation 執行漂移檢測</a><a href="#stacksets-drift-stop">停止堆疊集合上的漂移偵測</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="stacksets-drift">偵測堆疊集合中非受管的組態變更</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>即使您管理堆疊及其中包含的資源 CloudFormation，使用者也可以在以外變更這些資源 CloudFormation。使用者可以使用建立資源的基礎服務來直接編輯資源。藉由在堆疊集合上執行漂移偵測，您可以判斷是否有任何屬於該堆疊集合的堆疊執行個體與其預期組態出現差異 (或是產生了<em>漂移</em>)。</p>
+        <h2 id="stacksets-drift-how">如何在堆棧集上 CloudFormation 執行漂移檢測</h2>
+        <p>當在堆棧集上 CloudFormation 執行漂移檢測時，它會在與堆棧集中的每個堆棧實例相關聯的堆棧上執行漂移檢測。為了執行此作業， CloudFormation  會將堆疊中每個資源目前的狀態與該資源的預期狀態進行比較，如堆疊範本及任何指定輸入參數所定義。如果資源目前的狀態與預期狀態不同，便會將該資源視為已偏離。如果堆疊中有一或多個資源產生偏離，便會將堆疊本身視為已偏離，且也會將與該堆疊建立關聯的堆疊執行個體視為已偏離。如果堆疊中有一或多個堆疊執行個體產生偏離，也會將堆疊集合本身視為已偏離。</p>
+        <p>漂移偵測可識別未受管理的變更，也就是對堆疊之外所做的 CloudFormation變更。直 CloudFormation 接對堆棧而不是在堆棧集級別進行的更改不被視為漂移。例如，假設您有一個與堆疊集合中堆疊執行個體建立關聯的堆疊。如果您使 CloudFormation 用更新該堆棧以使用不同的模板，則不會被視為漂移，即使該堆棧現在具有與屬於堆棧集的任何其他堆棧不同的模板。這是因為堆疊仍然與其預期範本和  CloudFormation 中的參數組態相符。</p>
+        <p>如需如何在堆疊上 CloudFormation 執行漂移偵測的詳細資訊，請參閱<a href="./using-cfn-stack-drift.html">偵測堆疊和資源的未受管組態變更</a>。</p>
+        <p>由於在每個堆疊上分別 CloudFormation 執行漂移偵測，因此在判斷堆疊是否已漂移時，會將任何重寫的參數值納入考量。如需覆寫堆疊執行個體中範本參數的詳細資訊，請參閱 <a href="./stackinstances-override.html">覆寫堆疊執行個體上的參數</a>。</p>
+        <p>如果您<a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html">直接在與堆疊執行個體相關聯的堆疊</a>上執行漂移偵測，則這些漂移結果無法從<b>StackSets</b>主控台頁面取得。</p>
+
+    <div class="procedure"><h6>使用偵測堆疊集上的漂移 AWS Management Console</h6><ol><li><p><a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>請在以下位置開啟 AWS CloudFormation 主控台。</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> https://console.aws.amazon.com/cloudformation</p></li><li>
+            <p>在<b>StackSets</b>頁面上，選取您要執行漂移偵測的堆疊集。</p>
+        </li><li>
+            <p>在 <b>Actions (動作)</b> 選單中，選取 <b>Detect drifts (偵測偏離)</b>。</p>
+            <p>CloudFormation 顯示資訊列，說明已針對所選堆疊組啟動漂移偵測。</p>
+        </li><li>
+            <p>選用：監控漂移偵測操作的進度：</p>
+            <ol><li>
+                    <p>選取堆疊集合名稱，以顯示 <b>Stackset details</b> (堆疊集合詳細資訊) 頁面。</p>
+                </li><li>
+                    <p>選取 <b>Operations (操作)</b> 標籤、選取漂移偵測操作，然後選取 <b>View drift details (檢視漂移詳細資訊)</b>。</p>
+                </li></ol>
+            <p>CloudFormation 顯示「作<b>業詳細資訊</b>」對話方塊。</p>
+        </li><li>
+            <p>等待漂移檢測操作 CloudFormation 完成。漂移偵測操作完成後，會 CloudFormation 更新堆疊集的<b>漂移<b>狀態</b>和上次漂移檢查時間</b>。這些欄位會列在所選堆疊集之<b>StackSet 詳細資訊</b>頁面的「<b>概觀</b>」頁籤上。</p>
+            <p>漂移偵測操作可能會耗費一些時間，這取決於堆疊集合中所包含的堆疊執行個體數，及包含在堆疊集合中的資源數。您一次只能在指定的堆疊集上執行單一漂移偵測操作。  CloudFormation 即使您關閉資訊列，仍可繼續執行漂移偵測操作。</p>
+        </li><li>
+            <p>如要檢閱堆疊集合中堆疊執行個體的漂移偵測結果，請選取 <b>Stack instances (堆疊執行個體)</b> 標籤。</p>
+            <p><b>Stack name (堆疊名稱)</b> 行會列出與每個堆疊執行個體建立關聯的堆疊名稱，<b>Drift status (偏離狀態)</b> 行則會列出該堆疊的偏離狀態。如果堆疊的一個或多個資源已偏離，堆疊就視為已偏離。</p>
+        </li><li>
+            <p>檢閱與特定堆疊執行個體建立關聯的堆疊漂移偵測結果：</p>
+            <ol><li>
+                    <p>選擇<b>操作</b>子標籤。</p>
+                </li><li>
+                    <p>選擇您想要檢視漂移偵測結果的漂移操作。分割面板將顯示堆疊執行個體狀態和所選操作的原因。對於漂移操作，狀態原因欄顯示堆疊執行個體的漂移狀態。</p>
+                </li><li>
+                    <p>選擇您想檢視漂移詳細資訊的堆疊執行個體，然後選擇<b>檢視資源漂移</b>。在<b>資源漂移</b>頁面上，<b>資源漂移狀態</b>表單會列出每項堆疊資源及其漂移狀態，以及上次在資源上啟動漂移偵測的時間。每個資源會顯示邏輯 ID 和實體 ID，以協助您識別它們。</p>
+                </li></ol>
+        </li><li>
+            <p>您可以根據資源的偏移狀態，使用 <b>Drift status (偏離狀態)</b> 欄排序資源。</p>
+            <p>檢視已修改過的資源的詳細資訊：</p>
+            <ol><li>
+                    <p>在選取資源的情況下，選擇<b>檢視漂移詳細資訊</b>。</p>
+                    <p>CloudFormation 顯示該特定資源的漂移詳細資訊頁面。此頁面列出了資源的差異。其還會列出資源的預期屬性值和目前屬性值。</p>
+                    <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>如果堆疊屬於與您目前登入的區域和帳戶不同的區域和帳戶，<b>偵測漂移</b>按鈕將會停用，且您將無法檢視詳細資訊。</p></div></div>
+                </li></ol>
+            <div class="mediaobject">
+                 
+                    <img src="images/console-stacks-drifts-drift-details-differences-1.png" class="aws-docs-img-whiteBg aws-docs-img-padding" alt="&#xA;                    漂移詳細資訊頁面的資源漂移狀態區段，其中包含堆疊中每項支援漂移偵測的資源的漂移資訊。詳細資訊包括偏離狀態及預期與目前的屬性值。&#xA;                " style="max-width:100%" />
+                 
+                 
+            </div>
+
+        </li></ol></div><div class="procedure"><h6>使用偵測堆疊集上的漂移 AWS CLI</h6><p>若要使用偵測整個堆疊上的漂移 AWS CLI，請使用下列<code class="code">aws
+                cloudformation</code>指令：</p><div class="itemizedlist">
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/detect-stack-set-drift.html">detect-stack-set-drift</a></code>：在堆疊上啟動漂移偵測操作。</p>
+            </li><li class="listitem">
+                <p><code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/describe-stack-set-operation.html">describe-stack-set-operation</a></code>：監控堆疊漂移偵測操作的狀態。</p>
+            </li><li class="listitem">
+                <p>漂移偵測操作完成後，請使用以下命令來傳回您要的漂移資訊：</p>
+                <div class="itemizedlist">
+                     
+                     
+                     
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <p>使用 <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/describe-stack-set.html">describe-stack-set</a></code> 以傳回堆疊集合的詳細資訊，包括在堆疊集合上執行的最後「完成」<em></em>偏離操作詳細資訊。(正在進行的偏離操作資訊則不會包含在其中。)</p>
+                    </li><li class="listitem">
+                        <p>使用 <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-stack-instances.html">list-stack-instances</a></code> 以傳回屬於堆疊集合的堆疊執行個體清單，包括偏離狀態和每個執行個體最後檢查偏離的時間。</p>
+                    </li><li class="listitem">
+                        <p>使用 <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/describe-stack-instance.html">describe-stack-instance</a></code> 以傳回特定堆疊執行個體的詳細資訊，包括其偏離狀態和最後檢查偏離的時間。</p>
+                    </li><li class="listitem">
+                        <p>使用 <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-stack-instance-resource-drifts.html">list-stack-instance-resource-drifts</a></code> 來傳回與堆疊執行個體中每項資源的漂移狀態有關的詳細資訊。</p>
+                    </li><li class="listitem">
+                        <p>使用 <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/stack-instance-resource-drifts-summary.html">stack-instance-resource-drifts-summary</a></code> 來傳回與某個堆疊執行個體的資源漂移有關的摘要資訊。</p>
+                    </li></ul></div>
+            </li></ul></div><ol><li>
+            <p>使用 <code class="code">detect-stack-set-drift</code> 以偵測整個堆疊集合以及其相關聯堆疊執行個體上的偏離。</p>
+            <p>以下範例會在堆疊集合 <code class="code">stack-set-drift-example</code> 上啟動漂移偵測。</p>
+
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation detect-stack-set-drift \
+    --stack-set-name stack-set-drift-example</code>
+<code class="computeroutput" copy="false"><span>{</span>
+    "OperationId": "c36e44aa-3a83-411a-b503-cb611example"
+}</code></code></pre>
+        </li><li>
+            <p>因為堆疊集合漂移偵測操作可能會長時間執行，請使用 <code class="code">describe-stack-set-operation</code> 來監控漂移操作的狀態。此命令接受由 <code class="code">detect-stack-set-drift</code> 命令傳回的堆疊集合操作 ID。</p>
+            <p>下列範例會使用先前範例的操作 ID 來傳回堆疊集合漂移偵測操作的資訊。在此範例中，操作仍正在執行。在與堆疊集合建立關聯的七個堆疊執行個體中，已找到一個堆疊執行個體已產生漂移，兩個執行個體正在同步，而其餘四個堆疊執行個體的漂移偵測則仍在進行。由於一個執行個體已產生偏離，堆疊集合本身的偏離狀態現在是 <code class="code">DRIFTED</code>。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-set-operation \
+    --stack-set-name stack-set-drift-example \
+    --operation-id c36e44aa-3a83-411a-b503-cb611example</code>
+<code class="computeroutput" copy="false">
+<span>{</span>
+    "StackSetOperation": <span>{</span>
+        "Status": "RUNNING",
+        "AdministrationRoleARN": "arn:aws:iam::123456789012:role/AWSCloudFormationStackSetAdministrationRole",
+        "OperationPreferences": <span>{</span>
+            "RegionOrder": []
+        },
+        "ExecutionRoleName": "AWSCloudFormationStackSetExecutionRole",
+        "StackSetDriftDetectionDetails": <span>{</span>
+            "DriftedStackInstancesCount": 1,
+            "TotalStackInstancesCount": 7,
+            "LastDriftCheckTimestamp": "2019-12-04T20:34:28.543Z",
+            "InSyncStackInstancesCount": 2,
+            "InProgressStackInstancesCount": 4,
+            "DriftStatus": "DRIFTED",
+            "FailedStackInstancesCount": 0
+        },
+        "Action": "DETECT_DRIFT",
+        "CreationTimestamp": "2019-12-04T20:33:13.673Z",
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22example",
+        "OperationId": "c36e44aa-3a83-411a-b503-cb611example"
+    }
+}</code></code></pre>
+            <p>稍後執行相同的命令，此範例便會顯示漂移偵測操作完成後傳回的資訊。與此堆疊集合建立關聯的七個堆疊執行個體中，有兩個已產生偏離，使堆疊集合本身的偏離狀態成為 <code class="code">DRIFTED</code>。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-set-operation \
+    --stack-set-name stack-set-drift-example \
+    --operation-id c36e44aa-3a83-411a-b503-cb611example</code>
+<code class="computeroutput" copy="false">
+<span>{</span>
+    "StackSetOperation": <span>{</span>
+        "Status": "SUCCEEDED",
+        "AdministrationRoleARN": "arn:aws:iam::123456789012:role/AWSCloudFormationStackSetAdministrationRole",
+        "OperationPreferences": <span>{</span>
+            "RegionOrder": []
+        } 
+        "ExecutionRoleName": "AWSCloudFormationStackSetExecutionRole",
+        "EndTimestamp": "2019-12-04T20:37:32.829Z",
+        "StackSetDriftDetectionDetails": <span>{</span>
+            "DriftedStackInstancesCount": 2,
+            "TotalStackInstancesCount": 7,
+            "LastDriftCheckTimestamp": "2019-12-04T20:36:55.612Z",
+            "InSyncStackInstancesCount": 5,
+            "InProgressStackInstancesCount": 0,
+            "DriftStatus": "DRIFTED",
+            "FailedStackInstancesCount": 0
+        },
+        "Action": "DETECT_DRIFT",
+        "CreationTimestamp": "2019-12-04T20:33:13.673Z",
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22example",
+        "OperationId": "c36e44aa-3a83-411a-b503-cb611example"
+    }
+}</code></code></pre>
+        </li><li>
+            <p>完成堆疊集的漂移偵測操作時，請使用 <code class="code">describe-stack-set</code>、<code class="code">list-stack-instances</code>、<code class="code">describe-stack-instance</code> 和 <code class="code">list-stack-instance-resource-drifts</code> 命令來檢閱結果。</p>
+            <p><code class="code">describe-stack-set</code> 命令會包含 <code class="code">describe-stack-set-operation</code> 命令傳回的相同詳細偏離資訊。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-set \
+    --stack-set-name stack-set-drift-example</code>
+<code class="computeroutput" copy="false"><span>{</span>
+    "StackSet": <span>{</span>
+        "Status": "ACTIVE",
+        "Description": "Demonstration of drift detection on stack sets.",
+        "Parameters": [],
+        "Tags": [
+            <span>{</span>
+                "Value": "Drift detection",
+                "Key": "Feature"
+            }
+        ], 
+        "ExecutionRoleName": "AWSCloudFormationStackSetExecutionRole",
+        "Capabilities": [],
+        "AdministrationRoleARN": "arn:aws:iam::123456789012:role/AWSCloudFormationStackSetAdministrationRole",
+        "StackSetDriftDetectionDetails": <span>{</span>
+            "DriftedStackInstancesCount": 2,
+            "TotalStackInstancesCount": 7,
+            "LastDriftCheckTimestamp": "2019-12-04T20:36:55.612Z",
+            "InProgressStackInstancesCount": 0,
+            "DriftStatus": "DRIFTED",
+            "DriftDetectionStatus": "COMPLETED",
+            "InSyncStackInstancesCount": 5,
+            "FailedStackInstancesCount": 0
+        },
+        "StackSetARN": "arn:aws:cloudformation:us-east-1:123456789012:stackset/stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22example",
+        "TemplateBody": [details omitted],
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22ebexample",
+        "StackSetName": "stack-set-drift-example"
+    }
+}</code></code></pre>
+            <p>您可以使用 <code class="code">list-stack-instances</code> 命令來傳回與堆疊集合建立關聯的堆疊執行個體摘要資訊，包括每個堆疊執行個體的偏離狀態。</p>
+            <p>在此範例中，在範例堆疊集合上執行 <code class="code">list-stack-instances</code> 並將漂移狀態篩選設為 <code class="code">DRIFTED</code>，可讓您識別哪兩個堆疊執行個體的漂移狀態為 <code class="code">DRIFTED</code>。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation list-stack-instances \
+    --stack-set-name stack-set-drift-example \
+    --filters Name=DRIFT_STATUS,Values=DRIFTED</code>
+<code class="computeroutput" copy="false"><span>{</span>
+"Summaries": [
+        <span>{</span>
+"StackId": "arn:aws:cloudformation:eu-west-1:123456789012:stack/StackSet-stack-set-drift-example-b0fb6083-60c0-4e39-af15-2f071e0db90c/0e4f0940-16d4-11ea-93d8-0641cexample",
+            "Status": "CURRENT",
+            "Account": "012345678910",
+            "Region": "eu-west-1",
+            "LastDriftCheckTimestamp": "2019-12-04T20:37:32.687Z",
+            "DriftStatus": "DRIFTED",
+            "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22eexample
+            "LastOperationId": "c36e44aa-3a83-411a-b503-cb611example"
+        },
+        <span>{</span>
+            "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/StackSet-stack-set-drift-example-b7fde68e-e541-44c2-b33d-ef2e2988071a/008e6030-16d4-11ea-8090-12f89example",
+            "Status": "CURRENT",
+            "Account": "123456789012",
+            "Region": "us-east-1",
+            "LastDriftCheckTimestamp": "2019-12-04T20:34:28.275Z",
+            "DriftStatus": "DRIFTED",
+            "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22eexample"
+            "LastOperationId": "c36e44aa-3a83-411a-b503-cb611example"
+        },
+        
+        [additional stack instances omitted]
+ 
+    ]
+}</code></code></pre>
+            <p><code class="code">describe-stack-instance</code> 命令也會傳回此資訊，但只會傳回單一堆疊執行個體的資訊，如以下範例所示。</p>
+
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation describe-stack-instance \
+    --stack-set-name stack-set-drift-example \
+    --stack-instance-account 012345678910 --stack-instance-region us-east-1</code>
+<code class="computeroutput" copy="false"><span>{</span>
+    "StackInstance": <span>{</span>
+        "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/StackSet-stack-set-drift-example-b7fde68e-e541-44c2-b33d-ef2e2988071a/008e6030-16d4-11ea-8090-12f89example",
+        "Status": "CURRENT",
+        "Account": "123456789012",
+        "Region": "us-east-1",
+        "ParameterOverrides": [],
+        "DriftStatus": "DRIFTED",
+        "LastDriftCheckTimestamp": "2019-12-04T20:34:28.275Z",
+        "StackSetId": "stack-set-drift-example:bd1f4017-d4f9-432e-a73f-8c22eexample"
+        "LastOperationId": "c36e44aa-3a83-411a-b503-cb611example"
+    }
+}</code></code></pre>
+        </li><li>
+            <p>一旦您確定了哪些堆疊執行個體已經漂移，就可以使用<code class="code">list-stack-instances</code>或<code class="code">describe-stack-instance</code>命令傳回的堆疊執行個體相關資訊來執行 <a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-stack-instance-resource-drifts.html">list-stack-instance-resource-</a> drifts。此命令會傳回堆疊中已為特定漂移操作產生漂移的資源的詳細資訊。</p>
+            <p>以下範例使用 <code class="code">stack-instance-resource-drift-statuses</code> 參數，以請求在上一個漂移操作範例中已修改或已刪除資源的堆疊漂移資訊。該請求傳回已修改的一項資源的相關資訊，包括它的兩項屬性及其更改值的詳細資訊。未刪除任何資源。</p>
+            <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation list-stack-instance-resource-drifts \
+    --stack-set-name my-stack-set-with-resource-drift \
+    --stack-instance-account 123456789012 \
+    --stack-instance-region us-east-1 \
+    --operation-id c36e44aa-3a83-411a-b503-cb611example \
+    --stack-instance-resource-drift-statuses MODIFIED DELETED</code>
+
+<code class="computeroutput" copy="false"><span>{</span>
+    "Summaries": [
+        <span>{</span>
+            "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/my-stack-set-with-resource-drift/489e5570-df85-11e7-a7d9-50example",
+            "ResourceType": "AWS::SQS::Queue",
+            "Timestamp": "2018-03-26T17:23:34.489Z",
+            "PhysicalResourceId": "https://sqs.us-east-1.amazonaws.com/123456789012/my-stack-with-resource-drift-Queue-494PBHCO76H4",
+            "StackResourceDriftStatus": "MODIFIED",
+            "PropertyDifferences": [
+                <span>{</span>
+                    "PropertyPath": "/DelaySeconds",
+                    "ActualValue": "120",
+                    "ExpectedValue": "20",
+                    "DifferenceType": "NOT_EQUAL"
+                },
+                <span>{</span>
+                    "PropertyPath": "/RedrivePolicy/maxReceiveCount",
+                    "ActualValue": "12",
+                    "ExpectedValue": "10",
+                    "DifferenceType": "NOT_EQUAL"
+                }
+            ],
+            "LogicalResourceId": "Queue"
+        }
+    ]
+}</code></code></pre>
+        </li></ol></div>
+        <h2 id="stacksets-drift-stop">停止堆疊集合上的漂移偵測</h2>
+        <p>因為堆疊集合上的漂移偵測操作可能會耗費相當長的時間，有時候您可能會希望停止目前正在堆疊集合上執行的漂移偵測操作。</p>
+        <div class="procedure"><h6>使用 AWS Management Console停止堆疊集合上的漂移偵測</h6><ol><li><p><a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>請在以下位置開啟 AWS CloudFormation 主控台。</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> https://console.aws.amazon.com/cloudformation</p></li><li>
+                <p>在<b>StackSets</b>頁面上，選取堆疊集的名稱。</p>
+                <p>CloudFormation 顯示所選堆疊集的<b>StackSets 詳細資訊</b>頁面。</p>
+            </li><li>
+                <p>在<b>StackSets 詳細資訊</b>頁面上，選取<b>操</b>作索引標籤，然後選取漂移偵測操作。</p>
+            </li><li>
+                <p>選取 <b>Stop operation (停止操作)</b>。</p>
+            </li></ol></div>
+        <div class="procedure"><h6>使用 AWS CLI停止堆疊集合上的漂移偵測</h6><ul><li>
+                <p>使用 <code class="code"><a href="https://docs.aws.amazon.com/cli/latest/reference/cloudformation/stop-stack-set-operation.html">stop-stack-set-operation</a></code> 命令。您必須提供堆疊集合名稱和漂移偵測堆疊集合操作的操作 ID。</p>
+                <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="sh "><code class="prompt" copy="false">$ </code><code class="userinput">aws cloudformation stop-stack-set-operation \
+    --stack-set-name stack-set-drift-example \
+    --operation-id 624af370-311a-11e8-b6b7-500cexample</code></code></pre>
+            </li></ul></div>
+    <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./stacksets-account-gating.html">目標帳戶閘道</div><div id="next" class="next-link" accesskey="n" href="./stacksets-import.html">將堆疊匯入堆疊集。</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/stacksets-drift.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/stacksets-drift.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

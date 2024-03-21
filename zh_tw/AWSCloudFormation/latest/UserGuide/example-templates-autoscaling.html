@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>逐步解說：建置擴展和負載平衡的應用程式 - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="example-templates-autoscaling" /><meta name="default_state" content="example-templates-autoscaling" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" /><meta name="description" content="使用此範例範本，建立將使用 Elastic Load Balancing 與 Amazon EC2 Auto Scaling 的基本 Apache 網站。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="使用者指南" /><meta name="abstract" content="使 AWS CloudFormation 用本使用者指南可預測並重複地建立和管理 AWS 基礎架構部署。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="使用者指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="使用者指南" /><meta id="panorama-serviceConsolePage" value="逐步解說：建置擴展和負載平衡的應用程式" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>逐步解說：建置擴展和負載平衡的應用程式 - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,資源佈建,資源組態,基礎設施管理,CloudFormer,CloudFormation 堆疊,CloudFormation 堆疊集,CloudFormation 範本,變更集合" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "使用者指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "使用 AWS CloudFormation 範本",
+        "item" : "https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/template-guide.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "演練",
+        "item" : "https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/CHAP_Using.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "逐步解說：建置擴展和負載平衡的應用程式",
+        "item" : "https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/CHAP_Using.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">使用者指南</a></div><div id="page-toc-src"><a href="#example-templates-autoscaling-full-stack-template">完整堆疊範本</a><a href="#example-templates-autoscaling-description">範本演練</a><a href="#example-templates-autoscaling-launch-stack">步驟 1：啟動堆疊</a><a href="#example-templates-autoscaling-clean-up">步驟 2：清除您的資源範例</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="example-templates-autoscaling">逐步解說：建置擴展和負載平衡的應用程式</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>在此逐步解說中，您將建立可協助您設定已擴展和已負載平衡應用程式的堆疊。逐步解說提供您將用於建立堆疊的範例範本。範例範本佈建 Auto Scaling 群組、Application Load Balancer、控制負載平衡器和 Auto Scaling 群組流量的安全群組，以及用以發布擴展活動相關通知的 Amazon SNS 通知組態。</p><p>此範本會建立一或多個 Amazon EC2 執行個體和一個 Application Load Balancer。若您從此範本建立堆疊，您必須為使用的 AWS 資源支付費用。</p>
+    <h2 id="example-templates-autoscaling-full-stack-template">完整堆疊範本</h2>
+    <p>讓我們從範本開始。</p>
+
+    <div class="minimized-block" data-minimized="true"><div class="minimized-content" data-minimized-height="450">
+      <p><strong>YAML</strong></p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="yaml ">AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  InstanceType:
+    Description: The EC2 instance type
+    Type: String
+    Default: t3.micro
+    AllowedValues:
+      - t3.micro
+      - t3.small
+      - t3.medium
+  KeyName:
+    Description: Name of an existing EC2 key pair to allow SSH access to the instances
+    Type: 'AWS::EC2::KeyPair::KeyName'
+  LatestAmiId:
+    Description: The latest Amazon Linux 2 AMI from the Parameter Store
+    Type: 'AWS::SSM::Parameter::Value&lt;AWS::EC2::Image::Id&gt;'
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+  OperatorEmail:
+    Description: The email address to notify when there are any scaling activities
+    Type: String
+  SSHLocation:
+    Description: The IP address range that can be used to SSH to the EC2 instances
+    Type: String
+    MinLength: 9
+    MaxLength: 18
+    Default: 0.0.0.0/0
+    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+  Subnets:
+    Type: 'List&lt;AWS::EC2::Subnet::Id&gt;'
+    Description: At least two public subnets in different Availability Zones in the selected VPC
+  VPC:
+    Type: 'AWS::EC2::VPC::Id'
+    Description: A virtual private cloud (VPC) that enables resources in public subnets to connect to the internet
+Resources:
+  ELBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ELB Security Group
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: EC2 Security Group
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        SourceSecurityGroupId:
+          Fn::GetAtt:
+          - ELBSecurityGroup
+          - GroupId
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: !Ref SSHLocation
+  EC2TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 15
+      HealthyThresholdCount: 5
+      Matcher:
+        HttpCode: '200'
+      Name: EC2TargetGroup
+      Port: 80
+      Protocol: HTTP
+      TargetGroupAttributes:
+      - Key: deregistration_delay.timeout_seconds
+        Value: '20'
+      UnhealthyThresholdCount: 3
+      VpcId: !Ref VPC
+  ALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref EC2TargetGroup
+      LoadBalancerArn: !Ref ApplicationLoadBalancer
+      Port: 80
+      Protocol: HTTP
+  ApplicationLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Scheme: internet-facing
+      Subnets: !Ref Subnets
+      SecurityGroups:
+        - !GetAtt ELBSecurityGroup.GroupId
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties: 
+      LaunchTemplateName: !Sub $<span>{</span>AWS::StackName}-launch-template
+      LaunchTemplateData:
+        ImageId: !Ref LatestAmiId
+        InstanceType: !Ref InstanceType
+        KeyName: !Ref KeyName
+        SecurityGroupIds: 
+          - !Ref EC2SecurityGroup
+        UserData:
+          Fn::Base64: !Sub |
+            #!/bin/bash
+            yum update -y
+            yum install -y httpd
+            systemctl start httpd
+            systemctl enable httpd
+            echo "&lt;h1&gt;Hello World!&lt;/h1&gt;" &gt; /var/www/html/index.html
+  NotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint: !Ref OperatorEmail
+          Protocol: email
+  WebServerGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      MaxSize: '3'
+      MinSize: '1'
+      NotificationConfigurations:
+        - TopicARN: !Ref NotificationTopic
+          NotificationTypes: ['autoscaling:EC2_INSTANCE_LAUNCH', 'autoscaling:EC2_INSTANCE_LAUNCH_ERROR', 'autoscaling:EC2_INSTANCE_TERMINATE', 'autoscaling:EC2_INSTANCE_TERMINATE_ERROR']
+      TargetGroupARNs:
+        - !Ref EC2TargetGroup
+      VPCZoneIdentifier: !Ref Subnets</code></pre>
+      <p><strong>JSON</strong></p>
+      <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="複製"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+  "AWSTemplateFormatVersion":"2010-09-09",
+  "Parameters":<span>{</span>
+    "InstanceType":<span>{</span>
+      "Description":"The EC2 instance type",
+      "Type":"String",
+      "Default":"t3.micro",
+      "AllowedValues":[
+        "t3.micro",
+        "t3.small",
+        "t3.medium"
+      ]
+    },
+    "KeyName":<span>{</span>
+      "Description":"Name of an existing EC2 key pair to allow SSH access to the instances",
+      "Type":"AWS::EC2::KeyPair::KeyName"
+    },
+    "LatestAmiId":<span>{</span>
+      "Description":"The latest Amazon Linux 2 AMI from the Parameter Store",
+      "Type":"AWS::SSM::Parameter::Value&lt;AWS::EC2::Image::Id&gt;",
+      "Default":"/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+    },
+    "OperatorEmail":<span>{</span>
+      "Description":"The email address to notify when there are any scaling activities",
+      "Type":"String"
+    },
+    "SSHLocation":<span>{</span>
+      "Description":"The IP address range that can be used to SSH to the EC2 instances",
+      "Type":"String",
+      "MinLength":9,
+      "MaxLength":18,
+      "Default":"0.0.0.0/0",
+      "ConstraintDescription":"Must be a valid IP CIDR range of the form x.x.x.x/x."
+    },
+    "Subnets":<span>{</span>
+      "Type":"List&lt;AWS::EC2::Subnet::Id&gt;",
+      "Description":"At least two public subnets in different Availability Zones in the selected VPC"
+    },
+    "VPC":<span>{</span>
+      "Type":"AWS::EC2::VPC::Id",
+      "Description":"A virtual private cloud (VPC) that enables resources in public subnets to connect to the internet"
+    }
+  },
+  "Resources":<span>{</span>
+    "ELBSecurityGroup":<span>{</span>
+      "Type":"AWS::EC2::SecurityGroup",
+      "Properties":<span>{</span>
+        "GroupDescription":"ELB Security Group",
+        "VpcId":<span>{</span>
+          "Ref":"VPC"
+        },
+        "SecurityGroupIngress":[
+          <span>{</span>
+            "IpProtocol":"tcp",
+            "FromPort":80,
+            "ToPort":80,
+            "CidrIp":"0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "EC2SecurityGroup":<span>{</span>
+      "Type":"AWS::EC2::SecurityGroup",
+      "Properties":<span>{</span>
+        "GroupDescription":"EC2 Security Group",
+        "VpcId":<span>{</span>
+          "Ref":"VPC"
+        },
+        "SecurityGroupIngress":[
+          <span>{</span>
+            "IpProtocol":"tcp",
+            "FromPort":80,
+            "ToPort":80,
+            "SourceSecurityGroupId":<span>{</span>
+              "Fn::GetAtt":[
+                "ELBSecurityGroup",
+                "GroupId"
+              ]
+            }
+          },
+          <span>{</span>
+            "IpProtocol":"tcp",
+            "FromPort":22,
+            "ToPort":22,
+            "CidrIp":<span>{</span>
+              "Ref":"SSHLocation"
+            }
+          }
+        ]
+      }
+    },
+    "EC2TargetGroup":<span>{</span>
+      "Type":"AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties":<span>{</span>
+        "HealthCheckIntervalSeconds":30,
+        "HealthCheckProtocol":"HTTP",
+        "HealthCheckTimeoutSeconds":15,
+        "HealthyThresholdCount":5,
+        "Matcher":<span>{</span>
+          "HttpCode":"200"
+        },
+        "Name":"EC2TargetGroup",
+        "Port":80,
+        "Protocol":"HTTP",
+        "TargetGroupAttributes":[
+          <span>{</span>
+            "Key":"deregistration_delay.timeout_seconds",
+            "Value":"20"
+          }
+        ],
+        "UnhealthyThresholdCount":3,
+        "VpcId":<span>{</span>
+          "Ref":"VPC"
+        }
+      }
+    },
+    "ALBListener":<span>{</span>
+      "Type":"AWS::ElasticLoadBalancingV2::Listener",
+      "Properties":<span>{</span>
+        "DefaultActions":[
+          <span>{</span>
+            "Type":"forward",
+            "TargetGroupArn":<span>{</span>
+              "Ref":"EC2TargetGroup"
+            }
+          }
+        ],
+        "LoadBalancerArn":<span>{</span>
+          "Ref":"ApplicationLoadBalancer"
+        },
+        "Port":80,
+        "Protocol":"HTTP"
+      }
+    },
+    "ApplicationLoadBalancer":<span>{</span>
+      "Type":"AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "Properties":<span>{</span>
+        "Scheme":"internet-facing",
+        "Subnets":<span>{</span>
+          "Ref":"Subnets"
+        },
+        "SecurityGroups":[
+          <span>{</span>
+            "Fn::GetAtt":[
+              "ELBSecurityGroup",
+              "GroupId"
+            ]
+          }
+        ]
+      }
+    },
+    "LaunchTemplate":<span>{</span>
+      "Type":"AWS::EC2::LaunchTemplate",
+      "Properties":<span>{</span>
+        "LaunchTemplateName":<span>{</span>
+          "Fn::Sub":"$<span>{</span>AWS::StackName}-launch-template"
+        },
+        "LaunchTemplateData":<span>{</span>
+          "ImageId":<span>{</span>
+            "Ref":"LatestAmiId"
+          },
+          "InstanceType":<span>{</span>
+            "Ref":"InstanceType"
+          },
+          "KeyName":<span>{</span>
+            "Ref":"KeyName"
+          },
+          "SecurityGroupIds":[
+            <span>{</span>
+              "Ref":"EC2SecurityGroup"
+            }
+          ],
+          "UserData":<span>{</span>
+            "Fn::Base64":<span>{</span>
+              "Fn::Join":[
+                "",
+                [
+                  "#!/bin/bash\n",
+                  "yum update -y\n",
+                  "yum install -y httpd\n",
+                  "systemctl start httpd\n",
+                  "systemctl enable httpd\n",
+                  "echo \"&lt;h1&gt;Hello World!&lt;/h1&gt;\" &gt; /var/www/html/index.html"
+                ]
+              ]
+            }
+          }
+        }
+      }
+    },
+    "NotificationTopic":<span>{</span>
+      "Type":"AWS::SNS::Topic",
+      "Properties":<span>{</span>
+        "Subscription":[
+          <span>{</span>
+            "Endpoint":<span>{</span>
+              "Ref":"OperatorEmail"
+            },
+            "Protocol":"email"
+          }
+        ]
+      }
+    },
+    "WebServerGroup":<span>{</span>
+      "Type":"AWS::AutoScaling::AutoScalingGroup",
+      "Properties":<span>{</span>
+        "LaunchTemplate":<span>{</span>
+          "LaunchTemplateId":<span>{</span>
+            "Ref":"LaunchTemplate"
+          },
+          "Version":<span>{</span>
+            "Fn::GetAtt":[
+              "LaunchTemplate",
+              "LatestVersionNumber"
+            ]
+          }
+        },
+        "MaxSize":"3",
+        "MinSize":"1",
+        "NotificationConfigurations":[
+          <span>{</span>
+            "TopicARN":<span>{</span>
+              "Ref":"NotificationTopic"
+            },
+            "NotificationTypes":[
+              "autoscaling:EC2_INSTANCE_LAUNCH",
+              "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+              "autoscaling:EC2_INSTANCE_TERMINATE",
+              "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
+            ]
+          }
+        ],
+        "TargetGroupARNs":[
+          <span>{</span>
+            "Ref":"EC2TargetGroup"
+          }
+        ],
+        "VPCZoneIdentifier":<span>{</span>
+          "Ref":"Subnets"
+        }
+      }
+    }
+  }
+}</code></pre>
+    <div class="minimized-fader"></div></div><div class="show-more-btn"><a href="#"><awsui-icon class="show-more-text" variant="link" name="caret-right-filled"></awsui-icon><span class="show-more-text">顯示較多</span><awsui-icon class="show-less-text" variant="link" name="caret-up-filled"></awsui-icon><span class="show-less-text">顯示較少</span></a></div></div>
+   
+    <h2 id="example-templates-autoscaling-description">範本演練</h2>
+    <p>此範本的第一部分會指定 <code class="code">Parameters</code>。每個參數在執行時間都必須獲指派值，以讓 AWS CloudFormation 成功佈建堆疊。在範本中稍後指定的資源會參考這些值並使用資料。</p>
+    <div class="itemizedlist">
+       
+       
+       
+       
+       
+       
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">InstanceType</code>：Amazon EC2 Auto Scaling 佈建的 EC2 執行個體類型。如果未指定，則會使用預設的 <code class="code">t3.micro</code>。</p>
+      </li><li class="listitem">
+        <p><code class="code">KeyName</code>：允許 SSH 存取執行個體的現有 EC2 金鑰對。</p>
+      </li><li class="listitem">
+        <p><code class="code">LatestAmiId</code>：執行個體的 Amazon Machine Image (AMI)。如果未指定，您的執行個體會透過 Amazon Linux 2 AMI 啟動，並使用由 AWS 維護的 AWS Systems Manager 公有參數。如需詳細資訊，請參閱《AWS Systems Manager 使用者指南》<em></em>中的<a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-finding-public-parameters.html">查找公有參數</a>。</p>
+      </li><li class="listitem">
+        <p><code class="code">OperatorEmail</code>：您要傳送擴展活動通知的電子郵件地址。</p>
+      </li><li class="listitem">
+        <p><code class="code">SSHLocation</code>：可用於對執行個體進行 SSH 存取的 IP 地址範圍。</p>
+      </li><li class="listitem">
+        <p><code class="code">Subnets</code>：至少兩個公有子網路位於不同的可用區域。</p>
+      </li><li class="listitem">
+        <p><code class="code">VPC</code>：您帳戶中的虛擬私有雲端 (VPC)，可讓公有子網路中的資源連線至網際網路。</p>
+        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>您可以使用預設 VPC 和預設子網路，以允許執行個體存取網際網路。在使用自己的 VPC 的情況下，請確定您的 VPC 有一個子網路映射到您正在使用之區域的每個可用區域。必須至少有兩個可用的公有子網路，您才能建立負載平衡器。</p></div></div>
+      </li></ul></div>
+    <p>此範本的下一部分會指定 <code class="code">Resources</code>。此區段指定堆疊資源及其屬性。</p>
+    <p><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group.html">AWS::EC2::SecurityGroup</a> 資源 <code class="code">ELBSecurityGroup</code> </p>
+    <div class="itemizedlist">
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">SecurityGroupIngress</code> 包含 TCP 輸入規則，以允許從連接埠 80 上的<em>所有 IP 地址</em>進行存取 ("CidrIp" : "0.0.0.0/0")。</p>
+      </li></ul></div>
+    <p><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group.html">AWS::EC2::SecurityGroup</a> 資源 <code class="code">EC2SecurityGroup</code> </p>
+
+    <div class="itemizedlist">
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">SecurityGroupIngress</code>包含兩條輸入規則：1) 一條允許從您為 <code class="code">SSHLocation</code> 輸入參數提供的 IP 地址範圍進行 SSH 存取 (連接埠 22) 的 TCP 輸入規則，以及 2) 一條透過指定負載平衡器的安全群組允許從負載平衡器進行存取的 TCP 輸入規則。<a href="./intrinsic-function-reference-getatt.html">GetAtt</a> 函數用於獲取具有邏輯名稱 <code class="code">ELBSecurityGroup</code> 的安全群組的 ID。</p>
+      </li></ul></div>
+    <p><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html">AWS::ElasticLoadBalancingV2::TargetGroup</a> 資源 <code class="code">EC2TargetGroup</code></p>
+    <div class="itemizedlist">
+       
+       
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">Port</code>、<code class="code">Protocol</code> 和 <code class="code">HealthCheckProtocol</code> 指定 EC2 執行個體連接埠 (80) 和協定 (HTTP)，<code class="code">ApplicationLoadBalancer</code> 向該連接埠和協定路由流量而 Elastic Load Balancing 使用它們來檢查 EC2 執行個體的運作狀態。</p>
+      </li><li class="listitem">
+        <p><code class="code">HealthCheckIntervalSeconds</code> 指定 EC2 執行個體在運作狀態檢查間具有 30 秒的間隔。<code class="code">HealthCheckTimeoutSeconds</code> 的定義為 Elastic Load Balancing 等待來自運作狀態檢查目標回應的時間長度 (此範例中為 15 秒)。在逾時期間過後，Elastic Load Balancing 便會將 EC2 執行個體的運作狀態檢查標記為不良。當 EC2 執行個體連續三次運作狀態檢查失敗時 (<code class="code">UnhealthyThresholdCount</code>)，Elastic Load Balancing 將停止將流量路由到該 EC2 執行個體，直到其連續五次運作狀態檢查的結果為狀態良好為止 (<code class="code">HealthyThresholdCount</code>)。此時，Elastic Load Balancing 會將執行個體視為狀態良好，並再次開始將流量路由到該執行個體。</p>
+      </li><li class="listitem">
+        <p><code class="code">TargetGroupAttributes</code> 將目標群組的取消註冊延遲值更新為 20 秒。依預設，Elastic Load Balancing 會等待 300 秒，然後再完成取消註冊程序。</p>
+      </li></ul></div>
+    <p><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listener.html">AWS::ElasticLoadBalancingV2::Listener</a> 資源 <code class="code">ALBListener</code></p>
+    <div class="itemizedlist">
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">DefaultActions</code> 指定負載平衡器監聽的連接埠、負載平衡器轉寄請求的目標群組，以及用來路由請求的通訊協定。</p>
+      </li></ul></div>
+    <p><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-loadbalancer.html">AWS::ElasticLoadBalancingV2::LoadBalancer</a> 資源 <code class="code">ApplicationLoadBalancer</code></p>
+    <div class="itemizedlist">
+       
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">Subnets</code> 將 <code class="code">Subnets</code> 輸入參數的值做為公有子網路的清單，負載平衡器節點將在該清單中建立。</p>
+      </li><li class="listitem">
+        <p><code class="code">SecurityGroup</code> 獲取安全群組的 ID，該安全群組充當您的負載平衡器節點的虛擬防火牆，以控制傳入的流量。<a href="./intrinsic-function-reference-getatt.html">GetAtt</a> 函數用於獲取具有邏輯名稱 <code class="code">ELBSecurityGroup</code> 的安全群組的 ID。</p>
+      </li></ul></div>
+    <p><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-launchtemplate.html">AWS::EC2::LaunchTemplate</a> 資源 <code class="code">LaunchTemplate</code></p>
+    <div class="itemizedlist">
+       
+       
+       
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">ImageId</code> 將 <code class="code">LatestAmiId</code> 輸入參數的值做為要使用的 AMI。</p>
+      </li><li class="listitem">
+        <p><code class="code">KeyName</code> 將 <code class="code">KeyName</code> 輸入參數的值做為要使用的 EC2 金鑰對。</p>
+      </li><li class="listitem">
+        <p><code class="code">SecurityGroupIds</code> 獲取具有邏輯名稱 <code class="code">EC2SecurityGroup</code> 安全群組 ID，該安全群組充當您的 EC2 執行個體的虛擬防火牆，以控制傳入的流量。</p>
+      </li><li class="listitem">
+        <p><code class="code">UserData</code> 是在執行個體啟動並運行後執行的組態指令碼。在此範例中，指令碼會安裝 Apache，並建立 index.html 檔案。</p>
+      </li></ul></div>
+    <p><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sns-topic.html">AWS::SNS::Topic</a> 資源 <code class="code">NotificationTopic</code></p>
+    <div class="itemizedlist">
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p>當有任何擴展活動時，<code class="code">Subscription</code> 會將 <code class="code">OperatorEmail</code> 輸入參數的值做為通知收件人的電子郵件地址。</p>
+      </li></ul></div>
+    <p><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-as-group.html">AWS::AutoScaling::AutoScalingGroup</a> 資源 <code class="code">WebServerGroup</code></p>
+    <div class="itemizedlist">
+       
+       
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p><code class="code">MinSize</code> 及 <code class="code">MaxSize</code> 設定 Auto Scaling 群組中 EC2 執行個體的最小及最大數。</p>
+      </li><li class="listitem">
+        <p><code class="code">TargetGroupARNs</code> 將接受具有邏輯名稱 <code class="code">EC2TargetGroup</code> 的目標群組 ARN。當此 Auto Scaling 群組擴展時，它會自動向此目標群組註冊和取消註冊執行個體。</p>
+      </li><li class="listitem">
+        <p><code class="code">VPCZoneIdentifier</code> 將 <code class="code">Subnets</code> 輸入參數的值做為公有子網路的清單，EC2 執行個體將在該清單中建立。</p>
+      </li></ul></div>
+   
+    <h2 id="example-templates-autoscaling-launch-stack">步驟 1：啟動堆疊</h2>
+    <p>在啟動堆疊之前，請檢查您是否具有使用下列所有服務的 AWS Identity and Access Management (IAM) 許可：Amazon EC2、Amazon EC2 Auto Scaling、AWS Systems Manager、Elastic Load Balancing、Amazon SNS 以及 AWS CloudFormation。</p>
+    <p>下列程序涉及從檔案上傳範例堆疊範本。在本機電腦上打開文字編輯器，然後新增其中一個範本。儲存檔案，並將其命名為 <code class="code">sampleloadbalancedappstack.template</code>。</p>
+    <p><b>啟動堆疊範本</b></p>
+
+    <div class="procedure"><ol><li> <p>請登入 AWS Management Console，開啟位於 <a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/cloudformation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> 的 AWS CloudFormation 主控台。</p> </li><li>
+        <p>選擇 <b>Create stack (建立堆疊)</b>、<b>With new resources (standard) (使用新資源 (標準))</b>。</p>
+      </li><li>
+        <p>在<b>指定範本</b>下，選擇<b>上傳範本檔案</b>，然後選擇<b>選擇檔案</b>以上傳 <code class="code">sampleloadbalancedappstack.template</code> 檔案。</p>
+      </li><li>
+        <p>選擇 <b>Next (下一步)</b>。</p>
+      </li><li>
+        <p>在<b>指定詳細資訊</b>頁面上，輸入堆疊名稱 (例如 <code class="userinput">SampleLoadBalancedAppStack</code>)。</p>
+      </li><li>
+        <p>在<b>參數</b>下，檢閱堆疊的參數並為無預設值的所有參數提供值，包括 <b>OperatorEmail</b>、<b>SSHLocation</b>、<b>KeyName</b>、<b>VPC</b> 和 <b>Subnets</b>。</p>
+      </li><li>
+        <p>選擇 <b>Next</b> (下一步) 兩次。</p>
+      </li><li>
+        <p>在 <b>Review (檢視)</b> 頁面上，檢視和確認的設定。</p>
+      </li><li>
+        <p>選擇 <b>Submit</b> (提交)。</p>
+        <p>您可以在 AWS CloudFormation 主控台的<b>狀態</b>欄檢視堆疊的狀態。當 AWS CloudFormation 成功建立堆疊時，您會收到 <b>CREATE_COMPLETE</b> 狀態。</p>
+        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>在建立堆疊之後，您必須先確認訂閱，電子郵件地址才能開始接收通知。如需詳細資訊，請參閱《Amazon EC2 Auto Scaling 使用者指南》中的<a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-sns-notifications.html">在 Auto Scaling 群組擴展時取得 Amazon SNS 通知</a>。</p></div></div>
+      </li></ol></div>
+   
+    <h2 id="example-templates-autoscaling-clean-up">步驟 2：清除您的資源範例</h2>
+
+    <p>若要確保您不會為未使用的資源範例付費，請刪除堆疊。</p>
+    <div class="procedure"><h6>刪除堆疊</h6><ol><li>
+        <p>在 AWS CloudFormation 主控台中，選擇 <b>SampleLoadBalancedAppStack</b> 堆疊。</p>
+      </li><li>
+        <p>選擇 <b>Delete</b> (刪除)。</p>
+      </li><li>
+        <p>在確認訊息中，選擇<b>刪除堆疊</b>。</p>
+        <p><b>SampleLoadBalancedAppStack</b> 的狀態變更為 <b>DELETE_IN_PROGRESS</b>。當 AWS CloudFormation 完成刪除堆疊時，它會從清單移除堆疊。</p>
+      </li></ol></div>
+    <p>使用此逐步解說的範例範本建置您自己的堆疊範本。如需詳細資訊，請參閱《Amazon EC2 Auto Scaling 使用者指南》<em></em>中的<a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/tutorial-ec2-auto-scaling-load-balancer.html">教程：設定擴展和負載平衡的應用程式</a>。</p>
+  <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./walkthrough-crossstackref.html">演練：參考在另一個 AWS CloudFormation 堆疊中的資源輸出</div><div id="next" class="next-link" accesskey="n" href="./deploying.applications.html">部署應用程式</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/example-templates-autoscaling.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

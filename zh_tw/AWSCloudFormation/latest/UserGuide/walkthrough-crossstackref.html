@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>演練：參考在另一個 AWS CloudFormation 堆疊中的資源輸出 - AWS CloudFormation</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="walkthrough-crossstackref" /><meta name="default_state" content="walkthrough-crossstackref" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" /><meta name="description" content="使用 Export 輸出欄位及 Fn::ImportValue 內部函數，在 AWS CloudFormation 堆疊之間建立跨堆疊參考。" /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS CloudFormation" /><meta name="guide" content="使用者指南" /><meta name="abstract" content="使 AWS CloudFormation 用本使用者指南可預測並重複地建立和管理 AWS 基礎架構部署。" /><meta name="guide-locale" content="zh_tw" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="id-id" /><link rel="alternative" href="https://docs.aws.amazon.com/id_id/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="id" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="de-de" /><link rel="alternative" href="https://docs.aws.amazon.com/de_de/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="de" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="en-us" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="en" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="es-es" /><link rel="alternative" href="https://docs.aws.amazon.com/es_es/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="es" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="fr-fr" /><link rel="alternative" href="https://docs.aws.amazon.com/fr_fr/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="fr" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="it-it" /><link rel="alternative" href="https://docs.aws.amazon.com/it_it/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="it" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="ja-jp" /><link rel="alternative" href="https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="ja" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="ko-kr" /><link rel="alternative" href="https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="ko" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="pt-br" /><link rel="alternative" href="https://docs.aws.amazon.com/pt_br/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="pt" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="zh-cn" /><link rel="alternative" href="https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="zh-tw" /><link rel="alternative" href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" hreflang="x-default" /><meta name="feedback-item" content="CloudFormation" /><meta name="this_doc_product" content="AWS CloudFormation" /><meta name="this_doc_guide" content="使用者指南" /><script defer="" src="/assets/r/vendor4.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor3.js?version=2021.12.02"></script><script defer="" src="/assets/r/vendor1.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-common.js?version=2021.12.02"></script><script defer="" src="/assets/r/awsdocs-doc-page.js?version=2021.12.02"></script><link href="/assets/r/vendor4.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-common.css?version=2021.12.02" rel="stylesheet" /><link href="/assets/r/awsdocs-doc-page.css?version=2021.12.02" rel="stylesheet" /><script async="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'cloudformation'}"></script><meta id="panorama-serviceSubSection" value="使用者指南" /><meta id="panorama-serviceConsolePage" value="演練：參考在另一個 AWS CloudFormation 堆疊中的資源輸出" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>演練：參考在另一個 AWS CloudFormation 堆疊中的資源輸出 - AWS CloudFormation</title><meta name="rss" content="aws-cloudformation-release-notes.rss" /><meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=92" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html" /><meta name="keywords" content="CloudFormation,AWSCloudFormation,資源佈建,資源組態,基礎設施管理,CloudFormer,CloudFormation 堆疊,CloudFormation 堆疊集,CloudFormation 範本,變更集合" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS CloudFormation",
+        "item" : "https://docs.aws.amazon.com/cloudformation/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "使用者指南",
+        "item" : "https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "使用 AWS CloudFormation 範本",
+        "item" : "https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/template-guide.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "演練",
+        "item" : "https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/CHAP_Using.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 6,
+        "name" : "演練：參考在另一個 AWS CloudFormation 堆疊中的資源輸出",
+        "item" : "https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/CHAP_Using.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"></div><div id="breadcrumbs" class="breadcrumb"><a href="https://aws.amazon.com">AWS</a><a href="/index.html">文件</a><a href="/cloudformation/index.html">AWS CloudFormation</a><a href="Welcome.html">使用者指南</a></div><div id="page-toc-src"><a href="#walkthrough-crossstackref-create-vpc-stack">步驟 1：使用範例範本建立網路堆疊</a><a href="#walkthrough-crossstackref-create-ec2-stack">步驟 2：使用範例範本建立 Web 應用程式堆疊</a><a href="#walkthrough-crossstackref-clean-up">步驟 3：清除您的資源</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><awsui-alert class="awsdocs-page-banner awsui-util-mb-l"><p>本文為英文版的機器翻譯版本，如內容有任何歧義或不一致之處，概以英文版為準。</p></awsui-alert><h1 class="topictitle" id="walkthrough-crossstackref">演練：參考在另一個 AWS CloudFormation 堆疊中的資源輸出</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>若要將來自一個 AWS CloudFormation 堆疊的資源匯出到另一個堆疊，請建立跨堆疊參考。跨堆疊參考可讓您使用分層或服務導向的架構。相較於在單一堆疊中包含所有資源，您可以在個別的堆疊中建立相關 AWS 資源，然後參考其他堆疊的資源輸出。透過將跨堆疊參考限制在輸出，您可以控制堆疊中由其他堆疊參考的部分。</p><p>例如，您可能有一個使用 VPC、安全群組，以及公有 Web 應用程式子網路的網路堆疊，以及另一個公有 Web 應用程式堆疊。若要確保 Web 應用程式使用來自網路堆疊的安全群組和子網路，您可以建立跨堆疊參考，允許 Web 應用程式堆疊參考網路堆疊的資源輸出。使用跨堆疊參考，Web 應用程式堆疊的擁有者便不需要建立或維護網路規則或資產。</p><p>若要建立跨堆疊參考，請使用 <code class="code">Export</code> 輸出欄位，標記要匯出的資源輸出值。然後，使用 <code class="code">Fn::ImportValue</code> 內部函數匯入值。如需詳細資訊，請參閱 <a href="./outputs-section-structure.html">輸出</a> 及 <a href="./intrinsic-function-reference-importvalue.html">Fn::ImportValue</a>。</p><p>必要條件</p><p>在您開始此演練前，請確認您已有使用下列所有服務的 <a href="https://aws.amazon.com/iam/" rel="noopener noreferrer" target="_blank"><span>AWS Identity and Access Management (IAM) 許可</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>：Amazon VPC、Amazon EC2 和 AWS CloudFormation。</p><div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>AWS CloudFormation 是免費服務。但是，您必須以目前的費率，為您包含在堆疊中的每一項 AWS 資源支付費用。如需 AWS 定價的詳細資訊，請參閱<a href="https://aws.amazon.com/" rel="noopener noreferrer" target="_blank"><span>各項產品的詳細資訊頁面</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>。</p><p>下列限制適用於跨堆疊參考：</p><div class="itemizedlist">
+       
+       
+       
+       
+       
+    <ul class="itemizedlist"><li class="listitem">
+        <p>對於每個 AWS 帳戶，一個區域內的 <code class="code">Export</code> 名稱必須是唯一的。</p>
+      </li><li class="listitem">
+        <p>您無法跨區域建立跨堆疊參考。您可以使用內部函數 <code class="code">Fn::ImportValue</code>，僅匯入已在同一區域內匯出的值。</p>
+      </li><li class="listitem">
+        <p>對於輸出，<code class="code">Export</code> 的 <code class="code">Name</code> 屬性值無法使用依賴某個資源的 <code class="code">Ref</code> 或者 <code class="code">GetAtt</code> 函數。</p>
+        <p>同樣，<code class="code">ImportValue</code> 函數不能包含依賴某個資源的 <code class="code">Ref</code> 或 <code class="code">GetAtt</code> 函數。</p>
+      </li><li class="listitem">
+        <p>如果另一堆疊參考其中一個輸出，則無法刪除堆疊。</p>
+      </li><li class="listitem">
+        <p>您無法修改或移除其他堆疊所參考的輸出值。</p>
+      </li></ul></div></div></div><h2 id="walkthrough-crossstackref-create-vpc-stack">步驟 1：使用範例範本建立網路堆疊</h2>
+    
+    <p>網路堆疊包含您會在 Web 應用程式堆疊中使用的 VPC、安全群組和子網路。除了這些資源之外，網路堆疊也會建立網際網路閘道及路由表，以啟用公有存取。</p>
+    <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>您必須在您建立 Web 應用程式堆疊前建立此堆疊。若您先建立 Web 應用程式堆疊，它將不會擁有安全群組或子網路。</p></div></div>
+    <div class="procedure"><h6>建立網路堆疊</h6><ol><li>
+        <p>開啟 <a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>AWS CloudFormation 主控台</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>，然後選擇 <b>Create stack (建立堆疊)</b>。</p>
+      </li><li>
+        <p>選擇 <b>Template is ready (範本就緒)</b>，然後在 <b>Specify template (指定範本)</b> 區段中選擇 <b>Amazon S3 URL</b>。複製以下 URL 並貼入文字方塊：<code class="code"><a href="https://s3.amazonaws.com/cloudformation-examples/user-guide/cross-stack/SampleNetworkCrossStack.template" rel="noopener noreferrer" target="_blank"><span>https://s3.amazonaws.com/cloudformation-examples/user-guide/cross-stack/SampleNetworkCrossStack.template</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a></code></p>
+        <p>連結會提供網路堆疊範本的位置。若要查看堆疊建立的資源，請選擇連結，開啟範本。在輸出區段中，您可以查看範例範本匯出的網路資源。匯出資源的名稱會加上堆疊名稱的字首，以在您從其他堆疊匯出網路資源時進行區別。當使用者匯入網路資源時，他們便可以指定要匯入哪些堆疊的資源。</p>
+      </li><li>
+        <p>在檢閱範本後，選擇 <b>Next (下一步)</b>。</p>
+      </li><li>
+        <p>針對 <b>Stack name (堆疊名稱)</b>，輸入 <code class="userinput">SampleNetworkCrossStack</code>，然後選擇 <b>Next (下一步)</b>。</p>
+        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>記錄此堆疊的名稱。當您在啟動 Web 應用程式堆疊時，您將會需要堆疊名稱。</p></div></div>
+      </li><li>
+        <p>選擇<b>下一步</b>。針對此演練，您不需要新增標籤或指定進階設定。</p>
+      </li><li>
+        <p>確認堆疊名稱和範本 URL 正確，然後選擇 <b>Create stack (建立堆疊)</b>。</p>
+        <p>AWS CloudFormation 可能需要幾分鐘的時間來建立您的堆疊。等待所有資源成功建立，再繼續建立 Web 應用程式堆疊。</p>
+      </li><li>
+        <p>若要監控進度，請檢視堆疊事件。如需詳細資訊，請參閱 <a href="./cfn-console-view-stack-data-resources.html">檢視 AWS CloudFormation 堆疊資料和資源 AWS Management Console</a>。</p>
+      </li></ol></div>
+  <h2 id="walkthrough-crossstackref-create-ec2-stack">步驟 2：使用範例範本建立 Web 應用程式堆疊</h2>
+    
+    <p>Web 應用程式堆疊會建立使用網路堆疊之安全群組和子網路的 EC2 執行個體。</p>
+    <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>您必須在和網路堆疊相同的區域中建立此堆疊。</p></div></div>
+    <div class="procedure"><h6>建立 Web 應用程式堆疊</h6><ol><li>
+        <p>開啟 <a href="https://console.aws.amazon.com/cloudformation/" rel="noopener noreferrer" target="_blank"><span>AWS CloudFormation 主控台</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>，然後選擇 <b>Create stack (建立堆疊)</b>。</p>
+      </li><li>
+        <p>選擇 <b>Template is ready (範本就緒)</b>，然後在 <b>Specify template (指定範本)</b> 區段中選擇 <b>Amazon S3 URL</b>。將下列網址複製並貼到文字方塊<a href="https://s3.amazonaws.com/cloudformation-examples/user-guide/cross-stack/SampleWebAppCrossStack.template" rel="noopener noreferrer" target="_blank"><span>中 SampleWebAppCrossStack</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>：https://s3.amazonaws.com/cloudformation-examples/user-guide/cross-stack/ </p>
+        <p>連結會提供 Web 應用程式範本的位置。若要查看堆疊建立的資源，請選擇連結，開啟範本。在資源區段中，檢視 EC2 執行個體的屬性。您可以使用 <code class="code">Fn::ImportValue</code> 函數查看從另一個堆疊匯入網路資源的方式。</p>
+      </li><li>
+        <p>在檢閱範本後，選擇 <b>Next (下一步)</b>。</p>
+      </li><li>
+        <p>在 <b>Stack Name</b> (堆疊名稱) 中輸入 <code class="userinput">SampleWebAppCrossStack</code>。在「<b>參數</b>」段落中，使用<b>NetworkStackName</b>參數的預設值，然後選擇「<b>下一步</b>」。</p>
+        <p>範例範本會使用參數值指定要從哪個堆疊匯入值。</p>
+      </li><li>
+        <p>選擇<b>下一步</b>。針對此演練，您不需要新增標籤或指定進階設定。</p>
+      </li><li>
+        <p>確認堆疊名稱和範本 URL 正確，然後選擇 <b>Create stack (建立堆疊)</b>。</p>
+        <p>AWS CloudFormation 可能需要幾分鐘的時間來建立您的堆疊。</p>
+      </li><li>
+        <p>在堆疊建立之後，檢視其資源並注意執行個體 ID。如需檢視堆疊資源的詳細資訊，請參閱<a href="./cfn-console-view-stack-data-resources.html">檢視 AWS CloudFormation 堆疊資料和資源 AWS Management Console</a>。</p>
+        <p>若要驗證執行個體的安全群組和子網路，請在 <a href="https://console.aws.amazon.com/ec2/" rel="noopener noreferrer" target="_blank"><span>Amazon EC2 主控台</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>檢視執行個體的屬性。若執行個體使用來自 <code class="code">SampleNetworkCrossStack</code> 堆疊的安全群組和子網路，表示您已成功建立跨堆疊參考。</p>
+        <p>使用主控台檢視堆疊輸出和範例網站 URL，驗證 Web 應用程式已在執行中。如需詳細資訊，請參閱 <a href="./cfn-console-view-stack-data-resources.html">檢視 AWS CloudFormation 堆疊資料和資源 AWS Management Console</a>。</p>
+      </li></ol></div>
+  <h2 id="walkthrough-crossstackref-clean-up">步驟 3：清除您的資源</h2>
+    
+    <p>為了確保您不需要為不必要的服務支付費用，請刪除堆疊。</p>
+    <div class="procedure"><h6>刪除堆疊</h6><ol><li>
+        <p>在主AWS CloudFormation控台中，選擇 SampleWebAppCrossStack 堆疊。</p>
+      </li><li>
+        <p>選擇 <b>Actions (動作)</b>，然後選擇 <b>Delete stack (刪除堆疊)</b>。</p>
+      </li><li>
+        <p>在確認訊息中，選擇 <b>Delete (刪除)</b>。</p>
+      </li><li>
+        <p>刪除堆疊之後，對 SampleNetworkCrossStack 堆疊重複相同的步驟。</p>
+        <div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>注意</h6></div><div class="awsdocs-note-text"><p>等到AWS CloudFormation完全刪除 SampleWebAppCrossStack 堆棧。如果 EC2 執行個體仍在 VPC 中執行，則AWS CloudFormation不會刪除堆疊中的  SampleNetworkCrossStack  VPC。</p></div></div>
+        <p>所有您先前建立的資源都已刪除。</p>
+      </li></ol></div>
+    <p>使用此演練的範例範本建置您自己的跨參考堆疊。</p>
+  <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="警告" /> <strong>您的瀏覽器已停用或無法使用 Javascript。</strong></p><p>您必須啟用 Javascript，才能使用 AWS 文件。請參閱您的瀏覽器說明頁以取得說明。</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">文件慣用形式</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./peer-with-vpc-in-another-account.html">與另一個帳戶中的 VPC 對等</div><div id="next" class="next-link" accesskey="n" href="./example-templates-autoscaling.html">建置擴展和負載平衡的應用程式</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">此頁面是否有幫助？ - 是</div><div class="content"><p>感謝您，讓我們知道我們做得很好！</p><p>若您有空，歡迎您告知我們值得讚許的地方，這樣才能保持良好服務。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">此頁面是否有幫助？ - 否</div><div class="content"><p>感謝讓我們知道此頁面仍須改善。很抱歉，讓您失望。</p><p>若您有空，歡迎您提供改善文件的方式。</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="意見回饋" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=CloudFormation&amp;topic_url=https://docs.aws.amazon.com/zh_tw/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>
